@@ -45,3 +45,5 @@ end
 # gem 'debugger', group: [:development, :test]
 
 gem "twitter-bootstrap-rails"
+
+gem "devise"

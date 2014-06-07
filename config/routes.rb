@@ -1,4 +1,6 @@
 TDefWeb::Application.routes.draw do
+  devise_for :users
+  get "map_edit" => 'map#map_edit'
   get "test/test"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
