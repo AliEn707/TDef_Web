@@ -6,11 +6,11 @@ class MapNode
 end
 
 class Base
-	attr_accssor :position, :type, :id
+	attr_accessor :position, :type, :id
 end
 
 class Map
-	attr_accessor :map, :size, :name, :scenario, :bases
+	attr_accessor :grid, :size, :name, :scenario, :bases
 	def initialize
 	end
 	
@@ -23,6 +23,6 @@ end
 
 class MapController < ApplicationController
 	before_action :authenticate_user!
-  def map_edit
-  end
+	def map_edit
+	end
 end
