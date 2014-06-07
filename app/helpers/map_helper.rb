@@ -1,6 +1,24 @@
 module MapHelper
-
-	def grid
+	def walkmark(name,checked)
+		o= '<div class="walkmark">
+			<input class="hidden" type="checkbox" value="None" id="'+name+'" name="'+name+(checked==true ? '" checked' : '"')+'/>
+			<label for="'+name+'"></label>
+		</div>'
+		o.html_safe
+	end
+	def buildmark(name,checked)
+		o= '<div class="buildmark">
+			<input class="hidden" type="checkbox" value="None" id="'+name+'" name="'+name+(checked==true ? '" checked' : '"')+'/>
+			<label for="'+name+'"></label>
+		</div>'
+		o.html_safe
+	end
+	def node(name,w,b)
+		walkmark(name+'w',w)+buildmark(name+'b',b)
+	end
+	def grid(size=20)
+		nl='
+		'
 		a='<style type="text/css">
 		    td 
 		    {
@@ -15,42 +33,48 @@ module MapHelper
 				valign: 0;
 		    }
 		    
-		</style>'+
-		'<table border="1" cellpadding="0" cellspacing="0" >
+		</style>
+		<table width= 200>
 			<tr>
-				<td colspan="1" ></td>
-				<td colspan="1"></td>
-				<td colspan="2">C</td>
-				<td colspan="1"></td>
-				<td colspan="1"></td>
-			</tr>
+				<td>
+					'+walkmark('w',true)+'
+				</td>
+				<td>
+					- may walk
+				</td>
 			<tr>
-				<td colspan="1"></td>
-				<td colspan="2">G</td>
-				<td colspan="2">H</td>
-				<td colspan="1"></td>
 			</tr>
-			<tr>
-				<td colspan="2">J</td>
-				<td colspan="2">K</td>
-				<td colspan="2">L</td>
+				<td>
+					'+buildmark('b',true)+'
+				</td>
+				<td>
+					- may build
+				</td>
 			</tr>
-			<tr>
-				<td colspan="1"></td>
-				<td colspan="2">M</td>
-				<td colspan="2">N</td>
-				<td colspan="1"></td>
-				
-			</tr>
-			<tr>
-				<td colspan="1"></td>
-				<td colspan="1"></td>
-				<td colspan="2">O</td>
-				<td colspan="1"></td>
-				<td colspan="1"></td>
-			</tr>
-			
-		</table>'
+		</table>
+		<table border="1" cellpadding="0" cellspacing="0" >
+		'
+		(size*2).times do |i|
+			n=i+1
+			n=size*2-n if (n>size)
+			l=(2*size-n*2)/2
+			a+="<tr>"
+			l.times {a+="<td></td>"+nl}
+			n.times do |j|
+				m=j+1
+				name=((i+1)>size ? ((m+i+1-size)*size-((i+1)-(m+i+1-size))) : (m*size-(n-m)))
+				a+='<td colspan="2">'+
+					node(name.to_s,true,true)+
+					'</td>
+					'
+			end
+			l.times {a+="<td></td>"+nl}
+			a+="</tr>
+			"
+		end
+		
+		a+='</table>
+		'
 		a.html_safe
 	end
 end
