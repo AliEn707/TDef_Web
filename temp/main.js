@@ -50,19 +50,16 @@ function respSelected(arg) {
 function focusResp(arg) {
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
-	var x = arg.options[arg.selectedIndex].value%size, y = Math.floor(arg.options[arg.selectedIndex].value)/size
-	ctx.strokeStyle = "plum"
-	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
-	//alert("AAA")
+	var x = arg.value%size, y = Math.floor(arg.value/size)
+	ctx.strokeStyle = "#ff7318"
+	ctx.lineWidth = 2
+	ctx.strokeRect(x*nodeSize + 5, y*nodeSize + 5, nodeSize - 8, nodeSize - 8)
+	ctx.lineWidth = 1
 }
 
 function unfocusResp(arg) {
-	var mapCanvas = document.getElementById("map")
-	var ctx = mapCanvas.getContext('2d')
-	var x = arg.options[arg.selectedIndex].value%size, y = Math.floor(arg.options[arg.selectedIndex].value)/size
-	ctx.strokeStyle = "#000000"
-	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
-	//alert("bbbb")
+	drawNode(parseInt(arg.value))
+	//alert(bases)
 }
 	
 function getClickXY(event) {
@@ -90,8 +87,6 @@ function getClickXY(event) {
 				list.setAttribute("name", "b" + index)
 				list.setAttribute("id", "b" + index)
 				list.setAttribute("onchange", "respSelected(this)")
-				list.setAttribute("onfocus", "focusResp(this)")
-				list.setAttribute("onblur", "unfocusResp(this)")
 				list.options[list.options.length] = new Option("none", -1)
 				
 				var selectedResps = new Array()
@@ -104,8 +99,11 @@ function getClickXY(event) {
 					}
 				}
 				for (var i in respawns) {
-					if (selectedResps.indexOf(respawns[i]) == -1)
+					if (selectedResps.indexOf(respawns[i]) == -1) {
 						list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
+						list.options[list.options.length - 1].setAttribute("onmouseover", "focusResp(this)")
+						list.options[list.options.length - 1].setAttribute("onmouseout", "unfocusResp(this)")
+					}
 				}
 				div.appendChild(list)
 				document.getElementById('basesDiv').appendChild(div)
@@ -122,6 +120,8 @@ function getClickXY(event) {
 				for (var i in bases) {
 					var obj = document.getElementById("b" + bases[i])
 					obj.options[obj.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
+					obj.options[obj.options.length - 1].setAttribute("onmouseover", "focusResp(this)")
+					obj.options[obj.options.length - 1].setAttribute("onmouseout", "unfocusResp(this)")
 				}
 			} else {
 				respawns.splice(pos, 1)	
