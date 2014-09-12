@@ -22,6 +22,48 @@ function setBuildData() {
 		text += attribs[i].buildable
 	obj[0].setAttribute("value", text)
 }
+
+function respSelected(arg) {
+	var selectedResps = new Array()
+	for (var i in bases) {
+		var obj = document.getElementById("b" + bases[i])
+		if (obj != null) {
+			var selectedIndex = obj.selectedIndex
+			if (selectedIndex != -1 && obj.options[selectedIndex].value != -1)
+				selectedResps.push(parseInt(obj.options[selectedIndex].value))
+		}
+	}
+	for (var j in bases) {
+		var list = document.getElementById('b' + bases[j])
+		var length = list.options.length
+		for (var i = 1; i < length; i++) {
+			if (selectedResps.indexOf(parseInt(list.options[i].value)) != -1) {
+				if	(arg.id != 'b' + bases[j])
+					list.options[i].setAttribute("hidden", "false")
+			}
+			else 
+				list.options[i].removeAttribute("hidden")
+		}
+	}
+}
+
+function focusResp(arg) {
+	var mapCanvas = document.getElementById("map")
+	var ctx = mapCanvas.getContext('2d')
+	var x = arg.options[arg.selectedIndex].value%size, y = Math.floor(arg.options[arg.selectedIndex].value)/size
+	ctx.strokeStyle = "plum"
+	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
+	//alert("AAA")
+}
+
+function unfocusResp(arg) {
+	var mapCanvas = document.getElementById("map")
+	var ctx = mapCanvas.getContext('2d')
+	var x = arg.options[arg.selectedIndex].value%size, y = Math.floor(arg.options[arg.selectedIndex].value)/size
+	ctx.strokeStyle = "#000000"
+	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
+	//alert("bbbb")
+}
 	
 function getClickXY(event) {
 	var clickY = (event.layerX == undefined ? event.offsetX : event.layerX) + 1 //Please don't worry. We'll fix it later. Maybe...
@@ -47,6 +89,9 @@ function getClickXY(event) {
 				var list = document.createElement('select')
 				list.setAttribute("name", "b" + index)
 				list.setAttribute("id", "b" + index)
+				list.setAttribute("onchange", "respSelected(this)")
+				list.setAttribute("onfocus", "focusResp(this)")
+				list.setAttribute("onblur", "unfocusResp(this)")
 				list.options[list.options.length] = new Option("none", -1)
 				
 				var selectedResps = new Array()
@@ -125,7 +170,6 @@ function init() {
 			}
 		}
 	}
-	
 	var mapCanvas = document.getElementById("map"),
 	ctx = mapCanvas.getContext('2d')
 	setHeight(0)
