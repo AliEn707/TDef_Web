@@ -25,17 +25,27 @@
 <table border = "1" width = "100%" id="mainTable">
 <tr>
 	<td width = "80%" align = "center">
-		<canvas height='1000' width='1000' id='map'>Обновите браузер</canvas>
+		<canvas height='1000' width='1000' id='map'>Update your browser!</canvas>
 	</td>
 	<td id='panel' width="*">
 		<p>Enter map size:</p>
-		<input type="text" id="mapSize" onchange="changeMapSize(this)">
-		<!--<input type="button" value="Create map" onclick="size = document.getElementById">-->
+		<input type="text" id="mapSize" value="10" onchange="changeMapSize(this)">
 		<p>Choose brush mode:</p>
-		<select name="mode" id="mode" onchange=" mode = (mode + 1)&1">
+		<select name="mode" id="mode" onchange="mode = getElementById('mode').selectedIndex">
 			<option selected value="Walk">Walk</option>
 			<option value="Build" >Build</option>
+			<option value="Base" >Base</option>
+			<option value="Respawn" >Respawn</option>
 		</select>
+		<form name="send" method="get">
+			Max NPCs:<input type="text" name="max_npcs"><br>
+			Max Towers:<input type="text" name="max_towers"><br>
+			Max Bullets:<input type="text" name="max_bullets"><br>
+			<div id="basesDiv">Base: respawn<br></div>
+			<input type="hidden" name="walkdata">
+			<input type="hidden" name="builddata">
+			<input type="submit" value="Send">
+		</form>
 	</td>
 </tr>
 </table>
