@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<style type="text/css">
+.nothing {
+	background-color: red;
+}
+.canSee {
+	background-color: blue;
+}
+.canWalk {
+	background-color: green;
+}
+#map{
+	position:relative;
+	transform:rotate(-45deg);
+}
+</style>
+
+<HEAD>
+<TITLE>Map editor v0.1</TITLE>
+<SCRIPT type="text/javascript" language="JavaScript" src="main.js">
+</SCRIPT>
+</HEAD>
+<BODY onload=init()>
+<table border = "1" width = "100%" id="mainTable">
+<tr>
+	<td width = "80%" align = "center">
+		<canvas height='1000' width='1000' id='map'>Обновите браузер</canvas>
+	</td>
+	<td id='panel' width="*">
+		<p>Enter map size:</p>
+		<input type="text" id="mapSize" onchange="changeMapSize(this)">
+		<!--<input type="button" value="Create map" onclick="size = document.getElementById">-->
+		<p>Choose brush mode:</p>
+		<select name="mode" id="mode" onchange=" mode = (mode + 1)&1">
+			<option selected value="Walk">Walk</option>
+			<option value="Build" >Build</option>
+		</select>
+	</td>
+</tr>
+</table>
+</BODY>
+</HTML>
