@@ -2,6 +2,7 @@ var size = 10
 var gridSize = 600
 var nodeSize = 0//gridSize/size
 var mode = 0
+var currentIndex = 0
 
 var attribs = new Array(size*size)
 var bases = new Array()
@@ -37,20 +38,22 @@ function respSelected(arg) {
 		var list = document.getElementById('b' + bases[j])
 		var length = list.options.length
 		for (var i = 1; i < length; i++) {
-			if (selectedResps.indexOf(parseInt(list.options[i].value)) != -1) {
-				if	(arg.id != 'b' + bases[j])
-					list.options[i].setAttribute("hidden", "false")
+			if (selectedResps.indexOf(parseInt(list.options[i].value)) != -1 && list.selectedIndex != i) {
+				if (arg.id != 'b' + bases[j])
+					list.options[i].setAttribute("disabled", "disabled")//list.options[i].setAttribute("hidden", "hidden")
 			}
 			else 
-				list.options[i].removeAttribute("hidden")
+				list.options[i].removeAttribute("disabled")//list.options[i].removeAttribute("hidden")
 		}
 	}
 }
 
 function focusResp(arg) {
+	unfocusResp(arg)
+	currentIndex = arg.options[arg.selectedIndex].value
+	var x = currentIndex%size, y = Math.floor(currentIndex/size)
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
-	var x = arg.value%size, y = Math.floor(arg.value/size)
 	ctx.strokeStyle = "#ff7318"
 	ctx.lineWidth = 2
 	ctx.strokeRect(x*nodeSize + 5, y*nodeSize + 5, nodeSize - 8, nodeSize - 8)
@@ -58,13 +61,29 @@ function focusResp(arg) {
 }
 
 function unfocusResp(arg) {
-	drawNode(parseInt(arg.value))
-	//alert(bases)
+	var mapCanvas = document.getElementById("map")
+	var ctx = mapCanvas.getContext('2d')
+	if (currentIndex != -1) {
+		ctx.lineWidth = 1
+		drawNode(parseInt(currentIndex))
+	}
+	//drawNode(parseInt(arg.options[arg.selectedIndex].value))
 }
 	
 function getClickXY(event) {
-	var clickY = (event.layerX == undefined ? event.offsetX : event.layerX) + 1 //Please don't worry. We'll fix it later. Maybe...
-	var clickX = (event.layerY == undefined ? event.offsetY : event.layerY) + 1
+	var clickY = 0
+	var clickX = 0
+	if (event.layerX || event.layerX == 0) { //Firefox
+		clickY = event.layerX + 1
+		clickX = event.layerY + 1
+	} else if (event.offsetX || event.offsetX == 0) { //Opera
+		clickY = event.offsetX + 1
+		clickX = event.offsetY + 1
+	}
+	if (navigator.userAgent.search(/Chrome/) > 0) { //Chrome
+		clickY = event.offsetX + 1
+		clickX = event.offsetY + 1	
+	}
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize
 	var index = Math.floor(mapX)*size + Math.floor(mapY)
 	switch(mode) {
@@ -87,6 +106,8 @@ function getClickXY(event) {
 				list.setAttribute("name", "b" + index)
 				list.setAttribute("id", "b" + index)
 				list.setAttribute("onchange", "respSelected(this)")
+				list.setAttribute("onmousemove", "focusResp(this)")
+				list.setAttribute("onmouseout", "unfocusResp(this)")
 				list.options[list.options.length] = new Option("none", -1)
 				
 				var selectedResps = new Array()
@@ -101,8 +122,8 @@ function getClickXY(event) {
 				for (var i in respawns) {
 					if (selectedResps.indexOf(respawns[i]) == -1) {
 						list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
-						list.options[list.options.length - 1].setAttribute("onmouseover", "focusResp(this)")
-						list.options[list.options.length - 1].setAttribute("onmouseout", "unfocusResp(this)")
+						/*list.options[list.options.length - 1].setAttribute("onmouseenter", "focusResp(this)")
+						list.options[list.options.length - 1].setAttribute("onmouseleave", "unfocusResp(this)")*/
 					}
 				}
 				div.appendChild(list)
@@ -120,8 +141,8 @@ function getClickXY(event) {
 				for (var i in bases) {
 					var obj = document.getElementById("b" + bases[i])
 					obj.options[obj.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
-					obj.options[obj.options.length - 1].setAttribute("onmouseover", "focusResp(this)")
-					obj.options[obj.options.length - 1].setAttribute("onmouseout", "unfocusResp(this)")
+					/*obj.options[obj.options.length - 1].setAttribute("onmouseenter", "focusResp(this)")
+					obj.options[obj.options.length - 1].setAttribute("onmouseleave", "unfocusResp(this)")*/
 				}
 			} else {
 				respawns.splice(pos, 1)	
@@ -129,7 +150,7 @@ function getClickXY(event) {
 					var obj = document.getElementById("b" + bases[i])
 					for (var j in obj.options)
 						if(obj.options[j].value == index) {
-							obj.options.remove(j)
+							obj.options[j].setAttribute("disabled", "disabled")//obj.options.remove(j)
 							break
 						}
 				}
@@ -170,6 +191,7 @@ function init() {
 			}
 		}
 	}
+	currentIndex = 0
 	var mapCanvas = document.getElementById("map"),
 	ctx = mapCanvas.getContext('2d')
 	setHeight(0)

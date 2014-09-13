@@ -1,15 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <style type="text/css">
-.nothing {
-	background-color: red;
-}
-.canSee {
-	background-color: blue;
-}
-.canWalk {
-	background-color: green;
-}
 #map{
 	position:relative;
 	transform:rotate(-45deg);
@@ -38,9 +29,9 @@
 			<option value="Respawn" >Respawn</option>
 		</select>
 		<form name="send" method="get">
-			Max NPCs:<input type="text" name="max_npcs"><br>
-			Max Towers:<input type="text" name="max_towers"><br>
-			Max Bullets:<input type="text" name="max_bullets"><br>
+			Max NPCs:<input type="text" name="max_npcs" size = "10"><br>
+			Max Towers:<input type="text" name="max_towers" size = "10"><br>
+			Max Bullets:<input type="text" name="max_bullets" size = "10"><br>
 			<div id="basesDiv">Base: respawn<br></div>
 			<input type="hidden" name="walkdata">
 			<input type="hidden" name="builddata">
