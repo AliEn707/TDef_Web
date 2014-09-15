@@ -55,19 +55,15 @@ function focusResp(arg) {
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
 	ctx.strokeStyle = "#ff7318"
-	ctx.lineWidth = 2
-	ctx.strokeRect(x*nodeSize + 5, y*nodeSize + 5, nodeSize - 8, nodeSize - 8)
-	ctx.lineWidth = 1
+	ctx.lineWidth = 5
+	ctx.strokeRect(x*nodeSize + nodeSize*0.1 + 1, y*nodeSize + nodeSize*0.1 + 1, nodeSize*0.8, nodeSize*0.8)
 }
 
 function unfocusResp(arg) {
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
-	if (currentIndex != -1) {
-		ctx.lineWidth = 1
+	if (currentIndex != -1)
 		drawNode(parseInt(currentIndex))
-	}
-	//drawNode(parseInt(arg.options[arg.selectedIndex].value))
 }
 	
 function getClickXY(event) {
@@ -120,11 +116,8 @@ function getClickXY(event) {
 					}
 				}
 				for (var i in respawns) {
-					if (selectedResps.indexOf(respawns[i]) == -1) {
+					if (selectedResps.indexOf(respawns[i]) == -1)
 						list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
-						/*list.options[list.options.length - 1].setAttribute("onmouseenter", "focusResp(this)")
-						list.options[list.options.length - 1].setAttribute("onmouseleave", "unfocusResp(this)")*/
-					}
 				}
 				div.appendChild(list)
 				document.getElementById('basesDiv').appendChild(div)
@@ -141,8 +134,6 @@ function getClickXY(event) {
 				for (var i in bases) {
 					var obj = document.getElementById("b" + bases[i])
 					obj.options[obj.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
-					/*obj.options[obj.options.length - 1].setAttribute("onmouseenter", "focusResp(this)")
-					obj.options[obj.options.length - 1].setAttribute("onmouseleave", "unfocusResp(this)")*/
 				}
 			} else {
 				respawns.splice(pos, 1)	
@@ -203,6 +194,7 @@ function drawNode(index) {
 	var y = Math.floor(index/size), x = index%size //awful
 	var mapCanvas = document.getElementById("map"),
 	ctx = mapCanvas.getContext('2d')
+	ctx.lineWidth = 1
 	if (attribs[index].walk == -1)
 		ctx.fillStyle = "red"
 	if (attribs[index].walk == 1)
