@@ -18,7 +18,7 @@
 	<td width = "80%" align = "center">
 		<canvas height='1000' width='1000' id='map'>Update your browser!</canvas>
 	</td>
-	<td id='panel' width="*" style="position:fixed">
+	<td id='panel' width="*" style="position:fixed; border:none">
 		<p>Choose brush mode:</p>
 		<select name="mode" id="mode" onchange="mode = getElementById('mode').selectedIndex">
 			<option selected value="Walk">Walk</option>
@@ -27,14 +27,19 @@
 			<option value="Respawn" >Respawn</option>
 		</select>
 		<form name="send" method="get">
-			<p>Map name:
-			<input type="text" name = "mapname"></p>
-			<p>Map size:
-			<input type="text" id="mapSize" name="mapsize" value="10" onchange="changeMapSize(this)"></p>
-			Max NPCs:<input type="text" name="max_npcs"><br>
-			Max Towers:<input type="text" name="max_towers"><br>
-			Max Bullets:<input type="text" name="max_bullets"><br>
+			<p><table>
+			<tr><td>Map name:</td><td><input type="text" name = "mapname" value="default"></td></tr>
+			<tr><td>Map size:</td><td><input type="text" id="mapSize" name="mapsize" value="10" onchange="changeMapSize(this)"></td></tr>
+			</table></p>
+			<table>
+			<tr><td>Max NPCs:</td><td><input type="text" name="max_npcs"></td></tr>
+			<tr><td>Max Towers:</td><td><input type="text" name="max_towers"></td></tr>
+			<tr><td>Max Bullets:</td><td><input type="text" name="max_bullets"></td></tr>
+			</table><br>
 			<div id="basesDiv">Base: respawn<br></div>
+			Waves:
+			<input type="button" id="wavesButton" name="waves" value="Add wave" onclick="addWave()"><br>
+			<div id="wavesDiv" style = "overflow:auto;"></div>
 			<input type="hidden" name="walkdata">
 			<input type="hidden" name="builddata">
 			<input type="submit" value="Send">

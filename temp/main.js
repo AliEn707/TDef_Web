@@ -3,6 +3,8 @@ var gridSize = 600
 var nodeSize = 0//gridSize/size
 var mode = 0
 var currentIndex = 0
+var numberOfWaves = 0
+var numbersOfParts = new Array()
 
 var attribs = new Array(size*size)
 var bases = new Array()
@@ -123,8 +125,8 @@ function getClickXY(event) {
 				document.getElementById('basesDiv').appendChild(div)
 			} else {
 				bases.splice(pos, 1)
-				var elem = document.getElementById('base' + index);
-				elem.parentNode.removeChild(elem);
+				var elem = document.getElementById('base' + index)
+				elem.parentNode.removeChild(elem)
 			}
 			break
 		case 3:
@@ -164,6 +166,9 @@ function setHeight(event) {
 	obj.width  = gridSize
     obj.height = gridSize
 	drawMap()
+	obj = document.getElementById("wavesDiv")
+	obj.style.height = window.innerHeight - 500
+	obj.style.width = window.innerWidth*0.2 - 1
 }
 
 function drawMap() {
@@ -172,6 +177,7 @@ function drawMap() {
 }
 
 function init() {
+	numberOfWaves = 0
 	var map = document.getElementById('map')
 	map.addEventListener('click', getClickXY, false)
 	for (var i = 0; i <= size; i++) {
@@ -232,4 +238,110 @@ function changeMapSize(obj) {
 	else
 		alert("Enter correct number!")
 	init()
+}
+
+function recalcNumberOfParts(partnum, wavenum) {
+	for (var i = 2; i <= numbersOfParts[wavenum]; i++) {
+		var inputs = document.getElementsByName('wave' + wavenum + '[part' + i + '[]]')
+		if (inputs[0] != null) {
+			if (document.getElementsByName('wave' + wavenum + '[part' + (i - 1) + '[]]')[0] == null) {
+				inputs[0].parentNode.getElementsByTagName('span')[0].innerHTML = (i - 1)		
+				var length = inputs.length
+				for (var j = 0; j < length; j++)
+					inputs[0].setAttribute('name','wave'+wavenum+ '[part' + (i - 1) + '[]]')
+			}
+		}
+	}
+	numbersOfParts[wavenum]--	
+}
+
+function deletePart(obj) {
+	var partnum = parseInt(obj.parentNode.getElementsByTagName('span')[0].innerHTML)
+	var wavenum = parseInt(obj.parentNode.parentNode.getElementsByTagName('span')[0].innerHTML)
+	if (numbersOfParts[wavenum] == 1)
+		deleteWave(obj.parentNode)
+	else {
+		obj.parentNode.parentNode.removeChild(obj.parentNode)
+		recalcNumberOfParts(partnum, wavenum)
+	}
+}
+
+
+function addPart(obj) {
+	var num = parseInt(obj.parentNode.getElementsByTagName('span')[0].innerHTML)
+	numbersOfParts[num]++
+	var div = document.createElement('div')
+	div.innerHTML = 'Part'
+	var span = document.createElement('span')
+	span.innerHTML = numbersOfParts[num]
+	div.appendChild(span)
+	obj.parentNode.appendChild(div)
+	var inputs = new Array(4)
+	for (var i = 0; i < 4; i++) {
+		inputs[i] = document.createElement('input')
+		inputs[i].setAttribute('type', 'value')
+		inputs[i].setAttribute('name','wave'+num+ '[part' + numbersOfParts[num]+'[]]')
+		inputs[i].setAttribute('size','3')
+		div.appendChild(inputs[i])
+	}
+	var input=document.createElement('input')
+	input.setAttribute('type', 'button')
+	input.setAttribute('value', 'Delete')
+	input.setAttribute('onclick', 'deletePart(this)')
+	div.appendChild(input)
+	var br=document.createElement('br')
+}
+
+function addWave() {
+	numberOfWaves++
+	numbersOfParts[numberOfWaves] = 0
+	var div = document.createElement('div')
+	div.innerHTML = 'Wave'
+	
+	var span = document.createElement('span')
+	span.setAttribute('id', 'span' + numberOfWaves)
+	span.innerHTML = numberOfWaves
+	
+	var buttonAdd = document.createElement('input')
+	buttonAdd.setAttribute('type', 'button')
+	buttonAdd.setAttribute('value', 'Add part')
+	buttonAdd.setAttribute('onclick', 'addPart(this)')
+	
+	var buttonDel = document.createElement('input')
+	buttonDel.setAttribute('type', 'button')
+	buttonDel.setAttribute('value', 'Del wave')
+	buttonDel.setAttribute('onclick', 'deleteWave(this)')
+	
+	div.appendChild(span)
+	div.appendChild(buttonAdd)	
+	div.appendChild(buttonDel)
+	addPart(div.getElementsByTagName('input')[0])
+	document.getElementById('wavesDiv').appendChild(div)
+}
+
+function recalcNumberOfWaves() {
+	for (var i = 2; i <= numberOfWaves; i++) {
+		var span = document.getElementById("span" + i)
+		if (span != null) {
+			if (document.getElementById("span" + (i - 1)) == null) {
+				for (var k = 1; k <= numbersOfParts[i]; k++) {
+					var inputs = document.getElementsByName('wave' + i + '[part' + k + '[]]')
+					if (inputs[0] != null) {
+						var length = inputs.length
+						for (var j = 0; j < length; j++)
+							inputs[0].setAttribute('name', 'wave'+ (i - 1) + '[part' + k + '[]]')
+					}
+				}
+				span.innerHTML = (i - 1)
+				span.setAttribute('id', 'span' + (i - 1))
+				numbersOfParts[i - 1] = numbersOfParts[i]
+			}
+		}
+	}
+	numberOfWaves--
+}
+
+function deleteWave(elem) {
+	elem.parentNode.parentNode.removeChild(elem.parentNode)
+	recalcNumberOfWaves()
 }
