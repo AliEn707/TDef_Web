@@ -18,6 +18,18 @@
 <tr>
 	<td width = "80%" align = "center" style="position:relative" id = "canvasTd">
 		<canvas height='1000' width='1000' id='map'>Update your browser!</canvas>
+		<table style="position:absolute; top:10px; right:0px">
+			<tr>
+				<td><input type="button" style="width: 3em; height: 2em" value="+" onmousedown="controlScreen(0.05,0,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+				<td><input type="button" style="width: 3em; height: 2em" value="^" onmousedown="controlScreen(0,0,-10)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+				<td><input type="button" style="width: 3em; height: 2em" value="-" onmousedown="controlScreen(-0.05,0,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+			</tr>
+			<tr>
+				<td><input type="button" style="width: 3em; height: 2em" value="<-" onmousedown="controlScreen(0,-10,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+				<td><input type="button" style="width: 3em; height: 2em" value="v" onmousedown="controlScreen(0,0,10)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+				<td><input type="button" style="width: 3em; height: 2em" value="->" onmousedown="controlScreen(0,10,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+			</tr>
+		</table>
 	</td>
 	<td id='panel' width="*" style="border:none">
 	<div style="position:absolute; top:0px; overflow:auto">

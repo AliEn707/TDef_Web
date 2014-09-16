@@ -5,6 +5,8 @@ var mode = 0 //brush mode
 var currentIndex = 0 //used for show selected respawn in map
 var numberOfWaves = 0
 var numbersOfParts = new Array() //parts by each wave
+var mousedownID = -1
+var d_scale = 0, d_posX = 0, d_posY = 0
 
 var scale=1/1.41
 var translatex = 0
@@ -14,6 +16,13 @@ var attribs = new Array(size*size) //objects containing buildable and walkable p
 var bases = new Array()
 var respawns = new Array()
 var selectedResps = new Array() //contains all selected resps
+
+function controlScreen(ds, dx, dy) {
+	d_scale = ds
+	d_posX = dx
+	d_posY = dy
+	mousedownID = setInterval(function () {scale += d_scale; translatex += d_posX; translatey += d_posY; setHeight()}, 100)
+}
 
 function getGridX(x,y){
 var sx=scale
@@ -34,7 +43,6 @@ return (500*y)/(707*sy)+(500*x)/(707*sx)-
 			(500*sx*ty+500*sy*tx)/
 			(707*sx*sy);
 }
-
 
 function setWalkData() { //write walk data to html
 	var obj = document.getElementsByName("walkdata")
@@ -126,6 +134,8 @@ function getClickXY(event) { //handle mouse click: get it's position on map
 	var x=clickY
 	clickY=getGridX(x,y)
 	clickX=getGridY(x,y)
+	if (!(clickX >= 0 && clickX < gridSize && clickY >= 0 && clickY < gridSize))
+		return
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize //coords in map
 	var index = Math.floor(mapX)*size + Math.floor(mapY)
 	switch(mode) { //brush mode
@@ -209,7 +219,6 @@ window.onresize = setHeight
 function setHeight(event) { //change some sizes when window size changes
 	var obj = document.getElementById("mainTable")
 	obj.setAttribute("height", window.innerHeight)
-	console.log(document.getElementById('canvasTd').offsetHeight)
 	obj = document.getElementById("map")
 	gridSize = window.innerWidth*0.75/1.41*0.99
 	nodeSize = (gridSize-2)/size
@@ -221,6 +230,9 @@ function setHeight(event) { //change some sizes when window size changes
 function drawMap() {
 	for (var i = 0; i < size*size; i++)
 		drawNode(i)
+	var mapCanvas = document.getElementById("map"),
+	ctx = mapCanvas.getContext('2d')
+	
 }
 
 function init() { //init data
@@ -281,8 +293,8 @@ function drawNode(index) {
 	}
 	ctx.strokeStyle = "#000000"
 	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
-//	ctx.setTransform(0,0,0,0,0,0)
-//	ctx.setTransform( 1, 0, 0, 1, 0, 0 )
+	ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, 0, 0 )
 }
 
 function changeMapSize(obj) {
