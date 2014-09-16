@@ -6,15 +6,41 @@ var currentIndex = 0 //used for show selected respawn in map
 var numberOfWaves = 0
 var numbersOfParts = new Array() //parts by each wave
 
+var scale=1/1.41
+var translatex = 0
+var translatey = gridSize/2
+
 var attribs = new Array(size*size) //objects containing buildable and walkable params for each cell
 var bases = new Array()
 var respawns = new Array()
+var selectedResps = new Array() //contains all selected resps
+
+function getGridX(x,y){
+var sx=scale
+var sy=scale*0.5
+var tx=translatex
+var ty=translatey
+	return -(500*y)/(707*sy)+(500*x)/(707*sx)+
+			(500*sx*ty-500*sy*tx)/
+			(707*sx*sy);
+}
+
+function getGridY(x,y){
+var sx=scale
+var sy=scale*0.5
+var tx=translatex
+var ty=translatey
+return (500*y)/(707*sy)+(500*x)/(707*sx)-
+			(500*sx*ty+500*sy*tx)/
+			(707*sx*sy);
+}
+
 
 function setWalkData() { //write walk data to html
 	var obj = document.getElementsByName("walkdata")
 	var text = ""
 	for (var i = 0; i < size*size; i++)
-		text += attribs[i].walk
+		text += attribs[i].walk < 0 ? '-' : attribs[i].walk
 	obj[0].setAttribute("value", text)
 }
 
@@ -22,13 +48,13 @@ function setBuildData() { //write buildable data to html
 	var obj = document.getElementsByName("builddata")
 	var text = ""
 	for (var i = 0; i < size*size; i++)
-		text += attribs[i].buildable
+		text += attribs[i].buildable < 0 ? '-' : attribs[i].buildable
 	obj[0].setAttribute("value", text)
 }
 
-function respSelected(arg) { //on select resp point disable it in other lists (other bases)
-	var selectedResps = new Array()
-	for (var i in bases) { //fill selectedResps with selected respawn points
+function findSelectedResps() { //fill selectedResps with selected respawn points
+	selectedResps = new Array()
+	for (var i in bases) {
 		var obj = document.getElementById("b" + bases[i])
 		if (obj != null) {
 			var selectedIndex = obj.selectedIndex
@@ -36,7 +62,11 @@ function respSelected(arg) { //on select resp point disable it in other lists (o
 				selectedResps.push(parseInt(obj.options[selectedIndex].value))
 		}
 	}
-	for (var j in bases) { //walk through all bases and disable selected point
+}
+
+function respSelected(arg) { //on select resp point disable it in other lists (other bases and parts)
+	findSelectedResps() //fill selectedResps with selected respawn points
+	for (var j in bases) { //walk through all bases and disable/enable selected point
 		var list = document.getElementById('b' + bases[j])
 		var length = list.options.length
 		for (var i = 1; i < length; i++) {
@@ -48,6 +78,16 @@ function respSelected(arg) { //on select resp point disable it in other lists (o
 				list.options[i].removeAttribute("disabled")
 		}
 	}
+	for (var i = 1; i <= numberOfWaves; i++)
+		for (var j = 1; j <= numbersOfParts[i]; j++) {
+			var select = document.getElementsByName('wave'+ i + '[part' + j + '[]]')[0]
+			var length = select.options.length
+			for (var k = 1; k < length; k++)
+				if (selectedResps.indexOf(parseInt(select.options[k].value)) != -1 && select.selectedIndex != k) 
+					select.options[k].setAttribute("disabled", "disabled")
+				else 
+					select.options[k].removeAttribute("disabled")
+		}		
 }
 
 function focusResp(arg) { //show current respawn point on the map
@@ -82,6 +122,10 @@ function getClickXY(event) { //handle mouse click: get it's position on map
 		clickY = event.offsetX + 1
 		clickX = event.offsetY + 1	
 	}
+	var y=clickX
+	var x=clickY
+	clickY=getGridX(x,y)
+	clickX=getGridY(x,y)
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize //coords in map
 	var index = Math.floor(mapX)*size + Math.floor(mapY)
 	switch(mode) { //brush mode
@@ -108,18 +152,11 @@ function getClickXY(event) { //handle mouse click: get it's position on map
 				list.setAttribute("onmouseout", "unfocusResp(this)")
 				list.options[list.options.length] = new Option("none", -1)
 				
-				var selectedResps = new Array()
-				for (var i in bases) { //fill selectedResps with selected respawn points
-					var obj = document.getElementById("b" + bases[i])
-					if (obj != null) {
-						var selectedIndex = obj.selectedIndex
-						if (selectedIndex != -1 && obj.options[selectedIndex].value != -1)
-							selectedResps.push(parseInt(obj.options[selectedIndex].value))
-					}
-				}
+				findSelectedResps()
 				for (var i in respawns) { //added all respawn points into base's list
-					if (selectedResps.indexOf(respawns[i]) == -1)
-						list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
+					list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
+					if (selectedResps.indexOf(respawns[i]) != -1)
+						list.options[list.options.length - 1].setAttribute("disabled", "disabled")
 				}
 				div.appendChild(list)
 				document.getElementById('basesDiv').appendChild(div)
@@ -137,7 +174,12 @@ function getClickXY(event) { //handle mouse click: get it's position on map
 					var obj = document.getElementById("b" + bases[i])
 					obj.options[obj.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
 				}
-			} else { // delete resp point
+				for (var i = 1; i <= numberOfWaves; i++)
+					for (var j = 1; j <= numbersOfParts[i]; j++) {
+						var select = document.getElementsByName('wave'+ i + '[part' + j + '[]]')[0]
+						select.options[select.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
+					}
+			} else { //delete resp point
 				respawns.splice(pos, 1)	
 				for (var i in bases) {
 					var obj = document.getElementById("b" + bases[i])
@@ -147,6 +189,15 @@ function getClickXY(event) { //handle mouse click: get it's position on map
 							break
 						}
 				}
+				for (var i = 1; i <= numberOfWaves; i++)
+					for (var k = 1; k <= numbersOfParts[i]; k++) {
+						var select = document.getElementsByName('wave'+ i + '[part' + k + '[]]')[0]
+						for (var j in select.options) //delete resp point in all waves' parts' lists
+							if(select.options[j].value == index) {
+								select.options.remove(j)
+								break
+							}
+					}
 			}
 			break
 	}
@@ -157,22 +208,18 @@ window.onresize = setHeight
 
 function setHeight(event) { //change some sizes when window size changes
 	var obj = document.getElementById("mainTable")
-	obj.setAttribute("height", window.innerWidth*0.75)
+	obj.setAttribute("height", window.innerHeight)
+	console.log(document.getElementById('canvasTd').offsetHeight)
 	obj = document.getElementById("map")
 	gridSize = window.innerWidth*0.75/1.41*0.99
 	nodeSize = (gridSize-2)/size
-	obj.setAttribute("width", gridSize)
-	obj.setAttribute("height", gridSize)
-	obj.width  = gridSize
-    obj.height = gridSize
+	obj.setAttribute("width", document.getElementById('canvasTd').offsetWidth)
+	obj.setAttribute("height", document.getElementById('canvasTd').offsetHeight)
 	drawMap()
-	obj = document.getElementById("wavesDiv")
-	obj.style.height = window.innerHeight - 500
-	obj.style.width = window.innerWidth*0.2 - 1
 }
 
 function drawMap() {
-	for (var i = 0; i <= size*size; i++)
+	for (var i = 0; i < size*size; i++)
 		drawNode(i)
 }
 
@@ -200,6 +247,10 @@ function drawNode(index) {
 	var y = Math.floor(index/size), x = index%size //awful
 	var mapCanvas = document.getElementById("map"),
 	ctx = mapCanvas.getContext('2d')
+	ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
+	ctx.scale(scale,scale*0.5);
+	ctx.rotate(-45*Math.PI/180)
 	ctx.lineWidth = 1
 	//draw walk type:
 	if (attribs[index].walk == -1) 
@@ -230,13 +281,16 @@ function drawNode(index) {
 	}
 	ctx.strokeStyle = "#000000"
 	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
+//	ctx.setTransform(0,0,0,0,0,0)
+//	ctx.setTransform( 1, 0, 0, 1, 0, 0 )
 }
 
 function changeMapSize(obj) {
 	var temp = parseInt(obj.value)
-	if (temp != NaN && temp > 0 && temp < 100)
+	if (temp != NaN && temp > 0 && temp < 100) {
 		size = temp
-	else
+		document.getElementsByName('mapsize')[0].value = temp
+	} else
 		alert("Enter correct number!")
 	init()
 }
@@ -277,12 +331,24 @@ function addPart(obj) {
 	span.innerHTML = numbersOfParts[num]
 	div.appendChild(span)
 	obj.parentNode.appendChild(div)
-	var inputs = new Array(4)
-	for (var i = 0; i < 4; i++) { //create 
+	var select = document.createElement('select')
+	select.setAttribute('name', 'wave'+num + '[part' + numbersOfParts[num] + '[]]')
+	select.options[select.options.length] = new Option("none", -1)
+	select.setAttribute("onmousemove", "focusResp(this)")
+	select.setAttribute("onmouseout", "unfocusResp(this)")
+	for (var i in respawns) { //add all respawn points into list
+		select.options[select.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
+		if (selectedResps.indexOf(respawns[i]) != -1)
+			select.options[select.options.length - 1].setAttribute("disabled", "disabled")
+	}
+	div.appendChild(select)
+	var inputs = new Array(3)
+	for (var i = 0; i < 3; i++) { //create 
 		inputs[i] = document.createElement('input')
 		inputs[i].setAttribute('type', 'value')
 		inputs[i].setAttribute('name','wave'+num+ '[part' + numbersOfParts[num]+'[]]')
 		inputs[i].setAttribute('size','3')
+		inputs[i].setAttribute('value',i==0?"npcid":i==1?'num':'delay')
 		div.appendChild(inputs[i])
 	}
 	var input=document.createElement('input')
@@ -312,7 +378,14 @@ function addWave() {
 	buttonDel.setAttribute('value', 'Del wave')
 	buttonDel.setAttribute('onclick', 'deleteWave(this)')
 	
+	var delay = document.createElement('input')
+	delay.setAttribute('type', 'text')
+	delay.setAttribute('value', 'delay')
+	delay.setAttribute('size', 5)
+	delay.setAttribute('name', 'wave' + numberOfWaves + '[delay]')
+	
 	div.appendChild(span)
+	div.appendChild(delay)
 	div.appendChild(buttonAdd)	
 	div.appendChild(buttonDel)
 	addPart(div.getElementsByTagName('input')[0]) //each wave must contain at least one part
@@ -334,6 +407,8 @@ function recalcNumberOfWaves() { //when we delete a wave we must shift indexes o
 				}
 				span.innerHTML = (i - 1) //new wave index
 				span.setAttribute('id', 'span' + (i - 1))
+				var delay = document.getElementsByName('wave' + i + '[delay]')[0]
+				delay.setAttribute('name', 'wave'+ (i - 1) + '[delay]')
 				numbersOfParts[i - 1] = numbersOfParts[i]
 			}
 		}
@@ -344,4 +419,52 @@ function recalcNumberOfWaves() { //when we delete a wave we must shift indexes o
 function deleteWave(elem) {
 	elem.parentNode.parentNode.removeChild(elem.parentNode)
 	recalcNumberOfWaves()
+}
+
+function togglePCbase(obj) {
+	if (obj.checked) {
+		var select = document.createElement('select')
+		select.setAttribute('name', 'pcbase[]')
+		for (var i = 0; i < bases.length; i++)
+			select.options[select.options.length] = new Option("x: " + Math.floor(bases[i]/size) + " y: " + bases[i]%size, bases[i])
+		var input = document.createElement('input')
+		input.setAttribute('type', 'text')
+		input.setAttribute('size', 6)
+		input.setAttribute('value', 'Health')
+		input.setAttribute('name', 'pcbase[]')
+		obj.parentNode.appendChild(select)
+		obj.parentNode.appendChild(input)		
+	} else {
+		obj.parentNode.removeChild(obj.parentNode.getElementsByTagName('select')[0])
+		obj.parentNode.removeChild(obj.parentNode.getElementsByTagName('input')[1])
+	}
+}
+
+function completeMapInfo() {
+	var text = ""
+	text += size + "\n"
+	text += document.getElementsByName("walkdata")[0].value + "\n"
+	text += document.getElementsByName("builddata")[0].value + '\n'
+	text += 'max_npcs ' + document.getElementsByName("max_npcs")[0].value + '\n'
+	text += 'max_towers ' + document.getElementsByName("max_towers")[0].value + '\n'
+	text += 'max_bullets ' + document.getElementsByName("max_bullets")[0].value + '\n'
+	text += 'bases ' + bases.length + '\n'
+	for (var i = 0; i < bases.length; i++) {
+		text += i + ' ' + bases[i] + ' ' + (document.getElementById('b' + bases[i]).selectedIndex - 1) + ' \n'
+	}
+	var els = document.getElementsByName("pcbase[]")
+	if (els[0] != null)
+		text += 'pc_base ' + els[0].selectedIndex + ' ' + els[1].value + '\n'
+	text += 'points ' + respawns.length + '\n'
+	for (var i = 0; i < respawns.length; i++)
+		text += i + ' ' + respawns[i] + '\n'
+	text += 'waves ' + numberOfWaves + '\n'
+	for (var i = 1; i <= numberOfWaves; i++) {
+		text += 'parts ' + numbersOfParts[i] + ' ' + document.getElementsByName('wave' + i + '[delay]')[0].value + '\n'
+		for (var j = 1; j <= numbersOfParts[i]; j++) {
+			var params = document.getElementsByName('wave'+ i+ '[part' + j +'[]]')
+			text += (params[0].selectedIndex - 1) + ' ' + params[1].value + ' ' + params[2].value + ' ' + params[3].value + '\n'
+		}
+	}
+	document.getElementById('completeInfo').innerHTML = text
 }
