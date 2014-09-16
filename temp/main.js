@@ -1,16 +1,16 @@
 var size = 10
 var gridSize = 600
-var nodeSize = 0//gridSize/size
-var mode = 0
-var currentIndex = 0
+var nodeSize = 0 //gridSize/size
+var mode = 0 //brush mode
+var currentIndex = 0 //used for show selected respawn in map
 var numberOfWaves = 0
-var numbersOfParts = new Array()
+var numbersOfParts = new Array() //parts by each wave
 
-var attribs = new Array(size*size)
+var attribs = new Array(size*size) //objects containing buildable and walkable params for each cell
 var bases = new Array()
 var respawns = new Array()
 
-function setWalkData() {
+function setWalkData() { //write walk data to html
 	var obj = document.getElementsByName("walkdata")
 	var text = ""
 	for (var i = 0; i < size*size; i++)
@@ -18,7 +18,7 @@ function setWalkData() {
 	obj[0].setAttribute("value", text)
 }
 
-function setBuildData() {
+function setBuildData() { //write buildable data to html
 	var obj = document.getElementsByName("builddata")
 	var text = ""
 	for (var i = 0; i < size*size; i++)
@@ -26,9 +26,9 @@ function setBuildData() {
 	obj[0].setAttribute("value", text)
 }
 
-function respSelected(arg) {
+function respSelected(arg) { //on select resp point disable it in other lists (other bases)
 	var selectedResps = new Array()
-	for (var i in bases) {
+	for (var i in bases) { //fill selectedResps with selected respawn points
 		var obj = document.getElementById("b" + bases[i])
 		if (obj != null) {
 			var selectedIndex = obj.selectedIndex
@@ -36,21 +36,21 @@ function respSelected(arg) {
 				selectedResps.push(parseInt(obj.options[selectedIndex].value))
 		}
 	}
-	for (var j in bases) {
+	for (var j in bases) { //walk through all bases and disable selected point
 		var list = document.getElementById('b' + bases[j])
 		var length = list.options.length
 		for (var i = 1; i < length; i++) {
 			if (selectedResps.indexOf(parseInt(list.options[i].value)) != -1 && list.selectedIndex != i) {
 				if (arg.id != 'b' + bases[j])
-					list.options[i].setAttribute("disabled", "disabled")//list.options[i].setAttribute("hidden", "hidden")
+					list.options[i].setAttribute("disabled", "disabled")
 			}
 			else 
-				list.options[i].removeAttribute("disabled")//list.options[i].removeAttribute("hidden")
+				list.options[i].removeAttribute("disabled")
 		}
 	}
 }
 
-function focusResp(arg) {
+function focusResp(arg) { //show current respawn point on the map
 	unfocusResp(arg)
 	currentIndex = arg.options[arg.selectedIndex].value
 	var x = currentIndex%size, y = Math.floor(currentIndex/size)
@@ -61,14 +61,14 @@ function focusResp(arg) {
 	ctx.strokeRect(x*nodeSize + nodeSize*0.1 + 1, y*nodeSize + nodeSize*0.1 + 1, nodeSize*0.8, nodeSize*0.8)
 }
 
-function unfocusResp(arg) {
+function unfocusResp(arg) { //hide previous respawn point on the map
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
 	if (currentIndex != -1)
 		drawNode(parseInt(currentIndex))
 }
 	
-function getClickXY(event) {
+function getClickXY(event) { //handle mouse click: get it's position on map
 	var clickY = 0
 	var clickX = 0
 	if (event.layerX || event.layerX == 0) { //Firefox
@@ -82,20 +82,20 @@ function getClickXY(event) {
 		clickY = event.offsetX + 1
 		clickX = event.offsetY + 1	
 	}
-	var mapX = clickX/nodeSize, mapY = clickY/nodeSize
+	var mapX = clickX/nodeSize, mapY = clickY/nodeSize //coords in map
 	var index = Math.floor(mapX)*size + Math.floor(mapY)
-	switch(mode) {
-		case 0:
+	switch(mode) { //brush mode
+		case 0: //draw walkable
 			attribs[index].walk = attribs[index].walk == -1 ? 1 : --attribs[index].walk
 			setWalkData()
 			break
-		case 1:
+		case 1: //draw buildable
 			attribs[index].buildable = (attribs[index].buildable + 1)&1
 			setBuildData()
 			break
-		case 2:
+		case 2: //draw base
 			var pos = -1
-			if ((pos = bases.indexOf(index)) == -1) {//no such element
+			if ((pos = bases.indexOf(index)) == -1) {//no such element: create new base
 				bases.push(index)
 				var div = document.createElement('div')
 				div.setAttribute("id", "base" + index)
@@ -109,7 +109,7 @@ function getClickXY(event) {
 				list.options[list.options.length] = new Option("none", -1)
 				
 				var selectedResps = new Array()
-				for (var i in bases) {
+				for (var i in bases) { //fill selectedResps with selected respawn points
 					var obj = document.getElementById("b" + bases[i])
 					if (obj != null) {
 						var selectedIndex = obj.selectedIndex
@@ -117,33 +117,33 @@ function getClickXY(event) {
 							selectedResps.push(parseInt(obj.options[selectedIndex].value))
 					}
 				}
-				for (var i in respawns) {
+				for (var i in respawns) { //added all respawn points into base's list
 					if (selectedResps.indexOf(respawns[i]) == -1)
 						list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
 				}
 				div.appendChild(list)
 				document.getElementById('basesDiv').appendChild(div)
-			} else {
+			} else { //base exists: delete it
 				bases.splice(pos, 1)
 				var elem = document.getElementById('base' + index)
 				elem.parentNode.removeChild(elem)
 			}
 			break
-		case 3:
+		case 3: //draw respawn
 			var pos = -1
-			if ((pos = respawns.indexOf(index)) == -1) { //no such element
+			if ((pos = respawns.indexOf(index)) == -1) { //no such element: create resp point
 				respawns.push(index)
-				for (var i in bases) {
+				for (var i in bases) { //addnew resp point to all bases' lists
 					var obj = document.getElementById("b" + bases[i])
 					obj.options[obj.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
 				}
-			} else {
+			} else { // delete resp point
 				respawns.splice(pos, 1)	
 				for (var i in bases) {
 					var obj = document.getElementById("b" + bases[i])
-					for (var j in obj.options)
+					for (var j in obj.options) //delete resp point in all bases' lists
 						if(obj.options[j].value == index) {
-							obj.options[j].setAttribute("disabled", "disabled")//obj.options.remove(j)
+							obj.options.remove(j)
 							break
 						}
 				}
@@ -155,7 +155,7 @@ function getClickXY(event) {
 
 window.onresize = setHeight
 
-function setHeight(event) {
+function setHeight(event) { //change some sizes when window size changes
 	var obj = document.getElementById("mainTable")
 	obj.setAttribute("height", window.innerWidth*0.75)
 	obj = document.getElementById("map")
@@ -176,7 +176,7 @@ function drawMap() {
 		drawNode(i)
 }
 
-function init() {
+function init() { //init data
 	numberOfWaves = 0
 	var map = document.getElementById('map')
 	map.addEventListener('click', getClickXY, false)
@@ -196,29 +196,30 @@ function init() {
 	setBuildData()
 }
 
-function drawNode(index) {
+function drawNode(index) { 
 	var y = Math.floor(index/size), x = index%size //awful
 	var mapCanvas = document.getElementById("map"),
 	ctx = mapCanvas.getContext('2d')
 	ctx.lineWidth = 1
-	if (attribs[index].walk == -1)
+	//draw walk type:
+	if (attribs[index].walk == -1) 
 		ctx.fillStyle = "red"
 	if (attribs[index].walk == 1)
 		ctx.fillStyle = "#ffffff"	
 	if (attribs[index].walk == 0)
 		ctx.fillStyle = "blue"		
 	ctx.fillRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
-	if (attribs[index].buildable == 1) {
+	if (attribs[index].buildable == 1) { //draw build type
 		ctx.fillStyle = "#00ff00"	
 		ctx.fillRect(x*nodeSize + nodeSize/4+1, y*nodeSize + nodeSize/4+1, nodeSize/2, nodeSize/2)
 	}
-	if (bases.indexOf(index) != -1) {
+	if (bases.indexOf(index) != -1) { //draw base
 		ctx.fillStyle = "brown"
 		ctx.beginPath()
 		ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize/5, 0, Math.PI*2, true)
 		ctx.fill()
 	}
-	if (respawns.indexOf(index) != -1) {
+	if (respawns.indexOf(index) != -1) { //draw respawn point
 		ctx.strokeStyle = "cyan"
 		ctx.beginPath()
 		ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize*0.375, 0, Math.PI*2, true)
@@ -228,7 +229,7 @@ function drawNode(index) {
 		ctx.stroke()
 	}
 	ctx.strokeStyle = "#000000"
-	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
+	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
 }
 
 function changeMapSize(obj) {
@@ -240,14 +241,14 @@ function changeMapSize(obj) {
 	init()
 }
 
-function recalcNumberOfParts(partnum, wavenum) {
+function recalcNumberOfParts(partnum, wavenum) { //when we delete a part we must shift indexes of other parts 
 	for (var i = 2; i <= numbersOfParts[wavenum]; i++) {
-		var inputs = document.getElementsByName('wave' + wavenum + '[part' + i + '[]]')
+		var inputs = document.getElementsByName('wave' + wavenum + '[part' + i + '[]]') //get all elements of current part
 		if (inputs[0] != null) {
-			if (document.getElementsByName('wave' + wavenum + '[part' + (i - 1) + '[]]')[0] == null) {
-				inputs[0].parentNode.getElementsByTagName('span')[0].innerHTML = (i - 1)		
+			if (document.getElementsByName('wave' + wavenum + '[part' + (i - 1) + '[]]')[0] == null) { //if there is no previous part
+				inputs[0].parentNode.getElementsByTagName('span')[0].innerHTML = (i - 1) //we change displayed index of part	
 				var length = inputs.length
-				for (var j = 0; j < length; j++)
+				for (var j = 0; j < length; j++) //it works only like this
 					inputs[0].setAttribute('name','wave'+wavenum+ '[part' + (i - 1) + '[]]')
 			}
 		}
@@ -255,9 +256,9 @@ function recalcNumberOfParts(partnum, wavenum) {
 	numbersOfParts[wavenum]--	
 }
 
-function deletePart(obj) {
-	var partnum = parseInt(obj.parentNode.getElementsByTagName('span')[0].innerHTML)
-	var wavenum = parseInt(obj.parentNode.parentNode.getElementsByTagName('span')[0].innerHTML)
+function deletePart(obj) { 
+	var partnum = parseInt(obj.parentNode.getElementsByTagName('span')[0].innerHTML) 
+	var wavenum = parseInt(obj.parentNode.parentNode.getElementsByTagName('span')[0].innerHTML) //awesome
 	if (numbersOfParts[wavenum] == 1)
 		deleteWave(obj.parentNode)
 	else {
@@ -268,7 +269,7 @@ function deletePart(obj) {
 
 
 function addPart(obj) {
-	var num = parseInt(obj.parentNode.getElementsByTagName('span')[0].innerHTML)
+	var num = parseInt(obj.parentNode.getElementsByTagName('span')[0].innerHTML) //get current wave number
 	numbersOfParts[num]++
 	var div = document.createElement('div')
 	div.innerHTML = 'Part'
@@ -277,7 +278,7 @@ function addPart(obj) {
 	div.appendChild(span)
 	obj.parentNode.appendChild(div)
 	var inputs = new Array(4)
-	for (var i = 0; i < 4; i++) {
+	for (var i = 0; i < 4; i++) { //create 
 		inputs[i] = document.createElement('input')
 		inputs[i].setAttribute('type', 'value')
 		inputs[i].setAttribute('name','wave'+num+ '[part' + numbersOfParts[num]+'[]]')
@@ -289,7 +290,6 @@ function addPart(obj) {
 	input.setAttribute('value', 'Delete')
 	input.setAttribute('onclick', 'deletePart(this)')
 	div.appendChild(input)
-	var br=document.createElement('br')
 }
 
 function addWave() {
@@ -315,16 +315,16 @@ function addWave() {
 	div.appendChild(span)
 	div.appendChild(buttonAdd)	
 	div.appendChild(buttonDel)
-	addPart(div.getElementsByTagName('input')[0])
+	addPart(div.getElementsByTagName('input')[0]) //each wave must contain at least one part
 	document.getElementById('wavesDiv').appendChild(div)
 }
 
-function recalcNumberOfWaves() {
+function recalcNumberOfWaves() { //when we delete a wave we must shift indexes of other waves 
 	for (var i = 2; i <= numberOfWaves; i++) {
-		var span = document.getElementById("span" + i)
+		var span = document.getElementById("span" + i) //get an element from current wave
 		if (span != null) {
-			if (document.getElementById("span" + (i - 1)) == null) {
-				for (var k = 1; k <= numbersOfParts[i]; k++) {
+			if (document.getElementById("span" + (i - 1)) == null) { //if previous wave doesn't exist
+				for (var k = 1; k <= numbersOfParts[i]; k++) { //we change a lot of names (of parts and their subelements)
 					var inputs = document.getElementsByName('wave' + i + '[part' + k + '[]]')
 					if (inputs[0] != null) {
 						var length = inputs.length
@@ -332,7 +332,7 @@ function recalcNumberOfWaves() {
 							inputs[0].setAttribute('name', 'wave'+ (i - 1) + '[part' + k + '[]]')
 					}
 				}
-				span.innerHTML = (i - 1)
+				span.innerHTML = (i - 1) //new wave index
 				span.setAttribute('id', 'span' + (i - 1))
 				numbersOfParts[i - 1] = numbersOfParts[i]
 			}
