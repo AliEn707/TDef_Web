@@ -104,9 +104,16 @@ function focusResp(arg) { //show current respawn point on the map
 	var x = currentIndex%size, y = Math.floor(currentIndex/size)
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
+	ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
+	ctx.scale(scale,scale*0.5);
+	ctx.rotate(-45*Math.PI/180)
 	ctx.strokeStyle = "#ff7318"
 	ctx.lineWidth = 5
 	ctx.strokeRect(x*nodeSize + nodeSize*0.1 + 1, y*nodeSize + nodeSize*0.1 + 1, nodeSize*0.8, nodeSize*0.8)
+	ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
+	
 }
 
 function unfocusResp(arg) { //hide previous respawn point on the map
