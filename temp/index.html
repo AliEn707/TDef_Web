@@ -34,12 +34,26 @@
 	<td id='panel' width="*" style="border:none">
 	<div style="position:absolute; top:0px; overflow:auto">
 		<p>Choose brush mode:</p>
-		<select name="mode" id="mode" onchange="mode = getElementById('mode').selectedIndex">
+		<select name="mode" id="mode" onchange="brushChange(this)">
 			<option selected value="Walk">Walk</option>
 			<option value="Build" >Build</option>
 			<option value="Base" >Base</option>
 			<option value="Respawn" >Respawn</option>
 		</select>
+		<table border="1" id = "legend">
+			<tr>
+				<td bgcolor = "#ffffff">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+				<td>Can everything</td>
+			</tr>
+			<tr>
+				<td bgcolor = "blue">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+				<td>Can't walk</td>
+			</tr>
+			<tr>
+				<td bgcolor = "red">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+				<td>Can't see</td>
+			</tr>			
+		</table>
 		<p><table>
 			<tr><td>Map name:</td><td><input type="text" id = "mapname" value="default" onchange="document.getElementsByName('mapname')[0].value = this.value"></td></tr>
 			<tr><td>Map size:</td><td><input type="text" id="mapSize" value="10" onchange="changeMapSize(this)"></td></tr>

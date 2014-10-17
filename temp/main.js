@@ -260,6 +260,7 @@ function init() { //init data
 	setHeight(0)
 	setWalkData()
 	setBuildData()
+	brushChange(document.getElementById('mode'))
 }
 
 function drawNode(index) { 
@@ -457,6 +458,14 @@ function togglePCbase(obj) {
 		obj.parentNode.removeChild(obj.parentNode.getElementsByTagName('select')[0])
 		obj.parentNode.removeChild(obj.parentNode.getElementsByTagName('input')[1])
 	}
+}
+
+function brushChange(obj) {
+	mode = document.getElementById('mode').selectedIndex
+	if (mode == 0) 
+		document.getElementById('legend').style.visibility = 'visible' 
+	else 
+		document.getElementById('legend').style.visibility = 'hidden'
 }
 
 function completeMapInfo() {
