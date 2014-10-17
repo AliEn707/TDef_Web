@@ -40,7 +40,7 @@
 			<option value="Base" >Base</option>
 			<option value="Respawn" >Respawn</option>
 		</select>
-		<table border="1" id = "legend">
+		<div><table border="1" id = "legend">
 			<tr>
 				<td bgcolor = "#ffffff">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
 				<td>Can everything</td>
@@ -53,7 +53,7 @@
 				<td bgcolor = "red">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
 				<td>Can't see</td>
 			</tr>			
-		</table>
+		</table></div>
 		<p><table>
 			<tr><td>Map name:</td><td><input type="text" id = "mapname" value="default" onchange="document.getElementsByName('mapname')[0].value = this.value"></td></tr>
 			<tr><td>Map size:</td><td><input type="text" id="mapSize" value="10" onchange="changeMapSize(this)"></td></tr>
@@ -77,8 +77,10 @@
 			<input type="hidden" name="builddata">
 			<input type="submit" value="Send">
 		</form>
-		<input type = "button" onclick="completeMapInfo()" value="Get text map info"><br>
-		<textarea id = "completeInfo"></textarea>
+		<p><input type = "button" onclick="completeMapInfo()" value="Get text map info"><br>
+		<textarea id = "completeInfo"></textarea></p>
+		<input type = "button" onclick="loadMap()" value="Load map"><br>
+		<textarea id = "loadMap"></textarea>
 	</div>
 	</td>
 </tr>

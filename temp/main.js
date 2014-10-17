@@ -101,6 +101,8 @@ function respSelected(arg) { //on select resp point disable it in other lists (o
 function focusResp(arg) { //show current respawn point on the map
 	unfocusResp(arg)
 	currentIndex = arg.options[arg.selectedIndex].value
+	if (currentIndex == -1)
+		return
 	var x = currentIndex%size, y = Math.floor(currentIndex/size)
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
@@ -122,25 +124,8 @@ function unfocusResp(arg) { //hide previous respawn point on the map
 	if (currentIndex != -1)
 		drawNode(parseInt(currentIndex))
 }
-	
-function getClickXY(event) { //handle mouse click: get it's position on map
-	var clickY = 0
-	var clickX = 0
-	if (event.layerX || event.layerX == 0) { //Firefox
-		clickY = event.layerX + 1
-		clickX = event.layerY + 1
-	} else if (event.offsetX || event.offsetX == 0) { //Opera
-		clickY = event.offsetX + 1
-		clickX = event.offsetY + 1
-	}
-	if (navigator.userAgent.search(/Chrome/) > 0) { //Chrome
-		clickY = event.offsetX + 1
-		clickX = event.offsetY + 1	
-	}
-	var y=clickX
-	var x=clickY
-	clickY=getGridX(x,y)
-	clickX=getGridY(x,y)
+
+function brush(clickX, clickY) {
 	if (!(clickX >= 0 && clickX < gridSize && clickY >= 0 && clickY < gridSize))
 		return
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize //coords in map
@@ -220,6 +205,27 @@ function getClickXY(event) { //handle mouse click: get it's position on map
 	}
 	drawNode(index)
 }
+	
+function getClickXY(event) { //handle mouse click: get it's position on map
+	var clickY = 0
+	var clickX = 0
+	if (event.layerX || event.layerX == 0) { //Firefox
+		clickY = event.layerX + 1
+		clickX = event.layerY + 1
+	} else if (event.offsetX || event.offsetX == 0) { //Opera
+		clickY = event.offsetX + 1
+		clickX = event.offsetY + 1
+	}
+	if (navigator.userAgent.search(/Chrome/) > 0) { //Chrome
+		clickY = event.offsetX + 1
+		clickX = event.offsetY + 1	
+	}
+	var y=clickX
+	var x=clickY
+	clickY=getGridX(x,y)
+	clickX=getGridY(x,y)
+	brush(clickX, clickY)
+}
 
 window.onresize = setHeight
 
@@ -261,6 +267,11 @@ function init() { //init data
 	setWalkData()
 	setBuildData()
 	brushChange(document.getElementById('mode'))
+	bases = new Array()
+	respawns = new Array()
+	selectedResps = new Array() 	
+	document.getElementById("wavesDiv").innerHTML = ""
+	document.getElementById("basesDiv").innerHTML = ""
 }
 
 function drawNode(index) { 
@@ -462,10 +473,14 @@ function togglePCbase(obj) {
 
 function brushChange(obj) {
 	mode = document.getElementById('mode').selectedIndex
-	if (mode == 0) 
-		document.getElementById('legend').style.visibility = 'visible' 
-	else 
-		document.getElementById('legend').style.visibility = 'hidden'
+	var legend = document.getElementById('legend')
+	if (mode == 0) {
+		legend.style.visibility = 'visible' 
+		legend.parentNode.style.height = legend.clientHeight
+	} else {
+		legend.style.visibility = 'hidden'
+		legend.parentNode.style.height = "0px"
+	}
 }
 
 function completeMapInfo() {
@@ -495,4 +510,57 @@ function completeMapInfo() {
 		}
 	}
 	document.getElementById('completeInfo').innerHTML = text
+}
+
+function loadMap() {
+	var text = document.getElementById('loadMap').value.split('\n')
+	if (text.length <= 1)
+		return
+	document.getElementById('mapSize').value = size = parseInt(text[0])
+	init()
+	for (var i = 0; i < size*size; i++) {
+		attribs[i].walk = text[1][i] == '-' ? -1 : parseInt(text[1][i])
+		attribs[i].buildable = parseInt(text[2][i])
+	}
+	setWalkData()
+	setBuildData()
+	for (var i = 2; i < text.length; i++) {
+		if (text[i].match(/^max_[\S]+\s+\d+/g) != null) {
+			var temp = text[i].split(' ')
+			document.getElementsByName(temp[0])[0].value = temp[1]
+		}
+		if (text[i].search("pc_base") != -1) { //TODO:!!!
+			//alert(111)
+		}
+		if (text[i].search("bases") != -1) {
+			var length = parseInt(text[i].split(' ')[1]) //number of bases
+			mode = 2 //base brush mode
+			for (var j = 1; j <= length; j++) {
+				var temp = text[++i].split(' ')
+				var index = parseInt(temp[1])
+				var clickX = Math.floor(index/size)*nodeSize, clickY = index%size*nodeSize
+				brush(clickX, clickY)
+			}
+		}
+		if (text[i].search("points") != -1) {
+			var length = parseInt(text[i].split(' ')[1]) //number of respawns
+			mode = 3 //respawn brush mode
+			for (var j = 1; j <= length; j++) {
+				var temp = text[++i].split(' ')
+				var index = parseInt(temp[1])
+				var clickX = Math.floor(index/size)*nodeSize, clickY = index%size*nodeSize
+				brush(clickX, clickY)
+			}
+		}
+		if (text[i].search("waves") != -1) {
+			var length = parseInt(text[i].split(' ')[1]) //number of waves
+			if (length == 0)
+				continue
+			for (var j = 1; j <= length; j++) {
+				i++
+				addWave()
+			}			
+		}
+	}
+	drawMap()
 }
