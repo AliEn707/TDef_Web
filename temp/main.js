@@ -271,7 +271,11 @@ function init() { //init data
 	respawns = new Array()
 	selectedResps = new Array() 	
 	document.getElementById("wavesDiv").innerHTML = ""
-	document.getElementById("basesDiv").innerHTML = ""
+	document.getElementById("basesDiv").innerHTML = "Base: respawn<br>"
+	if (document.getElementById('pc_base').checked) {
+		document.getElementById('pc_base').checked = false
+		togglePCbase(document.getElementById('pc_base'))
+	}
 }
 
 function drawNode(index) { 
@@ -512,6 +516,31 @@ function completeMapInfo() {
 	document.getElementById('completeInfo').innerHTML = text
 }
 
+function loadBasesResps(text, i, str, brushMode) {
+	if (text[i].search(str) != -1) {
+		var length = parseInt(text[i].split(' ')[1])
+		mode = brushMode //brush mode
+		for (var j = 1; j <= length; j++) {
+			var temp = text[++i].split(' ')
+			var index = parseInt(temp[1])
+			var clickX = Math.floor(index/size)*nodeSize, clickY = index%size*nodeSize
+			brush(clickX, clickY)
+			if (mode == 2) {
+				document.getElementById('b' + index).selectedIndex = parseInt(temp[2]) + 1
+			}
+		}
+	}
+	return i
+}
+
+function setParams(obj, text, partsIndex, index) {
+	var params = text[partsIndex].split(' ')
+	obj.childNodes[index].childNodes[2].selectedIndex = parseInt(params[0]) + 1
+	obj.childNodes[index].childNodes[3].value = params[1]
+	obj.childNodes[index].childNodes[4].value = params[2]
+	obj.childNodes[index].childNodes[5].value = params[3]
+}
+
 function loadMap() {
 	var text = document.getElementById('loadMap').value.split('\n')
 	if (text.length <= 1)
@@ -524,43 +553,55 @@ function loadMap() {
 	}
 	setWalkData()
 	setBuildData()
+	var basesIndex = 0, partsIndex = 0, currentWave = 0, pcBase = 0
 	for (var i = 2; i < text.length; i++) {
 		if (text[i].match(/^max_[\S]+\s+\d+/g) != null) {
 			var temp = text[i].split(' ')
 			document.getElementsByName(temp[0])[0].value = temp[1]
+			continue
 		}
-		if (text[i].search("pc_base") != -1) { //TODO:!!!
-			//alert(111)
+		if (text[i].search("pc_base") != -1) {
+			pcBase = i
 		}
-		if (text[i].search("bases") != -1) {
-			var length = parseInt(text[i].split(' ')[1]) //number of bases
-			mode = 2 //base brush mode
-			for (var j = 1; j <= length; j++) {
-				var temp = text[++i].split(' ')
-				var index = parseInt(temp[1])
-				var clickX = Math.floor(index/size)*nodeSize, clickY = index%size*nodeSize
-				brush(clickX, clickY)
-			}
+		if (text[i].search('bases') != -1) {
+			basesIndex = i
+			i += parseInt(text[i].split(' ')[1])
+			continue
 		}
-		if (text[i].search("points") != -1) {
-			var length = parseInt(text[i].split(' ')[1]) //number of respawns
-			mode = 3 //respawn brush mode
-			for (var j = 1; j <= length; j++) {
-				var temp = text[++i].split(' ')
-				var index = parseInt(temp[1])
-				var clickX = Math.floor(index/size)*nodeSize, clickY = index%size*nodeSize
-				brush(clickX, clickY)
-			}
-		}
+		i = loadBasesResps(text, i, "points", 3)
 		if (text[i].search("waves") != -1) {
 			var length = parseInt(text[i].split(' ')[1]) //number of waves
-			if (length == 0)
-				continue
-			for (var j = 1; j <= length; j++) {
-				i++
-				addWave()
-			}			
+			for (var j = 1; j <= length; j++)
+				addWave()	
+			continue
+		}
+		if (partsIndex == 0 && text[i].search("parts") != -1) {
+			partsIndex = i
+			i += parseInt(text[i].split(' ')[1])
+			continue		
 		}
 	}
+	loadBasesResps(text, basesIndex, "bases", 2)
+	while (partsIndex < text.length && text[partsIndex].search("parts") != -1) {
+		var tmp = text[partsIndex].split(' ')
+		var length = parseInt(tmp[1]) //number of parts
+		var obj = document.getElementById('wavesDiv').childNodes[currentWave++]
+		obj.childNodes[2].value = tmp[2] //set wave delay
+		partsIndex++
+		setParams(obj, text, partsIndex, 5)
+		for (var j = 1; j < length; j++) {
+			addPart(obj.childNodes[3])
+			setParams(obj, text, partsIndex + j, 5 + j)
+		}
+		partsIndex += length
+	}
+	if (pcBase != 0) {
+		var params = text[pcBase].split(' ')
+		document.getElementById('pc_base').checked = true
+		togglePCbase(document.getElementById('pc_base'))
+		document.getElementById('pcbase').childNodes[3].selectedIndex = parseInt(params[1])
+		document.getElementById('pcbase').childNodes[4].value = params[2]
+	}
 	drawMap()
+	mode = document.getElementById('mode').selectedIndex
 }

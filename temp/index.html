@@ -14,7 +14,7 @@
 </SCRIPT>
 </HEAD>
 <BODY onload=init()>
-<table border = "1" width = "100%" id="mainTable">
+<table width = "100%" id="mainTable">
 <tr>
 	<td width = "80%" align = "center" style="position:relative" id = "canvasTd">
 		<canvas height='1000' width='1000' id='map'>Update your browser!</canvas>
@@ -66,7 +66,7 @@
 			</table><br>
 			<div id="basesDiv">Base: respawn<br></div>
 			<div id ="pcbase">
-				Need PC base?<input type = "checkbox" value="1" onchange="togglePCbase(this)">
+				Need PC base?<input id = "pc_base" type = "checkbox" value="1" onchange="togglePCbase(this)">
 			</div>
 			Waves:
 			<input type="button" id="wavesButton" name="waves" value="Add wave" onclick="addWave()"><br>
