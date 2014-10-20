@@ -248,10 +248,34 @@ function drawMap() {
 	
 }
 
+function showMouseCoords(event) {
+	var clickY = 0
+	var clickX = 0
+	if (event.layerX || event.layerX == 0) { //Firefox
+		clickY = event.layerX + 1
+		clickX = event.layerY + 1
+	} else if (event.offsetX || event.offsetX == 0) { //Opera
+		clickY = event.offsetX + 1
+		clickX = event.offsetY + 1
+	}
+	if (navigator.userAgent.search(/Chrome/) > 0) { //Chrome
+		clickY = event.offsetX + 1
+		clickX = event.offsetY + 1	
+	}
+	var y=clickX
+	var x=clickY
+	clickY=getGridX(x,y)
+	clickX=getGridY(x,y)
+	var mapX = clickX/nodeSize, mapY = clickY/nodeSize, index = Math.floor(mapX)*size + Math.floor(mapY)
+	if (mapX >= 0 && mapX < size && mapY >= 0 && mapY < size)
+		document.getElementById('mouseInfo').innerHTML = 'x = ' + Math.floor(mapX) + ' y = ' + Math.floor(mapY) + ' index = ' + index
+}
+
 function init() { //init data
 	numberOfWaves = 0
 	var map = document.getElementById('map')
 	map.addEventListener('click', getClickXY, false)
+	map.addEventListener('mousemove', showMouseCoords, false)
 	for (var i = 0; i <= size; i++) {
 		for (var j = 0; j < size; j++) {
 			attribs[i*size + j] = {
@@ -514,6 +538,12 @@ function completeMapInfo() {
 		}
 	}
 	document.getElementById('completeInfo').innerHTML = text
+	/*var walls = ""
+	for (var i = 0; i < size*size; i++) {
+		if (attribs[i].walk == 0)
+			walls += i + ' x 6\n' 
+	}
+	alert(walls)*/
 }
 
 function loadBasesResps(text, i, str, brushMode) {
