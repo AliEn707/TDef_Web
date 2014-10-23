@@ -17,6 +17,8 @@ var bases = new Array()
 var respawns = new Array()
 var selectedResps = new Array() //contains all selected resps
 
+var editor = 'mapEdit' // current editor mode (map or texture edit)
+
 function controlScreen(ds, dx, dy) {
 	d_scale = ds
 	d_posX = dx
@@ -121,89 +123,133 @@ function focusResp(arg) { //show current respawn point on the map
 function unfocusResp(arg) { //hide previous respawn point on the map
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
-	if (currentIndex != -1)
-		drawNode(parseInt(currentIndex))
+	drawMap()
 }
 
 function brush(clickX, clickY) {
-	if (!(clickX >= 0 && clickX < gridSize && clickY >= 0 && clickY < gridSize))
-		return
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize //coords in map
 	var index = Math.floor(mapX)*size + Math.floor(mapY)
-	switch(mode) { //brush mode
-		case 0: //draw walkable
-			attribs[index].walk = attribs[index].walk == -1 ? 1 : --attribs[index].walk
-			setWalkData()
-			break
-		case 1: //draw buildable
-			attribs[index].buildable = (attribs[index].buildable + 1)&1
-			setBuildData()
-			break
-		case 2: //draw base
-			var pos = -1
-			if ((pos = bases.indexOf(index)) == -1) {//no such element: create new base
-				bases.push(index)
-				var div = document.createElement('div')
-				div.setAttribute("id", "base" + index)
-				div.innerHTML = 'base' + index + ': '
-				var list = document.createElement('select')
-				list.setAttribute("name", "b" + index)
-				list.setAttribute("id", "b" + index)
-				list.setAttribute("onchange", "respSelected(this)")
-				list.setAttribute("onmousemove", "focusResp(this)")
-				list.setAttribute("onmouseout", "unfocusResp(this)")
-				list.options[list.options.length] = new Option("none", -1)
-				
-				findSelectedResps()
-				for (var i in respawns) { //added all respawn points into base's list
-					list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
-					if (selectedResps.indexOf(respawns[i]) != -1)
-						list.options[list.options.length - 1].setAttribute("disabled", "disabled")
-				}
-				div.appendChild(list)
-				document.getElementById('basesDiv').appendChild(div)
-			} else { //base exists: delete it
-				bases.splice(pos, 1)
-				var elem = document.getElementById('base' + index)
-				elem.parentNode.removeChild(elem)
-			}
-			break
-		case 3: //draw respawn
-			var pos = -1
-			if ((pos = respawns.indexOf(index)) == -1) { //no such element: create resp point
-				respawns.push(index)
-				for (var i in bases) { //addnew resp point to all bases' lists
-					var obj = document.getElementById("b" + bases[i])
-					obj.options[obj.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
-				}
-				for (var i = 1; i <= numberOfWaves; i++)
-					for (var j = 1; j <= numbersOfParts[i]; j++) {
-						var select = document.getElementsByName('wave'+ i + '[part' + j + '[]]')[0]
-						select.options[select.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
+	if (editor == 'mapEdit') {
+		if (!(clickX >= 0 && clickX < gridSize && clickY >= 0 && clickY < gridSize))
+			return
+		switch(mode) { //brush mode
+			case 0: //draw walkable
+				attribs[index].walk = attribs[index].walk == -1 ? 1 : --attribs[index].walk
+				setWalkData()
+				break
+			case 1: //draw buildable
+				attribs[index].buildable = (attribs[index].buildable + 1)&1
+				setBuildData()
+				break
+			case 2: //draw base
+				var pos = -1
+				if ((pos = bases.indexOf(index)) == -1) {//no such element: create new base
+					bases.push(index)
+					var div = document.createElement('div')
+					div.setAttribute("id", "base" + index)
+					div.innerHTML = 'base' + index + ': '
+					var list = document.createElement('select')
+					list.setAttribute("name", "b" + index)
+					list.setAttribute("id", "b" + index)
+					list.setAttribute("onchange", "respSelected(this)")
+					list.setAttribute("onmousemove", "focusResp(this)")
+					list.setAttribute("onmouseout", "unfocusResp(this)")
+					list.options[list.options.length] = new Option("none", -1)
+					
+					findSelectedResps()
+					for (var i in respawns) { //added all respawn points into base's list
+						list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
+						if (selectedResps.indexOf(respawns[i]) != -1)
+							list.options[list.options.length - 1].setAttribute("disabled", "disabled")
 					}
-			} else { //delete resp point
-				respawns.splice(pos, 1)	
-				for (var i in bases) {
-					var obj = document.getElementById("b" + bases[i])
-					for (var j in obj.options) //delete resp point in all bases' lists
-						if(obj.options[j].value == index) {
-							obj.options.remove(j)
-							break
-						}
+					div.appendChild(list)
+					document.getElementById('basesDiv').appendChild(div)
+				} else { //base exists: delete it
+					bases.splice(pos, 1)
+					var elem = document.getElementById('base' + index)
+					elem.parentNode.removeChild(elem)
 				}
-				for (var i = 1; i <= numberOfWaves; i++)
-					for (var k = 1; k <= numbersOfParts[i]; k++) {
-						var select = document.getElementsByName('wave'+ i + '[part' + k + '[]]')[0]
-						for (var j in select.options) //delete resp point in all waves' parts' lists
-							if(select.options[j].value == index) {
-								select.options.remove(j)
+				break
+			case 3: //draw respawn
+				var pos = -1
+				if ((pos = respawns.indexOf(index)) == -1) { //no such element: create resp point
+					respawns.push(index)
+					for (var i in bases) { //addnew resp point to all bases' lists
+						var obj = document.getElementById("b" + bases[i])
+						obj.options[obj.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
+					}
+					for (var i = 1; i <= numberOfWaves; i++)
+						for (var j = 1; j <= numbersOfParts[i]; j++) {
+							var select = document.getElementsByName('wave'+ i + '[part' + j + '[]]')[0]
+							select.options[select.options.length] = new Option("x: " + Math.floor(mapX) + " y: " + Math.floor(mapY), index)
+						}
+				} else { //delete resp point
+					respawns.splice(pos, 1)	
+					for (var i in bases) {
+						var obj = document.getElementById("b" + bases[i])
+						for (var j in obj.options) //delete resp point in all bases' lists
+							if(obj.options[j].value == index) {
+								obj.options.remove(j)
 								break
 							}
 					}
-			}
-			break
+					for (var i = 1; i <= numberOfWaves; i++)
+						for (var k = 1; k <= numbersOfParts[i]; k++) {
+							var select = document.getElementsByName('wave'+ i + '[part' + k + '[]]')[0]
+							for (var j in select.options) //delete resp point in all waves' parts' lists
+								if(select.options[j].value == index) {
+									select.options.remove(j)
+									break
+								}
+						}
+				}
+				break
+		}
+	} else { //textureEdit
+		if (textureBrush != 0 && !(clickX >= 0 && clickX < gridSize && clickY >= 0 && clickY < gridSize))
+			return	
+		switch(textureBrush) {
+			case 0: //tiles mode: draw texture on tiles'
+				if (!(clickX >= 0 && clickX < gridSize && clickY >= 0 && clickY < gridSize)) {
+					var r, s, iOut = 0
+					if (mapX < 0 && mapY > 0) {
+						r = Math.floor(-mapX)
+						s = Math.floor(mapY)
+						iOut = 0
+					}
+					if (mapX > 0 && mapY > size && mapX < size) {
+						r = Math.floor(mapY - size)
+						s = Math.floor(mapX)
+						iOut = 1
+					}
+					if (mapX > size && mapY > 0 && mapY < size) {
+						r = Math.floor(mapX - size)
+						s = Math.floor(size - mapY)
+						iOut = 2
+					}
+					if (mapX > 0 && mapY < 0) {
+						r = Math.floor(-mapY)
+						s = Math.floor(size - mapX)
+						iOut = 3
+					}
+					if (!(s >= r && s < size - r))
+						return
+					index = r*(size - (r - 1)) + s - r
+					console.log(index)
+					outerNodesTextures[iOut][index] = currentTexture
+					break
+				}
+				if (currentTexture != -1)
+					nodesTextures[index] = currentTexture
+				break
+			case 1: //walls
+				changeWall(index)
+				break
+			case 2:
+				break
+		}
 	}
-	drawNode(index)
+	drawMap() //drawNode(index)
 }
 	
 function getClickXY(event) { //handle mouse click: get it's position on map
@@ -231,7 +277,7 @@ window.onresize = setHeight
 
 function setHeight(event) { //change some sizes when window size changes
 	var obj = document.getElementById("mainTable")
-	obj.setAttribute("height", window.innerHeight)
+	obj.setAttribute("height", window.innerHeight*0.98)
 	obj = document.getElementById("map")
 	gridSize = window.innerWidth*0.75/1.41*0.99
 	nodeSize = (gridSize-2)/size
@@ -241,11 +287,49 @@ function setHeight(event) { //change some sizes when window size changes
 }
 
 function drawMap() {
+	var ctx = document.getElementById('map').getContext('2d')
+	ctx.canvas.width = ctx.canvas.width //Awesome!
 	for (var i = 0; i < size*size; i++)
 		drawNode(i)
-	var mapCanvas = document.getElementById("map"),
-	ctx = mapCanvas.getContext('2d')
-	
+	if (editor == 'textureEdit') {
+		var k = 0, i, j
+		for(i=-1;i>-(size/2+size%2+1);i--)
+			for(j=-i-1;j<size-(-i-1);j++) {
+				drawOuterNode(i, j, outerNodesTextures[0][k])
+				k++;
+			}
+		k=0;
+		for(j=0;j<(size/2+size%2+1);j++)
+			for(i=j;i<size-j;i++) {
+				drawOuterNode(i, size + j, outerNodesTextures[1][k])
+				k++;
+			}
+		k=0;
+		for(i=0;i<(size/2+size%2+1);i++)
+			for(j=i;j<size-i;j++) {
+				drawOuterNode(size + i, j, outerNodesTextures[2][k])
+				k++;
+			}
+		k=0;
+		for(j=-1;j>-(size/2+size%2+1);j--)
+			for(i=-j-1;i<size-(-j-1);i++) {
+				drawOuterNode(i, j, outerNodesTextures[3][k])
+				k++;
+			}
+		for (var i in walls) {
+			var x = i%size, y = Math.floor(i/size)
+			ctx.setTransform(0,0,0,0,0,0)
+			ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
+			ctx.scale(scale,scale*0.5);
+			ctx.rotate(-45*Math.PI/180)
+			ctx.lineWidth = 1	
+			ctx.drawImage(images[walls[i].texture], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
+			ctx.strokeStyle = "#000000"
+			ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
+			ctx.setTransform(0,0,0,0,0,0)
+			ctx.setTransform( 1, 0, 0, 1, 0, 0 )
+		}
+	}
 }
 
 function showMouseCoords(event) {
@@ -267,7 +351,7 @@ function showMouseCoords(event) {
 	clickY=getGridX(x,y)
 	clickX=getGridY(x,y)
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize, index = Math.floor(mapX)*size + Math.floor(mapY)
-	if (mapX >= 0 && mapX < size && mapY >= 0 && mapY < size)
+	//if (mapX >= 0 && mapX < size && mapY >= 0 && mapY < size)
 		document.getElementById('mouseInfo').innerHTML = 'x = ' + Math.floor(mapX) + ' y = ' + Math.floor(mapY) + ' index = ' + index
 }
 
@@ -276,17 +360,24 @@ function init() { //init data
 	var map = document.getElementById('map')
 	map.addEventListener('click', getClickXY, false)
 	map.addEventListener('mousemove', showMouseCoords, false)
-	for (var i = 0; i <= size; i++) {
+	nodesTextures = new Array (size*size)
+	var outerSize = (1+(size+1)%2+size)/2*(size/2+size%2)
+	for (var i = 0; i < 4; i++) {
+		outerNodesTextures[i] = new Array(outerSize)
+		for (var j = 0; j < outerSize; j++)
+			outerNodesTextures[i][j] = 1
+	}
+	for (var i = 0; i < size; i++) {
 		for (var j = 0; j < size; j++) {
 			attribs[i*size + j] = {
 				walk: 1, //1 - walk, 0 - see, -1 - nothing
 				buildable: 0
 			}
+			nodesTextures[i*size + j] = 0
 		}
 	}
 	currentIndex = 0
-	var mapCanvas = document.getElementById("map"),
-	ctx = mapCanvas.getContext('2d')
+	ctx = map.getContext('2d')
 	setHeight(0)
 	setWalkData()
 	setBuildData()
@@ -300,6 +391,13 @@ function init() { //init data
 		document.getElementById('pc_base').checked = false
 		togglePCbase(document.getElementById('pc_base'))
 	}
+	drawMap()
+	textureBrushChange(document.getElementById('textureBrush'))
+	for (var i = 0; i < textures.length; i++) {
+		images[i] = new Image()
+		images[i].src = textures[i]
+	}
+	walls.length = 0
 }
 
 function drawNode(index) { 
@@ -311,33 +409,52 @@ function drawNode(index) {
 	ctx.scale(scale,scale*0.5);
 	ctx.rotate(-45*Math.PI/180)
 	ctx.lineWidth = 1
-	//draw walk type:
-	if (attribs[index].walk == -1) 
-		ctx.fillStyle = "red"
-	if (attribs[index].walk == 1)
-		ctx.fillStyle = "#ffffff"	
-	if (attribs[index].walk == 0)
-		ctx.fillStyle = "blue"		
-	ctx.fillRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
-	if (attribs[index].buildable == 1) { //draw build type
-		ctx.fillStyle = "#00ff00"	
-		ctx.fillRect(x*nodeSize + nodeSize/4+1, y*nodeSize + nodeSize/4+1, nodeSize/2, nodeSize/2)
+	if (editor == 'mapEdit') {
+		//draw walk type:
+		if (attribs[index].walk == -1) 
+			ctx.fillStyle = "red"
+		if (attribs[index].walk == 1)
+			ctx.fillStyle = "#ffffff"	
+		if (attribs[index].walk == 0)
+			ctx.fillStyle = "blue"		
+		ctx.fillRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
+		if (attribs[index].buildable == 1) { //draw build type
+			ctx.fillStyle = "#00ff00"	
+			ctx.fillRect(x*nodeSize + nodeSize/4+1, y*nodeSize + nodeSize/4+1, nodeSize/2, nodeSize/2)
+		}
+		if (bases.indexOf(index) != -1) { //draw base
+			ctx.fillStyle = "brown"
+			ctx.beginPath()
+			ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize/5, 0, Math.PI*2, true)
+			ctx.fill()
+		}
+		if (respawns.indexOf(index) != -1) { //draw respawn point
+			ctx.strokeStyle = "cyan"
+			ctx.beginPath()
+			ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize*0.375, 0, Math.PI*2, true)
+			ctx.stroke()
+			ctx.beginPath()
+			ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize/4, 0, Math.PI*2, true)
+			ctx.stroke()
+		}
+	} else {
+		if (nodesTextures[index] != -1) {
+			ctx.drawImage(images[nodesTextures[index]], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize);
+		}			
 	}
-	if (bases.indexOf(index) != -1) { //draw base
-		ctx.fillStyle = "brown"
-		ctx.beginPath()
-		ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize/5, 0, Math.PI*2, true)
-		ctx.fill()
-	}
-	if (respawns.indexOf(index) != -1) { //draw respawn point
-		ctx.strokeStyle = "cyan"
-		ctx.beginPath()
-		ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize*0.375, 0, Math.PI*2, true)
-		ctx.stroke()
-		ctx.beginPath()
-		ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize/4, 0, Math.PI*2, true)
-		ctx.stroke()
-	}
+	ctx.strokeStyle = "#000000"
+	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
+	ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, 0, 0 )
+}
+
+function drawOuterNode(x, y, textureIndex) {
+	ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
+	ctx.scale(scale,scale*0.5);
+	ctx.rotate(-45*Math.PI/180)
+	ctx.lineWidth = 1	
+	ctx.drawImage(images[textureIndex], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
 	ctx.strokeStyle = "#000000"
 	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
 	ctx.setTransform(0,0,0,0,0,0)
@@ -346,7 +463,7 @@ function drawNode(index) {
 
 function changeMapSize(obj) {
 	var temp = parseInt(obj.value)
-	if (temp != NaN && temp > 0 && temp < 100) {
+	if (temp != NaN && temp > 2 && temp < 100) {
 		size = temp
 		document.getElementsByName('mapsize')[0].value = temp
 	} else
@@ -538,12 +655,6 @@ function completeMapInfo() {
 		}
 	}
 	document.getElementById('completeInfo').innerHTML = text
-	/*var walls = ""
-	for (var i = 0; i < size*size; i++) {
-		if (attribs[i].walk == 0)
-			walls += i + ' x 6\n' 
-	}
-	alert(walls)*/
 }
 
 function loadBasesResps(text, i, str, brushMode) {
@@ -634,4 +745,87 @@ function loadMap() {
 	}
 	drawMap()
 	mode = document.getElementById('mode').selectedIndex
+}
+
+function selectEditor(type) {
+	if (type == 'mapEdit') {
+		document.getElementById('mapEdit').style.display = 'block'
+		document.getElementById('textureEdit').style.display = 'none'
+	} else {
+		document.getElementById('mapEdit').style.display = 'none'
+		document.getElementById('textureEdit').style.display = 'block'	
+	}
+	editor = type
+	drawMap()
+}
+
+function handleKey(event) {
+	if (event.keyCode == 27) //Escape pressed
+		document.getElementById('popup').style.display = 'none'
+}
+
+/*///////////////////////////////////////////
+Textures
+///////////////////////////////////////////*/
+
+var textures = [ //contain textures names
+	'textures/map/1.png', 'textures/map/2.png', 
+	'textures/wall/1.png','textures/wall/1_small.png',
+	'textures/wall/10.png','textures/wall/11.png', 'textures/wall/mask.png'
+]
+
+var images = [] //contain textures images
+
+var currentTexture = -1
+var textureBrush = 0
+var nodesTextures = []
+var outerNodesTextures = [[],[],[],[]]
+var walls = []
+
+function setTexture(num) {
+	currentTexture = num
+	document.getElementById('currentTexture').src = textures[num]
+	document.getElementById('popup').style.display = 'none'
+}
+
+function selectTexture() {
+	var popup = document.getElementById('popup')
+	var text = '<div style="overflow:auto"><table border="1">'
+	for (var i = 0; i < textures.length; i += 4) {
+		text += '<tr>'
+		for (var j = i; j < i + 4; j++) {
+			if (j < textures.length)
+				text += '<td id = "tex' + j + '"><img height = 128 width = 128 src = ' + textures[j] + ' onclick = "setTexture(' + j + ')"></td>'
+			else
+				text += '<td id = "tex' + j + '">&nbsp</td>'
+		}
+		text += '</tr>'
+	}
+	text += '</table></div>'
+	text += '<div style = "position: absolute; top:5px; right:5px"><input type = "button" value = "close" onclick = "popup.style.display=\'none\'"></div>'
+	popup.style.height = window.innerHeight*0.5
+	popup.style.width = window.innerWidth*0.5
+	popup.style.top = window.innerHeight*0.25
+	popup.style.left = window.innerWidth*0.25
+	popup.innerHTML = text
+	popup.style.display = 'block'
+}
+
+function textureBrushChange() {
+	textureBrush = document.getElementById('textureBrush').selectedIndex
+}
+
+function changeWall(index) {
+	if (currentTexture == -1)
+		return
+	if (!(index in walls)) { //add new wall
+		var wall = {direction:'x', texture:currentTexture}
+		walls[index] = wall
+	} else {
+		walls[index].texture = currentTexture
+		if (walls[index].direction == 'x')
+			walls[index].direction = 'y'
+		else //remove wall
+			walls.splice(index, 1)
+	}
 }
