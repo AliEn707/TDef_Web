@@ -96,21 +96,13 @@
 				<option value="Walls" >Walls</option>
 				<option value="Objects" >Objects</option>
 			</select>
-			<div><table border="1" id = "aalegend">
-				<tr>
-					<td bgcolor = "#ffffff">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-					<td>Can everything</td>
-				</tr>
-				<tr>
-					<td bgcolor = "blue">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-					<td>Can't walk</td>
-				</tr>
-				<tr>
-					<td bgcolor = "red">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-					<td>Can't see</td>
-				</tr>			
-			</table></div>
-			Current texture:
+			<div id = "wallsDirection">
+				<br>Walls direction:<br>
+				<input type="radio" name="direction" value="x" checked>x
+				<input type="radio" name="direction" value="y">y	
+				<input type="radio" name="direction" value="del">delete wall	
+			</div>
+			<br>Current texture:
 			<div align="center" style = 'border:solid 2px black; height:128px; width:128px;'>
 			<img id = 'currentTexture' src = 'textures/none.png' alt = 'Current texture' height = 128 width = 128 onclick='selectTexture()'>
 			</div>

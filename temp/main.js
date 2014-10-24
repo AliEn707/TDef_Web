@@ -46,6 +46,14 @@ return (500*y)/(707*sy)+(500*x)/(707*sx)-
 			(707*sx*sy);
 }
 
+function gridToScreenX(x, y){
+	return scale*(0.707*x*nodeSize + 0.707*y*nodeSize)+translatex
+}
+
+function gridToScreenY(x, y){
+	return scale*0.5*(0.707*y*nodeSize - 0.707*x*nodeSize) + translatey
+}
+
 function setWalkData() { //write walk data to html
 	var obj = document.getElementsByName("walkdata")
 	var text = ""
@@ -208,6 +216,8 @@ function brush(clickX, clickY) {
 	} else { //textureEdit
 		if (textureBrush != 0 && !(clickX >= 0 && clickX < gridSize && clickY >= 0 && clickY < gridSize))
 			return	
+		if (currentTexture == -1)
+			return
 		switch(textureBrush) {
 			case 0: //tiles mode: draw texture on tiles'
 				if (!(clickX >= 0 && clickX < gridSize && clickY >= 0 && clickY < gridSize)) {
@@ -224,28 +234,38 @@ function brush(clickX, clickY) {
 					}
 					if (mapX > size && mapY > 0 && mapY < size) {
 						r = Math.floor(mapX - size)
-						s = Math.floor(size - mapY)
+						s = Math.floor(mapY)
 						iOut = 2
 					}
 					if (mapX > 0 && mapY < 0) {
 						r = Math.floor(-mapY)
-						s = Math.floor(size - mapX)
+						s = Math.floor(mapX)
 						iOut = 3
 					}
 					if (!(s >= r && s < size - r))
 						return
 					index = r*(size - (r - 1)) + s - r
-					console.log(index)
 					outerNodesTextures[iOut][index] = currentTexture
 					break
 				}
-				if (currentTexture != -1)
-					nodesTextures[index] = currentTexture
+				nodesTextures[index] = currentTexture
 				break
 			case 1: //walls
 				changeWall(index)
 				break
 			case 2:
+				var flag = 0
+				for (var i = 0; i < objects.length; i++)
+					if (objects[i].ind == index) {
+						if (objects[i].texture != currentTexture) //change texture
+							objects[i].texture = currentTexture
+						else //remove
+							objects.splice(i, 1)
+						flag = 1
+						break
+					}
+				if (!flag)
+					objects.push({ind: index, texture: currentTexture})
 				break
 		}
 	}
@@ -295,40 +315,51 @@ function drawMap() {
 		var k = 0, i, j
 		for(i=-1;i>-(size/2+size%2+1);i--)
 			for(j=-i-1;j<size-(-i-1);j++) {
-				drawOuterNode(i, j, outerNodesTextures[0][k])
+				drawOuterNode(i, j, outerNodesTextures[3][k])
 				k++;
 			}
 		k=0;
 		for(j=0;j<(size/2+size%2+1);j++)
 			for(i=j;i<size-j;i++) {
-				drawOuterNode(i, size + j, outerNodesTextures[1][k])
+				drawOuterNode(i, size + j, outerNodesTextures[2][k])
 				k++;
 			}
 		k=0;
 		for(i=0;i<(size/2+size%2+1);i++)
 			for(j=i;j<size-i;j++) {
-				drawOuterNode(size + i, j, outerNodesTextures[2][k])
+				drawOuterNode(size + i, j, outerNodesTextures[1][k])
 				k++;
 			}
 		k=0;
 		for(j=-1;j>-(size/2+size%2+1);j--)
 			for(i=-j-1;i<size-(-j-1);i++) {
-				drawOuterNode(i, j, outerNodesTextures[3][k])
+				drawOuterNode(i, j, outerNodesTextures[0][k])
 				k++;
 			}
 		for (var i in walls) {
-			var x = i%size, y = Math.floor(i/size)
-			ctx.setTransform(0,0,0,0,0,0)
-			ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
-			ctx.scale(scale,scale*0.5);
+			var x = walls[i].index%size, y = Math.floor(walls[i].index/size)
+			ctx.setTransform(scale, 0, 0, scale*0.5, translatex, translatey)
 			ctx.rotate(-45*Math.PI/180)
-			ctx.lineWidth = 1	
-			ctx.drawImage(images[walls[i].texture], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
-			ctx.strokeStyle = "#000000"
-			ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
-			ctx.setTransform(0,0,0,0,0,0)
-			ctx.setTransform( 1, 0, 0, 1, 0, 0 )
+			ctx.translate((x + 0.5)*nodeSize,(y + 0.5)*nodeSize)
+			if (walls[i].direction == 'y') {
+				ctx.rotate(180*Math.PI/180)
+				ctx.transform(1, 0, 1, -1, -1.015*nodeSize, 0.5*nodeSize)
+				ctx.drawImage(images[walls[i].texture], 1, 1 - nodeSize*0.8, nodeSize*1.31, nodeSize*1.31)
+			} else {
+				ctx.rotate(-270*Math.PI/180)
+				ctx.transform(1, 0, 1, 1, -1.015*nodeSize, -0.5*nodeSize)
+				ctx.drawImage(images[walls[i].texture], 1, 1 - nodeSize*0.8, nodeSize*1.31, nodeSize*1.31)				
+			}
+			ctx.setTransform(1, 0, 0, 1, 0, 0)
 		}
+		for (var i in objects) {
+			var x = objects[i].ind%size, y = Math.floor(objects[i].ind/size)
+			var screenX = gridToScreenX(x, y), screenY = gridToScreenY(x, y)
+			ctx.setTransform(scale, 0, 0, scale, 0, 0)
+			//ctx.rotate(-45*Math.PI/180)
+			ctx.drawImage(images[objects[i].texture], screenX/scale, screenY/scale - nodeSize*1.41, nodeSize*1.41, nodeSize*1.41)
+		}
+		ctx.setTransform(1, 0, 0, 1, 0, 0)
 	}
 }
 
@@ -398,6 +429,7 @@ function init() { //init data
 		images[i].src = textures[i]
 	}
 	walls.length = 0
+	objects.length = 0
 }
 
 function drawNode(index) { 
@@ -781,6 +813,7 @@ var textureBrush = 0
 var nodesTextures = []
 var outerNodesTextures = [[],[],[],[]]
 var walls = []
+var objects = []
 
 function setTexture(num) {
 	currentTexture = num
@@ -813,19 +846,39 @@ function selectTexture() {
 
 function textureBrushChange() {
 	textureBrush = document.getElementById('textureBrush').selectedIndex
+	if (textureBrush == 1)
+		document.getElementById('wallsDirection').style.display = 'block'
+	else
+		document.getElementById('wallsDirection').style.display = 'none'
 }
 
-function changeWall(index) {
+function getWallIndex(index, dir) {
+	for (var i = 0; i < walls.length; i++)
+		if (walls[i].index == index && walls[i].direction == dir)
+			return i
+	return -1
+}
+
+function changeWall(index_) {
 	if (currentTexture == -1)
 		return
-	if (!(index in walls)) { //add new wall
-		var wall = {direction:'x', texture:currentTexture}
-		walls[index] = wall
-	} else {
-		walls[index].texture = currentTexture
-		if (walls[index].direction == 'x')
-			walls[index].direction = 'y'
-		else //remove wall
-			walls.splice(index, 1)
+	var elements = document.getElementsByName('direction')
+	if (elements[2].checked) {//delete
+		var i1 = getWallIndex(index_, 'x')
+		var i2 = getWallIndex(index_, 'y')
+		if (i2 != -1)
+			walls.splice(i2, 1)
+		if (i1 != -1)
+			walls.splice(i1, 1)			
+		return
 	}
+	var dir = elements[0].checked ? 'x' : 'y'
+	var ind = getWallIndex(index_, dir)
+	
+	if (ind == -1) //create new wall
+		walls.push({index: index_, direction: dir, texture: currentTexture})
+	else { //change wall parameters
+		walls[ind].texture = currentTexture
+		walls[ind].direction = dir
+	}		
 }
