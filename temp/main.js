@@ -1,3 +1,11 @@
+/*
+╔══════════════════════════════════════════════════════════════╗
+║ Map editor                                                   ║
+║ 										                       ║
+║ created by Yaroslav Zotov	                                   ║
+║ sep 2014                                                     ║
+╚══════════════════════════════════════════════════════════════╝
+*/
 var size = 10
 var gridSize = 600
 var nodeSize = 0 //gridSize/size
@@ -356,7 +364,6 @@ function drawMap() {
 			var x = objects[i].ind%size, y = Math.floor(objects[i].ind/size)
 			var screenX = gridToScreenX(x, y), screenY = gridToScreenY(x, y)
 			ctx.setTransform(scale, 0, 0, scale, 0, 0)
-			//ctx.rotate(-45*Math.PI/180)
 			ctx.drawImage(images[objects[i].texture], screenX/scale, screenY/scale - nodeSize*1.41, nodeSize*1.41, nodeSize*1.41)
 		}
 		ctx.setTransform(1, 0, 0, 1, 0, 0)
@@ -441,7 +448,14 @@ function drawNode(index) {
 	ctx.scale(scale,scale*0.5);
 	ctx.rotate(-45*Math.PI/180)
 	ctx.lineWidth = 1
-	if (editor == 'mapEdit') {
+	if (editor == 'textureEdit') {
+		ctx.globalAlpha = 1
+		if (nodesTextures[index] != -1) 
+			ctx.drawImage(images[nodesTextures[index]], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize);
+	}
+	if (editor == 'mapEdit' || (editor == 'textureEdit' && document.getElementById('opacity').checked)) { //awesome
+		if (editor == 'textureEdit' && document.getElementById('opacity').checked)
+			ctx.globalAlpha = 0.5	
 		//draw walk type:
 		if (attribs[index].walk == -1) 
 			ctx.fillStyle = "red"
@@ -469,10 +483,6 @@ function drawNode(index) {
 			ctx.arc(x*nodeSize + nodeSize/2+1, y*nodeSize + nodeSize/2+1, nodeSize/4, 0, Math.PI*2, true)
 			ctx.stroke()
 		}
-	} else {
-		if (nodesTextures[index] != -1) {
-			ctx.drawImage(images[nodesTextures[index]], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize);
-		}			
 	}
 	ctx.strokeStyle = "#000000"
 	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
@@ -800,14 +810,7 @@ function handleKey(event) {
 Textures
 ///////////////////////////////////////////*/
 
-var textures = [ //contain textures names
-	'textures/map/1.png', 'textures/map/2.png', 
-	'textures/wall/1.png','textures/wall/1_small.png',
-	'textures/wall/10.png','textures/wall/11.png', 'textures/wall/mask.png'
-]
-
 var images = [] //contain textures images
-
 var currentTexture = -1
 var textureBrush = 0
 var nodesTextures = []

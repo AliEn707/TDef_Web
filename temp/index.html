@@ -7,9 +7,15 @@
 	left:0px;
 }
 </style>
-
 <HEAD>
 <TITLE>Map editor v1.0</TITLE>
+<SCRIPT type="text/javascript" language="JavaScript">
+var textures = [ //contain textures names
+	'textures/map/1.png', 'textures/map/2.png', 
+	'textures/wall/1.png','textures/wall/1_small.png',
+	'textures/wall/10.png','textures/wall/11.png', 'textures/wall/mask.png'
+]
+</SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="main.js">
 </SCRIPT>
 </HEAD>
@@ -90,6 +96,7 @@
 			<textarea id = "loadMap"></textarea><br><br>
 		</div>
 		<div id='textureEdit' style = 'display:none'>
+			<input type ='checkbox' value = 'opacity' id = 'opacity' onchange = 'drawMap()'>Show must go on
 			<p>Choose brush mode:</p>
 			<select id="textureBrush" onchange="textureBrushChange(this)">
 				<option selected value="Tiles">Tiles</option>
