@@ -1,4 +1,5 @@
 TDefWeb::Application.routes.draw do
+  get "locales/show_all"
   devise_for :users
   get "map_edit" => 'map#map_edit'
   get "test/test"

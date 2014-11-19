@@ -11,15 +11,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140607111222) do
+ActiveRecord::Schema.define(version: 20141119080009) do
+
+  create_table "client_files", force: true do |t|
+    t.string   "path"
+    t.integer  "timestamp"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "locale_data", force: true do |t|
+    t.string   "key"
+    t.string   "value"
+    t.integer  "locale_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "locales", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "servers", force: true do |t|
+    t.string   "hostname"
+    t.integer  "port"
+    t.integer  "rooms"
+    t.integer  "startport"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "temp_client_files", force: true do |t|
+    t.string   "path"
+    t.integer  "timestamp"
+    t.boolean  "sync"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
-    t.string   "email",                              default: "", null: false
-    t.string   "encrypted_password",     limit: 128, default: "", null: false
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                      default: 0
+    t.integer  "sign_in_count",          default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<style type="text/css">
+#map{
+	position:absolute;
+	top:0px;
+	left:0px;
+}
+</style>
+
+<HEAD>
+<TITLE>Map editor v0.1</TITLE>
+<SCRIPT type="text/javascript" language="JavaScript" src="main.js">
+</SCRIPT>
+</HEAD>
+<BODY onload=init()>
+<table border = "1" width = "100%" id="mainTable">
+<tr>
+	<td width = "80%" align = "center" style="position:relative" id = "canvasTd">
+		<canvas height='1000' width='1000' id='map'>Update your browser!</canvas>
+		<table style="position:absolute; top:10px; right:0px">
+			<tr>
+				<td><input type="button" style="width: 3em; height: 2em" value="+" onmousedown="controlScreen(0.05,0,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+				<td><input type="button" style="width: 3em; height: 2em" value="^" onmousedown="controlScreen(0,0,-10)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+				<td><input type="button" style="width: 3em; height: 2em" value="-" onmousedown="controlScreen(-0.05,0,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+			</tr>
+			<tr>
+				<td><input type="button" style="width: 3em; height: 2em" value="<-" onmousedown="controlScreen(0,-10,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+				<td><input type="button" style="width: 3em; height: 2em" value="v" onmousedown="controlScreen(0,0,10)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+				<td><input type="button" style="width: 3em; height: 2em" value="->" onmousedown="controlScreen(0,10,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"></td>
+			</tr>
+		</table>
+	</td>
+	<td id='panel' width="*" style="border:none">
+	<div style="position:absolute; top:0px; overflow:auto">
+		<p>Choose brush mode:</p>
+		<select name="mode" id="mode" onchange="mode = getElementById('mode').selectedIndex">
+			<option selected value="Walk">Walk</option>
+			<option value="Build" >Build</option>
+			<option value="Base" >Base</option>
+			<option value="Respawn" >Respawn</option>
+		</select>
+		<p><table>
+			<tr><td>Map name:</td><td><input type="text" id = "mapname" value="default" onchange="document.getElementsByName('mapname')[0].value = this.value"></td></tr>
+			<tr><td>Map size:</td><td><input type="text" id="mapSize" value="10" onchange="changeMapSize(this)"></td></tr>
+		</table></p>
+		<form name="send" method="get">
+			<table>
+			<tr><td>Max NPCs:</td><td><input type="text" name="max_npcs"></td></tr>
+			<tr><td>Max Towers:</td><td><input type="text" name="max_towers"></td></tr>
+			<tr><td>Max Bullets:</td><td><input type="text" name="max_bullets"></td></tr>
+			</table><br>
+			<div id="basesDiv">Base: respawn<br></div>
+			<div id ="pcbase">
+				Need PC base?<input type = "checkbox" value="1" onchange="togglePCbase(this)">
+			</div>
+			Waves:
+			<input type="button" id="wavesButton" name="waves" value="Add wave" onclick="addWave()"><br>
+			<div id="wavesDiv"></div>
+			<input type="hidden" name="mapname">
+			<input type="hidden" name="mapsize">
+			<input type="hidden" name="walkdata">
+			<input type="hidden" name="builddata">
+			<input type="submit" value="Send">
+		</form>
+		<input type = "button" onclick="completeMapInfo()" value="Get text map info"><br>
+		<textarea id = "completeInfo"></textarea>
+	</div>
+	</td>
+</tr>
+</table>
+</BODY>
+</HTML>

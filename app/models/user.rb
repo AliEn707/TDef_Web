@@ -14,3 +14,10 @@ class User < ActiveRecord::Base
 		params.require(:user).permit(:email, :password, :password_confirmation, :remember_me)
 	end
 end
+
+
+=begin
+File.open('C:/Output.txt', 'wt', encoding: 'UTF-16LE') do |f|
+  f.puts register_mark
+end
+=end
