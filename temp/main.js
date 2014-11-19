@@ -389,7 +389,7 @@ function showMouseCoords(event) {
 	clickY=getGridX(x,y)
 	clickX=getGridY(x,y)
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize, index = Math.floor(mapX)*size + Math.floor(mapY)
-	//if (mapX >= 0 && mapX < size && mapY >= 0 && mapY < size)
+	if (mapX >= 0 && mapX < size && mapY >= 0 && mapY < size)
 		document.getElementById('mouseInfo').innerHTML = 'x = ' + Math.floor(mapX) + ' y = ' + Math.floor(mapY) + ' index = ' + index
 }
 
@@ -679,9 +679,8 @@ function completeMapInfo() {
 	text += 'max_towers ' + document.getElementsByName("max_towers")[0].value + '\n'
 	text += 'max_bullets ' + document.getElementsByName("max_bullets")[0].value + '\n'
 	text += 'bases ' + bases.length + '\n'
-	for (var i = 0; i < bases.length; i++) {
+	for (var i = 0; i < bases.length; i++)
 		text += i + ' ' + bases[i] + ' ' + (document.getElementById('b' + bases[i]).selectedIndex - 1) + ' \n'
-	}
 	var els = document.getElementsByName("pcbase[]")
 	if (els[0] != null)
 		text += 'pc_base ' + els[0].selectedIndex + ' ' + els[1].value + '\n'
@@ -824,26 +823,60 @@ function setTexture(num) {
 	document.getElementById('popup').style.display = 'none'
 }
 
+function showHideChilds(obj) {
+	var length = obj.parentNode.childNodes.length, array = obj.parentNode.childNodes
+	for (var i = 1; i < length; i++)
+		if (array[i].style.display == 'none')
+			array[i].style.display = 'inline-block'
+		else
+			array[i].style.display = 'none'
+}
+
 function selectTexture() {
 	var popup = document.getElementById('popup')
-	var text = '<div style="overflow:auto"><table border="1">'
-	for (var i = 0; i < textures.length; i += 4) {
-		text += '<tr>'
-		for (var j = i; j < i + 4; j++) {
-			if (j < textures.length)
-				text += '<td id = "tex' + j + '"><img height = 128 width = 128 src = ' + textures[j] + ' onclick = "setTexture(' + j + ')"></td>'
-			else
-				text += '<td id = "tex' + j + '">&nbsp</td>'
-		}
-		text += '</tr>'
-	}
-	text += '</table></div>'
-	text += '<div style = "position: absolute; top:5px; right:5px"><input type = "button" value = "close" onclick = "popup.style.display=\'none\'"></div>'
 	popup.style.height = window.innerHeight*0.5
 	popup.style.width = window.innerWidth*0.5
 	popup.style.top = window.innerHeight*0.25
 	popup.style.left = window.innerWidth*0.25
-	popup.innerHTML = text
+	for (var i = 0; i < textures.length; i++) {
+		var t = textures[i]
+		if (! /^[^/]*\..*?$/g.test(t)) { //if not a name
+			var dirs = t.split('/'), parent = popup
+			t = dirs[dirs.length - 1] //name
+			dirs.splice(-1, 1)
+			var path = ''
+			for (var j = 0; j < dirs.length; j++) {
+				path += dirs[j]
+				if (document.getElementById(path + '_folder') == null)	{ //create new element - folder
+					var div = document.createElement('div')
+					div.setAttribute("id", path + '_folder')
+					div.innerHTML = '<span onclick = "showHideChilds(this)"><h2>' + dirs[j] + '</h2></span>'
+					div.style.position = 'relative'
+					div.style.left = '15px'
+					div.style.width = (window.innerWidth*0.5 - (j + 2)*15) + 'px'
+					div.style.borderBottom = 'dashed 1px'
+					div.style.display = 'none'
+					parent.appendChild(div)
+				}	
+				parent = document.getElementById(path + '_folder')
+			}
+		}
+		if (document.getElementById('tex' + i) == null)	{
+			var elm = document.createElement('img')
+			elm.setAttribute("id", 'tex' + i)
+			elm.setAttribute("height", '64')
+			elm.setAttribute("width", '64')
+			elm.setAttribute("src", textures[i])
+			elm.setAttribute("onclick", 'setTexture(' + i + ')')
+			elm.style.position = 'relative'
+			elm.style.border = 'solid 1px'
+			elm.style.display = 'none'
+			parent.appendChild(elm)
+		}
+	}
+	document.getElementById('textures_folder').style.display = 'inline-block'
+	if (document.getElementById('closeButton') == null)
+		popup.innerHTML += '<div id = "closeButton" style = "position: absolute; top:5px; right:5px"><input type = "button" value = "close" onclick = "popup.style.display=\'none\'"></div>'
 	popup.style.display = 'block'
 }
 
@@ -877,11 +910,103 @@ function changeWall(index_) {
 	}
 	var dir = elements[0].checked ? 'x' : 'y'
 	var ind = getWallIndex(index_, dir)
-	
 	if (ind == -1) //create new wall
 		walls.push({index: index_, direction: dir, texture: currentTexture})
 	else { //change wall parameters
 		walls[ind].texture = currentTexture
 		walls[ind].direction = dir
 	}		
+}
+
+function saveTextures() {
+	var text = ""
+	for (var i = 0; i < textures.length; i++) {
+		tex = textures[i].replace(/^.*?\/|\..*?$/g, '')
+		text += i + 1 + ' ' + tex + '\n'
+	}
+	text += '-\n'
+	for (var i = 0; i < nodesTextures.length; i++) 
+		text += (nodesTextures[i] + 1) + ' '
+	text += '\n'
+	for (var j = 0; j < 4; j++) {
+		for (var i = 0; i < outerNodesTextures[j].length; i++) 
+			text += (outerNodesTextures[j][i] + 1) + ' '
+		text += '\n'
+	}
+	if (document.getElementById('minimap').checked)
+		text += 'minimap 1\n'
+	if (walls.length > 0) {
+		text += 'walls ' + walls.length + '\n'
+		for (var i = 0; i < walls.length; i++)
+			text += walls[i].index + ' ' + walls[i].direction + ' ' + (walls[i].texture + 1) + '\n'
+	}
+	if (objects.length > 0) {
+		text += 'objects ' + objects.length + '\n'
+		for (var i = 0; i < objects.length; i++)
+			text += Math.floor(objects[i].ind/size) + ' ' + objects[i].ind%size + ' ' + (objects[i].texture + 1) + '\n'
+	}	
+	document.getElementById('saveTexturesField').value = text
+}
+
+function loadTextures() {
+	var text = document.getElementById('loadTexturesField').value.split('\n')
+	if (text.length <= 1)
+		return
+	var i = 0
+	for (; text[i] != '-'; i++) {
+		texs = text[i].split(' ')
+		var index = parseInt(texs[0]) - 1
+		textures[index] = "textures/" + texs[1] + ".png" //Don't change path, please
+		images[index] = new Image()
+		images[index].src = textures[index]
+	}
+	var length = 0, big = size*size
+	nodesTextures.length = 0
+	while (length != big) {
+		var nodes = text[++i].split(' ')
+		var index = nodes.indexOf('')
+		if (index != -1)
+			nodes.splice(index, 1) //to remove last space
+		nodesTextures.length += nodes.length
+		for (var j = 0; j < nodes.length; j++)
+			nodesTextures[length + j] = nodes[j] - 1
+		length += nodes.length
+	}
+	i++
+	for (var j = 0; j < 4; j++) {
+		nodes = text[i++].split(' ')
+		index = nodes.indexOf('')
+		if (index != -1)
+			nodes.splice(index, 1) //to remove last space
+		outerNodesTextures[j].length = nodes.length
+		for (var k = 0; k < outerNodesTextures[j].length; k++) 
+			outerNodesTextures[j][k] = nodes[k] - 1
+	}
+	while (i < text.length) {
+		if (text[i].search("minimap") != -1) { //load minimap
+			if (text[i++].split(' ')[1] == '1')
+				document.getElementById('minimap').checked = true
+			else
+				document.getElementById('minimap').checked = false
+		}
+		else if (text[i].search("walls") != -1) { //load walls
+			var length = parseInt(text[i++].split(' ')[1])
+			walls = []
+			for (var j = 0; j < length; j++) {
+				wall = text[i++].split(' ')
+				walls.push({index: parseInt(wall[0]), direction: wall[1], texture: parseInt(wall[2]) - 1})
+			}	
+		}
+		else if (text[i].search("objects") != -1) { //load objects
+			var length = parseInt(text[i++].split(' ')[1])
+			objects = []
+			for (var j = 0; j < length; j++) {
+				object = text[i++].split(' ') 
+				objects.push({ind: parseInt(object[0])*size + parseInt(object[1]), texture: parseInt(object[2]) - 1})
+			}
+		}
+		else
+			i++
+	}
+	drawMap()
 }

@@ -13,14 +13,15 @@
 var textures = [ //contain textures names
 	'textures/map/1.png', 'textures/map/2.png', 
 	'textures/wall/1.png','textures/wall/1_small.png',
-	'textures/wall/10.png','textures/wall/11.png', 'textures/wall/mask.png'
+	'textures/wall/10.png','textures/wall/11.png', 'textures/wall/mask.png',
+	'textures/none.png'
 ]
 </SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="main.js">
 </SCRIPT>
 </HEAD>
 <BODY onload=init() onkeypress=handleKey(event) onkeydown=handleKey(event)>
-<div id="popup" style='position: fixed; top:50%; left:50%; z-index:100; display:none; background:#aaaaaa;'></div>
+<div id="popup" style='position: fixed; top:50%; left:50%; z-index:100; display:none; background:#aaaaaa; overflow:auto'></div>
 <table width = "100%" id="mainTable">
 <tr>
 	<td width = "80%" align = "center" style="position:relative" id = "canvasTd">
@@ -96,7 +97,8 @@ var textures = [ //contain textures names
 			<textarea id = "loadMap"></textarea><br><br>
 		</div>
 		<div id='textureEdit' style = 'display:none'>
-			<input type ='checkbox' value = 'opacity' id = 'opacity' onchange = 'drawMap()'>Show must go on
+			<input type ='checkbox' value = 'opacity' id = 'opacity' onchange = 'drawMap()'>Show map<br>
+			<input type ='checkbox' value = 'minimap' id = 'minimap'>Enable minimap
 			<p>Choose brush mode:</p>
 			<select id="textureBrush" onchange="textureBrushChange(this)">
 				<option selected value="Tiles">Tiles</option>
@@ -112,6 +114,12 @@ var textures = [ //contain textures names
 			<br>Current texture:
 			<div align="center" style = 'border:solid 2px black; height:128px; width:128px;'>
 			<img id = 'currentTexture' src = 'textures/none.png' alt = 'Current texture' height = 128 width = 128 onclick='selectTexture()'>
+			<form name="sendTexture" method="get">
+				<p><input type = "button" onclick="saveTextures()" value="Get textures map info"><br>
+				<textarea id = "saveTexturesField"></textarea></p>
+				<input type = "button" onclick="loadTextures()" value="Load textures"><br>
+				<textarea id = "loadTexturesField"></textarea><br><br>
+			</form>
 			</div>
 		</div>	
 	</div>
