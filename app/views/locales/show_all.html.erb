@@ -1,2 +1,26 @@
-<h1>Locales#show_all</h1>
-<p>Find me in app/views/locales/show_all.html.erb</p>
+
+<%= %>
+<%= content_tag :table, class:"table table-striped" do -%>
+	<%= content_tag :tr do -%>
+		<%locale_columns.each do |l_l|%>
+			<%= content_tag :th do -%>
+				<%=l_l%>
+			<%end%>
+		<%end%>
+	<%end%>
+	<%@locales.each do |l_l|%>
+		<%l_l.locale_datas.each do |d_d|%>
+			<%= content_tag :tr do -%>
+				<%= content_tag :td do -%>
+					<%=l_l.name%>
+				<%end%>
+				<%= content_tag :td do -%>
+					<%=d_d.key%>
+				<%end%>
+				<%= content_tag :td do -%>
+					<%=d_d.value%>
+				<%end%>
+			<%end%>
+		<%end%>
+	<%end%>
+<%end%>

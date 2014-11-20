@@ -47,3 +47,5 @@ end
 gem "twitter-bootstrap-rails"
 
 gem "devise", "3.2.4"
+
+gem "mail"

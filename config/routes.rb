@@ -1,11 +1,17 @@
 TDefWeb::Application.routes.draw do
   get "locales/show_all"
-  devise_for :users
-  get "map_edit" => 'map#map_edit'
+  post "locales/show_all"
+  
+  devise_for :users, controllers: { registrations: 'registrations' }
+  
+  post "map/upload"
+  post "map/edit"
+  get "map/edit"
+  
   get "test/test"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-root "test#test"
+  root "test#test"
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 

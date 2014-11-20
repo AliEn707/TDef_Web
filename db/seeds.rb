@@ -15,3 +15,12 @@ locale.save
 
 Locale.create(name:"ru")
 Locale.create(name:"jp")
+
+u=User.create(email:'test@test.test', password:'000000', password_confirmation:'000000',confirmed_at: Time.now)
+u.admin=true
+u.save
+
+Map.create(name: "test",data: "test map data file",grafics: "test map grafics file")
+#u.save
+#u.confirm!
+#u.save
