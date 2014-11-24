@@ -90,4 +90,8 @@ module MapHelper
 		'
 		a.html_safe
 	end
+	
+	def map_columns
+		['icon', 'name', 'completed', 'actions']
+	end
 end

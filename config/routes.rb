@@ -4,9 +4,11 @@ TDefWeb::Application.routes.draw do
   
   devise_for :users, controllers: { registrations: 'registrations' }
   
+  get "locale", to: "application#set_locale"
   post "map/upload"
   post "map/edit"
   get "map/edit"
+  get "map/show_all"
   
   get "test/test"
   # The priority is based upon order of creation: first created -> highest priority.

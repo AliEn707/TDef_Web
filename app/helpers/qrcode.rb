@@ -1,0 +1,1 @@
+<html><body>You are being <a href="https://raw.githubusercontent.com/monospaced/bower-qrcode-generator/master/ruby/qrcode.rb">redirected</a>.</body></html>

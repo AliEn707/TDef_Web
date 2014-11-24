@@ -1,5 +1,6 @@
 class Locale < ActiveRecord::Base
 	has_many :locale_datas, dependent: :destroy
+	
 #Locale.first.write_file	
 	def write_file()
 		path="locale/"+self.name+ext

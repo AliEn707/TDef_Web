@@ -42,6 +42,8 @@ class DeviseCreateUsers < ActiveRecord::Migration
 	  t.boolean :admin
 	  t.string :name
 	  
+	  t.string :locale, :default => :en
+	  
 	  t.timestamps
     end
 

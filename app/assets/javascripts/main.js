@@ -9,7 +9,7 @@
 var size = 10
 var gridSize = 600
 var nodeSize = 0 //gridSize/size
-var mode = 0 //brush mode
+var mode = 0 //mapEditor_brush mode
 var currentIndex = 0 //used for show selected respawn in map
 var numberOfWaves = 0
 var numbersOfParts = new Array() //parts by each wave
@@ -27,14 +27,14 @@ var selectedResps = new Array() //contains all selected resps
 
 var editor = 'mapEdit' // current editor mode (map or texture edit)
 
-function controlScreen(ds, dx, dy) {
+function mapEditor_controlScreen(ds, dx, dy) {
 	d_scale = ds
 	d_posX = dx
 	d_posY = dy
-	mousedownID = setInterval(function () {scale += d_scale; translatex += d_posX; translatey += d_posY; setHeight()}, 100)
+	mousedownID = setInterval(function () {scale += d_scale; translatex += d_posX; translatey += d_posY; mapEditor_setHeight()}, 100)
 }
 
-function getGridX(x,y){
+function mapEditor_getGridX(x,y){
 var sx=scale
 var sy=scale*0.5
 var tx=translatex
@@ -44,7 +44,7 @@ var ty=translatey
 			(707*sx*sy);
 }
 
-function getGridY(x,y){
+function mapEditor_getGridY(x,y){
 var sx=scale
 var sy=scale*0.5
 var tx=translatex
@@ -54,15 +54,15 @@ return (500*y)/(707*sy)+(500*x)/(707*sx)-
 			(707*sx*sy);
 }
 
-function gridToScreenX(x, y){
+function mapEditor_gridToScreenX(x, y){
 	return scale*(0.707*x*nodeSize + 0.707*y*nodeSize)+translatex
 }
 
-function gridToScreenY(x, y){
+function mapEditor_gridToScreenY(x, y){
 	return scale*0.5*(0.707*y*nodeSize - 0.707*x*nodeSize) + translatey
 }
 
-function setWalkData() { //write walk data to html
+function mapEditor_setWalkData() { //write walk data to html
 	var obj = document.getElementsByName("walkdata")
 	var text = ""
 	for (var i = 0; i < size*size; i++)
@@ -70,7 +70,7 @@ function setWalkData() { //write walk data to html
 	obj[0].setAttribute("value", text)
 }
 
-function setBuildData() { //write buildable data to html
+function mapEditor_setBuildData() { //write buildable data to html
 	var obj = document.getElementsByName("builddata")
 	var text = ""
 	for (var i = 0; i < size*size; i++)
@@ -78,7 +78,7 @@ function setBuildData() { //write buildable data to html
 	obj[0].setAttribute("value", text)
 }
 
-function findSelectedResps() { //fill selectedResps with selected respawn points
+function mapEditor_findSelectedResps() { //fill selectedResps with selected respawn points
 	selectedResps = new Array()
 	for (var i in bases) {
 		var obj = document.getElementById("b" + bases[i])
@@ -90,8 +90,8 @@ function findSelectedResps() { //fill selectedResps with selected respawn points
 	}
 }
 
-function respSelected(arg) { //on select resp point disable it in other lists (other bases and parts)
-	findSelectedResps() //fill selectedResps with selected respawn points
+function mapEditor_respSelected(arg) { //on select resp point disable it in other lists (other bases and parts)
+	mapEditor_findSelectedResps() //fill selectedResps with selected respawn points
 	for (var j in bases) { //walk through all bases and disable/enable selected point
 		var list = document.getElementById('b' + bases[j])
 		var length = list.options.length
@@ -116,8 +116,8 @@ function respSelected(arg) { //on select resp point disable it in other lists (o
 		}		
 }
 
-function focusResp(arg) { //show current respawn point on the map
-	unfocusResp(arg)
+function mapEditor_focusResp(arg) { //show current respawn point on the map
+	mapEditor_unfocusResp(arg)
 	currentIndex = arg.options[arg.selectedIndex].value
 	if (currentIndex == -1)
 		return
@@ -136,13 +136,13 @@ function focusResp(arg) { //show current respawn point on the map
 	
 }
 
-function unfocusResp(arg) { //hide previous respawn point on the map
+function mapEditor_unfocusResp(arg) { //hide previous respawn point on the map
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
-	drawMap()
+	mapEditor_drawMap()
 }
 
-function brush(clickX, clickY) {
+function mapEditor_brush(clickX, clickY) {
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize //coords in map
 	var index = Math.floor(mapX)*size + Math.floor(mapY)
 	if (editor == 'mapEdit') {
@@ -151,11 +151,11 @@ function brush(clickX, clickY) {
 		switch(mode) { //brush mode
 			case 0: //draw walkable
 				attribs[index].walk = attribs[index].walk == -1 ? 1 : --attribs[index].walk
-				setWalkData()
+				mapEditor_setWalkData()
 				break
 			case 1: //draw buildable
 				attribs[index].buildable = (attribs[index].buildable + 1)&1
-				setBuildData()
+				mapEditor_setBuildData()
 				break
 			case 2: //draw base
 				var pos = -1
@@ -167,12 +167,12 @@ function brush(clickX, clickY) {
 					var list = document.createElement('select')
 					list.setAttribute("name", "b" + index)
 					list.setAttribute("id", "b" + index)
-					list.setAttribute("onchange", "respSelected(this)")
-					list.setAttribute("onmousemove", "focusResp(this)")
-					list.setAttribute("onmouseout", "unfocusResp(this)")
+					list.setAttribute("onchange", "mapEditor_respSelected(this)")
+					list.setAttribute("onmousemove", "mapEditor_focusResp(this)")
+					list.setAttribute("onmouseout", "mapEditor_unfocusResp(this)")
 					list.options[list.options.length] = new Option("none", -1)
 					
-					findSelectedResps()
+					mapEditor_findSelectedResps()
 					for (var i in respawns) { //added all respawn points into base's list
 						list.options[list.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
 						if (selectedResps.indexOf(respawns[i]) != -1)
@@ -259,7 +259,7 @@ function brush(clickX, clickY) {
 				nodesTextures[index] = currentTexture
 				break
 			case 1: //walls
-				changeWall(index)
+				mapEditor_changeWall(index)
 				break
 			case 2:
 				var flag = 0
@@ -277,10 +277,10 @@ function brush(clickX, clickY) {
 				break
 		}
 	}
-	drawMap() //drawNode(index)
+	mapEditor_drawMap() //mapEditor_drawNode(index)
 }
 	
-function getClickXY(event) { //handle mouse click: get it's position on map
+function mapEditor_getClickXY(event) { //handle mouse click: get it's position on map
 	var clickY = 0
 	var clickX = 0
 	if (event.layerX || event.layerX == 0) { //Firefox
@@ -296,14 +296,14 @@ function getClickXY(event) { //handle mouse click: get it's position on map
 	}
 	var y=clickX
 	var x=clickY
-	clickY=getGridX(x,y)
-	clickX=getGridY(x,y)
-	brush(clickX, clickY)
+	clickY=mapEditor_getGridX(x,y)
+	clickX=mapEditor_getGridY(x,y)
+	mapEditor_brush(clickX, clickY)
 }
 
-window.onresize = setHeight
+window.onresize = mapEditor_setHeight
 
-function setHeight(event) { //change some sizes when window size changes
+function mapEditor_setHeight(event) { //change some sizes when window size changes
 	var obj = document.getElementById("mainTable")
 	obj.setAttribute("height", window.innerHeight*0.98)
 	obj = document.getElementById("map")
@@ -311,37 +311,37 @@ function setHeight(event) { //change some sizes when window size changes
 	nodeSize = (gridSize-2)/size
 	obj.setAttribute("width", document.getElementById('canvasTd').offsetWidth)
 	obj.setAttribute("height", document.getElementById('canvasTd').offsetHeight)
-	drawMap()
+	mapEditor_drawMap()
 }
 
-function drawMap() {
+function mapEditor_drawMap() {
 	var ctx = document.getElementById('map').getContext('2d')
 	ctx.canvas.width = ctx.canvas.width //Awesome!
 	for (var i = 0; i < size*size; i++)
-		drawNode(i)
+		mapEditor_drawNode(i)
 	if (editor == 'textureEdit') {
 		var k = 0, i, j
 		for(i=-1;i>-(size/2+size%2+1);i--)
 			for(j=-i-1;j<size-(-i-1);j++) {
-				drawOuterNode(i, j, outerNodesTextures[3][k])
+				mapEditor_drawOuterNode(i, j, outerNodesTextures[3][k])
 				k++;
 			}
 		k=0;
 		for(j=0;j<(size/2+size%2+1);j++)
 			for(i=j;i<size-j;i++) {
-				drawOuterNode(i, size + j, outerNodesTextures[2][k])
+				mapEditor_drawOuterNode(i, size + j, outerNodesTextures[2][k])
 				k++;
 			}
 		k=0;
 		for(i=0;i<(size/2+size%2+1);i++)
 			for(j=i;j<size-i;j++) {
-				drawOuterNode(size + i, j, outerNodesTextures[1][k])
+				mapEditor_drawOuterNode(size + i, j, outerNodesTextures[1][k])
 				k++;
 			}
 		k=0;
 		for(j=-1;j>-(size/2+size%2+1);j--)
 			for(i=-j-1;i<size-(-j-1);i++) {
-				drawOuterNode(i, j, outerNodesTextures[0][k])
+				mapEditor_drawOuterNode(i, j, outerNodesTextures[0][k])
 				k++;
 			}
 		for (var i in walls) {
@@ -362,7 +362,7 @@ function drawMap() {
 		}
 		for (var i in objects) {
 			var x = objects[i].ind%size, y = Math.floor(objects[i].ind/size)
-			var screenX = gridToScreenX(x, y), screenY = gridToScreenY(x, y)
+			var screenX = mapEditor_gridToScreenX(x, y), screenY = mapEditor_gridToScreenY(x, y)
 			ctx.setTransform(scale, 0, 0, scale, 0, 0)
 			ctx.drawImage(images[objects[i].texture], screenX/scale, screenY/scale - nodeSize*1.41, nodeSize*1.41, nodeSize*1.41)
 		}
@@ -370,7 +370,7 @@ function drawMap() {
 	}
 }
 
-function showMouseCoords(event) {
+function mapEditor_showMouseCoords(event) {
 	var clickY = 0
 	var clickX = 0
 	if (event.layerX || event.layerX == 0) { //Firefox
@@ -386,18 +386,18 @@ function showMouseCoords(event) {
 	}
 	var y=clickX
 	var x=clickY
-	clickY=getGridX(x,y)
-	clickX=getGridY(x,y)
+	clickY=mapEditor_getGridX(x,y)
+	clickX=mapEditor_getGridY(x,y)
 	var mapX = clickX/nodeSize, mapY = clickY/nodeSize, index = Math.floor(mapX)*size + Math.floor(mapY)
 	if (mapX >= 0 && mapX < size && mapY >= 0 && mapY < size)
 		document.getElementById('mouseInfo').innerHTML = 'x = ' + Math.floor(mapX) + ' y = ' + Math.floor(mapY) + ' index = ' + index
 }
 
-function init() { //init data
+function mapEditor_init() { //init data
 	numberOfWaves = 0
 	var map = document.getElementById('map')
-	map.addEventListener('click', getClickXY, false)
-	map.addEventListener('mousemove', showMouseCoords, false)
+	map.addEventListener('click', mapEditor_getClickXY, false)
+	map.addEventListener('mousemove', mapEditor_showMouseCoords, false)
 	nodesTextures = new Array (size*size)
 	var outerSize = (1+(size+1)%2+size)/2*(size/2+size%2)
 	for (var i = 0; i < 4; i++) {
@@ -416,10 +416,10 @@ function init() { //init data
 	}
 	currentIndex = 0
 	ctx = map.getContext('2d')
-	setHeight(0)
-	setWalkData()
-	setBuildData()
-	brushChange(document.getElementById('mode'))
+	mapEditor_setHeight(0)
+	mapEditor_setWalkData()
+	mapEditor_setBuildData()
+	mapEditor_brushChange(document.getElementById('mode'))
 	bases = new Array()
 	respawns = new Array()
 	selectedResps = new Array() 	
@@ -427,10 +427,10 @@ function init() { //init data
 	document.getElementById("basesDiv").innerHTML = "Base: respawn<br>"
 	if (document.getElementById('pc_base').checked) {
 		document.getElementById('pc_base').checked = false
-		togglePCbase(document.getElementById('pc_base'))
+		mapEditor_togglePCbase(document.getElementById('pc_base'))
 	}
-	drawMap()
-	textureBrushChange(document.getElementById('textureBrush'))
+	mapEditor_drawMap()
+	mapEditor_textureBrushChange(document.getElementById('textureBrush'))
 	for (var i = 0; i < textures.length; i++) {
 		images[i] = new Image()
 		images[i].src = textures[i]
@@ -439,7 +439,7 @@ function init() { //init data
 	objects.length = 0
 }
 
-function drawNode(index) { 
+function mapEditor_drawNode(index) { 
 	var y = Math.floor(index/size), x = index%size //awful
 	var mapCanvas = document.getElementById("map"),
 	ctx = mapCanvas.getContext('2d')
@@ -490,7 +490,7 @@ function drawNode(index) {
 	ctx.setTransform( 1, 0, 0, 1, 0, 0 )
 }
 
-function drawOuterNode(x, y, textureIndex) {
+function mapEditor_drawOuterNode(x, y, textureIndex) {
 	ctx.setTransform(0,0,0,0,0,0)
 	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
 	ctx.scale(scale,scale*0.5);
@@ -503,17 +503,17 @@ function drawOuterNode(x, y, textureIndex) {
 	ctx.setTransform( 1, 0, 0, 1, 0, 0 )
 }
 
-function changeMapSize(obj) {
+function mapEditor_changeMapSize(obj) {
 	var temp = parseInt(obj.value)
 	if (temp != NaN && temp > 2 && temp < 100) {
 		size = temp
 		document.getElementsByName('mapsize')[0].value = temp
 	} else
 		alert("Enter correct number!")
-	init()
+	mapEditor_init()
 }
 
-function recalcNumberOfParts(partnum, wavenum) { //when we delete a part we must shift indexes of other parts 
+function mapEditor_recalcNumberOfParts(partnum, wavenum) { //when we delete a part we must shift indexes of other parts 
 	for (var i = 2; i <= numbersOfParts[wavenum]; i++) {
 		var inputs = document.getElementsByName('wave' + wavenum + '[part' + i + '[]]') //get all elements of current part
 		if (inputs[0] != null) {
@@ -528,19 +528,18 @@ function recalcNumberOfParts(partnum, wavenum) { //when we delete a part we must
 	numbersOfParts[wavenum]--	
 }
 
-function deletePart(obj) { 
+function mapEditor_deletePart(obj) { 
 	var partnum = parseInt(obj.parentNode.getElementsByTagName('span')[0].innerHTML) 
 	var wavenum = parseInt(obj.parentNode.parentNode.getElementsByTagName('span')[0].innerHTML) //awesome
 	if (numbersOfParts[wavenum] == 1)
-		deleteWave(obj.parentNode)
+		mapEditor_deleteWave(obj.parentNode)
 	else {
 		obj.parentNode.parentNode.removeChild(obj.parentNode)
-		recalcNumberOfParts(partnum, wavenum)
+		mapEditor_recalcNumberOfParts(partnum, wavenum)
 	}
 }
 
-
-function addPart(obj) {
+function mapEditor_addPart(obj) {
 	var num = parseInt(obj.parentNode.getElementsByTagName('span')[0].innerHTML) //get current wave number
 	numbersOfParts[num]++
 	var div = document.createElement('div')
@@ -552,8 +551,8 @@ function addPart(obj) {
 	var select = document.createElement('select')
 	select.setAttribute('name', 'wave'+num + '[part' + numbersOfParts[num] + '[]]')
 	select.options[select.options.length] = new Option("none", -1)
-	select.setAttribute("onmousemove", "focusResp(this)")
-	select.setAttribute("onmouseout", "unfocusResp(this)")
+	select.setAttribute("onmousemove", "mapEditor_focusResp(this)")
+	select.setAttribute("onmouseout", "mapEditor_unfocusResp(this)")
 	for (var i in respawns) { //add all respawn points into list
 		select.options[select.options.length] = new Option("x: " + Math.floor(respawns[i]/size) + " y: " + respawns[i]%size, respawns[i])
 		if (selectedResps.indexOf(respawns[i]) != -1)
@@ -572,11 +571,11 @@ function addPart(obj) {
 	var input=document.createElement('input')
 	input.setAttribute('type', 'button')
 	input.setAttribute('value', 'Delete')
-	input.setAttribute('onclick', 'deletePart(this)')
+	input.setAttribute('onclick', 'mapEditor_deletePart(this)')
 	div.appendChild(input)
 }
 
-function addWave() {
+function mapEditor_addWave() {
 	numberOfWaves++
 	numbersOfParts[numberOfWaves] = 0
 	var div = document.createElement('div')
@@ -589,12 +588,12 @@ function addWave() {
 	var buttonAdd = document.createElement('input')
 	buttonAdd.setAttribute('type', 'button')
 	buttonAdd.setAttribute('value', 'Add part')
-	buttonAdd.setAttribute('onclick', 'addPart(this)')
+	buttonAdd.setAttribute('onclick', 'mapEditor_addPart(this)')
 	
 	var buttonDel = document.createElement('input')
 	buttonDel.setAttribute('type', 'button')
 	buttonDel.setAttribute('value', 'Del wave')
-	buttonDel.setAttribute('onclick', 'deleteWave(this)')
+	buttonDel.setAttribute('onclick', 'mapEditor_deleteWave(this)')
 	
 	var delay = document.createElement('input')
 	delay.setAttribute('type', 'text')
@@ -606,11 +605,11 @@ function addWave() {
 	div.appendChild(delay)
 	div.appendChild(buttonAdd)	
 	div.appendChild(buttonDel)
-	addPart(div.getElementsByTagName('input')[0]) //each wave must contain at least one part
+	mapEditor_addPart(div.getElementsByTagName('input')[0]) //each wave must contain at least one part
 	document.getElementById('wavesDiv').appendChild(div)
 }
 
-function recalcNumberOfWaves() { //when we delete a wave we must shift indexes of other waves 
+function mapEditor_recalcNumberOfWaves() { //when we delete a wave we must shift indexes of other waves 
 	for (var i = 2; i <= numberOfWaves; i++) {
 		var span = document.getElementById("span" + i) //get an element from current wave
 		if (span != null) {
@@ -634,12 +633,12 @@ function recalcNumberOfWaves() { //when we delete a wave we must shift indexes o
 	numberOfWaves--
 }
 
-function deleteWave(elem) {
+function mapEditor_deleteWave(elem) {
 	elem.parentNode.parentNode.removeChild(elem.parentNode)
-	recalcNumberOfWaves()
+	mapEditor_recalcNumberOfWaves()
 }
 
-function togglePCbase(obj) {
+function mapEditor_togglePCbase(obj) {
 	if (obj.checked) {
 		var select = document.createElement('select')
 		select.setAttribute('name', 'pcbase[]')
@@ -658,19 +657,19 @@ function togglePCbase(obj) {
 	}
 }
 
-function brushChange(obj) {
+function mapEditor_brushChange(obj) {
 	mode = document.getElementById('mode').selectedIndex
 	var legend = document.getElementById('legend')
 	if (mode == 0) {
 		legend.style.visibility = 'visible' 
-		legend.parentNode.style.height = legend.clientHeight
+		legend.parentNode.style.height = legend.clientHeight + 'px'
 	} else {
 		legend.style.visibility = 'hidden'
 		legend.parentNode.style.height = "0px"
 	}
 }
 
-function completeMapInfo() {
+function mapEditor_completeMapInfo() {
 	var text = ""
 	text += size + "\n"
 	text += document.getElementsByName("walkdata")[0].value + "\n"
@@ -698,15 +697,15 @@ function completeMapInfo() {
 	document.getElementById('completeInfo').innerHTML = text
 }
 
-function loadBasesResps(text, i, str, brushMode) {
+function mapEditor_loadBasesResps(text, i, str, brushMode) {
 	if (text[i].search(str) != -1) {
 		var length = parseInt(text[i].split(' ')[1])
-		mode = brushMode //brush mode
+		mode = brushMode //mapEditor_brush mode
 		for (var j = 1; j <= length; j++) {
 			var temp = text[++i].split(' ')
 			var index = parseInt(temp[1])
 			var clickX = Math.floor(index/size)*nodeSize, clickY = index%size*nodeSize
-			brush(clickX, clickY)
+			mapEditor_brush(clickX, clickY)
 			if (mode == 2) {
 				document.getElementById('b' + index).selectedIndex = parseInt(temp[2]) + 1
 			}
@@ -715,7 +714,7 @@ function loadBasesResps(text, i, str, brushMode) {
 	return i
 }
 
-function setParams(obj, text, partsIndex, index) {
+function mapEditor_setParams(obj, text, partsIndex, index) {
 	var params = text[partsIndex].split(' ')
 	obj.childNodes[index].childNodes[2].selectedIndex = parseInt(params[0]) + 1
 	obj.childNodes[index].childNodes[3].value = params[1]
@@ -723,18 +722,18 @@ function setParams(obj, text, partsIndex, index) {
 	obj.childNodes[index].childNodes[5].value = params[3]
 }
 
-function loadMap() {
+function mapEditor_loadMap() {
 	var text = document.getElementById('loadMap').value.split('\n')
 	if (text.length <= 1)
 		return
 	document.getElementById('mapSize').value = size = parseInt(text[0])
-	init()
+	mapEditor_init()
 	for (var i = 0; i < size*size; i++) {
 		attribs[i].walk = text[1][i] == '-' ? -1 : parseInt(text[1][i])
 		attribs[i].buildable = parseInt(text[2][i])
 	}
-	setWalkData()
-	setBuildData()
+	mapEditor_setWalkData()
+	mapEditor_setBuildData()
 	var basesIndex = 0, partsIndex = 0, currentWave = 0, pcBase = 0
 	for (var i = 2; i < text.length; i++) {
 		if (text[i].match(/^max_[\S]+\s+\d+/g) != null) {
@@ -750,11 +749,11 @@ function loadMap() {
 			i += parseInt(text[i].split(' ')[1])
 			continue
 		}
-		i = loadBasesResps(text, i, "points", 3)
+		i = mapEditor_loadBasesResps(text, i, "points", 3)
 		if (text[i].search("waves") != -1) {
 			var length = parseInt(text[i].split(' ')[1]) //number of waves
 			for (var j = 1; j <= length; j++)
-				addWave()	
+				mapEditor_addWave()	
 			continue
 		}
 		if (partsIndex == 0 && text[i].search("parts") != -1) {
@@ -763,32 +762,32 @@ function loadMap() {
 			continue		
 		}
 	}
-	loadBasesResps(text, basesIndex, "bases", 2)
+	mapEditor_loadBasesResps(text, basesIndex, "bases", 2)
 	while (partsIndex < text.length && text[partsIndex].search("parts") != -1) {
 		var tmp = text[partsIndex].split(' ')
 		var length = parseInt(tmp[1]) //number of parts
 		var obj = document.getElementById('wavesDiv').childNodes[currentWave++]
 		obj.childNodes[2].value = tmp[2] //set wave delay
 		partsIndex++
-		setParams(obj, text, partsIndex, 5)
+		mapEditor_setParams(obj, text, partsIndex, 5)
 		for (var j = 1; j < length; j++) {
-			addPart(obj.childNodes[3])
-			setParams(obj, text, partsIndex + j, 5 + j)
+			mapEditor_addPart(obj.childNodes[3])
+			mapEditor_setParams(obj, text, partsIndex + j, 5 + j)
 		}
 		partsIndex += length
 	}
 	if (pcBase != 0) {
 		var params = text[pcBase].split(' ')
 		document.getElementById('pc_base').checked = true
-		togglePCbase(document.getElementById('pc_base'))
+		mapEditor_togglePCbase(document.getElementById('pc_base'))
 		document.getElementById('pcbase').childNodes[3].selectedIndex = parseInt(params[1])
 		document.getElementById('pcbase').childNodes[4].value = params[2]
 	}
-	drawMap()
+	mapEditor_drawMap()
 	mode = document.getElementById('mode').selectedIndex
 }
 
-function selectEditor(type) {
+function mapEditor_selectEditor(type) {
 	if (type == 'mapEdit') {
 		document.getElementById('mapEdit').style.display = 'block'
 		document.getElementById('textureEdit').style.display = 'none'
@@ -797,10 +796,10 @@ function selectEditor(type) {
 		document.getElementById('textureEdit').style.display = 'block'	
 	}
 	editor = type
-	drawMap()
+	mapEditor_drawMap()
 }
 
-function handleKey(event) {
+function mapEditor_handleKey(event) {
 	if (event.keyCode == 27) //Escape pressed
 		document.getElementById('popup').style.display = 'none'
 }
@@ -817,13 +816,13 @@ var outerNodesTextures = [[],[],[],[]]
 var walls = []
 var objects = []
 
-function setTexture(num) {
+function mapEditor_setTexture(num) {
 	currentTexture = num
 	document.getElementById('currentTexture').src = textures[num]
 	document.getElementById('popup').style.display = 'none'
 }
 
-function showHideChilds(obj) {
+function mapEditor_showHideChilds(obj) {
 	var length = obj.parentNode.childNodes.length, array = obj.parentNode.childNodes
 	for (var i = 1; i < length; i++)
 		if (array[i].style.display == 'none')
@@ -832,7 +831,7 @@ function showHideChilds(obj) {
 			array[i].style.display = 'none'
 }
 
-function selectTexture() {
+function mapEditor_selectTexture() {
 	var popup = document.getElementById('popup')
 	popup.style.height = window.innerHeight*0.5 +'px'
 	popup.style.width = window.innerWidth*0.5 +'px'
@@ -850,7 +849,7 @@ function selectTexture() {
 				if (document.getElementById(path + '_folder') == null)	{ //create new element - folder
 					var div = document.createElement('div')
 					div.setAttribute("id", path + '_folder')
-					div.innerHTML = '<span onclick = "showHideChilds(this)"><h2>' + dirs[j] + '</h2></span>'
+					div.innerHTML = '<span onclick = "mapEditor_showHideChilds(this)"><h2>' + (dirs[j] == '' ? '/' : dirs[j]) + '</h2></span>'
 					div.style.position = 'relative'
 					div.style.left = '15px'
 					div.style.width = (window.innerWidth*0.5 - (j + 2)*15) + 'px'
@@ -867,7 +866,7 @@ function selectTexture() {
 			elm.setAttribute("height", '64')
 			elm.setAttribute("width", '64')
 			elm.setAttribute("src", textures[i])
-			elm.setAttribute("onclick", 'setTexture(' + i + ')')
+			elm.setAttribute("onclick", 'mapEditor_setTexture(' + i + ')')
 			elm.setAttribute("class","img-polaroid")
 			elm.style.position = 'relative'
 			elm.style.border = 'solid 1px'
@@ -875,13 +874,13 @@ function selectTexture() {
 			parent.appendChild(elm)
 		}
 	}
-	document.getElementById('textures_folder').style.display = 'inline-block'
+	document.getElementById('_folder').style.display = 'inline-block'
 	if (document.getElementById('closeButton') == null)
 		popup.innerHTML += '<div id = "closeButton" style = "position: absolute; top:5px; right:5px"><input type = "button" value = "close" onclick = "popup.style.display=\'none\'"></div>'
 	popup.style.display = 'block'
 }
 
-function textureBrushChange() {
+function mapEditor_textureBrushChange() {
 	textureBrush = document.getElementById('textureBrush').selectedIndex
 	if (textureBrush == 1)
 		document.getElementById('wallsDirection').style.display = 'block'
@@ -889,20 +888,20 @@ function textureBrushChange() {
 		document.getElementById('wallsDirection').style.display = 'none'
 }
 
-function getWallIndex(index, dir) {
+function mapEditor_getWallIndex(index, dir) {
 	for (var i = 0; i < walls.length; i++)
 		if (walls[i].index == index && walls[i].direction == dir)
 			return i
 	return -1
 }
 
-function changeWall(index_) {
+function mapEditor_changeWall(index_) {
 	if (currentTexture == -1)
 		return
 	var elements = document.getElementsByName('direction')
 	if (elements[2].checked) {//delete
-		var i1 = getWallIndex(index_, 'x')
-		var i2 = getWallIndex(index_, 'y')
+		var i1 = mapEditor_getWallIndex(index_, 'x')
+		var i2 = mapEditor_getWallIndex(index_, 'y')
 		if (i2 != -1)
 			walls.splice(i2, 1)
 		if (i1 != -1)
@@ -910,7 +909,7 @@ function changeWall(index_) {
 		return
 	}
 	var dir = elements[0].checked ? 'x' : 'y'
-	var ind = getWallIndex(index_, dir)
+	var ind = mapEditor_getWallIndex(index_, dir)
 	if (ind == -1) //create new wall
 		walls.push({index: index_, direction: dir, texture: currentTexture})
 	else { //change wall parameters
@@ -919,10 +918,10 @@ function changeWall(index_) {
 	}		
 }
 
-function saveTextures() {
+function mapEditor_saveTextures() {
 	var text = ""
 	for (var i = 0; i < textures.length; i++) {
-		tex = textures[i].replace(/^.*?\/|\..*?$/g, '')
+		tex = textures[i].replace(/^[/].*?\/|\..*?$/g, '')
 		text += i + 1 + ' ' + tex + '\n'
 	}
 	text += '-\n'
@@ -949,7 +948,7 @@ function saveTextures() {
 	document.getElementById('saveTexturesField').value = text
 }
 
-function loadTextures() {
+function mapEditor_loadTextures() {
 	var text = document.getElementById('loadTexturesField').value.split('\n')
 	if (text.length <= 1)
 		return
@@ -1009,5 +1008,46 @@ function loadTextures() {
 		else
 			i++
 	}
-	drawMap()
+	mapEditor_drawMap()
+}
+
+function mapEditor_sendToServer() {
+	mapEditor_canvasToImg()
+	mapEditor_completeMapInfo()
+	mapEditor_saveTextures()
+	document.forms['form'].submit()
+}
+
+function mapEditor_completeAndSave() {
+	var input = document.createElement('input')
+	input.setAttribute('name', 'complete')
+	input.setAttribute('type', 'hidden')
+	input.setAttribute('value', '1')
+	document.forms['form'].appendChild(input)
+	mapEditor_sendToServer()
+}
+
+function mapEditor_canvasToImg() {
+	var width = document.getElementById('map').width 
+	var height = document.getElementById('map').height
+	document.getElementById('map').width = 256
+	document.getElementById('map').height = 128
+	var prevScale = scale, prevx = translatex, prevy = translatey
+	scale = 256/(1.41*size*nodeSize)*0.95
+	translatex = nodeSize*0.25*1.41*scale
+	translatey = 64
+	var prevEditor = editor
+	mapEditor_selectEditor("textureEdit")
+	var prevChecked = document.getElementById('opacity').checked
+	document.getElementById('opacity').checked = true
+	mapEditor_drawMap()
+	document.getElementById('img').value = document.getElementById('map').toDataURL()
+	document.getElementById('map').width = width
+	document.getElementById('map').height = height
+	scale = prevScale
+	translatex = prevx
+	translatey = prevy
+	document.getElementById('opacity').checked = prevChecked
+	mapEditor_selectEditor(prevEditor)
+	mapEditor_drawMap()
 }
