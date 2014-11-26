@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 20141120092844) do
     t.text     "data"
     t.text     "grafics"
     t.integer  "players"
-    t.text     "icon"
+    t.text     "icon",       default: ""
     t.boolean  "completed"
     t.datetime "created_at"
     t.datetime "updated_at"

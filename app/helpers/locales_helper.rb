@@ -1,5 +1,5 @@
 module LocalesHelper
 	def locale_columns
-		['locale','key','value']
+		[t(:locale),t(:key),t(:value)]
 	end
 end

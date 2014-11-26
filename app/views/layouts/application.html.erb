@@ -50,28 +50,45 @@
           <div class="container-fluid nav-collapse">
 		<ul class="nav">
 			<%menu.each do |m|%>
-				<%if m.size==1 then%>
-					<li><%= link_to m[0]['name'], m[0]['path']  %></li>
-				<%else%>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<%=m[0]%>
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<%1.step(m.size-1,1) do |i|%>
-								<li><%= link_to m[i]['name'], m[i]['path'],:method=> m[i][:method]  %></li>
-							<%end%>
-						</ul>
-					</li>
+				<%if m[0]["right"]!=true then%>
+					<%if !m[0]["path"].nil? then%>
+						<li><%= link_to m[0]['name'], m[0]['path']  %></li>
+					<%else%>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<%=m[0]['name']%>
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<%1.step(m.size-1,1) do |i|%>
+									<li><%= link_to m[i]['name'], m[i]['path'],:method=> m[i][:method]  %></li>
+								<%end%>
+							</ul>
+						</li>
+					<%end%>
 				<%end%>
 			<%end%>
 		</ul>
 		<ul class="nav pull-right">
-			<li>
-				<a href="#">Еще</a>
-			</li>
-			<li class="divider-vertical"/>
+			<%menu.each do |m|%>
+				<%if m[0]["right"]==true then%>
+					<%if !m[0]["path"].nil? then%>
+						<li><%= link_to m[0]['name'], m[0]['path']  %></li>
+					<%else%>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<%=m[0]['name']%>
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<%1.step(m.size-1,1) do |i|%>
+									<li><%= link_to m[i]['name'], m[i]['path'],:method=> m[i][:method]  %></li>
+								<%end%>
+							</ul>
+						</li>
+					<%end%>
+				<%end%>
+			<%end%>
 		</ul>
 		
           </div><!--/.nav-collapse -->

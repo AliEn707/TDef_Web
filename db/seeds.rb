@@ -20,7 +20,7 @@ u=User.create(email:'test@test.test', password:'000000', password_confirmation:'
 u.admin=true
 u.save
 
-Map.create(name: "test",data: "test map data file",grafics: "test map grafics file")
+Map.create(name: "test",data: "test map data file",grafics: "test map grafics file",icon: "ljf")
 #u.save
 #u.confirm!
 #u.save

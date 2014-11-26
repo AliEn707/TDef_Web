@@ -8,10 +8,10 @@
 			<%end%>
 		<%end%>
 	<%end%>
-	<%@maps.each do |m_m|%>
+	<% @maps.each do |m_m|%>
 		<%= content_tag :tr do -%>
 			<%= content_tag :td do -%>
-				<%=image_tag(""+m_m.icon, height: '128', width: '256')%>
+				<%=image_tag(""+m_m.icon.to_s, height: '128', width: '256')%>
 			<%end%>
 			<%= content_tag :td do -%>
 				<%= m_m.name%>

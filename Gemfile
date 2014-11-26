@@ -51,3 +51,5 @@ gem "devise", "3.2.4"
 gem "mail"
 
 gem 'rails-i18n'
+
+gem 'webrick', '1.3.1'

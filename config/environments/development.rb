@@ -6,6 +6,9 @@ TDefWeb::Application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
+  config.assets.cache_store = :null_store  # Disables the Asset cache
+  config.sass.cache = false  # Disable the SASS compiler cache
+  
   # Do not eager load code on boot.
   config.eager_load = false
 

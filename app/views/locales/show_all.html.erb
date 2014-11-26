@@ -1,34 +1,77 @@
 ﻿
-<%= %>
-<ul class="nav nav-tabs">
-  <li class="active">
-    <a href="#">Главная</a>
-  </li>
-  <li><a href="#">qw</a></li>
-  <li><a href="#">..qwdszf</a></li>
-</ul>
+<%= content_tag :div, id: "locales_all" do -%>
+	<%= content_tag :script, type: "text/javascript",language: "JavaScript" do -%>
+		locales_current=<%=@locales[0].name.inspect.html_safe %>
+	<%end%>
+	<ul class="nav nav-tabs" id="tabs">
+		<% @locales.size.times do |i| %>
+			<li id='<%= @locales[i].name%>' <%='class=active' if i==0%> >
+				<%=link_to @locales[i].name,"#",onclick: 'locales_change(this)' %> 
+			</li>
+		<%end%>
+			<li class='pull-right'>
+				<button form="form" class="btn btn-inverse"><%=t(:apply_changes)%></button>
+			</li>
+			<li class='pull-right'>
+				<span class="input-append">
+					<input class="span4" id="newloc" size="5" type="text" >
+					<button class="btn btn btn-inverse" onclick="locales_new(this)"><b>+</b></button>
+				</span>
+			</li>
+			
+	</ul>
 
-<%= content_tag :table, class:"table table-striped" do -%>
-	<%= content_tag :tr do -%>
-		<%locale_columns.each do |l_l|%>
-			<%= content_tag :th do -%>
-				<%=l_l%>
+	<%= content_tag :table, class:"table table-striped", style: "display: table;" do -%>
+		<%= content_tag :thead do -%>
+			<%= content_tag :tr do -%>
+				<%locale_columns.each do |t_t|%>
+					<th <%=(t_t==locale_columns[0])?'width=80px':((t_t==locale_columns[1])?'width=20%':"")%>>
+						<%=t_t%>
+					</th>
+				<%end%>
+				<%= content_tag :th, width: "20px" do -%>
+						<button class="btn btn-inverse" onclick='locales_add(this)'><%=t(:add)%></button>
+					<%end%>
 			<%end%>
 		<%end%>
 	<%end%>
-	<%@locales.each do |l_l|%>
-		<%l_l.locale_datas.each do |d_d|%>
-			<%= content_tag :tr do -%>
-				<%= content_tag :td do -%>
-					<%=l_l.name%>
-				<%end%>
-				<%= content_tag :td do -%>
-					<%=d_d.key%>
-				<%end%>
-				<%= content_tag :td do -%>
-					<%=d_d.value%>
+	<% @locales.each do |l_l| %>
+		<%= content_tag :table, class:"table table-striped",id: "table_"+l_l.name, style: "display: "+(l_l!=@locales[0]?"none":"table")+";",valign: "middle" do -%>	
+			<%= content_tag :tbody do -%>
+				<% l_l.locale_datas.each do |d_d| %>
+					<%= content_tag :tr do -%>
+						<%= content_tag :td, width: "80px" do -%>
+							<%= content_tag :locale  do -%>
+								<%=l_l.name%>
+							<%end%>
+						<%end%>
+						<%= content_tag :td, width: "20%" do -%>
+							<%= content_tag :key, value: d_d.key  do -%>
+								<%=d_d.key%>
+							<%end%>
+						<%end%>
+						<%= content_tag :td	do -%>
+							<%= content_tag :value, value: d_d.value do -%>
+								<%=d_d.value%>
+							<%end%>
+						<%end%>
+						<%= content_tag :td, width: "20px"  do -%>
+							<%= content_tag :div, class: "btn-group" do -%>
+								<%= content_tag :button, class: "btn btn-small btn-inverse",onclick: 'locales_edit(this)'  do -%>
+									<i class="icon-pencil"> </i>
+								<%end%>
+								<%= content_tag :button, class: "btn btn-small btn-danger",onclick: 'locales_remove(this)'  do -%>
+									<i class="icon-remove"> </i>
+								<%end%>
+							<%end%>
+						<%end%>
+					<%end%>
 				<%end%>
 			<%end%>
 		<%end%>
+	<%end%>
+
+	<%= form_tag(locales_edit_path,method: :post, id: 'form',enctype: "multipart/form-data") do -%>
+
 	<%end%>
 <%end%>

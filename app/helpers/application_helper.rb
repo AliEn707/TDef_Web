@@ -20,20 +20,27 @@ module ApplicationHelper
 	def menu 
 		a=[]
 		if !current_user.nil?
-			a<<["Hello "+current_user.email,{'name'=>t(:log_out),'path'=>destroy_user_session_path,:method => :delete},
+			a<<[{'name'=>t(:hello)+' '+current_user.email,'right'=>true},
+					{'name'=>t(:log_out),'path'=>destroy_user_session_path,:method => :delete},
 					{'name'=>t(:edit_registration),'path' => edit_user_registration_path}]
 			if current_user.admin
-				a<<["Content",{'name'=>t(:map_editor),'path'=>"/map/edit"},
-					{'name'=>t(:maps),'path'=>"/map/show_all"},
-					{'name'=>t(:locales),'path'=>"/locales/show_all"}]
+				a<<[{'name'=>t(:content)},
+						{'name'=>t(:map_editor),'path'=>map_edit_path},
+						{'name'=>t(:maps),'path'=>map_all_path},
+						{'name'=>t(:locales),'path'=>locales_all_path}]
 			end
+			locale=[]
+			locale<<{'name'=>current_user.locale,'right'=>true}
+			['ru','en'].each do |l_l|
+				locale<<{'name'=>l_l,'path'=>"/locale?locale="+l_l}
+			end
+			a<<locale
+#			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else
 			a<<[{'name'=>t(:login),'path'=> new_user_session_path}]
 			a<<[{'name' => t(:register) , 'path' => new_user_registration_path}]			
 		end
-		a<<[t(:locale),{'name'=>"Ru",'path'=>"/locale?locale=ru"},
-					{'name'=>"Fr",'path' =>"/locale?locale=fr"},
-			true]
 		a	
 	end
+	
 end
