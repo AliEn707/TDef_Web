@@ -26,7 +26,7 @@ class MapController < ApplicationController
 			m_m.save
 			#m_m.completed=true if !request.POST['completed'].nil?
 		end
-		redirect_to map_show_all_path
+		redirect_to map_all_path
 	end
 	
 	def show_all
