@@ -92,6 +92,6 @@ module MapHelper
 	end
 	
 	def map_columns
-		['icon', 'name', 'completed', 'actions']
+		['icon', 'name', 'completed']
 	end
 end

@@ -32,6 +32,9 @@ class LocalesController < ApplicationController
 				end
 			end
 		end
+		h_h.each do |k,v|
+#			v.write_file
+		end
 		redirect_to locales_all_path
 	end
 end

@@ -16,6 +16,8 @@ class Map < ActiveRecord::Base
 			file.file_type=type[p_p]
 			file.save
 		end
+		#self.writed=true
+		self.save
 	end
 	
 	def type

@@ -8,8 +8,10 @@ TDefWeb::Application.routes.draw do
   
   get "locale", to: "application#set_locale"
   post "map/upload"
+  get "map/upload"
   post "map/edit"
   get "map/edit"
+  get "map/complete"
   get "map/show_all", as: "map_all"
   
   get "test/test"

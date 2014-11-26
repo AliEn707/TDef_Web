@@ -1,5 +1,5 @@
 
-
+<%=@message%>
 <%= content_tag :table, class:"table table-striped" do -%>
 	<%= content_tag :tr do -%>
 		<%map_columns.each do |m_m|%>
@@ -7,20 +7,36 @@
 				<%=m_m%>
 			<%end%>
 		<%end%>
+		<%= content_tag :th do -%>
+			<%=link_to '<i class="icon-download-alt icon-large"></i>'.html_safe, map_complete_path+"", class: "btn btn-inverse btn-small btn-block" %>
+		<%end%>
 	<%end%>
 	<% @maps.each do |m_m|%>
 		<%= content_tag :tr do -%>
-			<%= content_tag :td do -%>
+			<%= content_tag :td,width: "280px" do -%>
 				<%=image_tag(""+m_m.icon.to_s, height: '128', width: '256')%>
 			<%end%>
 			<%= content_tag :td do -%>
 				<%= m_m.name%>
 			<%end%>
 			<%= content_tag :td do -%>
-				<= m_m.completed%>
+				<% if m_m.completed then%>
+					<span class="label label-success">
+						<i class="icon-ok-sign icon-2x"></i>
+					</span>
+				<%else%>
+					<span class="label label-warning">
+						<i class="icon-remove-sign icon-2x"></i>
+					</span>
+				<%end%>
 			<%end%>
-			<%= content_tag :td do -%>
-				<%=link_to "Edit", "/map/edit/?id="+m_m.id.to_s%>
+			<%= content_tag :td, width: "20px" do -%>
+				<div class="btn-group btn-block" >
+					<% if !m_m.completed then%>
+						<%=link_to '<i class="icon-ok"> </i>'.html_safe, map_upload_path+"?complete&id="+m_m.id.to_s, class: "btn btn-success" %>
+					<%end%>
+					<%=link_to '<i class="icon-pencil"> </i>'.html_safe, map_edit_path+"?id="+m_m.id.to_s, class:  "btn btn-inverse "+((m_m.completed)?"btn-block":"") %>
+				</div>
 			<%end%>
 		<%end%>
 	<%end%>
