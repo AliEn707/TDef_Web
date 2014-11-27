@@ -20,7 +20,7 @@ module ApplicationHelper
 	def menu 
 		a=[]
 		if !current_user.nil?
-			a<<[{'name'=>t(:hello)+' '+current_user.email,'right'=>true},
+			a<<[{'name'=>t(:hello)+' '+current_user.name.to_s,'right'=>true},
 					{'name'=>t(:log_out),'path'=>destroy_user_session_path,:method => :delete},
 					{'name'=>t(:edit_registration),'path' => edit_user_registration_path}]
 			if current_user.admin

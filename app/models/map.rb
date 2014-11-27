@@ -8,7 +8,7 @@ class Map < ActiveRecord::Base
 		['map','mgraf'].each do |p_p|
 			path="maps/"+self.name+ext[p_p]
 			File.open(TempClientFile.path+path, 'wt') do |f|
-				f.write data[p_p]
+				f.write data[p_p].gsub("\r","")
 			end
 			file=TempClientFile.where(["path = ?",path]).first
 			file=TempClientFile.create(path: path) if (file.nil?)
@@ -16,7 +16,7 @@ class Map < ActiveRecord::Base
 			file.file_type=type[p_p]
 			file.save
 		end
-		#self.writed=true
+		self.writed=true
 		self.save
 	end
 	

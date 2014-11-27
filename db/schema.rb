@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141120092844) do
+ActiveRecord::Schema.define(version: 20141127072841) do
 
   create_table "client_files", force: true do |t|
     t.string   "path"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20141120092844) do
     t.boolean  "completed"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "writed"
   end
 
   create_table "servers", force: true do |t|

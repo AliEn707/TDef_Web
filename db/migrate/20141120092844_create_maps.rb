@@ -7,7 +7,6 @@ class CreateMaps < ActiveRecord::Migration
 	t.integer :players
 	t.text :icon, :default => ""
 	t.boolean :completed
-	t.boolean :writed
 	t.timestamps
     end
   end

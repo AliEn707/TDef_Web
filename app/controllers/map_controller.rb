@@ -23,7 +23,7 @@ class MapController < ApplicationController
 			m_m.grafics=request.POST['saveTexturesField'] if !request.POST['saveTexturesField'].nil?
 			m_m.icon=request.POST['img'] if !request.POST['img'].nil?
 			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
-			#m_m.writed=false
+			m_m.writed=false
 			m_m.save
 		end
 		if request.get? && request.GET['id'] then
@@ -31,6 +31,9 @@ class MapController < ApplicationController
 			m_m.completed=true if request.GET.include?('complete')
 			m_m.save
 		end
+#		if !m_m.nil?
+#			m_m.write_file if m_m.completed
+#		end
 		redirect_to map_all_path
 	end
 	
