@@ -53,3 +53,7 @@ gem "mail"
 gem 'rails-i18n'
 
 gem 'webrick', '1.3.1'
+
+gem 'chunky_png'
+
+gem 'rqrcode'

@@ -116,12 +116,26 @@
           <%= yield %>
         </div>
       </div><!--/row-->
-
-      <footer>
-        <p>&copy; Company 2014</p>
-      </footer>
+	
+	<div id="footer" style="position:fixed; bottom: 0px;">
+		<div id="qrdiv">
+			<canvas height='128' width='128' id='qrcode' >
+				Update your browser!
+			</canvas>
+		</div>
+		<p>
+			<span class="label label-inverse">
+				<arrow class="icon-arrow-down"  onclick="toggle_qrdiv()"> </arrow>
+			</span>				
+			&copy; White Sandwitch Studio 2014
+			</p>
+	</div>
 
     </div> <!-- /container -->
-	
+
+	<script>
+		qrdata=<%=qrcode(request.url)%>
+		window.onload=qrcode
+	</script>
   </body>
 </html>

@@ -43,4 +43,8 @@ module ApplicationHelper
 		a	
 	end
 	
+	def qrcode(path)
+		qr = RQRCode::QRCode.new(path, :size => 7, :level => :h )
+		qr.modules.map{|i| i.map{|j| j ? 1 : 0}}.inspect.gsub(" ",'').html_safe
+	end
 end
