@@ -119,23 +119,28 @@
 	
 	<div id="footer" style="position:fixed; bottom: 0px;">
 		<div id="qrdiv">
-			<canvas height='128' width='128' id='qrcode' >
-				Update your browser!
-			</canvas>
+			<table class="qr">
+				<% (qr = qrcode(request.url)).modules.each_index do |x| %>
+					<tr class="qr">  
+						<% qr.modules.each_index do |y| %>
+							<% if qr.dark?(x,y) %>
+								<td class="black"/>
+							<% else %>
+								<td class="white"/>
+							<% end %>
+						<% end %>
+					</tr>
+				<% end %>
+			</table>
 		</div>
 		<p>
-			<span class="label label-inverse">
-				<arrow class="icon-arrow-down"  onclick="toggle_qrdiv()"> </arrow>
-			</span>				
+			<button class="btn btn-mini btn-inverse" onclick="toggle_qrdiv()">
+				<arrow class="icon-arrow-down"  > </arrow>
+			</button>				
 			&copy; White Sandwitch Studio 2014
 			</p>
 	</div>
 
     </div> <!-- /container -->
-
-	<script>
-		qrdata=<%=qrcode(request.url)%>
-		window.onload=qrcode
-	</script>
   </body>
 </html>
