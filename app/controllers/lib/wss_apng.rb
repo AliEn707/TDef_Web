@@ -84,7 +84,7 @@ class WssTgaToApng
 	def fromTar(stream)
 		contents={}
 		frames=0
-		apng=WssTgaToApng.new
+#		apng=WssTgaToApng.new
 		Gem::Package::TarReader.new(stream) do |tar|
 			tar.each do |entry|
 				if entry.full_name!="info.cfg"
@@ -94,10 +94,14 @@ class WssTgaToApng
 			contents.size.times do |i|
 				tga=WssTga.new
 				tga.readTgaStr(contents[(i+1).to_s+'.tga'])
-				apng.add_frame(tga)
+				self.add_frame(tga)
 			end
 		end
-		apng.generate
+#		apng.generate
+	end
+	
+	def reduceByTwo!
+		@frames.size.times {|f| @frames[f].reduseByTwo!}
 	end
 end
 
@@ -121,7 +125,11 @@ File.open("other.png","wb") {|f| f.write(data)}
 #StringIO.new str
 =end
 
+=begin
 a=WssTgaToApng.new
 out=nil
 File.open("tar/arc.tar","rb") {|f| out=a.fromTar(f)}
+#a.reduceByTwo!
+out=a.generate
 File.open("other.png","wb") {|f| f.write(out)}
+=end

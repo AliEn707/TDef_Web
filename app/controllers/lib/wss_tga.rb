@@ -84,7 +84,7 @@ class WssTga
 		
 	end
 	
-	def reduseByTwo!
+	def reduceByTwo!
 		effect=0.4
 		x=1
 		y=1
@@ -438,6 +438,6 @@ tga.write_png("test.png")
 =begin
 tga=WssTga.new
 File.open("latin.glf","rb") {|f| tga.readGlf(f)}
-tga.reduseByTwo!
+tga.reduceByTwo!
 tga.write_png("glf.png")
 =end
