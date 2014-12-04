@@ -17,6 +17,10 @@ locale.save
 Locale.create(name:"ru")
 Locale.create(name:"jp")
 
+u=User.create(email:'user@test.test', password:'000000', password_confirmation:'000000',confirmed_at: Time.now)
+u=User.create(email:'admin@test.test', password:'000000', password_confirmation:'000000',confirmed_at: Time.now)
+u.admin=true
+u.save
 u=User.create(email:'test@test.test', password:'000000', password_confirmation:'000000',confirmed_at: Time.now)
 u.admin=true
 u.save

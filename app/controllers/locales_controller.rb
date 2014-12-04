@@ -1,5 +1,6 @@
 class LocalesController < ApplicationController
 	before_action :authenticate_user!
+	before_action :is_admin?
 	def show_all
 	  @locales=Locale.all
 	end

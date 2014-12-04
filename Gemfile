@@ -54,6 +54,6 @@ gem 'rails-i18n'
 
 gem 'webrick', '1.3.1'
 
-gem 'chunky_png'
+gem 'chunky_png' , '1.3.3'
 
 gem 'rqrcode'

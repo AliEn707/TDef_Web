@@ -437,6 +437,8 @@ function mapEditor_init() { //init data
 	}
 	walls.length = 0
 	objects.length = 0
+	obj=document.getElementById('initButton')
+	obj.parentNode.removeChild(obj)
 }
 
 function mapEditor_drawNode(index) { 

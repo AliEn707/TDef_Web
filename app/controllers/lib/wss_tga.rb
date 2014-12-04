@@ -42,17 +42,93 @@ typedef struct
 require 'stringio'
 require 'chunky_png'
 
-#require_relative 'tga_loader'
+#require_relative 'wss_tga'
 
-class TgaLoader
+class WssTga
 	
 	def initialize
 		@header={:upak=>"CCCssCssssCC",:size=>18}
 		@texinfo={:data=>[]}
 	end
 	
-	def readTga (str)
+	def readTgaFile(path)
+		File.open(path, 'rb'){|f| readTga(f)}
+	end
+	
+	def readTgaStr(str)
 		data=StringIO.new str
+		readTga(data)
+	end
+	def w
+		@texinfo[:width]
+	end
+	
+	def h
+		@texinfo[:height]
+	end
+	
+	def readGlf(data)
+		header=data.read(24).unpack("VVVVVV")
+		@texinfo[:width]=header[1]
+		@texinfo[:height]=header[2]
+		#img=data.read(6*4*(header[4]-header[3]))
+		data.seek(6*4*(header[4]-header[3]+1), IO::SEEK_CUR)
+		(@texinfo[:width]*@texinfo[:height]).times do |i|
+			@texinfo[:data][i]={}
+			@texinfo[:data][i][:r]=data.read(1).unpack("C")[0]
+			@texinfo[:data][i][:g]=@texinfo[:data][i][:r]
+			@texinfo[:data][i][:b]=@texinfo[:data][i][:r]
+			@texinfo[:data][i][:a]=data.read(1).unpack("C")[0]
+			@texinfo[:data][i][:a]=255#data.read(1).unpack("C")[0]
+		end
+		
+	end
+	
+	def reduseByTwo!
+		effect=0.4
+		x=1
+		y=1
+		t_t=[]
+		sx=2 if  @texinfo[:width]>16
+		sy=2 if  @texinfo[:height]>16
+		return if (sx==1 && sy==1)
+		p width=@texinfo[:width]/sx
+		p height=@texinfo[:height]/sy
+		height.times do |y|
+			width.times do |x|
+				dx=x*sx
+				dy=y*sy
+				t_t[x+ width*y]={}
+				self[dx,dy].keys.each do |k|
+					sum=0.0
+					s_s=0.0
+					n_n=1.0
+					(-1).step(sx,1) do |dsx|
+						if (dx+dsx>=0 && dx+dsx<@texinfo[:width])
+							(-1).step(sy,1) do |dsy|
+								if (dy+dsy>=0 && dy+dsy<@texinfo[:height])
+									u_u=n_n
+									u_u*=effect if (dsy==-1 || dsy==sx)
+									sum+=u_u*self[dx+dsx,dy+dsy][k]
+									s_s+=u_u
+								end
+							end
+						end
+					end
+					t_t[x+ width*y][k]=(sum/s_s).to_i
+				end
+			end
+		end
+		p @texinfo[:width]
+		p @texinfo[:height]
+		p @texinfo[:data].size
+		p @texinfo[:width]=width
+		p @texinfo[:height]=height
+		@texinfo[:data]=t_t
+		p @texinfo[:data].size
+	end
+	
+	def readTga(data)
 		#get texinfo
 		header=data.read(@header[:size]).unpack(@header[:upak])
 		@texinfo[:width]=header[8]
@@ -331,21 +407,37 @@ class TgaLoader
 		png = ChunkyPNG::Image.new(@texinfo[:width], @texinfo[:height], ChunkyPNG::Color::TRANSPARENT)
 		@texinfo[:width].times do |i|
 			@texinfo[:height].times do |j|
-				id=i+@texinfo[:width]*j
-				png[i,@texinfo[:height]-1-j] = ChunkyPNG::Color.rgba(@texinfo[:data][id][:r],@texinfo[:data][id][:g],@texinfo[:data][id][:b],@texinfo[:data][id][:a])
+				png[i,@texinfo[:height]-1-j] = ChunkyPNG::Color.rgba(self[i,j][:r], self[i,j][:g], self[i,j][:b], self[i,j][:a])
 			end
 		end
 		#png.save(path, :interlace => false)
 		png.to_blob(:fast_rgba)
 	end
+	
+	def []=(i,j,z)
+		@texinfo[:data][i+@texinfo[:width]*j]=z
+	end
+	
+	def [](i,j)
+		@texinfo[:data][i+@texinfo[:width]*j]
+	end
+	
+	
 end
 
+
+
 =begin
-
-
 file=''
 File.open("other.tga","rb") {|f| file=f.read()}
-tga=TgaLoader.new
-tga.readTga(file)
+tga=WssTga.new
+tga.readTgaStr(file)
 tga.write_png("test.png")
+=end
+
+=begin
+tga=WssTga.new
+File.open("latin.glf","rb") {|f| tga.readGlf(f)}
+tga.reduseByTwo!
+tga.write_png("glf.png")
 =end

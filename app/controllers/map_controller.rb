@@ -1,5 +1,6 @@
 class MapController < ApplicationController
 	before_action :authenticate_user!
+	before_action :is_admin?
 	def edit
 		@textures=[
 			'/textures/map/1.png', '/textures/map/2.png', 

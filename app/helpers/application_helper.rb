@@ -21,8 +21,8 @@ module ApplicationHelper
 		a=[]
 		if !current_user.nil?
 			a<<[{'name'=>t(:hello)+' '+current_user.name.to_s,'right'=>true},
-					{'name'=>t(:log_out),'path'=>destroy_user_session_path,:method => :delete},
-					{'name'=>t(:edit_registration),'path' => edit_user_registration_path}]
+					{'name'=>t(:edit_registration),'path' => edit_user_registration_path},
+					{'name'=>t(:log_out),'path'=>destroy_user_session_path,:method => :delete}]
 			if current_user.admin
 				a<<[{'name'=>t(:content)},
 						{'name'=>t(:map_editor),'path'=>map_edit_path},
@@ -37,7 +37,7 @@ module ApplicationHelper
 			a<<locale
 #			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else
-			a<<[{'name'=>t(:login),'path'=> new_user_session_path}]
+			a<<[{'name'=>t(:login), 'path'=> new_user_session_path}]
 			a<<[{'name' => t(:register) , 'path' => new_user_registration_path}]			
 		end
 		a	
@@ -46,4 +46,6 @@ module ApplicationHelper
 	def qrcode(path)
 		RQRCode::QRCode.new(path, :size => 7, :level => :h )
 	end
+	
+	
 end

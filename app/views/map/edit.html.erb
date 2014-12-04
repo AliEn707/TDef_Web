@@ -10,7 +10,7 @@
 var textures = <%=  @textures.inspect.html_safe %>
 </SCRIPT>
 
-
+<button class="btn btn-large btn-inverse" id="initButton" onclick="mapEditor_init()" style="position:absolute; x:0px; z-index:100;"><%= t(:mapEditor_init)%></button>
 <div>
 	<div id="popup" style='position: fixed; top:50%; left:50%; z-index:100; display:none; background:#aaaaaa; overflow:auto'></div>
 	<table width = "100%" id="mainTable">
