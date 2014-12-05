@@ -8,6 +8,7 @@
 
 <SCRIPT type="text/javascript" language="JavaScript">
 var textures = <%=  @textures.inspect.html_safe %>
+var previews = <%=  @previews.inspect.html_safe %>
 </SCRIPT>
 
 <button class="btn btn-large btn-inverse" id="initButton" onclick="mapEditor_init()" style="position:absolute; x:0px; z-index:100;"><%= t(:mapEditor_init)%></button>

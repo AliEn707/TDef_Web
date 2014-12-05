@@ -8,6 +8,12 @@ class MapController < ApplicationController
 			'/textures/wall/10.png','/textures/wall/11.png', '/textures/wall/mask.png',
 			'/textures/none.png'
 			]
+		@previews=[
+			'/textures/map/1.png', '/textures/map/2.png', 
+			'/textures/wall/1.png','/textures/wall/1_small.png',
+			'/textures/wall/10.png','/textures/wall/11.png', '/textures/wall/mask.png',
+			'/textures/none.png'
+			]
 			
 		id=params["id"]
 		@map={}

@@ -1,9 +1,9 @@
 ﻿/*
 ╔══════════════════════════════════════════════════════════════╗
-║ Map editor                                                   ║
-║ 										                       ║
-║ created by Yaroslav Zotov	                                   ║
-║ sep 2014                                                     ║
+║ Map editor                                          					  	 ║
+║ 												║
+║ created by Yaroslav Zotov	                        				            ║
+║ sep 2014                                               						 ║
 ╚══════════════════════════════════════════════════════════════╝
 */
 var size = 10
@@ -433,7 +433,7 @@ function mapEditor_init() { //init data
 	mapEditor_textureBrushChange(document.getElementById('textureBrush'))
 	for (var i = 0; i < textures.length; i++) {
 		images[i] = new Image()
-		images[i].src = textures[i]
+		images[i].src = previews[i]
 	}
 	walls.length = 0
 	objects.length = 0
