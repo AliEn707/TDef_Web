@@ -12,6 +12,7 @@ TDefWeb::Application.routes.draw do
   post "map/edit"
   get "map/edit"
   get "map/complete"
+  get "map/textures"
   get "map/show_all", as: "map_all"
   
   get "test/test"

@@ -820,7 +820,7 @@ var objects = []
 
 function mapEditor_setTexture(num) {
 	currentTexture = num
-	document.getElementById('currentTexture').src = textures[num]
+	document.getElementById('currentTexture').src = previews[num]
 	document.getElementById('popup').style.display = 'none'
 }
 
@@ -867,7 +867,7 @@ function mapEditor_selectTexture() {
 			elm.setAttribute("id", 'tex' + i)
 			elm.setAttribute("height", '64')
 			elm.setAttribute("width", '64')
-			elm.setAttribute("src", textures[i])
+			elm.setAttribute("src", previews[i])
 			elm.setAttribute("onclick", 'mapEditor_setTexture(' + i + ')')
 			elm.setAttribute("class","img-polaroid")
 			elm.style.position = 'relative'
@@ -960,7 +960,7 @@ function mapEditor_loadTextures() {
 		var index = parseInt(texs[0]) - 1
 		textures[index] = "textures/" + texs[1] + ".png" //Don't change path, please
 		images[index] = new Image()
-		images[index].src = textures[index]
+		images[index].src = previews[index]
 	}
 	var length = 0, big = size*size
 	nodesTextures.length = 0

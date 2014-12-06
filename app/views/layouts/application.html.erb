@@ -116,22 +116,9 @@
           <%= yield %>
         </div>
       </div><!--/row-->
-	
 	<div id="footer" style="position:fixed; bottom: 0px;">
 		<div id="qrdiv">
-			<table class="qr">
-				<% (qr = qrcode(request.url)).modules.each_index do |x| %>
-					<tr class="qr">  
-						<% qr.modules.each_index do |y| %>
-							<% if qr.dark?(x,y) %>
-								<td class="black"/>
-							<% else %>
-								<td class="white"/>
-							<% end %>
-						<% end %>
-					</tr>
-				<% end %>
-			</table>
+			<img src="<%=qrcode64(request.url)%>" />
 		</div>
 		<p>
 			<button class="btn btn-mini btn-inverse" onclick="toggle_qrdiv()">
