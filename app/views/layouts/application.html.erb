@@ -117,7 +117,7 @@
         </div>
       </div><!--/row-->
 	<div id="footer" style="position:fixed; bottom: 0px;">
-		<div id="qrdiv">
+		<div id="qrdiv" <%="hidden="" if cookies[:qrcode]"%>>
 			<img src="<%=qrcode64(request.url)%>" />
 		</div>
 		<p>

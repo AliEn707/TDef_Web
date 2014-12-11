@@ -1,5 +1,32 @@
 ﻿ru:
-  log_out: Выйти
-  log_in: Войти
+  hello: Приветствую вас
+  test: Это пока еще тест, сдесь чтото будет в дальнейшем
+  sign_out: Выйти
+  sign_in: Войти
+  sign_up: Регистрация
   maps: Карты
   edit: Изменить
+  remember_me: Запомнить меня
+  email: Email
+  password: Пароль
+  forgot_your_password: Забыли пароль?
+  not_receive_confirmation_instructions: Не пришли инструкции для подтвержения?
+  not_receive_unlock_instructions: Не получили инструкции для разблокировки?
+  edit_registration: Редактировать данные
+  content: Контент
+  map_editor: Редактор карт
+  mapEditor_init: Инициализировать редактор
+  servers: Сервера
+  locales: Локализации
+  locale: Локализация
+  key: Ключ
+  value: Значение
+  preview: Превью
+  name: Имя
+  ready: Готово
+  writen: Сохранено
+  host: Имя машины
+  ctlport: Порт управления
+  serv_num: Количество серверов
+  start_port: Начальный порт
+  
