@@ -26,6 +26,9 @@ u.admin=true
 u.save
 
 Map.create(name: "test",data: "test map data file",grafics: "test map grafics file",icon: "ljf")
+
+Server.create(hostname: "home.wsstudio.tk", port: 32000, rooms: 15, startport: 32001)
+
 #u.save
 #u.confirm!
 #u.save

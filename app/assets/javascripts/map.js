@@ -841,7 +841,7 @@ function mapEditor_selectTexture() {
 	popup.style.left = window.innerWidth*0.25 +'px'
 	for (var i = 0; i < textures.length; i++) {
 		var t = textures[i]
-		if (! /^[^/]*\..*?$/g.test(t)) { //if not a name
+		if (! /^[^/]*$/g.test(t)) { //if not a name
 			var dirs = t.split('/'), parent = popup
 			t = dirs[dirs.length - 1] //name
 			dirs.splice(-1, 1)

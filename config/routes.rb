@@ -1,4 +1,7 @@
 TDefWeb::Application.routes.draw do
+  get "server/show", as: "server_all"
+  post "server/show"
+  get "server/info/:id" => 'server#info' , as: "server_info"
   get "locales/show_all" , as: "locales_all"
   post "locales/show_all"
   

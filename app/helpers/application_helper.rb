@@ -27,6 +27,7 @@ module ApplicationHelper
 				a<<[{'name'=>t(:content)},
 						{'name'=>t(:map_editor),'path'=>map_edit_path},
 						{'name'=>t(:maps),'path'=>map_all_path},
+						{'name'=>t(:servers),'path'=>server_all_path},
 						{'name'=>t(:locales),'path'=>locales_all_path}]
 			end
 			locale=[]

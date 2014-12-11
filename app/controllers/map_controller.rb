@@ -3,10 +3,10 @@ class MapController < ApplicationController
 	before_action :is_admin?
 	def textures
 		textures=[
-			'/textures/map/1.png', '/textures/map/2.png', 
-			'/textures/wall/1.png','/textures/wall/1_small.png',
-			'/textures/wall/10.png','/textures/wall/11.png', '/textures/wall/mask.png',
-			'/textures/none.png','/textures/wall/qr.png'
+			'/textures/map/1', '/textures/map/2', 
+			'/textures/wall/1','/textures/wall/1_small',
+			'/textures/wall/10','/textures/wall/11', '/textures/wall/mask',
+			'/textures/none','/textures/wall/qr'
 			]
 		previews=[
 			'/textures/map/1.png', '/textures/map/2.png', 

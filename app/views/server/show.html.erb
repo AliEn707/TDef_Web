@@ -1,0 +1,58 @@
+
+<%= content_tag :table, class:"table table-striped",id: "table_servers", style: "display: table;",valign: "middle" do -%>	
+	<%= content_tag :thead do -%>
+		<%= content_tag :tr do -%>
+			<%server_columns.each do |t_t|%>
+				<th>
+					<%=t_t%>
+				</th>
+			<%end%>
+			<%= content_tag :th, width: "80px" do -%>
+				<%= content_tag :div, class: "btn-group" do -%>
+						<button class="btn btn-inverse" onclick='servers_add(this)'><%=t(:add)%></button>
+						<button class="btn btn-inverse" form="form"><%= t(:ok)%></button>
+				<%end%>
+			<%end%>
+		<%end%>
+	<%end%>
+	<%= content_tag :tbody do -%>
+		<% @servers.each do |s_s| %>
+			<%= content_tag :tr do -%>
+				<%= content_tag :td, width: "40%" do -%>
+					<%= content_tag :hostname, value: s_s.hostname    do -%>
+						<%=s_s.hostname%>
+					<%end%>
+				<%end%>
+				<%= content_tag :td, width: "20%" do -%>
+					<%= content_tag :port, value: s_s.port  do -%>
+						<%=s_s.port%>
+					<%end%>
+				<%end%>
+				<%= content_tag :td, width: "20%"	do -%>
+					<%= content_tag :rooms, value: s_s.rooms do -%>
+						<%=s_s.rooms%>
+					<%end%>
+				<%end%>
+				<%= content_tag :td, width: "20%"	do -%>
+					<%= content_tag :startport, value: s_s.startport do -%>
+						<%=s_s.startport%>
+					<%end%>
+				<%end%>
+				<%= content_tag :td, width: "80px"  do -%>
+					<%= content_tag :div, class: "btn-group" do -%>
+						<%= content_tag :button, class: "btn btn-small btn-inverse",onclick: 'servers_edit(this)'  do -%>
+							<i class="icon-pencil"> </i>
+						<%end%>
+						<%= content_tag :button, class: "btn btn-small btn-danger",onclick: 'servers_remove(this)'  do -%>
+							<i class="icon-remove"> </i>
+						<%end%>
+					<%end%>
+				<%end%>
+			<%end%>
+		<%end%>
+	<%end%>
+<%end%>
+
+<%= form_tag(server_all_path,method: :post, id: 'form',enctype: "multipart/form-data") do -%>
+
+<%end%>
