@@ -32,8 +32,4 @@ class ApplicationController < ActionController::Base
 		end
 	end
 	
-	def qr_toggle
-		cookies[:qrcode]=true if cookies[:qrcode].nil?
-		cookies[:qrcode]=cookies[:qrcode] ? false : true
-	end
 end

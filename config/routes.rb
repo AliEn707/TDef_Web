@@ -10,7 +10,6 @@ TDefWeb::Application.routes.draw do
   devise_for :users, controllers: { registrations: 'registrations' }
   
   get "locale", to: "application#set_locale"
-  get "qr_toggle", to: "application#qr_toggle"
   
   post "map/upload"
   get "map/upload"
