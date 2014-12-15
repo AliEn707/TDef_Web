@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141127072841) do
+ActiveRecord::Schema.define(version: 20141215084847) do
 
   create_table "client_files", force: true do |t|
     t.string   "path"

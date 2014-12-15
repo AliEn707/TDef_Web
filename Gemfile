@@ -47,12 +47,14 @@ end
 gem "twitter-bootstrap-rails"
 
 gem "devise", "3.2.4"
+gem 'devise-encryptable'
+
 
 gem "mail"
 
 gem 'rails-i18n'
 
-gem 'webrick', '1.3.1'
+gem 'webrick', '1.3.1', group: :development
 
 gem 'chunky_png' , '1.3.3'
 
