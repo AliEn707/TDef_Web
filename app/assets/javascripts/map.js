@@ -399,7 +399,7 @@ function mapEditor_init() { //init data
 	map.addEventListener('click', mapEditor_getClickXY, false)
 	map.addEventListener('mousemove', mapEditor_showMouseCoords, false)
 	nodesTextures = new Array (size*size)
-	var outerSize = (1+(size+1)%2+size)/2*(size/2+size%2)
+	var outerSize = Math.floor((1+(size+1)%2+size)/2)*(Math.floor(size/2)+size%2)
 	for (var i = 0; i < 4; i++) {
 		outerNodesTextures[i] = new Array(outerSize)
 		for (var j = 0; j < outerSize; j++)
@@ -438,7 +438,8 @@ function mapEditor_init() { //init data
 	walls.length = 0
 	objects.length = 0
 	obj=document.getElementById('initButton')
-	obj.parentNode.removeChild(obj)
+	if (obj!=null)
+		obj.parentNode.removeChild(obj)
 }
 
 function mapEditor_drawNode(index) { 

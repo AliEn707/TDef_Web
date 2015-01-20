@@ -24,6 +24,6 @@ class Locale < ActiveRecord::Base
 	end
 	
 	def ext
-		".txt"
+		".loc"
 	end
 end

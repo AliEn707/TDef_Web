@@ -9,7 +9,7 @@
 
 <script src="/map/textures"></script>
 
-<button class="btn btn-large btn-inverse" id="initButton" onclick="mapEditor_init()" style="position:absolute; x:0px; z-index:100;"><%= t(:mapEditor_init)%></button>
+<button class="btn btn-large btn-inverse" id="initButton" onclick="mapEditor_loadMap()" style="position:absolute; x:0px; z-index:100;"><%= t(:mapEditor_init)%></button>
 <div>
 	<div id="popup" style='position: fixed; top:50%; left:50%; z-index:100; display:none; background:#aaaaaa; overflow:auto'></div>
 	<table width = "100%" id="mainTable">
@@ -87,7 +87,7 @@
 					<input type ='checkbox' value = 'opacity' id = 'opacity' onchange = 'mapEditor_drawMap()'>Show map<br>
 					<input type ='checkbox' value = 'minimap' id = 'minimap'>Enable minimap
 				<p>Choose brush mode:</p>
-				<select id="textureBrush" onchange="mapEditor_texturebrushChange(this)">
+				<select id="textureBrush" onchange="mapEditor_textureBrushChange(this)">
 					<option selected value="Tiles">Tiles</option>
 					<option value="Walls" >Walls</option>
 					<option value="Objects" >Objects</option>

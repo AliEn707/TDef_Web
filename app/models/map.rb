@@ -1,5 +1,5 @@
 class Map < ActiveRecord::Base
-	
+	has_one :image, as: :imageable, dependent: :destroy
 #Map.first.write_file	
 	def write_file()
 		data={}
@@ -31,4 +31,7 @@ class Map < ActiveRecord::Base
 		{'map'=>".mp",'mgraf'=>".mg"}
 	end
 	
+	def icon
+		Rails.application.routes.url_helpers.get_image_path(image.id)
+	end
 end

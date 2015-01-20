@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141215084847) do
+ActiveRecord::Schema.define(version: 20150120090137) do
 
   create_table "client_files", force: true do |t|
     t.string   "path"
@@ -25,6 +25,14 @@ ActiveRecord::Schema.define(version: 20141215084847) do
     t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "images", force: true do |t|
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "imageable_id"
+    t.string   "imageable_type"
   end
 
   create_table "locale_data", force: true do |t|

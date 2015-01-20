@@ -1,4 +1,5 @@
 TDefWeb::Application.routes.draw do
+  get "images/:id" => 'images#get', as: "get_image"
   get "server/show", as: "server_all"
   post "server/show"
   get "server/info/:id" => 'server#info' , as: "server_info"

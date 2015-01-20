@@ -33,7 +33,7 @@ class MapController < ApplicationController
 			m_m=Map.create(name: request.POST['mapname']) if m_m.nil?
 			m_m.data=request.POST['completeInfo'] if !request.POST['completeInfo'].nil? 
 			m_m.grafics=request.POST['saveTexturesField'] if !request.POST['saveTexturesField'].nil?
-			m_m.icon=request.POST['img'] if !request.POST['img'].nil?
+			m_m.image=Image.create(data: request.POST['img']) if !request.POST['img'].nil?
 			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
 			m_m.writed=false
 			m_m.save
