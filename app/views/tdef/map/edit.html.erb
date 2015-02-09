@@ -7,7 +7,7 @@
 </style>
 
 
-<script src="/map/textures"></script>
+<script src=<%=tdef_map_textures_path%>></script>
 
 <button class="btn btn-large btn-inverse" id="initButton" onclick="mapEditor_loadMap()" style="position:absolute; x:0px; z-index:100;"><%= t(:mapEditor_init)%></button>
 <div>
@@ -108,7 +108,7 @@
 				<%= text_area_tag 'loadTexturesField', @map['grafics'] %>
 				<br><br>
 			</div>	
-			<%= form_tag('/map/upload',method: :post, id: 'form') do -%>
+			<%= form_tag(tdef_map_upload_path,method: :post, id: 'form') do -%>
 				Map name: <%=text_field_tag "mapname", @map['name'] %>
 				<input type = "hidden" name = "img" id = "img">
 				<input type="button" value="Complete" onclick="mapEditor_completeAndSave()"><br>

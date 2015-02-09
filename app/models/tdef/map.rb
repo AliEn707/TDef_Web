@@ -1,4 +1,4 @@
-class Map < ActiveRecord::Base
+class Tdef::Map < ActiveRecord::Base
 	has_one :image, as: :imageable, dependent: :destroy
 #Map.first.write_file	
 	def write_file()

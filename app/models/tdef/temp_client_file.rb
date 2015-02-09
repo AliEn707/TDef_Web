@@ -2,7 +2,7 @@ require 'fileutils'
 
 
 
-class TempClientFile < ActiveRecord::Base
+class Tdef::TempClientFile < ActiveRecord::Base
 	
 	def TempClientFile.apply_changes
 		f_f=ClientUpdate.create(status: 1)

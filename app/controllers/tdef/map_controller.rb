@@ -22,24 +22,24 @@ class Tdef::MapController < ApplicationController
 		id=params["id"]
 		@map={}
 		if !id.nil?
-			map=Map.find(id)
+			map=Tdef::Map.find(id)
 			@map=map.attributes
 		end
 	end
 	
 	def upload
 		if request.post?
-			m_m=Map.find_by(name: request.POST['mapname'])
-			m_m=Map.create(name: request.POST['mapname']) if m_m.nil?
+			m_m=Tdef::Map.find_by(name: request.POST['mapname'])
+			m_m=Tdef::Map.create(name: request.POST['mapname']) if m_m.nil?
 			m_m.data=request.POST['completeInfo'] if !request.POST['completeInfo'].nil? 
 			m_m.grafics=request.POST['saveTexturesField'] if !request.POST['saveTexturesField'].nil?
-			m_m.image=Image.create(data: request.POST['img']) if !request.POST['img'].nil?
+			m_m.image=Image.create(format: request.POST['img'][/[\w ]*\/[\w]*/],data: request.POST['img'].sub(/data:[\w \/]*;base64,/,"")) if !request.POST['img'].nil?
 			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
 			m_m.writed=false
 			m_m.save
 		end
 		if request.get? && request.GET['id'] then
-			m_m=Map.find(request.GET['id'])
+			m_m=Tdef::Map.find(request.GET['id'])
 			m_m.completed=true if request.GET.include?('complete')
 			m_m.save
 		end
@@ -51,7 +51,7 @@ class Tdef::MapController < ApplicationController
 	
 	def show_all
 #		params[:id]
-		@maps=Map.all
+		@maps=Tdef::Map.all
 	end
 	
 	def complete

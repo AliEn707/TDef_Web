@@ -1,4 +1,4 @@
-class Server < ActiveRecord::Base
+class Tdef::Server < ActiveRecord::Base
 	def get_info
 		begin
 			sock = TCPSocket.open(self.hostname, self.port)

@@ -1,4 +1,4 @@
-class ClientFile < ActiveRecord::Base
+class Tdef::ClientFile < ActiveRecord::Base
 	
 	def ClientFile.path
 		"../TDef_client/"
