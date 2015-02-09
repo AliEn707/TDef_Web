@@ -34,11 +34,11 @@ module ApplicationHelper
 					{'name'=>t(:edit_registration),'path' => edit_user_registration_path},
 					{'name'=>t(:sign_out),'path'=>destroy_user_session_path,:method => :delete}]
 			if current_user.admin
-				a<<[{'name'=>t(:content)},
-						{'name'=>t(:map_editor),'path'=>map_edit_path},
-						{'name'=>t(:maps),'path'=>map_all_path},
-						{'name'=>t(:servers),'path'=>server_all_path},
-						{'name'=>t(:locales),'path'=>locales_all_path}]
+				a<<[{'name'=>t(:tdef)},
+						{'name'=>t(:map_editor),'path'=>tdef_map_edit_path},
+						{'name'=>t(:maps),'path'=>tdef_map_all_path},
+						{'name'=>t(:servers),'path'=>tdef_server_all_path},
+						{'name'=>t(:locales),'path'=>tdef_locales_all_path}]
 			end
 #			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else

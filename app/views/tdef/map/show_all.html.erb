@@ -8,7 +8,7 @@
 			<%end%>
 		<%end%>
 		<%= content_tag :th do -%>
-			<%=link_to '<i class="icon-download-alt icon-large"></i>'.html_safe, map_complete_path, class: "btn btn-inverse btn-small btn-block" %>
+			<%=link_to '<i class="icon-download-alt icon-large"></i>'.html_safe, tdef_map_complete_path, class: "btn btn-inverse btn-small btn-block" %>
 		<%end%>
 	<%end%>
 	<% @maps.each do |m_m|%>
@@ -44,9 +44,9 @@
 			<%= content_tag :td, width: "78px" do -%>
 				<div class="btn-group btn-block" >
 					<% if !m_m.completed then%>
-						<%=link_to '<i class="icon-ok"> </i>'.html_safe, map_upload_path+"?complete&id="+m_m.id.to_s, class: "btn btn-success" %>
+						<%=link_to '<i class="icon-ok"> </i>'.html_safe, tdef_map_upload_path+"?complete&id="+m_m.id.to_s, class: "btn btn-success" %>
 					<%end%>
-					<%=link_to '<i class="icon-pencil"> </i>'.html_safe, map_edit_path+"?id="+m_m.id.to_s, class:  "btn btn-inverse "+((m_m.completed)?"btn-block":"") %>
+					<%=link_to '<i class="icon-pencil"> </i>'.html_safe, tdef_map_edit_path+"?id="+m_m.id.to_s, class:  "btn btn-inverse "+((m_m.completed)?"btn-block":"") %>
 				</div>
 			<%end%>
 		<%end%>

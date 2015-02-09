@@ -1,4 +1,4 @@
-class MapController < ApplicationController
+class Tdef::MapController < ApplicationController
 	before_action :authenticate_user!
 	before_action :is_admin?
 	def textures
@@ -46,7 +46,7 @@ class MapController < ApplicationController
 #		if !m_m.nil?
 #			m_m.write_file if m_m.completed
 #		end
-		redirect_to map_all_path
+		redirect_to tdef_map_all_path
 	end
 	
 	def show_all
@@ -56,6 +56,6 @@ class MapController < ApplicationController
 	
 	def complete
 		#write all complete maps to disk
-		redirect_to map_all_path
+		redirect_to tdef_map_all_path
 	end
 end

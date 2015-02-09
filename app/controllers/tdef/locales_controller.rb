@@ -1,11 +1,11 @@
-class LocalesController < ApplicationController
+class Tdef::LocalesController < ApplicationController
 	before_action :authenticate_user!
 	before_action :is_admin?
 	def show_all
 	  @locales=Locale.all
 	end
 	def edit
-		@a=request.POST
+		raise @a=request.POST
 		h_h={}
 		if request.post? then
 			if !request.POST['delname'].nil? 
@@ -19,7 +19,7 @@ class LocalesController < ApplicationController
 				end
 			end
 			if !request.POST['name'].nil? 
-				request.POST['name'].size.times do |i_i|
+				request.POST['name'].each_index do |i_i|
 					name=request.POST['name'][i_i]
 					key=request.POST['key'][i_i]
 					value=request.POST['value'][i_i]

@@ -1,4 +1,4 @@
-class ServerController < ApplicationController
+class Tdef::ServerController < ApplicationController
 	before_action :authenticate_user!
 	before_action :is_admin?
 	def show
@@ -23,7 +23,7 @@ class ServerController < ApplicationController
 					s_s.save
 				end
 			end
-			redirect_to server_all_path
+			redirect_to tdef_server_all_path
 		end
 	end
 	
