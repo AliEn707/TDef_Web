@@ -124,15 +124,15 @@ function mapEditor_focusResp(arg) { //show current respawn point on the map
 	var x = currentIndex%size, y = Math.floor(currentIndex/size)
 	var mapCanvas = document.getElementById("map")
 	var ctx = mapCanvas.getContext('2d')
-	ctx.setTransform(0,0,0,0,0,0)
+	//ctx.setTransform(0,0,0,0,0,0)
 	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
 	ctx.scale(scale,scale*0.5);
 	ctx.rotate(-45*Math.PI/180)
 	ctx.strokeStyle = "#ff7318"
 	ctx.lineWidth = 5
 	ctx.strokeRect(x*nodeSize + nodeSize*0.1 + 1, y*nodeSize + nodeSize*0.1 + 1, nodeSize*0.8, nodeSize*0.8)
-	ctx.setTransform(0,0,0,0,0,0)
-	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
+	/*ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)*/
 	
 }
 
@@ -444,9 +444,9 @@ function mapEditor_init() { //init data
 
 function mapEditor_drawNode(index) { 
 	var y = Math.floor(index/size), x = index%size //awful
-	var mapCanvas = document.getElementById("map"),
+	var mapCanvas = document.getElementById("map"), 
 	ctx = mapCanvas.getContext('2d')
-	ctx.setTransform(0,0,0,0,0,0)
+	/*ctx.setTransform(0,0,0,0,0,0)*/
 	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
 	ctx.scale(scale,scale*0.5);
 	ctx.rotate(-45*Math.PI/180)
@@ -489,12 +489,12 @@ function mapEditor_drawNode(index) {
 	}
 	ctx.strokeStyle = "#000000"
 	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
-	ctx.setTransform(0,0,0,0,0,0)
-	ctx.setTransform( 1, 0, 0, 1, 0, 0 )
+	/*ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, 0, 0 )*/
 }
 
 function mapEditor_drawOuterNode(x, y, textureIndex) {
-	ctx.setTransform(0,0,0,0,0,0)
+	//ctx.setTransform(0,0,0,0,0,0)
 	ctx.setTransform( 1, 0, 0, 1, translatex, translatey)
 	ctx.scale(scale,scale*0.5);
 	ctx.rotate(-45*Math.PI/180)
@@ -502,8 +502,8 @@ function mapEditor_drawOuterNode(x, y, textureIndex) {
 	ctx.drawImage(images[textureIndex], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
 	ctx.strokeStyle = "#000000"
 	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
-	ctx.setTransform(0,0,0,0,0,0)
-	ctx.setTransform( 1, 0, 0, 1, 0, 0 )
+	/*ctx.setTransform(0,0,0,0,0,0)
+	ctx.setTransform( 1, 0, 0, 1, 0, 0 )*/
 }
 
 function mapEditor_changeMapSize(obj) {
@@ -727,8 +727,10 @@ function mapEditor_setParams(obj, text, partsIndex, index) {
 
 function mapEditor_loadMap() {
 	var text = document.getElementById('loadMap').value.split('\n')
-	if (text.length <= 1)
+	if (text.length <= 1) {
+		mapEditor_init()
 		return
+	}
 	document.getElementById('mapSize').value = size = parseInt(text[0])
 	mapEditor_init()
 	for (var i = 0; i < size*size; i++) {
@@ -737,6 +739,7 @@ function mapEditor_loadMap() {
 	}
 	mapEditor_setWalkData()
 	mapEditor_setBuildData()
+	
 	var basesIndex = 0, partsIndex = 0, currentWave = 0, pcBase = 0
 	for (var i = 2; i < text.length; i++) {
 		if (text[i].match(/^max_[\S]+\s+\d+/g) != null) {
@@ -788,6 +791,7 @@ function mapEditor_loadMap() {
 	}
 	mapEditor_drawMap()
 	mode = document.getElementById('mode').selectedIndex
+	mapEditor_loadTextures()
 }
 
 function mapEditor_selectEditor(type) {
@@ -959,7 +963,7 @@ function mapEditor_loadTextures() {
 	for (; text[i] != '-'; i++) {
 		texs = text[i].split(' ')
 		var index = parseInt(texs[0]) - 1
-		textures[index] = "textures/" + texs[1] + ".png" //Don't change path, please
+		textures[index] = "/textures/" + texs[1] + ".png" //Don't change path, please
 		images[index] = new Image()
 		images[index].src = previews[index]
 	}
