@@ -1,0 +1,2 @@
+module Tdef::GameHelper
+end

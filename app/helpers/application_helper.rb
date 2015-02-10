@@ -38,8 +38,13 @@ module ApplicationHelper
 						{'name'=>t(:map_editor),'path'=>tdef_map_edit_path},
 						{'name'=>t(:maps),'path'=>tdef_map_all_path},
 						{'name'=>t(:servers),'path'=>tdef_server_all_path},
-						{'name'=>t(:locales),'path'=>tdef_locales_all_path}]
+						{'name'=>t(:locales),'path'=>tdef_locales_all_path},
+						{'name'=>t(:game),'path'=>tdef_game_path}]
+			else
+				a<<[{'name'=>t(:tdef)},
+						{'name'=>t(:game),'path'=>tdef_game_path}]
 			end
+
 #			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else
 			a<<[{'name'=>t(:sign_in), 'path'=> new_user_session_path}]

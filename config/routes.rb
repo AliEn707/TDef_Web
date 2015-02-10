@@ -27,6 +27,7 @@ TDefWeb::Application.routes.draw do
   get "/TDef/map/textures" => "tdef/map#textures", as: "tdef_map_textures"
   get "/TDef/map/show_all" => "tdef/map#show_all", as: "tdef_map_all"
   
+  get "/TDef/game" => "tdef/game#game", as: "tdef_game"
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

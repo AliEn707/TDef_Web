@@ -8,8 +8,9 @@
 
 
 <script src=<%=tdef_map_textures_path%>></script>
+<script src=/javascripts/map.js></script>
 
-<button class="btn btn-large btn-inverse" id="initButton" onclick="mapEditor_loadMap()" style="position:absolute; x:0px; z-index:100;"><%= t(:mapEditor_init)%></button>
+<button class="btn btn-large btn-inverse" id="initButton" onclick="mapEditor_loadMap()" style="position:absolute; left:0px; z-index:100;"><%= t(:mapEditor_init)%></button>
 <div>
 	<div id="popup" style='position: fixed; top:50%; left:50%; z-index:100; display:none; background:#aaaaaa; overflow:auto'></div>
 	<table width = "100%" id="mainTable">
@@ -124,4 +125,5 @@
 window.onload=mapEditor_init
 window.onkeypress=mapEditor_handleKey 
 window.onkeydown=mapEditor_handleKey
+mapEditor_init()
 </script>
