@@ -30,7 +30,7 @@ class Tdef::MapController < ApplicationController
 	def upload
 		if request.post?
 			m_m=Tdef::Map.find_by(name: request.POST['mapname'])
-			m_m=Tdef::Map.create(name: request.POST['mapname']) if m_m.nil?
+			m_m=Tdef::Map.new(name: request.POST['mapname']) if m_m.nil?
 			m_m.data=request.POST['completeInfo'] if !request.POST['completeInfo'].nil? 
 			m_m.grafics=request.POST['saveTexturesField'] if !request.POST['saveTexturesField'].nil?
 			m_m.image=Image.create(format: request.POST['img'][/[\w ]*\/[\w]*/],data: request.POST['img'].sub(/data:[\w \/]*;base64,/,"")) if !request.POST['img'].nil?
@@ -46,6 +46,7 @@ class Tdef::MapController < ApplicationController
 #		if !m_m.nil?
 #			m_m.write_file if m_m.completed
 #		end
+#		File.open("out.txt","a"){|f| f.write(request.POST['img']);f.puts}
 		redirect_to tdef_map_all_path
 	end
 	

@@ -44,6 +44,8 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+#gem 'rack-mini-profiler', group: :development
+
 gem "twitter-bootstrap-rails"
 
 gem "devise", "3.2.4"
@@ -52,7 +54,7 @@ gem 'devise-encryptable'
 
 gem "mail"
 
-gem 'rails-i18n'
+gem 'rails-i18n' , "4.0.3"
 
 gem 'webrick', '1.3.1', group: :development
 
@@ -63,8 +65,9 @@ gem 'RubyInline'
 gem 'chunky_png' , '1.3.3'
 
 #for resising images
-#sudo apt-get install libgd2-noxpm
 #sudo apt-get install libgd2-noxpm-dev
-gem 'fastimage_resize'
+gem 'fastimage_resize' , "2.0.3"
 
 gem 'rqrcode'
+
+
