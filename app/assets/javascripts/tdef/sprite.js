@@ -1,14 +1,14 @@
 function Sprite(options){
-	var frame=0;
-	var tick=0;
-	var tpf=options.tpf || 0;
-	var frames=options.frames || 1;
-	var loop=options.loop || 0;
-	var context=options.context;
-	var width=options.width;
-	var height=options.height;
-	var image=options.image;
-	var scale=options.scale || 1;
+	this.frame=0;
+	this.tick=0;
+	this.tpf=options.tpf || 0;
+	this.frames=options.frames || 1;
+	this.loop=options.loop || 0;
+	this.context=options.context;
+	this.width=options.image.width || options.width;
+	this.height=options.image.height || options.height;
+	this.image=options.image;
+	this.scale=options.scale || 1;
 }
 
 Sprite.prototype.update=function (){
