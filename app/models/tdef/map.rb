@@ -32,6 +32,6 @@ class Tdef::Map < ActiveRecord::Base
 	end
 	
 	def icon
-		Rails.application.routes.url_helpers.get_image_path(image.id)
+		image.url
 	end
 end

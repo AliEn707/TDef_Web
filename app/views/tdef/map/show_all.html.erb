@@ -1,6 +1,5 @@
 
 <%=@message%>
-<img src="<%= @a%>">
 <%= content_tag :table, class:"table table-striped" do -%>
 	<%= content_tag :tr do -%>
 		<%map_columns.each do |m_m|%>
@@ -9,7 +8,7 @@
 			<%end%>
 		<%end%>
 		<%= content_tag :th do -%>
-			<%=link_to '<i class="icon-download-alt icon-large"></i>'.html_safe, tdef_map_complete_path, class: "btn btn-inverse btn-small btn-block" %>
+			<%=link_to '<i class="icon-file icon-large"></i>'.html_safe, tdef_map_edit_path, class: "btn btn-inverse btn-small btn-block" %>
 		<%end%>
 	<%end%>
 	<% @maps.each do |m_m|%>
@@ -44,10 +43,11 @@
 			<%end%>
 			<%= content_tag :td, width: "78px" do -%>
 				<div class="btn-group btn-block" >
-					<% if !m_m.completed then%>
+<!--					<% if !m_m.completed then%>
 						<%=link_to '<i class="icon-ok"> </i>'.html_safe, tdef_map_upload_path+"?complete&id="+m_m.id.to_s, class: "btn btn-success" %>
 					<%end%>
-					<%=link_to '<i class="icon-pencil"> </i>'.html_safe, tdef_map_edit_path+"?id="+m_m.id.to_s, class:  "btn btn-inverse "+((m_m.completed)?"btn-block":"") %>
+-->					<%=link_to '<i class="icon-pencil"> </i>'.html_safe, tdef_map_edit_path+"?id="+m_m.id.to_s, class:  "btn btn-inverse " %>
+					<%=link_to '<i class="icon-remove"> </i>'.html_safe, tdef_map_delete_path(m_m.id), class:  "btn btn-danger "%>
 				</div>
 			<%end%>
 		<%end%>

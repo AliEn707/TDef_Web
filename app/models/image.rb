@@ -2,7 +2,11 @@ class Image < ActiveRecord::Base
 	belongs_to :imageable, polymorphic: true
 	
 	def raw
-		Base64.decode64(self.data.sub("data:image/png;base64,","")).html_safe
+		Base64.decode64(self.data)
+	end
+	
+	def url
+		Rails.application.routes.url_helpers.get_image_path("#{self.id}.png")
 	end
 	
 	def base64

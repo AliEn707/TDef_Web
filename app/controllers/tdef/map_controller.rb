@@ -59,4 +59,9 @@ class Tdef::MapController < ApplicationController
 		#write all complete maps to disk
 		redirect_to tdef_map_all_path
 	end
+	
+	def delete
+		Tdef::Map.find(params[:id]).destroy
+		redirect_to :back
+	end
 end
