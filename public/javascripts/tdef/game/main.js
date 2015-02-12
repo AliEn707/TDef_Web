@@ -1,5 +1,4 @@
-﻿
-var canavas = document.getElementById('mainGameCanvas')
+﻿var canavas = document.getElementById('mainGameCanvas')
 var canvasParent = canavas.parentNode
 
 canavas.width = canvasParent.offsetWidth - 1

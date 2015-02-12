@@ -1,13 +1,12 @@
 function Sprite(options){
 	this.frame=0;
 	this.tick=0;
-	this.tpf=options.tpf || 0;
+	this.tpf=options.tpf || 1;
 	this.frames=options.frames || 1;
 	this.loop=options.loop || 0;
-	this.context=options.context;
-	this.width=options.image.width || options.width;
-	this.height=options.image.height || options.height;
 	this.image=options.image;
+	this.width=options.image.width || this.image.width || options.width;
+	this.height=options.image.height || this.image.height || options.height;
 	this.scale=options.scale || 1;
 }
 
@@ -25,16 +24,28 @@ Sprite.prototype.update=function (){
 		this.tick += 1;
 }
 
-Sprite.prototype.render=function (x,y){
+Sprite.prototype.draw=function (context,x,y,opt){
+	x=x || 0
+	y=y || 0
+	var _width=this.width / this.frames
+	var widthneed=opt.width || _width
+	var scalew=widthneed / _width * this.scale
+	var width=_width*scalew
+	
+	var _height=this.height 
+	var heightneed=opt.height || _height
+	var scaleh=heightneed / _height * this.scale
+	var height=_height * scaleh
+	
 	// Draw the animation
-	this.context.drawImage(
+	context.drawImage(
 			this.image,
-			this.frame * this.width / this.frames,
+			this.frame * _width,
 			0,
-			this.width / this.frames,
-			this.height,
+			_width,
+			_height,
 			x,
 			y,
-			this.width / this.frames*this.scale,
-			this.height*this.scale);
+			width,
+			height);
 }

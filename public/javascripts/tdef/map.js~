@@ -1033,7 +1033,7 @@ console.log(tempTextures)
 			objects = []
 			for (var j = 0; j < length; j++) {
 				object = text[i++].split(' ') 
-				objects.push({ind: parseInt(object[0])*size + parseInt(object[1]), texture: tempTextures[parseInt(object[2]) - 1]})
+				objects.push({ind: parseInt(object[0])*size + parseInt(object[1]), texture: parseInt(object[2]) - 1})
 			}
 		}
 		else
