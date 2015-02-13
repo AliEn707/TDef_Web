@@ -4,10 +4,19 @@ function Sprite(options){
 	this.tpf=options.tpf || 1;
 	this.frames=options.frames || 1;
 	this.loop=options.loop || 0;
-	this.image=options.image;
-	this.width=options.image.width || this.image.width || options.width;
-	this.height=options.image.height || this.image.height || options.height;
 	this.scale=options.scale || 1;
+	this.image=new Image();
+	
+	var t = document.createElement('canvas');
+        t.width = options.width || options.image.width
+	t.height = options.height || options.image.height
+        var c = t.getContext('2d');
+        c.drawImage(options.image, 0, 0, t.width, t.height);
+        
+	this.image.src = t.toDataURL();
+	this.width= t.width
+	this.height=t.height
+	
 }
 
 Sprite.prototype.update=function (){
@@ -27,6 +36,7 @@ Sprite.prototype.update=function (){
 Sprite.prototype.draw=function (context,x,y,opt){
 	x=x || 0
 	y=y || 0
+	opt=opt || {}
 	var _width=this.width / this.frames
 	var widthneed=opt.width || _width
 	var scalew=widthneed / _width * this.scale
@@ -37,10 +47,12 @@ Sprite.prototype.draw=function (context,x,y,opt){
 	var scaleh=heightneed / _height * this.scale
 	var height=_height * scaleh
 	
+	var frame= opt.frame || this.frame
+	var frame=frame%this.frames
 	// Draw the animation
 	context.drawImage(
 			this.image,
-			this.frame * _width,
+			frame * _width,
 			0,
 			_width,
 			_height,

@@ -1,9 +1,13 @@
+eng=new TDefEngine()
+eng.init()
+ctx=eng.ctx
+
 var img= [new Image(),new Image(),new Image(),new Image(),new Image()]
-img[0].src="/coin-sprite-animation.png"
-img[1].src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRunb53FDsq5Uu9Gc5BKvG2b0WSn208nXsNMNyeJdZmqAbRSSBDIw"
-img[2].src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbP48sj4NMaziS9xmqyaatqtVx8PGCOoJbQV8s0gPoy0HaGckl5A"
-img[3].src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQPrHL2Kl_wsEtoOFmcPWeZvHV0t7po4hUBjdFT4Kxhb9XX2PjVAw"
-img[4].src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYfyynF7Rwh3zwVIOK_a13j0xNSy-s3RNAl4zytBxVP3E6Qv4rjw"
+img[0].src="/imgtest/coin.png"
+img[1].src="/imgtest/green.jpg"
+img[2].src="/imgtest/white.jpeg"
+img[3].src="/imgtest/tree.jpeg"
+img[4].src="/imgtest/red.jpeg"
 //var sprite=new Sprite({image: img[0], context: ctx, loop: 1, tpf: 3, frames: 10})
 var textures=[new Sprite({image: img[0], context: ctx, loop: 1, tpf: 3, frames: 10}),
 			new Sprite({image: img[1], context: ctx, loop: 1, tpf: 3, frames: 1}),
@@ -26,11 +30,9 @@ ctx.drawImage(img[4],0,0)
 map.update()
 //map.draw(ctx)
 
-interval1=window.setInterval(function(){
-		textures[0].update();
-		//map.update()
-		map.draw(ctx)
-		textures[0].draw(ctx,0,0,{})
-			},5)
+
 			
-interval2=window.setInterval(function(){map.update()},1000/13)
+//interval2=window.setInterval(function(){map.update()},1000/13)
+
+
+eng.map=map
