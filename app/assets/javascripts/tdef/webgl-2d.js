@@ -219,7 +219,22 @@
     }
     */
   };
+  
+  var trMatrix = Transform.prototype.getIdentity();
 
+  Transform.prototype.tr = function(a,b,c,d,e,f) {
+    trMatrix[0] = a;
+    trMatrix[1] = b;
+    trMatrix[3] = c;
+    trMatrix[4] = d;
+    trMatrix[6] = e;
+    trMatrix[7] = f;
+
+    mat3.multiply(trMatrix, this.m_stack[this.c_stack]);
+
+  };
+
+  
   var scaleMatrix = Transform.prototype.getIdentity();
 
   Transform.prototype.scale = function(x, y) {
@@ -1020,16 +1035,7 @@
     };
 
     gl.transform = function transform(m11, m12, m21, m22, dx, dy) {
-      var m = gl2d.transform.m_stack[gl2d.transform.c_stack];
-
-      m[0] *= m11;
-      m[1] *= m21;
-      m[2] *= dx;
-      m[3] *= m12;
-      m[4] *= m22;
-      m[5] *= dy;
-      m[6] = 0;
-      m[7] = 0;
+      gl2d.transform.tr(m11, m12, m21, m22, dx, dy);
     };
 
     function sendTransformStack(sp) {
@@ -1365,7 +1371,7 @@
         doCrop = true;
       }
 
-      var shaderProgram = gl2d.initShaders(transform.c_stack, sMask);
+      var shaderProgram = gl2d.initShaders(transform.c_stack+1, sMask);
 
       var texture, cacheIndex = imageCache.indexOf(image);
 

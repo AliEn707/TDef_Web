@@ -38,16 +38,16 @@
   </head>
   <body>
 
-    <div class="navbar navbar-inverse navbar-fluid-top">
+    <div class="navbar navbar-inverse navbar-static-top">
       <div class="navbar-inner">
-        <div class="container-fluid">
+        <div class="container-static">
           <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
           <a class="brand" href="/">TDef Develop</a>
-          <div class="container-fluid nav-collapse">
+          <div class="container-fluid"> <!-- nav-collapse">-->
 		<ul class="nav">
 			<%menu.each do |m|%>
 				<%if m[0]["right"]!=true then%>
