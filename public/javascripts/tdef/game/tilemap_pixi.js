@@ -21,7 +21,6 @@ function Grid(size,opt){
 	this.hitArea= new PIXI.Rectangle(0,-this.size*this.nodesize*0.705,this.size*this.nodesize*1.41,this.size*this.nodesize*1.41)
 	
 	this.mousedown = this.touchstart = function(data) {
-		console.log("press")
 		this.mousePressPoint[0] = data.getLocalPosition(this.parent).x -
                                 this.position.x;
 		this.mousePressPoint[1] = data.getLocalPosition(this.parent).y -
@@ -52,6 +51,10 @@ function Grid(size,opt){
 //	this.transformCorrection()
 }
 
+
+Grid.prototype.resize = function(x,y){
+	this.transformCorrection()
+}
 
 Grid.prototype.translate = function(x,y){
 	this.position.x+=x || 0
@@ -144,6 +147,8 @@ Grid.prototype.setOuterNode = function(pos, id, terrain,x,y){
 	node.width=this.nodesize
 	node.position.x=x*this.nodesize
 	node.position.y=y*this.nodesize
+	node.anchor.x = 0;
+	node.anchor.y = 0;
 	node.id=id
 	this.nodesOut[pos].addChildAt(node, id);
 }

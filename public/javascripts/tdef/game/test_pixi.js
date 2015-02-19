@@ -1,5 +1,5 @@
 
-var engine = new TDefEngine(document.getElementById("gameDiv"))
+var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: false})
 // create a texture from an image path
 var texture = new PIXI.BaseTexture.fromImage("coin.png");
 // create a new Sprite using the texture
@@ -29,5 +29,4 @@ for (var i =0;i<size*size;i++)
 //	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
 engine.setMap({size: size, nodes: nodes, outerNodes: outnodes, textures: [new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 128, 128)),new PIXI.Texture.fromImage("/imgtest/tree.jpeg")]})
 //engine.stage.addChild(bunny)
-	
 	

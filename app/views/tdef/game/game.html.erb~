@@ -1,4 +1,4 @@
-<div id="gameDiv" style="position:relative; top:10px;"></div>
+<div id="gameDiv" style="position:relative; top:5px;"></div>
 <script type="text/javascript" src = "/javascripts/tdef/game/pixi.js" ></script>
 <script type="text/javascript" src = "/javascripts/tdef/game/engine_pixi.js" ></script>
 <script type="text/javascript" src = "/javascripts/tdef/game/tilemap_pixi.js" ></script>
