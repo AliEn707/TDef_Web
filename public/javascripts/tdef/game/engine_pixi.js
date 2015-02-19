@@ -16,10 +16,10 @@
 	
 	window.engine=this;
 	window.onresize = this.resize;
-	
+	this.keys=[]
 	this.settings={
 			moveSpeed: 4.1, 
-			zoomSpeed: 0.1,
+			zoomSpeed: 0.02,
 			xInverted:1, 
 			yInverted:-1, 
 			weelInverted: -1,
@@ -47,6 +47,7 @@ TDefEngine.prototype.render= function (){
 	//a.nextFrame()
 	    // render the stage
 	    that.renderer.render(that.stage);
+	that.keysProcessor()
 	//bunny.nextFrame()
 }
 
@@ -115,8 +116,47 @@ TDefEngine.prototype.setMap= function (opt){
 	this.stage.addChild(map);
 	this.map.transformCorrection();
 			
-	//setup weel handler
+	//setup handlers
 	addWeelHendler(this.renderer.view,this.weelHandler);
+	window.onkeydown=this.keysHadler
+	window.onkeyup=this.keysHadler
+	
 }
 
+TDefEngine.prototype.keysHadler=function(e) {
+	var that = window.engine 
+	//set continued actions
+//	console.log("key "+e.keyCode)
+	if (e.type=="keydown"){	
+//		console.log("key "+e.keyCode+"pushed")
+		that.keys[e.keyCode]=true
+	}else{
+//		console.log("key "+e.keyCode+"realized")
+		that.keys[e.keyCode]=false
+	}
+	//set single actions
+	
+}
 
+TDefEngine.prototype.keysProcessor=function() {
+	var 	mapUpdated=false
+//	console.log(this.keys)
+	if (this.keys[this.settings.defines.keys.mapMoveUp]){
+		this.map.translate(0,-this.settings.moveSpeed*this.settings.yInverted)
+	}
+	if (this.keys[this.settings.defines.keys.mapMoveDown]){
+		this.map.translate(0,+this.settings.moveSpeed*this.settings.yInverted)
+	}
+	if (this.keys[this.settings.defines.keys.mapMoveLeft]){ 
+		this.map.translate(this.settings.moveSpeed*this.settings.xInverted,0)
+	}
+	if (this.keys[this.settings.defines.keys.mapMoveRight]){ 
+		this.map.translate(-this.settings.moveSpeed*this.settings.xInverted,0)
+	}	
+	if (this.keys[this.settings.defines.keys.mapZoomUp]){ 
+		this.map.zoom(1+this.settings.zoomSpeed)
+	}	
+	if (this.keys[this.settings.defines.keys.mapZoomDown]){ 
+		this.map.zoom(1-this.settings.zoomSpeed)
+	}	
+}
