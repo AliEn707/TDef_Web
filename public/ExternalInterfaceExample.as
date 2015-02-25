@@ -231,7 +231,14 @@ package {
 	private const BULLET_POSITION:int=  BIT_1;
 	private const BULLET_DETONATE:int=  BIT_2;
 	private const BULLET_CREATE:int=  BIT_3;
-
+	//player constants
+	private const PLAYER_HEALTH:int=   BIT_1
+	private const PLAYER_MONEY:int=   BIT_2
+	private const PLAYER_CREATE:int=   BIT_3
+	private const PLAYER_LEVEL:int=   BIT_4
+	private const PLAYER_HERO:int=   BIT_5
+	private const PLAYER_HERO_COUNTER:int=   BIT_6
+	private const PLAYER_TARGET:int=   BIT_7
 	
 	private var dataSeq:Array = new Array();
 	private var outObj:String="";
@@ -304,6 +311,7 @@ package {
 	//							output.appendText(dataSeq.shift()+"\n");//get & del first
 								break;						
 							case "byte":
+							case "char":
 								data=mapSock.readByte();
 	//							output.appendText(dataSeq.shift()+"\n");//get & del first
 								break;						
