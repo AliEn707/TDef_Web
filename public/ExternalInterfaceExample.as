@@ -16,7 +16,7 @@ package {
         private var input:TextField;
         private var output:TextField;
         private var sendBtn:Sprite;
-	private var isReady:Boolean;
+	private var isReady:Boolean=false;
 
 	private var mapSock:Socket = new Socket();
 	
@@ -95,7 +95,7 @@ package {
         }
 	
         private function sendToJavaScript(value:String):void {
-		if (ExternalInterface.available) {
+		if (isReady) {
 			ExternalInterface.call("sendToJavaScript", value);
 		}
 	}
@@ -106,7 +106,6 @@ package {
         }
 	
         private function clickHandler(event:MouseEvent):void {
-		output.appendText(1+ "\n");
 		if (ExternalInterface.available) {
 			ExternalInterface.call("sendToJavaScript", input.text);
 		}
@@ -171,66 +170,227 @@ package {
         }
 	
 	//messaging with server
+	//msg to client
+	private const MSG_TEST:int= 0;
+	private const MSG_NPC:int= 1;
+	private const MSG_TOWER:int= 2;
+	private const MSG_BULLET:int= 3;
+	private const MSG_PLAYER:int= 4;
+	//msg to server
+	private const MSG_SPAWN_TOWER:int= 1;
+	private const MSG_SPAWN_NPC:int= 2;
+	private const MSG_DROP_TOWER:int= 3;
+	private const MSG_MOVE_HERO:int= 4;
+	private const MSG_SET_TARGET:int= 5;
+	//bit constants
+	private const BIT_1:int= 1;
+	private const BIT_2:int= 2;
+	private const BIT_3:int= 4;
+	private const BIT_4:int= 8;
+	private const BIT_5:int= 16;
+	private const BIT_6:int= 32;
+	private const BIT_7:int= 64;
+	private const BIT_8:int= 128;
+	private const BIT_9:int=256;
+	private const BIT_10:int= 512;
+	private const BIT_11:int= 1024;
+	private const BIT_12:int= 2048;
+	private const BIT_13:int= 4096;
+	private const BIT_14:int= 8192;
+	private const BIT_15:int= 16384;
+	private const BIT_16:int= 32768;
+	private const BIT_17:int= 65536;
+	private const BIT_18:int= 131072;
+	private const BIT_19:int= 262144;
+	private const BIT_20:int= 524288;
+	private const BIT_21:int= 1048576;
+	private const BIT_22:int= 2097152;
+	private const BIT_23:int= 4194304;
+	private const BIT_24:int= 8388608;
+	private const BIT_25:int= 16777216;
+	private const BIT_26:int= 33554432;
+	private const BIT_27:int= 67108864;
+	private const BIT_28:int= 134217728;
+	private const BIT_29:int= 268435456;
+	private const BIT_30:int= 536870912;
+	private const BIT_31:int= 1073741824;
+//	private const BIT_32:uint= 2147483648;
+	//npc messages
+	private const NPC_HEALTH:int= BIT_1;
+	private const NPC_POSITION:int= BIT_2;
+	private const NPC_CREATE:int= BIT_3;
+	private const NPC_LEVEL:int= BIT_4;
+	private const NPC_SHIELD:int= BIT_5;
+	//tower messages
+	private const TOWER_HEALTH:int= BIT_1;
+	private const TOWER_TARGET:int= BIT_2;
+	private const TOWER_CREATE:int= BIT_3;
+	private const TOWER_LEVEL:int= BIT_4;
+	private const TOWER_SHIELD:int= BIT_5;
+	//bullet messages
+	private const BULLET_POSITION:int=  BIT_1;
+	private const BULLET_DETONATE:int=  BIT_2;
+	private const BULLET_CREATE:int=  BIT_3;
+
 	
 	private var dataSeq:Array = new Array();
-	private var outObj:String;
+	private var outObj:String="";
 	private var currMsg:int;
 	
 	// push - add to end
 	// shift - get first
 	
 	private function getMesage():void {
-//		dataSeq.push("start")//add to end
-		output.appendText(dataSeq[0]+"\n");//see first
-
-		switch (dataSeq[0]){
-			case "bitmask":
-				try{
-					var bitMask:int;
-					bitMask=mapSock.readInt();
-//						output.appendText(dataSeq.shift()+"\n");//get & del first
-					dataSeq=getBitMaskParams(bitMask);
-				}
-				catch (error:Error){
-//						output.appendText("get Error"+error+"\n");
-					return;
-				}
-				break;
+		var str:String;
+		var data:Number;
+//		dataSeq.push("push","float",5)//add to end
+		output.appendText(dataSeq+"\n");//see first
+		do {
+			switch (dataSeq[0]){
+				case undefined: //lets see for next message
+					if (outObj.length>0){//send object to javasctript
+						sendToJavaScript(outObj+",timer:"+flash.utils.getTimer()+"})");
+//						output.appendText(outObj+"\n");
+						outObj="";
+					}
+					try{
+						currMsg=mapSock.readByte();
+	//					output.appendText(dataSeq.shift()+"\n");//get & del first
+						dataSeq.push("id");
+						outObj="({msg:"+currMsg;
+					}
+					catch (error:Error){
+						output.appendText("get Error"+error+"\n");
+						return;
+					}
+					break;
 				
-			case "id":
-				try{
-					var id:int;
-					id=mapSock.readInt();
+				case "id": //lets see for next message
+					try{
+						data=mapSock.readInt();
 //						output.appendText(dataSeq.shift()+"\n");//get & del first
-					dataSeq.shift();
-					outObj+=", id: "+id;
-				}
-				catch (error:Error){
+						dataSeq.push("bitmask");
+						outObj+=",id:"+data;
+					}
+					catch (error:Error){
 //						output.appendText("get Error"+error+"\n");
-					return;
-				}
-				break;
+						return;
+					}
+					break;
 				
-			default: //no other variants, lets see for next message
-				try{
-					currMsg=mapSock.readByte();
-//						output.appendText(dataSeq.shift()+"\n");//get & del first
-					dataSeq.push("bitmask");
-					outObj="({type="+currMsg;
-				}
-				catch (error:Error){
-//					output.appendText("get Error"+error+"\n");
-					return;
-				}
-				break;
-			
-		}
-		
+				case "bitmask": //need to get bitmask
+					try{
+						var bitMask:int;
+						bitMask=mapSock.readInt();
+	//						output.appendText(dataSeq.shift()+"\n");//get & del first
+						dataSeq=getParamsByBitMask(bitMask);
+						dataSeq.shift();
+					}
+					catch (error:Error){
+	//						output.appendText("get Error"+error+"\n");
+						return;
+					}
+					break;
+					
+				default:
+					try{
+						switch (dataSeq[1]){
+							case "int":
+								data=mapSock.readInt();
+	//							output.appendText(dataSeq.shift()+"\n");//get & del first
+								break;						
+							case "short":
+								data=mapSock.readShort();
+	//							output.appendText(dataSeq.shift()+"\n");//get & del first
+								break;						
+							case "byte":
+								data=mapSock.readByte();
+	//							output.appendText(dataSeq.shift()+"\n");//get & del first
+								break;						
+							case "float":
+								data=mapSock.readFloat();
+	//							output.appendText(dataSeq.shift()+"\n");//get & del first
+								break;
+							case "string": //we have third argument string size
+								str=mapSock.readUTFBytes(dataSeq[2]);
+								dataSeq.splice(2,1);
+								break;
+						}
+						outObj+=","+dataSeq[0]+": "+data;
+//						dataSeq.shift();
+//						dataSeq.shift();
+						dataSeq.splice(0,2);
+					}
+					catch (error:Error){
+	//						output.appendText("get Error"+error+"\n");
+						return;
+					}
+					break;
+					
+			}
+		} while(dataSeq.length>0);
 	}
 
-	private function getBitMaskParams(bitMask:int):Array {
+	private function getParamsByBitMask(bitMask:int):Array {
 		var out:Array=[];
 		//here must be list of getting obj params 
+		switch (currMsg){
+			case MSG_TEST:
+				break;
+			case MSG_NPC:
+				if ((bitMask&NPC_CREATE)!=0){ //npc create
+					outObj+=",create:1";
+					dataSeq.push("owner","int");
+					dataSeq.push("type","int");
+				}
+				dataSeq.push("x","float");
+				dataSeq.push("y","float");
+				if ((bitMask&NPC_LEVEL)!=0){ //npc level
+					dataSeq.push("level","short");
+				}
+				if ((bitMask&NPC_HEALTH)!=0){ //npc health
+					dataSeq.push("health","int");
+				}
+				if ((bitMask&NPC_SHIELD)!=0){ //npc health
+					dataSeq.push("shield","int");
+				}
+				break;
+			case MSG_TOWER:
+				if ((bitMask&TOWER_CREATE)!=0){ 
+					outObj+=",create:1";
+					dataSeq.push("type","int");
+					dataSeq.push("owner","int");
+					dataSeq.push("position","int");
+				}
+				if ((bitMask&TOWER_TARGET)!=0){ 
+					dataSeq.push("target","short");
+				}
+				if ((bitMask&TOWER_LEVEL)!=0){ 
+					dataSeq.push("level","short");
+				}
+				if ((bitMask&TOWER_HEALTH)!=0){ 
+					dataSeq.push("health","int");
+				}
+				if ((bitMask&TOWER_SHIELD)!=0){ 
+					dataSeq.push("shield","short");
+				}
+				break;
+			case MSG_BULLET:
+				dataSeq.push("x","float");
+				dataSeq.push("y","float");
+				if ((bitMask&BULLET_CREATE)!=0){ 
+					outObj+=",create:1";
+					dataSeq.push("type","int");
+					dataSeq.push("owner","int");
+					dataSeq.push("sx","float"); //source x
+					dataSeq.push("sy","float"); //source y
+				}
+				if ((bitMask&BULLET_DETONATE)!=0){ 
+					dataSeq.push("detonate","byte");
+				}
+				break;
+				
+		}
 		return out;
 	}
     }
