@@ -50,7 +50,7 @@ package {
 		output.text = "Initializing...\n";
 		addChild(output);
 		
-		getMesage();
+		mapGetMessage();
 	
 		if (ExternalInterface.available) {
 			try {
@@ -59,7 +59,7 @@ package {
 					setupCallBacks()
 				} else {
 					output.appendText("JavaScript is not ready, creating timer.\n");
-					var readyTimer:Timer = new Timer(3000, 0);
+					var readyTimer:Timer = new Timer(100, 0);
 					readyTimer.addEventListener(TimerEvent.TIMER, timerHandler);
 					readyTimer.start();
 				}
@@ -77,13 +77,14 @@ package {
 		output.appendText("Adding callback...\n");
 		ExternalInterface.addCallback("sendToActionScript", receivedFromJavaScript);
                 ExternalInterface.addCallback("connTest", connectMap);
+//                ExternalInterface.addCallback("startMap", startMap);
+		isReady = true;
 		//add javascript info about init flash
 	}
 
         private function timerHandler(event:TimerEvent):void {
 		output.appendText("Checking JavaScript status...\n");
-		isReady = checkJavaScriptReady();
-		if (isReady) {
+		if (checkJavaScriptReady()) {
 			setupCallBacks();
 			output.appendText("JavaScript is ready.\n");
 			Timer(event.target).stop();
@@ -124,21 +125,30 @@ package {
 		sendToJavaScript("got SecurityError" + event+"\n");
 	}
 	//socket has data
-	private function dataHandler(event:ProgressEvent):void {
+	private function mapTimeDataHandler(event:TimerEvent):void {
+		sendToJavaScript("got timer data" + event+"\n");
+		//mapGetMessage()
+	}
+	private function mapDataHandler(event:ProgressEvent):void {
 		sendToJavaScript("got data" + event+"\n");
+		//mapGetMessage()
 		var str:String;
 		str=mapSock.readUTFBytes(event.bytesLoaded);
 		sendToJavaScript("got: "+str);
 		
-		mapSock.writeUTFBytes(str);
-		mapSock.flush();
-		//getMessage
+//		mapSock.writeUTFBytes(str);
+//		mapSock.flush();
 	}
 	
-	private function connectHandler(event:Event):void {
+	private function mapConnectHandler(event:Event):void {
 		sendToJavaScript("connected " + event+"\n");
-		mapSock.writeUTFBytes("hello");
+		mapSock.writeUTFBytes("Hello Dear^_^");
 		mapSock.flush();
+		mapSock.addEventListener(ProgressEvent.SOCKET_DATA, mapDataHandler); 
+		//check messages by timer, maybe it not need
+		var dataTimer:Timer = new Timer(40, 0);
+		dataTimer.addEventListener(TimerEvent.TIMER, mapTimeDataHandler);
+		dataTimer.start();
 	}
 	
   	private function closeHandler(event:Event):void {
@@ -149,12 +159,11 @@ package {
 	        sendToJavaScript("Try to connect\n");
 		mapSock= new Socket();
 		mapSock.endian = Endian.LITTLE_ENDIAN;
-		mapSock.addEventListener(Event.CONNECT, connectHandler); 
+		mapSock.addEventListener(Event.CONNECT, mapConnectHandler); 
 		mapSock.addEventListener(Event.CLOSE, closeHandler); 
 		mapSock.addEventListener(ErrorEvent.ERROR, errorHandler); 
 		mapSock.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler); 
 		mapSock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-		mapSock.addEventListener(ProgressEvent.SOCKET_DATA, dataHandler); 
     
 		try {
 			mapSock.connect("localhost", 12345);
@@ -169,7 +178,7 @@ package {
 		}
         }
 	
-	//messaging with server
+	//messaging with map server
 	//msg to client
 	private const MSG_TEST:int= 0;
 	private const MSG_NPC:int= 1;
@@ -247,7 +256,7 @@ package {
 	// push - add to end
 	// shift - get first
 	
-	private function getMesage():void {
+	private function mapGetMessage():void {
 		var str:String;
 		var data:Number;
 //		dataSeq.push("push","float",5)//add to end
@@ -272,7 +281,7 @@ package {
 					}
 					break;
 				
-				case "id": //lets see for next message
+				case "id": 
 					try{
 						data=mapSock.readInt();
 //						output.appendText(dataSeq.shift()+"\n");//get & del first
@@ -339,6 +348,30 @@ package {
 		} while(dataSeq.length>0);
 	}
 
+	private function mapAuth(bitMask:int):void {
+		var id:int;
+		var out:String="({";
+		while(true){
+			try{
+				id=mapSock.readInt();
+				out+=",id:"+id;
+				break;
+			}
+			catch(error:Error){
+			}
+		}
+		while(true){
+			try{
+				id=mapSock.readInt();
+				out+=",players:"+id;
+				break;
+			}
+			catch(error:Error){
+			}
+		}
+		//send to Javascript
+	}
+	
 	private function getParamsByBitMask(bitMask:int):Array {
 		var out:Array=[];
 		//here must be list of getting obj params 
