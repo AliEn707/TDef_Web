@@ -101,7 +101,7 @@ package {
 		}
 	}
 	
-        private function checkJavaScriptReady():Boolean {
+      private function checkJavaScriptReady():Boolean {
             var R:Boolean = ExternalInterface.call("isReady");
             return R;
         }
@@ -255,6 +255,11 @@ package {
 	
 	// push - add to end
 	// shift - get first
+	 private function mapGotObjectJS(value:String):void {
+		if (isReady) {
+			ExternalInterface.call("mapGotObject", value);
+		}
+	}
 	
 	private function mapGetMessage():void {
 		var str:String;
@@ -265,7 +270,7 @@ package {
 			switch (dataSeq[0]){
 				case undefined: //lets see for next message
 					if (outObj.length>0){//send object to javasctript
-						sendToJavaScript(outObj+",timer:"+flash.utils.getTimer()+"})");
+						mapGotObjectJS(outObj+",timer:"+flash.utils.getTimer()+"})");
 //						output.appendText(outObj+"\n");
 						outObj="";
 					}
@@ -369,7 +374,9 @@ package {
 			catch(error:Error){
 			}
 		}
+		
 		//send to Javascript
+		ExternalInterface.call("mapAuthData", out);
 	}
 	
 	private function getParamsByBitMask(bitMask:int):Array {
