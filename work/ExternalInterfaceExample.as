@@ -79,6 +79,7 @@ package {
                 ExternalInterface.addCallback("mapConnect", connectMap);
 //                ExternalInterface.addCallback("startMap", startMap);
 		isReady = true;
+		ExternalInterface.call("connectorReady");
 		//add javascript info about init flash
 	}
 
@@ -99,6 +100,7 @@ package {
 		if (isReady) {
 			ExternalInterface.call("sendToJavaScript", value);
 		}
+		ExternalInterface.call("connectorReady");
 	}
 	
       private function checkJavaScriptReady():Boolean {
