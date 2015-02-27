@@ -22,16 +22,16 @@ HashTable.prototype.setItem = function(key, value)
         return previous;
     }
 
-    HashTable.prototype.getItem = function(key) {
+HashTable.prototype.getItem = function(key) {
         return this.hasItem(key) ? this.items[key] : undefined;
     }
 
-    HashTable.prototype.hasItem = function(key)
+HashTable.prototype.hasItem = function(key)
     {
         return this.items.hasOwnProperty(key);
     }
    
-    HashTable.prototype.removeItem = function(key)
+HashTable.prototype.removeItem = function(key)
     {
         if (this.hasItem(key)) {
             previous = this.items[key];
@@ -44,7 +44,7 @@ HashTable.prototype.setItem = function(key, value)
         }
     }
 
-    HashTable.prototype.keys = function()
+HashTable.prototype.keys = function()
     {
         var keys = [];
         for (var k in this.items) {
@@ -55,7 +55,7 @@ HashTable.prototype.setItem = function(key, value)
         return keys;
     }
 
-    HashTable.prototype.values = function()
+HashTable.prototype.values = function()
     {
         var values = [];
         for (var k in this.items) {
@@ -66,7 +66,7 @@ HashTable.prototype.setItem = function(key, value)
         return values;
     }
 
-    HashTable.prototype.each = function(fn) {
+HashTable.prototype.each = function(fn) {
         for (var k in this.items) {
             if (this.hasItem(k)) {
                 fn(k, this.items[k]);
@@ -74,7 +74,7 @@ HashTable.prototype.setItem = function(key, value)
         }
     }
 
-    HashTable.prototype.clear = function()
+HashTable.prototype.clear = function()
     {
         this.items = {}
         this.length = 0;

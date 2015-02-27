@@ -22,11 +22,17 @@
      function sendToActionScript(value) {
          thisMovie("ExternalInterfaceExample").sendToActionScript(value);
      }
-     function connTest(value) {
-         thisMovie("ExternalInterfaceExample").connTest(value);
+     function connTest(obj) {
+	thisMovie("ExternalInterfaceExample").mapConnect(obj.form.host.value,obj.form.port.value);
+     }
+     function mapGotObject(value) {
+	sendToJavaScript(value);
      }
      function sendToJavaScript(value) {
-         document.forms["form1"].output.value += "ActionScript says: " + value + "\n";
+         document.forms["form1"].output.value +=  value + "\n";
+     }
+     function mapAuthData(value) {
+         document.forms["form1"].output.value +=  value + "\n";
      }
  </script>
  </head>
@@ -41,7 +47,7 @@
          <param name="allowScriptAccess" value="sameDomain" />
          <embed src="ExternalInterfaceExample.swf" quality="high" bgcolor="#869ca7"
              width="500" height="375" name="ExternalInterfaceExample" align="middle"
-             play="true" loop="false" quality="high" allowScriptAccess="sameDomain"
+             play="true" loop="false" quality="high" 
              type="application/x-shockwave-flash"
              pluginspage="http://www.macromedia.com/go/getflashplayer">
          </embed>
@@ -50,7 +56,10 @@
      <form name="form1" onsubmit="return false;">
          <input type="text" name="input" value="" />
          <input type="button" value="Send" onclick="sendToActionScript(this.form.input.value);" />
-         <input type="button" value="connTest" onclick="connTest(this.form.input.value);" /><br />
+         <br>
+	 <input type="text" name="host" value="localhost" />
+         <input type="text" name="port" value="34140" />
+         <input type="button" value="mapConnect" onclick="connTest(this);" /><br />
          <textarea cols="60" rows="20" name="output" readonly="true">Initializing...</textarea>
      </form>
  
