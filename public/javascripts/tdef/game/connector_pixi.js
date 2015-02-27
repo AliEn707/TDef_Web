@@ -42,7 +42,7 @@ function mapAuthData(value) {
 }
 
 function connectorReady(){
-	console.log("Connector loaded");
+	console.log("Connector ready");
 	hideConnector(getConnector());
 }
 

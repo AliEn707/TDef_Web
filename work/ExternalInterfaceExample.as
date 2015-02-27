@@ -19,6 +19,7 @@ package {
 	private var isReady:Boolean=false;
 
 	private var mapSock:Socket = new Socket();
+	private var dataTimer:Timer = new Timer(160, 0);//40, 0);
 	
         public function ExternalInterfaceExample() {
 		Security.allowDomain("*");
@@ -49,8 +50,6 @@ package {
 		output.border = true;
 		output.text = "Initializing...\n";
 		addChild(output);
-		
-		mapGetMessage();
 	
 		if (ExternalInterface.available) {
 			try {
@@ -130,7 +129,7 @@ package {
 		try {
 			mapSock.connect(host, int(port));
 //			mapSock.connect("smtp.yandex.ru", 25);
-			logJS("Socket connected: " + mapSock.connected + "\n");
+//			logJS("Socket connected: " + mapSock.connected + "\n");
 		}
 		catch (error:Error) {
 			logJS("An Error occurred: " + error.message + "\n");
@@ -181,8 +180,8 @@ package {
 		mapSock.flush();
 		//add data listener
 		mapSock.addEventListener(ProgressEvent.SOCKET_DATA, mapDataHandler); 
-		//check messages by timer
-		var dataTimer:Timer = new Timer(30, 0);//40, 0);
+		//check messages by timer, if no additional data
+		
 		dataTimer.addEventListener(TimerEvent.TIMER, mapTimeDataHandler);
 		dataTimer.start();
 		currMsg=0;
@@ -191,6 +190,7 @@ package {
   	private function closeHandler(event:Event):void {
 		logJS("closed" + event+"\n");
 		mapAuthorised=false;
+		dataTimer.stop();
 	}
 	
        private const NPC_SET_SIZE:int=9;
@@ -286,48 +286,38 @@ package {
 		//see first
 		do {
 //			logJS(dataSeq+" || "+dataSeq[0]);
-			switch (dataSeq[0]){
-				case undefined: //lets see for next message
-					if (outObj.length>0){//send object to javasctript
-						mapGotObjectJS(outObj+",time:"+flash.utils.getTimer()+"})");
-						outObj="";
-					}
-					try{
+			try{
+				switch (dataSeq[0]){
+					case undefined: //lets see for next message
+						if (outObj.length>0){//send object to javasctript
+							mapGotObjectJS(outObj+",time:"+flash.utils.getTimer()+"})");
+							outObj="";
+						}
 						currMsg=mapSock.readByte();
 						dataSeq.push("oid");
 						outObj="({msg:"+currMsg;
-					}
-					catch (error:Error){
-						return;
-					}
-					break;
-				
-				case "oid": 
-					try{
+					
+						break;
+					
+					case "oid": 
+						
 						data=mapSock.readInt();
 						dataSeq.shift();
 						dataSeq.push("bitmask");
 						outObj+=",id:"+data;
-					}
-					catch (error:Error){
-						return;
-					}
-					break;
-				
-				case "bitmask": //need to get bitmask
-					try{
+						
+						break;
+					
+					case "bitmask": //need to get bitmask
+						
 						var bitMask:int;
 						bitMask=mapSock.readInt();
 						dataSeq.shift();
 						getParamsByBitMask(bitMask);
-					}
-					catch (error:Error){
-						return;
-					}
-					break;
-					
-				default:
-					try{
+						
+						break;
+						
+					default:
 						switch (dataSeq[1]){
 							case "{":
 								str="{$:0";
@@ -364,14 +354,14 @@ package {
 						outObj+=","+dataSeq[0]+":"+str;
 						dataSeq.shift();
 						dataSeq.shift();
-//						dataSeq.splice(0,2);
-					}
-					catch (error:Error){
-	//						output.appendText("get Error"+error+"\n");
-						return;
-					}
-					break;
-					
+	//						dataSeq.splice(0,2);
+						
+						break;
+						
+				}
+			}
+			catch (error:Error){
+				return;
 			}
 //			logJS("step");
 		} while(mapSock.bytesAvailable>0);
@@ -428,33 +418,10 @@ package {
 		}
 	}
 	
-	private function mapCheckLatency():String {
-		var a:int=flash.utils.getTimer();
-		var m:int;
-		var loop:Boolean=true;
-		mapSock.writeInt(0);
-		mapSock.flush();
-		while(loop){
-			try{
-				m=mapSock.readInt();
-				loop=false;
-				break;
-			}
-			catch(error:Error){
-			}
-		}
-		var b:int=flash.utils.getTimer()-a;
-		output.appendText("Latency: " + b + "\n");
-		return ",latency"+b;
-	}
-	
 	private function getParamsByBitMask(bitMask:int):void{
 		var i:int;
 		//here must be list of getting obj params 
-		logJS(currMsg+"");
 		switch (currMsg){
-			case MSG_TEST:
-				break;
 			case MSG_NPC:
 				outObj+=",objtype:NPC";
 				if ((bitMask&NPC_CREATE)!=0){ //npc create
@@ -473,7 +440,7 @@ package {
 				if ((bitMask&NPC_SHIELD)!=0){ //npc health
 					dataSeq.push("shield","int");
 				}
-				break;
+				return;
 			case MSG_TOWER:
 				outObj+=",objtype:TOWER";
 				if ((bitMask&TOWER_CREATE)!=0){ 
@@ -494,7 +461,7 @@ package {
 				if ((bitMask&TOWER_SHIELD)!=0){ 
 					dataSeq.push("shield","int");
 				}
-				break;
+				return;
 			case MSG_BULLET:
 				outObj+=",objtype:BULLET";
 				dataSeq.push("x","float");
@@ -509,7 +476,7 @@ package {
 				if ((bitMask&BULLET_DETONATE)!=0){ 
 					dataSeq.push("detonate","byte");
 				}
-				break;
+				return;
 			case MSG_PLAYER:
 				outObj+=",objtype:PLAYER";
 				if ((bitMask&PLAYER_CREATE)!=0){ 
@@ -560,7 +527,7 @@ package {
 				if ((bitMask&PLAYER_TARGET)!=0){ 
 					dataSeq.push("target","short");
 				}
-				break;
+				return;
 			default:
 				logJS("unnown message");
 				break;
