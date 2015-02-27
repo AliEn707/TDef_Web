@@ -107,9 +107,7 @@ package {
         }
 	
         private function clickHandler(event:MouseEvent):void {
-		if (ExternalInterface.available) {
-			ExternalInterface.call("logJS", input.text);
-		}
+		logJS(input.text);
         }
 	
 	//Sockets
@@ -374,7 +372,7 @@ package {
 					
 			}
 //			logJS("step");
-		} while(dataSeq.length>0);//mapSock.bytesAvailable>0);
+		} while(mapSock.bytesAvailable>0);
 	}
 	
 	//auth params
@@ -534,9 +532,13 @@ package {
 					dataSeq.push("_hero_counter","int");
 					dataSeq.push("base","int");
 					
-					dataSeq.push("base_type_health","int");//fix
-					dataSeq.push("hero_type_health","int");//fix
-					dataSeq.push("hero_type_shield","int");//fix
+					dataSeq.push("base_type","{");//fix
+					dataSeq.push("health","int");//fix
+					dataSeq.push("$","}");
+					dataSeq.push("hero_type","{");//fix
+					dataSeq.push("health","int");//fix
+					dataSeq.push("shield","int");//fix
+					dataSeq.push("$","}");
 				}
 				if ((bitMask&PLAYER_HERO)!=0){ 
 					dataSeq.push("hero","int");

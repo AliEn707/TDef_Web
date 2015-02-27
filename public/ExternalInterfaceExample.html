@@ -20,10 +20,10 @@
          }
      }
      function sendToActionScript(value) {
-         thisMovie("ExternalInterfaceExample").sendToActionScript(value);
+         thisMovie("connector").sendToActionScript(value);
      }
      function connTest(obj) {
-	thisMovie("ExternalInterfaceExample").mapConnect(obj.form.host.value,obj.form.port.value);
+	thisMovie("connector").mapConnect(obj.form.host.value,obj.form.port.value);
      }
      function mapGotObject(value) {
 	sendToJavaScript(value);
@@ -39,14 +39,14 @@
  <body onload="pageInit();">
  
      <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-             id="ExternalInterfaceExample" width="500" height="375"
+             id="connector" width="500" height="375"
              codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab">
-         <param name="movie" value="ExternalInterfaceExample.swf" />
+         <param name="movie" value="connector.swf" />
          <param name="quality" value="high" />
          <param name="bgcolor" value="#869ca7" />
          <param name="allowScriptAccess" value="sameDomain" />
-         <embed src="ExternalInterfaceExample.swf" quality="high" bgcolor="#869ca7"
-             width="500" height="375" name="ExternalInterfaceExample" align="middle"
+         <embed src="javascripts/tdef/game/connector.swf" quality="high" bgcolor="#869ca7"
+             width="500" height="375" name="connector" align="middle"
              play="true" loop="false" quality="high" 
              type="application/x-shockwave-flash"
              pluginspage="http://www.macromedia.com/go/getflashplayer">
