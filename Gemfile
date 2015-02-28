@@ -60,18 +60,20 @@ gem 'rails-i18n' , "4.0.3"
 
 gem 'webrick', '1.3.1', group: :development
 
-#for use C code in ruby
-gem 'RubyInline'
-
 #for creating png
 gem 'chunky_png' , '1.3.3'
-
-#for resising images
-#sudo apt-get install libgd2-noxpm-dev
-gem 'fastimage_resize' , "2.0.3"
 
 gem 'rqrcode'
 
 #compressor
 #gem "ruby-lzma"
 
+if RUBY_PLATFORM=~ /mingw/ 
+else
+	#for use C code in ruby
+	gem 'RubyInline'
+	
+	#for resising images
+	#sudo apt-get install libgd2-noxpm-dev
+	gem 'fastimage_resize' , "2.0.3"
+end

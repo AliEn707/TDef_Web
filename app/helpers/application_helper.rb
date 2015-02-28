@@ -17,6 +17,10 @@ module ApplicationHelper
 		o.html_safe
 	end
 	
+	def title(page_title)
+		content_for(:title) { page_title }
+	end
+	
 	def current_locale
 		locale=I18n.default_locale
 		if !current_user.nil? then
