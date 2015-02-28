@@ -74,6 +74,14 @@ HashTable.prototype.each = function(fn) {
         }
     }
 
+HashTable.prototype.eachCall = function(fn) {
+        for (var k in this.items) {
+            if (this.hasItem(k)) {
+                this.items[k][fn]();
+            }
+        }
+    }
+    
 HashTable.prototype.clear = function()
     {
         this.items = {}
