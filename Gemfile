@@ -73,5 +73,5 @@ gem 'fastimage_resize' , "2.0.3"
 gem 'rqrcode'
 
 #compressor
-gem "ruby-lzma"
+#gem "ruby-lzma"
 
