@@ -41,25 +41,29 @@ function Grid(size,opt){
 	
 	this.nodes= new PIXI.SpriteBatch()//PIXI.DisplayObjectContainer
 	this.nodes.rotation=-Math.PI/4
-	this.addChildAt(this.nodes, 0);
+	this.addChild(this.nodes);
 	this.nodesOut=new Array(4)
 	for (var i =0;i<4;i++){
 		this.nodesOut[i]= new PIXI.SpriteBatch()//PIXI.DisplayObjectContainer
 		this.nodesOut[i].rotation=-Math.PI/4
-		this.addChildAt(this.nodesOut[i], i+1);
+		this.addChild(this.nodesOut[i]);
 	}
+	
+	this.objs= new PIXI.SpriteBatch()//PIXI.DisplayObjectContainer
+	this.addChild(this.objs);
+	
 //	this.transformCorrection()
 }
 
 
 Grid.prototype.resize = function(x,y){
-	this.transformCorrection()
+	this.transformCorrection();
 }
 
 Grid.prototype.translate = function(x,y){
-	this.position.x+=x || 0
-	this.position.y+=y || 0
-	this.transformCorrection()
+	this.position.x+=x || 0;
+	this.position.y+=y || 0;
+	this.transformCorrection();
 }
 
 Grid.prototype.zoom = function(s,x,y){
@@ -113,6 +117,10 @@ Grid.prototype.transformCorrection=function(){
 		this.position.y-=d;
 	}
 	
+}
+
+Grid.prototype.objDepth=function (x, y){
+	return x+this.size-y;
 }
 
 Grid.prototype.gridToScreen=function (x, y){

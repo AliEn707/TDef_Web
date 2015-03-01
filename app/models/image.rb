@@ -15,11 +15,11 @@ class Image < ActiveRecord::Base
 	end
 	
 	def raw_resized(x,y=0)
-		FastImage.resize(StringIO.new(self.raw), x, y).read
+		FastImage.resize(StringIO.new(self.raw), x, y).read rescue self.raw
 	end
 	
 	def resize!(x,y=0)
-		self.data=FastImage.resize(StringIO.new(self.raw), x, y).read
+		self.data=(FastImage.resize(StringIO.new(self.raw), x, y).read rescue self.raw)
 	end
 	
 	def cut!(sizex,sizey,from=0,to=0)

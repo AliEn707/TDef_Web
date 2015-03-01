@@ -423,14 +423,16 @@ package {
 		//here must be list of getting obj params 
 		switch (currMsg){
 			case MSG_NPC:
-				outObj+=",objtype:NPC";
+				outObj+=",objtype:\"Npc\"";
 				if ((bitMask&NPC_CREATE)!=0){ //npc create
 					outObj+=",create:1";
 					dataSeq.push("owner","int");
 					dataSeq.push("type","int");
 				}
+//				dataSeq.push("destination","{");
 				dataSeq.push("x","float");
 				dataSeq.push("y","float");
+//				dataSeq.push("$","}");
 				if ((bitMask&NPC_LEVEL)!=0){ //npc level
 					dataSeq.push("level","short");
 				}
@@ -442,7 +444,7 @@ package {
 				}
 				return;
 			case MSG_TOWER:
-				outObj+=",objtype:TOWER";
+				outObj+=",objtype:\"Tower\"";
 				if ((bitMask&TOWER_CREATE)!=0){ 
 					outObj+=",create:1";
 					dataSeq.push("type","int");
@@ -463,7 +465,7 @@ package {
 				}
 				return;
 			case MSG_BULLET:
-				outObj+=",objtype:BULLET";
+				outObj+=",objtype:\"Bullet\"";
 				dataSeq.push("x","float");
 				dataSeq.push("y","float");
 				if ((bitMask&BULLET_CREATE)!=0){ 
@@ -478,7 +480,7 @@ package {
 				}
 				return;
 			case MSG_PLAYER:
-				outObj+=",objtype:PLAYER";
+				outObj+=",objtype:\"Player\"";
 				if ((bitMask&PLAYER_CREATE)!=0){ 
 					dataSeq.push("pid","int");
 					dataSeq.push("tower_set","{");

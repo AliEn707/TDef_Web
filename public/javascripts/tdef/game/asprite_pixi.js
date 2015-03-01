@@ -7,12 +7,18 @@ function ASprite(texture,params){
 	
 	this.frames=[texture]
 	this.loop = params.loop || true
-	
+	this.updateFrame();
 }
 ASprite.prototype=new PIXI.Sprite()
 ASprite.prototype.constructor= ASprite
 
 
+ASprite.prototype.getTexture= function (i){
+	if i
+		return this.frames[i];
+	else
+		return this.texture;
+}
 ASprite.prototype.setFrame= function (n,texture){
 	this.frames[n]=texture
 	if (this.current_frame==n)
