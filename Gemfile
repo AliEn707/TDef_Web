@@ -68,6 +68,9 @@ gem 'rqrcode'
 #compressor
 #gem "ruby-lzma"
 
+#redis
+gem 'redis', '2.1.1'
+
 if RUBY_PLATFORM=~ /mingw/ 
 else
 	#for use C code in ruby
