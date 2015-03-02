@@ -5,7 +5,16 @@ var connectorReady; //function in future
 
 function mapGotObject(str){
 	var obj=eval(str);
-	if (obj.msg==1){
+	var e=getEngine();
+	if (obj.msg==4){//player
+	}else{
+		if (!e.mapObjects[obj.id]){
+			e.mapObjects[obj.id]=eval("new "+obj.objtype+"(obj)");
+			e.stage.addChild(e.mapObjects[obj.id]);
+		}
+		if (e.mapObjects[obj.id]){
+			e.mapObjects[obj.id].update(obj);
+		}
 	}
 }
 

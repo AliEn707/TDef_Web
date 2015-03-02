@@ -6,11 +6,11 @@ function Grid(size,opt){
 	PIXI.SpriteBatch.call(this);
 	this.interactive = true;
 	
-	this.width=window.engine.renderer.view.width
-	this.height=window.engine.renderer.view.height
+	this.width=getEngine().renderer.view.width
+	this.height=getEngine().renderer.view.height
 	this.size = size;
 	this.fullsize = size*size;
-	this.nodesize=1
+	this.nodesize=50
 	
 	this.scale.x = 1
 	this.scale.y = 0.5;
@@ -68,8 +68,9 @@ Grid.prototype.translate = function(x,y){
 
 Grid.prototype.zoom = function(s,x,y){
 	s=s || 1
-	var w=x || window.engine.renderer.view.width/2
-	var h=y || window.engine.renderer.view.height/2
+	var engine=getEngine();
+	var w=x || engine.renderer.view.width/2
+	var h=y || engine.renderer.view.height/2
 	var grd=this.screenToGrid(w,h)
 	this.scale.x*=s
 	this.scale.y*=s
@@ -81,8 +82,8 @@ Grid.prototype.zoom = function(s,x,y){
 }
 
 Grid.prototype.transformCorrection=function(){
-	var width=window.engine.renderer.view.width
-	var height=window.engine.renderer.view.height
+	var width=getEngine().renderer.view.width
+	var height=getEngine().renderer.view.height
 	
 	var l=this.gridToScreen(0,0).x
 	var d=this.gridToScreen(this.size,0).y

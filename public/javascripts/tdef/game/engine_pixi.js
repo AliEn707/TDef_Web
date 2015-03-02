@@ -2,8 +2,10 @@
 	opt = opt || {};
 	opt.defines=opt.defines || {};
 	
+	this.mapObjects={};//contains npc,towers,bullets
+		
 	place=place || document.body;
-	this.webgl=opt.webgl;
+	this.webgl=opt.webgl || true;
 	var width=place.offsetWidth || window.innerWidth;
 	var height=window.innerHeight - 5 - (place.offsetTop || 0);
 	this.stage = new PIXI.Stage(0x000000);
@@ -37,9 +39,12 @@
 		};
 }
 
+function getEngine(){
+	return window.engine;
+}
 
 TDefEngine.prototype.render= function (){
-	var that=window.engine;
+	var that=getEngine();
 	requestAnimFrame( that.render );
 
 	    // just for fun, lets rotate mr rabbit a little
@@ -47,12 +52,13 @@ TDefEngine.prototype.render= function (){
 	//a.nextFrame()
 	    // render the stage
 	    that.renderer.render(that.stage);
-	that.keysProcessor()
+	that.keysProcessor();
+	that.objectsProcessor();
 	//bunny.nextFrame()
 }
 
 TDefEngine.prototype.resize=function (){
-	var that = window.engine ;
+	var that = getEngine() ;
 	var place=that.place;
 	var width=window.innerWidth - (place.offsetLeft*2 || 0);
 	var height=window.innerHeight - 5 - (place.offsetTop || 0);
@@ -66,7 +72,7 @@ TDefEngine.prototype.outerSize= function (size){
 }
 
 TDefEngine.prototype.weelHandler= function (e){
-	var that=window.engine;
+	var that=getEngine();
 	e = e || window.event;
 	var x=e.clientX || e.layerX;
 	var y= e.clientY || e.layerY;
@@ -89,7 +95,7 @@ TDefEngine.prototype.setMap= function (opt){
 	var k = 0, i, j;
 		for(i=-1;i>-(size/2+size%2+1);i--)
 			for(j=-i-1;j<size-(-i-1);j++) {
-				map.setOuterNode(0, k, opt.textures[opt.outerNodes[0][k]], i-(this.webgl?0:1), j);
+				map.setOuterNode(0, k, opt.textures[opt.outerNodes[0][k]], i, j);
 				k++;
 			}
 		k=0;
@@ -107,7 +113,7 @@ TDefEngine.prototype.setMap= function (opt){
 		k=0;
 		for(j=-1;j>-(size/2+size%2+1);j--)
 			for(i=-j-1;i<size-(-j-1);i++) {
-				map.setOuterNode(3, k, opt.textures[opt.outerNodes[3][k]], i, j-(this.webgl?0:1));
+				map.setOuterNode(3, k, opt.textures[opt.outerNodes[3][k]], i, j);
 				k++;
 			}
 	
@@ -124,7 +130,7 @@ TDefEngine.prototype.setMap= function (opt){
 }
 
 TDefEngine.prototype.keysHadler=function(e) {
-	var that = window.engine 
+	var that = getEngine() 
 	//set continued actions
 //	console.log("key "+e.keyCode)
 	if (e.type=="keydown"){	
@@ -159,4 +165,11 @@ TDefEngine.prototype.keysProcessor=function() {
 	if (this.keys[this.settings.defines.keys.mapZoomDown]){ 
 		this.map.zoom(1-this.settings.zoomSpeed)
 	}	
+}
+
+TDefEngine.prototype.objectsProcessor=function() {
+	var objs=this.mapObjects;
+	for(var i in objs){
+		objs[i].proceed();
+	}
 }
