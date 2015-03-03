@@ -3,11 +3,16 @@ var jsReady = false;
 
 var connectorReady; //function in future
 
+var latency;
+
 function mapGotObject(str){
 	var obj=eval(str);
 	var e=getEngine();
-	if (obj.msg==4){//player
-	}else{
+	if (obj.objtype=="Player"){
+		//player
+		
+	}else//{
+		if (obj.objtype=="Npc"){
 		if (!e.mapObjects[obj.id]){
 			e.mapObjects[obj.id]=eval("new "+obj.objtype+"(obj)");
 			e.stage.addChild(e.mapObjects[obj.id]);
@@ -16,6 +21,7 @@ function mapGotObject(str){
 			e.mapObjects[obj.id].update(obj);
 		}
 	}
+	//console.log(str)
 }
 
 function mapAuthData(str){
@@ -40,14 +46,14 @@ function mapConnect(host,port) {
 	getConnector().mapConnect(host,port);
 }
 
-function mapGotObject(value) {
-//	console.log(value);
-	sendToJavaScript(value)
-}
 
 function mapAuthData(value) {
 //	console.log(value);
 	sendToJavaScript(value)
+	var obj=eval(value)
+	latency=obj.latency*6/100;
+	if (latency==0)
+		latency=2;
 }
 
 function connectorReady(){
@@ -104,7 +110,7 @@ function addConnectorSWF(place) {
 	place.appendChild(obj)
 	
 	hideConnector=function (obj){
-		obj.parentNode.style.left=-obj.width;
+		obj.parentNode.style.left=-obj.width+"px";
 	}
 }
 

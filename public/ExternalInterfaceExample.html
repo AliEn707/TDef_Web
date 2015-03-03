@@ -20,6 +20,11 @@ function sendToJavaScript(value) {
 function sendToActionScript(value) {
 	getConnector().sendToActionScript(value);
 }
+
+function mapGotObject(value) {
+//	console.log(value);
+	sendToJavaScript(value)
+}
  </script>
  </head>
  <body onload="pageInit();">

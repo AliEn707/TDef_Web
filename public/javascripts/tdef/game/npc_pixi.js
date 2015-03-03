@@ -1,4 +1,11 @@
 //for create eval("new "+obj.objtype+"(obj)")
+
+var Npc_callbacks={
+	walkleft:{
+		endAnimation:function () {},
+	}
+}
+
 function Npc(opt){
 	opt=opt || {};
 	PIXI.SpriteBatch.call(this);
@@ -11,19 +18,19 @@ function Npc(opt){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
 		var s=this.map.nodesize*(opt.scale || 1);
-		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},width:s,height:s});
+		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Npc_callbacks[i]||{}},loop:textures[i].loop,width:s,height:s});
 	}
 	//changeble
 	this.sprite=this.sprites["idle"];
-	this.grid={x:opt.x || 0,y:opt.y || 0};
+	this.grid=opt.grid || {x: 0,y: 0};
 	this.position=this.map.gridToScreen(this.grid.x,this.grid.y);
-	this.destination={x:opt.x || 0,y:opt.y || 0};
+	this.destination= opt.grid || {x: 0,y: 0};
 	this.direction={x:0,y:0};
 	this.level=opt.level || 0;
 	this.health=opt.health || 0;
 	this.shield=opt.shield || 0;
 	this.energy=opt.energy || 0;
-	this.time=0;
+	this.time=opt.time || 0;
 	this.depth=this.map.objDepth(this.grid.x,this.grid.y);
 	this.addChild(this.sprite);
 	
@@ -34,18 +41,21 @@ Npc.prototype.constructor= Npc;
 
 Npc.prototype.update= function (obj){
 	var time=this.time;
-	var dirx=(obj.x-this.grid.x);
-	var diry=(obj.y-this.grid.y);
-	var l=Math.sqrt(dirx*dirx+diry*diry);
-	this.time=opt.time;
-	var timestep=1;
+	var dirx=(obj.grid.x-this.grid.x);
+	var diry=(obj.grid.y-this.grid.y);
+	//var l=Math.sqrt(dirx*dirx+diry*diry);
+	this.time=obj.time;
+	var timestep=latency;
+	if (time!=0)
+		timestep+=((this.time-time)*4/100);
 	//add time correction
-	this.direction.x=dirx/l/timestep;
-	this.direction.y=diry/l/timestep;
-	
+	this.direction.x=dirx/timestep;
+	this.direction.y=diry/timestep;
+		
 	this.health=obj.health || this.health;
 	this.shield=obj.shield || this.shield;
 	this.level=obj.level || this.level;
+	this.destination=obj.grid;
 }
 
 Npc.prototype.proceed= function (){

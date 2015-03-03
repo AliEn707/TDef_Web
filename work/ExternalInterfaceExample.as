@@ -99,7 +99,6 @@ package {
 		if (isReady) {
 			ExternalInterface.call("sendToJavaScript", value);
 		}
-		ExternalInterface.call("connectorReady");
 	}
 	
       private function checkJavaScriptReady():Boolean {
@@ -429,10 +428,10 @@ package {
 					dataSeq.push("owner","int");
 					dataSeq.push("type","int");
 				}
-//				dataSeq.push("destination","{");
+				dataSeq.push("grid","{");
 				dataSeq.push("x","float");
 				dataSeq.push("y","float");
-//				dataSeq.push("$","}");
+				dataSeq.push("$","}");
 				if ((bitMask&NPC_LEVEL)!=0){ //npc level
 					dataSeq.push("level","short");
 				}
