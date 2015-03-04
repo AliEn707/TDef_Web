@@ -87,7 +87,39 @@ TDefEngine.prototype.weelHandler= function (e){
 	}
 }
 
-TDefEngine.prototype.setMap= function (opt){
+TDefEngine.prototype.parseMap = function(map){
+	if (!maps[map].data){
+		var mp=maps[map].mp.split("\n");
+		var mg=maps[map].mg.split("\n");
+		var data={};
+		//mp
+		data.size=parseInt(mp[0]);
+		data.walkable=mp[1];
+		data.buildable=mp[2];
+		//mg
+		data.textures={}
+		//load textures
+		var i;
+		for(i=0;mg[i]!='-';i++){
+			var t=mg[i].split(" ");
+			//TODO add atlas
+			data.textures[t[0]]=new PIXI.Texture.fromImage(t[1]);
+		}
+		i++;
+		data.nodes=mg[i].split(" ");
+		i++;
+		data.outerNodes=[];
+		for(var j=0;j<4;j++,i++)
+			data.outerNodes[3-j]=mg[i].split(" ");
+		//TODO add walls
+		data.walls=[]
+		maps[map].data=data;
+	}
+	return maps[map].data;
+}
+
+TDefEngine.prototype.setMap= function (m){
+	var opt=this.parseMap(m)
 	var map=new Grid(opt.size);
 	var fullsize=opt.size*opt.size;
 	var size=map.size;

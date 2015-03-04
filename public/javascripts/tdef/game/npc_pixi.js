@@ -2,7 +2,12 @@
 
 var Npc_callbacks={
 	walkleft:{
-		endAnimation:function () {},
+	},
+	deathleft:{
+		endAnimation:"remove",
+	},
+	deathleft:{
+		endAnimation:"remove",
 	}
 }
 
@@ -11,6 +16,7 @@ function Npc(opt){
 	PIXI.SpriteBatch.call(this);
 	this.map=getEngine().map;
 	//static
+	this.id=opt.id || 0
 	this.type=opt.type || 1;
 	var textures=npc_types[this.type].textures;
 	this.sprites={};
@@ -23,7 +29,7 @@ function Npc(opt){
 	//changeble
 	this.sprite=this.sprites["idle"];
 	this.grid=opt.grid || {x: 0,y: 0};
-	this.position=this.map.gridToScreen(this.grid.x,this.grid.y);
+	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.destination= opt.grid || {x: 0,y: 0};
 	this.direction={x:0,y:0};
 	this.level=opt.level || 0;
@@ -31,7 +37,7 @@ function Npc(opt){
 	this.shield=opt.shield || 0;
 	this.energy=opt.energy || 0;
 	this.time=opt.time || 0;
-	this.depth=this.map.objDepth(this.grid.x,this.grid.y);
+	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 	this.addChild(this.sprite);
 	
 }
@@ -62,8 +68,8 @@ Npc.prototype.proceed= function (){
 	this.grid.x+=this.direction.x;
 	this.grid.y+=this.direction.y;
 	
-	this.position=this.map.gridToScreen(this.grid.x,this.grid.y);
-	this.depth=this.map.objDepth(this.grid.x,this.grid.y);
+	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
+	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 	//proseed sprite
 	this.sprite.upFrame();
 	this.scale.x=this.map.scale.x;
@@ -75,3 +81,10 @@ Npc.prototype.setSprite= function (name){
 	this.sprite=this.sprites[name];
 	this.addChild(this.sprite);
 }
+
+Npc.prototype.remove= function (){
+	var engine=getEngine();
+	engine.stage.removeChild(this);
+	delete engine.mapObjects[this.id];
+}
+

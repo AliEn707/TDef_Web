@@ -146,7 +146,7 @@ Grid.prototype.screenToGrid=function (x, y){
 
 
 Grid.prototype.getPosition = function(id){
-	return {x: parseInt(id/this.size) * this.nodesize, y: id%this.size * this.nodesize}
+	return {x: parseInt(id%this.size) * this.nodesize, y: parseInt(id/this.size) * this.nodesize}
 }
 
 Grid.prototype.setOuterNode = function(pos, id, terrain,x,y){
@@ -179,5 +179,6 @@ Grid.prototype.setNode = function(id, terrain){
 Grid.prototype.getNode = function(id){
 	return this.getChildAt(0).getChildAt(id);
 }
+
 
 

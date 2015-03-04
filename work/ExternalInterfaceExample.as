@@ -23,7 +23,7 @@ package {
 	
         public function ExternalInterfaceExample() {
 		Security.allowDomain("*");
-		Security.allowInsecureDomain("*")
+		Security.allowInsecureDomain("*");
 		input = new TextField();
 		input.type = TextFieldType.INPUT;
 		input.background = true;
@@ -128,7 +128,7 @@ package {
 		try {
 			mapSock.connect(host, int(port));
 //			mapSock.connect("smtp.yandex.ru", 25);
-//			logJS("Socket connected: " + mapSock.connected + "\n");
+			logJS("Socket connected: " + mapSock.connected);
 		}
 		catch (error:Error) {
 			logJS("An Error occurred: " + error.message + "\n");
@@ -142,15 +142,15 @@ package {
         }
 	
 	private function errorHandler(event:ErrorEvent):void {
-		logJS("got Error" + event+"\n");
+		logJS("got Error" + event);
 	}
 	
 	private function ioErrorHandler(event:IOErrorEvent):void {
-		logJS("got IOError" + event+"\n");
+		logJS("got IOError"+event);
 	}
 	
-	private function securityErrorHandler(event:IOErrorEvent):void {
-		logJS("got SecurityError" + event+"\n");
+	private function securityErrorHandler(event:SecurityErrorEvent):void {
+		logJS("got SecurityError"+event);
 	}
 	
 	//time event wrapper for data handler

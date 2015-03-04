@@ -9,7 +9,7 @@ function ASprite(textures,params){
 	this.count=params.count || 1;
 	this.countStep=params.countStep || 0.2;
 	this.counter=0;
-	this.callbacks=params.callbacks || {}
+	this.callbacks=params.callbacks || {obj:{}}
 	this.callbacks.actions= this.callbacks.actions || {}
 	if (params.width)
 		this.width=params.width;
@@ -58,8 +58,8 @@ ASprite.prototype.nextFrame= function (n){
 			this.current_frame=0
 		else{
 			this.current_frame--
-			if (this.callbacks.actions.endAnimation)
-				this.callbacks.actions.endAnimation(this.callbacks.obj)
+			if (this.callbacks.obj[this.callbacks.actions.endAnimation])
+				this.callbacks.obj[this.callbacks.actions.endAnimation]();
 		}
 	}
 	this.updateFrame()
