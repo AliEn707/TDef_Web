@@ -37,6 +37,7 @@ function Npc(opt){
 	this.shield=opt.shield || 0;
 	this.energy=opt.energy || 0;
 	this.time=opt.time || 0;
+	this.dest_time=opt.time || 0;
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 	this.addChild(this.sprite);
 	
@@ -46,14 +47,13 @@ Npc.prototype.constructor= Npc;
 
 
 Npc.prototype.update= function (obj){
-	var time=this.time;
-	var dirx=(obj.grid.x-this.grid.x);
-	var diry=(obj.grid.y-this.grid.y);
+//	var time=this.time;
+	var dirx=(this.destination.x-this.grid.x);//(obj.grid.x-this.grid.x);
+	var diry=(this.destination.y-this.grid.y);//(obj.grid.y-this.grid.y);
 	//var l=Math.sqrt(dirx*dirx+diry*diry);
-	this.time=obj.time;
 	var timestep=latency;
-	if (time!=0)
-		timestep+=((this.time-time)*4/100);
+	if (this.time!=0)
+		timestep+=((this.dest_time-this.time)*4/100);
 	//add time correction
 	this.direction.x=dirx/timestep;
 	this.direction.y=diry/timestep;
@@ -61,7 +61,10 @@ Npc.prototype.update= function (obj){
 	this.health=obj.health || this.health;
 	this.shield=obj.shield || this.shield;
 	this.level=obj.level || this.level;
+	//set new step
 	this.destination=obj.grid;
+	this.time=this.dest_time;
+	this.dest_time=obj.time;
 }
 
 Npc.prototype.proceed= function (){
