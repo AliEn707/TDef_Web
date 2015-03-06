@@ -50,10 +50,10 @@ Npc.prototype.update= function (obj){
 //	var time=this.time;
 	var dirx=(this.destination.x-this.grid.x);//(obj.grid.x-this.grid.x);
 	var diry=(this.destination.y-this.grid.y);//(obj.grid.y-this.grid.y);
-	//var l=Math.sqrt(dirx*dirx+diry*diry);
+	var l=Math.sqrt(dirx*dirx+diry*diry);
 	var timestep=latency;
 	if (this.time!=0)
-		timestep+=((this.dest_time-this.time)*4/100);
+		timestep+=l//((this.dest_time-this.time)*4/100);
 	//add time correction
 	this.direction.x=dirx/timestep;
 	this.direction.y=diry/timestep;
@@ -68,8 +68,8 @@ Npc.prototype.update= function (obj){
 }
 
 Npc.prototype.proceed= function (){
-	this.grid.x+=this.direction.x;
-	this.grid.y+=this.direction.y;
+	this.grid.x+=this.direction.x*npc_types[this.type].move_speed*6/100;
+	this.grid.y+=this.direction.y*npc_types[this.type].move_speed*6/100;
 	
 	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
