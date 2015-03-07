@@ -27,7 +27,7 @@ function Npc(opt){
 		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Npc_callbacks[i]||{}},loop:textures[i].loop,width:s,height:s});
 	}
 	//changeble
-	this.sprite=this.sprites["idle"];
+	this.sprite="idle";
 	this.grid=opt.grid || {x: 0,y: 0};
 	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.destination= opt.grid || {x: 0,y: 0};
@@ -39,7 +39,7 @@ function Npc(opt){
 	this.time=opt.time || 0;
 	this.dest_time=opt.time || 0;
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
-	this.addChild(this.sprite);
+	this.addChild(this.sprites[this.sprite]);
 	
 }
 Npc.prototype= new PIXI.SpriteBatch()//DisplayObjectContainer();
@@ -80,9 +80,9 @@ Npc.prototype.proceed= function (){
 }
 
 Npc.prototype.setSprite= function (name){
-	this.removeChild(this.sprite);
-	this.sprite=this.sprites[name];
-	this.addChild(this.sprite);
+	this.removeChild(this.sprites[this.sprite]);
+	this.sprite=name;
+	this.addChild(this.sprites[this.sprite]);
 }
 
 Npc.prototype.remove= function (){
