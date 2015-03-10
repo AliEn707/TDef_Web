@@ -105,3 +105,8 @@ engine.setMap("4")
 //	engine.mapObjects[i]=new Npc({type:1,grid:{x:Math.random()*size,y:Math.random()*size}})
 //	engine.stage.addChild(engine.mapObjects[i])
 //}
+
+var w=new Wall(new PIXI.Texture.fromImage("/imgtest/red.jpeg"));
+w.position.x=100
+w.position.y=100
+engine.map.addChild(w)
