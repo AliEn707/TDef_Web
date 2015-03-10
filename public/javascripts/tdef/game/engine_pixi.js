@@ -47,14 +47,11 @@ function getEngine(){
 TDefEngine.prototype.render= function (){
 	var that=getEngine();
 	requestAnimFrame( that.render );
-
-	    // just for fun, lets rotate mr rabbit a little
-//	    bunny.rotation += 0.1;
-	//a.nextFrame()
-	    // render the stage
-	    that.renderer.render(that.stage);
+	that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a>b; return 0;})
 	that.keysProcessor();
 	that.objectsProcessor();
+	
+	that.renderer.render(that.stage);
 	//bunny.nextFrame()
 }
 
@@ -97,8 +94,10 @@ TDefEngine.prototype.parseMap = function(map){
 		data.walkable=mp[1];
 		data.buildable=mp[2];
 		//mg
-		data.textures={}
+		data.textures={};
 		//load textures
+		walls=0;
+		console.log(engine.wallTextures);
 		var i;
 		for(i=0;mg[i]!='-';i++){
 			var t=mg[i].split(" ");
@@ -111,8 +110,18 @@ TDefEngine.prototype.parseMap = function(map){
 		data.outerNodes=[];
 		for(var j=0;j<4;j++,i++)
 			data.outerNodes[3-j]=mg[i].split(" ");
+		if (mg[i].split(" ")[0]=="minimap"){
+			data.minimap=true;
+			i++;
+		}
+		i++;
 		//TODO add walls
-		data.walls=[]
+		data.walls=[];
+		for (;mg[i]!="" && i<mg.length;i++){
+			var t=mg[i].split(" ");
+			
+			data.walls.push({pos: parseInt(t[0]), dir: t[1], tex: t[2]});
+		}
 		maps[map].data=data;
 	}
 	return maps[map].data;
@@ -121,37 +130,41 @@ TDefEngine.prototype.parseMap = function(map){
 TDefEngine.prototype.setMap= function (m){
 	var opt=this.parseMap(m)
 	var map=new Grid(opt.size);
+	this.map=map;
 	var fullsize=opt.size*opt.size;
 	var size=map.size;
 	for(var i=0;i<fullsize;i++)
 		map.setNode(i,opt.textures[opt.nodes[i]]);
 	var k = 0, i, j;
-		for(i=-1;i>-(size/2+size%2+1);i--)
-			for(j=-i-1;j<size-(-i-1);j++) {
-				map.setOuterNode(0, k, opt.textures[opt.outerNodes[0][k]], i, j);
-				k++;
-			}
-		k=0;
-		for(j=0;j<(size/2+size%2+1);j++)
-			for(i=j;i<size-j;i++) {
-				map.setOuterNode(1, k, opt.textures[opt.outerNodes[1][k]], i, size + j);
-				k++;
-			}
-		k=0;
-		for(i=0;i<(size/2+size%2+1);i++)
-			for(j=i;j<size-i;j++) {
-				map.setOuterNode(2, k, opt.textures[opt.outerNodes[2][k]], size + i, j);
-				k++;
-			}
-		k=0;
-		for(j=-1;j>-(size/2+size%2+1);j--)
-			for(i=-j-1;i<size-(-j-1);i++) {
-				map.setOuterNode(3, k, opt.textures[opt.outerNodes[3][k]], i, j);
-				k++;
-			}
+	for(i=-1;i>-(size/2+size%2+1);i--)
+		for(j=-i-1;j<size-(-i-1);j++) {
+			map.setOuterNode(0, k, opt.textures[opt.outerNodes[0][k]], i, j);
+			k++;
+		}
+	k=0;
+	for(j=0;j<(size/2+size%2+1);j++)
+		for(i=j;i<size-j;i++) {
+			map.setOuterNode(1, k, opt.textures[opt.outerNodes[1][k]], i, size + j);
+			k++;
+		}
+	k=0;
+	for(i=0;i<(size/2+size%2+1);i++)
+		for(j=i;j<size-i;j++) {
+			map.setOuterNode(2, k, opt.textures[opt.outerNodes[2][k]], size + i, j);
+			k++;
+		}
+	k=0;
+	for(j=-1;j>-(size/2+size%2+1);j--)
+		for(i=-j-1;i<size-(-j-1);i++) {
+			map.setOuterNode(3, k, opt.textures[opt.outerNodes[3][k]], i, j);
+			k++;
+		}
+	for (var i=0;i<1/*opt.walls.length*/;i++){
+		map.setWall(opt.walls[i],opt.textures[opt.walls[i].tex]);
+	}
 	
 	
-	this.map=map;
+	
 	this.stage.addChild(map);
 	this.map.transformCorrection();
 			
@@ -202,6 +215,7 @@ TDefEngine.prototype.keysProcessor=function() {
 
 TDefEngine.prototype.objectsProcessor=function() {
 	var objs=this.mapObjects;
+	
 	for(var i in objs){
 		objs[i].proceed();
 	}

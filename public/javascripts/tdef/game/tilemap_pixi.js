@@ -44,8 +44,8 @@ function Grid(size,opt){
 	this.addChild(this.nodes);
 	this.nodesOut=new Array(4)
 	for (var i =0;i<4;i++){
-		this.nodesOut[i]= new PIXI.SpriteBatch()//PIXI.DisplayObjectContainer
-		this.nodesOut[i].rotation=-Math.PI/4
+		this.nodesOut[i]= new PIXI.SpriteBatch();//PIXI.DisplayObjectContainer
+		this.nodesOut[i].rotation=-Math.PI/4;
 		this.addChild(this.nodesOut[i]);
 	}
 	
@@ -180,5 +180,37 @@ Grid.prototype.getNode = function(id){
 	return this.getChildAt(0).getChildAt(id);
 }
 
+Grid.prototype.setWall = function(wall,tex){
+	
+	var src=tex.baseTexture.source.src;
+	var img=new Image();
+	img.src=src;
+	img.wall=wall;
+	img.map=this;
+	img.addEventListener("load", function() {
+		var that=this.map;
+		var pos=that.getPosition(2);//this.wall.pos);
+		var cnv=document.createElement('canvas');
+		cnv.height=that.nodesize;
+		cnv.width=that.nodesize;
+		var ctx=cnv.getContext('2d');
+		ctx.drawImage(this,0,0);
+		ctx.fillRect(20,20,that.nodesize,that.nodesize);
+		
+		var wallTex=new PIXI.Texture.fromCanvas(cnv);//data.textures[t[2]];
+		var sprite= new PIXI.Sprite(wallTex);
+		sprite.position=that.gridToScreen((pos.x)/this.map.nodesize,(pos.y)/this.map.nodesize);
+		sprite.position.x-=this.map.position.x;
+		sprite.position.y-=this.map.position.y;
+		sprite.position.y*=2;
+		sprite.scale.y=2;
+		that.objs.addChild(sprite);
+	}, false);
+	
+}
+
+Grid.prototype.setWallComplete = function(wall){
+	
+}
 
 

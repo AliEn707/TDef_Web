@@ -74,7 +74,7 @@ Npc.prototype.proceed= function (){
 	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 	//proseed sprite
-	this.sprite.upFrame();
+	this.sprites[this.sprite].upFrame();
 	this.scale.x=this.map.scale.x;
 	this.scale.y=this.map.scale.x;
 }
@@ -82,6 +82,7 @@ Npc.prototype.proceed= function (){
 Npc.prototype.setSprite= function (name){
 	this.removeChild(this.sprites[this.sprite]);
 	this.sprite=name;
+	this.sprites[this.sprite].counter=0;
 	this.addChild(this.sprites[this.sprite]);
 }
 
