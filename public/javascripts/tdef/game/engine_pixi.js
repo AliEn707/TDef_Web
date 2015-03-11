@@ -47,7 +47,7 @@ function getEngine(){
 TDefEngine.prototype.render= function (){
 	var that=getEngine();
 	requestAnimFrame( that.render );
-	that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a>b; return 0;})
+	that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	that.keysProcessor();
 	that.objectsProcessor();
 	
@@ -120,7 +120,7 @@ TDefEngine.prototype.parseMap = function(map){
 		for (;mg[i]!="" && i<mg.length;i++){
 			var t=mg[i].split(" ");
 			
-			data.walls.push({pos: parseInt(t[0]), dir: t[1], tex: t[2]});
+			data.walls.push({pos: parseInt(t[0]), type: t[1], tex: data.textures[t[2]]});
 		}
 		maps[map].data=data;
 	}
@@ -130,7 +130,10 @@ TDefEngine.prototype.parseMap = function(map){
 TDefEngine.prototype.setMap= function (m){
 	var opt=this.parseMap(m)
 	var map=new Grid(opt.size);
+	map.engine=this;
 	this.map=map;
+	this.stage.addChild(map);
+	
 	var fullsize=opt.size*opt.size;
 	var size=map.size;
 	for(var i=0;i<fullsize;i++)
@@ -159,13 +162,13 @@ TDefEngine.prototype.setMap= function (m){
 			map.setOuterNode(3, k, opt.textures[opt.outerNodes[3][k]], i, j);
 			k++;
 		}
-	for (var i=0;i<1/*opt.walls.length*/;i++){
-		map.setWall(opt.walls[i],opt.textures[opt.walls[i].tex]);
+	for (var i=0;i<opt.walls.length;i++){
+		map.setWall(opt.walls[i]);
+//		map.setWall({tex:new PIXI.Texture.fromImage("/textures/wall/1.png"),type:"y"});
 	}
 	
 	
 	
-	this.stage.addChild(map);
 	this.map.transformCorrection();
 			
 	//setup handlers

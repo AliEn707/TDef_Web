@@ -31,7 +31,7 @@ function Npc(opt){
 	this.grid=opt.grid || {x: 0,y: 0};
 	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.destination= opt.grid || {x: 0,y: 0};
-	this.direction={x:0,y:0};
+	this.direction={x: 0,y: 0};
 	this.level=opt.level || 0;
 	this.health=opt.health || 0;
 	this.shield=opt.shield || 0;

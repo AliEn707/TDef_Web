@@ -180,33 +180,19 @@ Grid.prototype.getNode = function(id){
 	return this.getChildAt(0).getChildAt(id);
 }
 
-Grid.prototype.setWall = function(wall,tex){
+Grid.prototype.setWall = function(wall){
+	var w=new Wall(wall);
+	var wc=new PIXI.DisplayObjectContainer();
+	wc.position=this.position;
+	wc.scale=this.scale;
+	var wcc=new PIXI.DisplayObjectContainer();
+	wcc.rotation=-Math.PI/4;
+	wcc.addChild(w);
 	
-	var src=tex.baseTexture.source.src;
-	var img=new Image();
-	img.src=src;
-	img.wall=wall;
-	img.map=this;
-	img.addEventListener("load", function() {
-		var that=this.map;
-		var pos=that.getPosition(2);//this.wall.pos);
-		var cnv=document.createElement('canvas');
-		cnv.height=that.nodesize;
-		cnv.width=that.nodesize;
-		var ctx=cnv.getContext('2d');
-		ctx.drawImage(this,0,0);
-		ctx.fillRect(20,20,that.nodesize,that.nodesize);
-		
-		var wallTex=new PIXI.Texture.fromCanvas(cnv);//data.textures[t[2]];
-		var sprite= new PIXI.Sprite(wallTex);
-		sprite.position=that.gridToScreen((pos.x)/this.map.nodesize,(pos.y)/this.map.nodesize);
-		sprite.position.x-=this.map.position.x;
-		sprite.position.y-=this.map.position.y;
-		sprite.position.y*=2;
-		sprite.scale.y=2;
-		that.objs.addChild(sprite);
-	}, false);
+	wc.addChild(wcc);
+	wc.depth=this.objDepth(w.position.x/this.nodesize+0.5,w.position.y/this.nodesize+0.5);
 	
+	this.engine.stage.addChild(wc);
 }
 
 Grid.prototype.setWallComplete = function(wall){
