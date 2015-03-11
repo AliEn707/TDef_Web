@@ -47,7 +47,8 @@ function getEngine(){
 TDefEngine.prototype.render= function (){
 	var that=getEngine();
 	requestAnimFrame( that.render );
-	that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
+	//that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
+	shellSort(that.stage.children, function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	that.keysProcessor();
 	that.objectsProcessor();
 	
