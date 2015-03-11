@@ -5,8 +5,10 @@ var connectorReady; //function in future
 
 var latency;
 
+//rename to proceedReceivedData
 function mapGotObject(str){
 	var obj=eval(str);
+	delete str;
 	var e=getEngine();
 	if (obj.objtype=="Player"){
 		//player

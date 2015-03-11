@@ -1,12 +1,12 @@
 //for create eval("new "+obj.objtype+"(obj)")
 
 var Tower_callbacks={
-	walkleft:{
+	walk_left:{
 	},
-	deathleft:{
+	death_left:{
 		endAnimation:"remove",
 	},
-	deathleft:{
+	death_left:{
 		endAnimation:"remove",
 	}
 }
@@ -18,6 +18,11 @@ function Tower(opt){
 	//static
 	this.id=opt.id || 0
 	this.type=opt.type || 1;
+	this.owner=opt.owner || 0;
+	this.grid=this.map.getPosition(opt.position);
+	this.grid.x/=this.map.nodesize;
+	this.grid.y/=this.map.nodesize;
+	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	var textures=tower_types[this.type].textures;
 	this.sprites={};
 	for (var i in textures){
@@ -28,16 +33,10 @@ function Tower(opt){
 	}
 	//changeble
 	this.sprite="idle";
-	this.grid=opt.grid || {x: 0,y: 0};
-	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
-	this.destination= opt.grid || {x: 0,y: 0};
-	this.direction={x:0,y:0};
 	this.level=opt.level || 0;
 	this.health=opt.health || 0;
 	this.shield=opt.shield || 0;
 	this.energy=opt.energy || 0;
-	this.time=opt.time || 0;
-	this.dest_time=opt.time || 0;
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 	this.addChild(this.sprites[this.sprite]);
 	
@@ -51,7 +50,8 @@ Tower.prototype.update= function (obj){
 }
 
 Tower.prototype.proceed= function (){
-
+	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
+	this.sprites[this.sprite].upFrame();
 }
 
 Tower.prototype.setSprite= function (name){

@@ -6,6 +6,7 @@
 		
 	place=place || document.body;
 	this.webgl=opt.webgl || true;
+	this.frameTime=opt.frameTime || 1000/30;
 	var width=place.offsetWidth || window.innerWidth;
 	var height=window.innerHeight - 5 - (place.offsetTop || 0);
 	this.stage = new PIXI.Stage(0x000000);
@@ -37,7 +38,7 @@
 				}
 			}
 		};
-		
+	this.drawInterval=window.setInterval(this.render,this.frameTime)
 }
 
 function getEngine(){
@@ -46,7 +47,7 @@ function getEngine(){
 
 TDefEngine.prototype.render= function (){
 	var that=getEngine();
-	requestAnimFrame( that.render );
+//	requestAnimFrame( that.render );
 	//that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	shellSort(that.stage.children, function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	that.keysProcessor();
