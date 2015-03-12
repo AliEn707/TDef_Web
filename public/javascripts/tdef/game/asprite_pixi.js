@@ -2,12 +2,13 @@
 function ASprite(textures,params){
 	PIXI.Sprite.call(this, texture[0]);
 	params=params || {}
+	this.engine=getEngine() || {frameTime:1000/30};
 	this.current_frame=params.current_frame || 0
 	this.frames=textures
 	this.loop = params.loop || true
 	this.updateFrame();
 	this.count=params.count || 1;
-	this.countStep=params.countStep || 0.2;
+	this.countStep=params.countStep || 13*this.engine.frameTime/1000;//0.2;
 	this.counter=0;
 	this.callbacks=params.callbacks || {obj:{}}
 	this.callbacks.actions= this.callbacks.actions || {}

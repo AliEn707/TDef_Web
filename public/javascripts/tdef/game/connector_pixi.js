@@ -6,24 +6,27 @@ var connectorReady; //function in future
 var latency;
 
 //rename to proceedReceivedData
-function mapGotObject(str){
-	var obj=eval(str);
+function proceedReceivedData(str){
+	var arr=eval(str);
 	delete str;
 	var e=getEngine();
-	if (obj.objtype=="Player"){
-		//player
-		
-	}else//{
-		if (obj.objtype=="Npc"){
-		if (!e.mapObjects[obj.id]){
-			e.mapObjects[obj.id]=eval("new "+obj.objtype+"(obj)");
-			e.stage.addChild(e.mapObjects[obj.id]);
+	for(var i in arr){
+		var obj=arr[i];
+		if (obj.objtype=="Player"){
+			//player
+			
+		}else//{
+			if (obj.objtype=="Npc"){
+			if (!e.mapObjects[obj.id]){
+				e.mapObjects[obj.id]=eval("new "+obj.objtype+"(obj)");
+				e.stage.addChild(e.mapObjects[obj.id]);
+			}
+			if (e.mapObjects[obj.id]){
+				e.mapObjects[obj.id].update(obj);
+			}
 		}
-		if (e.mapObjects[obj.id]){
-			e.mapObjects[obj.id].update(obj);
-		}
+		//console.log(str)
 	}
-	//console.log(str)
 }
 
 function mapAuthData(str){

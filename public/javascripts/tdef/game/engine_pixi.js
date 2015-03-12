@@ -15,7 +15,7 @@
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
 	this.place=place;
-	requestAnimFrame( this.render );
+	//requestAnimFrame( this.render );
 	
 	window.engine=this;
 	window.onresize = this.resize;
@@ -99,7 +99,6 @@ TDefEngine.prototype.parseMap = function(map){
 		data.textures={};
 		//load textures
 		walls=0;
-		console.log(engine.wallTextures);
 		var i;
 		for(i=0;mg[i]!='-';i++){
 			var t=mg[i].split(" ");

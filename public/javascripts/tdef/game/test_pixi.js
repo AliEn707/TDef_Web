@@ -75,9 +75,9 @@ var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: true})
 // create a texture from an image path
 var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 // create a new Sprite using the texture
-var bunny = new ASprite([new PIXI.Texture(texture, new PIXI.Rectangle(0, 0, 100, 100))]);
-for (var i =1;i<10;i++)
-	bunny.setFrame(i, new PIXI.Texture(texture, new PIXI.Rectangle(100*i, 0, 100, 100)))
+//var bunny = new ASprite([new PIXI.Texture(texture, new PIXI.Rectangle(0, 0, 100, 100))]);
+//for (var i =1;i<10;i++)
+//	bunny.setFrame(i, new PIXI.Texture(texture, new PIXI.Rectangle(100*i, 0, 100, 100)))
 // center the sprites anchor point
 //	bunny.anchor.x = 0.5;
 //	bunny.anchor.y = 0.5;

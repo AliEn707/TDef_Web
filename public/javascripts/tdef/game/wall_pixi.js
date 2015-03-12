@@ -3,8 +3,8 @@ function Wall(opt){
 	PIXI.Sprite.call(this,opt.tex);
 	this.map=getEngine().map;
 	this.position=this.map.getPosition(opt.pos);
-	this.width=this.map.nodesize*1.31;
-	this.height=this.map.nodesize*1.31;
+	this.width=this.map.nodesize*1.3;
+	this.height=this.map.nodesize*1.3;
 	this.type=opt.type;
 	this.shift={y:0,x:0};
 	if (this.type=="x"){

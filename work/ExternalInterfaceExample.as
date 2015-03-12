@@ -272,9 +272,9 @@ package {
 	
 	// push - add to end
 	// shift - get first
-	 private function mapGotObjectJS(value:String):void {
+	 private function proceedReceivedDataJS(value:String):void {
 		if (isReady) {
-			ExternalInterface.call("mapGotObject", value);
+			ExternalInterface.call("proceedReceivedData", value);
 		}
 	}
 	
@@ -289,12 +289,12 @@ package {
 				switch (dataSeq[0]){
 					case undefined: //lets see for next message
 						if (outObj.length>0){//send object to javasctript
-							mapGotObjectJS(outObj+",time:"+flash.utils.getTimer()+"})");
+							proceedReceivedDataJS(outObj+",time:"+flash.utils.getTimer()+"}])");
 							outObj="";
 						}
 						currMsg=mapSock.readByte();
 						dataSeq.push("oid");
-						outObj="({msg:"+currMsg;
+						outObj="([{msg:"+currMsg;
 					
 						break;
 					
