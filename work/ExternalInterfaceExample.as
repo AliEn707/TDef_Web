@@ -278,6 +278,7 @@ package {
 		}
 	}
 	
+	private var msgTime:int=0;
 	private function mapGetMessage():void {
 		var data:Number;
 		var str:String;
@@ -288,13 +289,18 @@ package {
 			try{
 				switch (dataSeq[0]){
 					case undefined: //lets see for next message
-						if (outObj.length>0){//send object to javasctript
-							proceedReceivedDataJS(outObj+",time:"+flash.utils.getTimer()+"}])");
-							outObj="";
+						if (outObj.length>2){//send object to javasctript
+              var time:int=flash.utils.getTimer();
+              outObj+=",time:"+time+"},";
+              if (time-msgTime>33){
+                proceedReceivedDataJS(outObj+"])");
+                outObj="([";
+                msgTime=time;
+							}
 						}
 						currMsg=mapSock.readByte();
 						dataSeq.push("oid");
-						outObj="([{msg:"+currMsg;
+						outObj+="{msg:"+currMsg;
 					
 						break;
 					
@@ -408,7 +414,7 @@ package {
 					currMsg=0;
 					//send to Javascript
 					ExternalInterface.call("mapAuthData", outObj+"})");
-					outObj="";
+					outObj="([";
 				}
 				catch(error:Error){
 //					logJS("players error"+error+"\n");
