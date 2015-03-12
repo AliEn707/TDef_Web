@@ -434,10 +434,12 @@ package {
 					dataSeq.push("owner","int");
 					dataSeq.push("type","int");
 				}
-				dataSeq.push("grid","{");
-				dataSeq.push("x","float");
-				dataSeq.push("y","float");
-				dataSeq.push("$","}");
+				if ((bitMask&NPC_POSITION)!=0){ //npc level
+					dataSeq.push("grid","{");
+					dataSeq.push("x","float");
+					dataSeq.push("y","float");
+					dataSeq.push("$","}");
+				}
 				if ((bitMask&NPC_LEVEL)!=0){ //npc level
 					dataSeq.push("level","short");
 				}

@@ -39,12 +39,12 @@ function Grid(size,opt){
 		}
 	}
 	
-	this.nodes= new PIXI.SpriteBatch()//PIXI.DisplayObjectContainer
+	this.nodes= new PIXI.DisplayObjectContainer()//PIXI.SpriteBatch()
 	this.nodes.rotation=-Math.PI/4
 	this.addChild(this.nodes);
 	this.nodesOut=new Array(4)
 	for (var i =0;i<4;i++){
-		this.nodesOut[i]= new PIXI.SpriteBatch();//PIXI.DisplayObjectContainer
+		this.nodesOut[i]= new PIXI.DisplayObjectContainer()//PIXI.SpriteBatch();
 		this.nodesOut[i].rotation=-Math.PI/4;
 		this.addChild(this.nodesOut[i]);
 	}
@@ -69,26 +69,26 @@ Grid.prototype.translate = function(x,y){
 Grid.prototype.zoom = function(s,x,y){
 	s=s || 1
 	var engine=getEngine();
-	var w=x || engine.renderer.view.width/2
-	var h=y || engine.renderer.view.height/2
-	var grd=this.screenToGrid(w,h)
-	this.scale.x*=s
-	this.scale.y*=s
-	var scr=this.gridToScreen(grd.x,grd.y)
-	var shiftx=(scr.x-w)
-	var shifty=(scr.y-h)
-	this.translate(-shiftx,-shifty)
-	this.transformCorrection()
+	var w=x || engine.renderer.view.width/2;
+	var h=y || engine.renderer.view.height/2;
+	var grd=this.screenToGrid(w,h);
+	this.scale.x*=s;
+	this.scale.y*=s;
+	var scr=this.gridToScreen(grd.x,grd.y);
+	var shiftx=(scr.x-w);
+	var shifty=(scr.y-h);
+	this.translate(-shiftx,-shifty);
+	this.transformCorrection();
 }
 
 Grid.prototype.transformCorrection=function(){
-	var width=getEngine().renderer.view.width
-	var height=getEngine().renderer.view.height
+	var width=getEngine().renderer.view.width;
+	var height=getEngine().renderer.view.height;
 	
-	var l=this.gridToScreen(0,0).x
-	var d=this.gridToScreen(this.size,0).y
-	var u=this.gridToScreen(0,this.size).y
-	var r=this.gridToScreen(this.size,this.size).x
+	var l=this.gridToScreen(0,0).x;
+	var d=this.gridToScreen(this.size,0).y;
+	var u=this.gridToScreen(0,this.size).y;
+	var r=this.gridToScreen(this.size,this.size).x;
 	var x=r-l;
 	var y=u-d;
 	var scale=1;
@@ -101,10 +101,10 @@ Grid.prototype.transformCorrection=function(){
 	this.scale.x*=scale;
 	this.scale.y*=scale;
 	
-	l=this.gridToScreen(0,0).x
-	d=this.gridToScreen(this.size,0).y
-	u=this.gridToScreen(0,this.size).y
-	r=this.gridToScreen(this.size,this.size).x
+	l=this.gridToScreen(0,0).x;
+	d=this.gridToScreen(this.size,0).y;
+	u=this.gridToScreen(0,this.size).y;
+	r=this.gridToScreen(this.size,this.size).x;
 	if (l>0){
 		this.position.x-=l;
 	}
@@ -156,9 +156,10 @@ Grid.prototype.setOuterNode = function(pos, id, terrain,x,y){
 	node.width=this.nodesize
 	node.position.x=x*this.nodesize
 	node.position.y=y*this.nodesize
-	node.anchor.x = 0;
-	node.anchor.y = 0;
+	node.rotation=Math.PI/2;
+	node.anchor.y=1;
 	node.id=id
+	
 	this.nodesOut[pos].addChildAt(node, id);
 }
 
@@ -170,6 +171,8 @@ Grid.prototype.setNode = function(id, terrain){
 	node.width=this.nodesize
 	node.position.x=pos.x
 	node.position.y=pos.y
+	node.rotation=Math.PI/2;
+	node.anchor.y=1;
 	node.id=id
 	
 	this.nodes.addChildAt(node, id);
