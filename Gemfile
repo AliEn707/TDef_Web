@@ -58,7 +58,8 @@ gem "mail"
 
 gem 'rails-i18n' , "4.0.3"
 
-gem 'webrick', '1.3.1', group: :development
+#gem 'webrick', '1.3.1', group: :development
+gem 'puma', '2.11.1'
 
 #for creating png
 gem 'chunky_png' , '1.3.3'
