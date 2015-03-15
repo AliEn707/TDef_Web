@@ -59,7 +59,6 @@ gem "mail"
 gem 'rails-i18n' , "4.0.3"
 
 #gem 'webrick', '1.3.1', group: :development
-gem 'puma', '2.11.1'
 
 #for creating png
 gem 'chunky_png' , '1.3.3'
@@ -72,11 +71,16 @@ gem 'rqrcode'
 #redis
 gem 'redis', '2.1.1'
 
-if RUBY_PLATFORM=~ /mingw/ 
-else
-	#for use C code in ruby
-	gem 'RubyInline'
+#for use C code in ruby
+gem 'RubyInline'	
 	
+if RUBY_PLATFORM=~ /mingw/ 
+	#fast webserver
+	gem "thin"
+else
+	#fast webserver
+	gem 'puma', '2.11.1'
+
 	#for resising images
 	#sudo apt-get install libgd2-noxpm-dev
 	gem 'fastimage_resize' , "2.0.3"
