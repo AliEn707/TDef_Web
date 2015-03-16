@@ -18,17 +18,17 @@ var npc_types={
 			idle:{
 				src:"/imgtest/wr.png",
 				frames: 8,
-				frameSize: 128
+				height: 128,
 			},
 			walkleft:{
 				src:"/imgtest/wl.jpeg",
 				frames: 8,
-				frameSize: 128
+				height: 128
 			},
 			walkright:{
 				src:"/imgtest/wr.png",
 				frames: 8,
-				frameSize: 128
+				height: 128
 			},
 		}
 	},
@@ -50,18 +50,19 @@ var npc_types={
 			idle:{
 				src:"/imgtest/wr.png",
 				frames: 8,
-				frameSize: 128
+				height: 128,
+				width: 128,
 			},
 			walkleft:{
 				src:"/imgtest/wl.jpeg",
 				frames: 8,
-				frameSize: 128,
+				height: 128,
 				loop: true
 			},
 			walkright:{
 				src:"/imgtest/wr.png",
 				frames: 8,
-				frameSize: 128,
+				height: 128,
 				loop: true,
 			},
 		}
@@ -76,7 +77,7 @@ var tower_types={
 			idle:{
 				src:"/imgtest/tower.png",
 				frames: 1,
-				frameSize: 512,
+				height: 512,
 			},
 		},
 	},
@@ -96,7 +97,7 @@ var tower_types={
 			idle:{
 				src:"/imgtest/tower.png",
 				frames: 1,
-				frameSize: 512,
+				height: 512,
 			},
 		},
 	},
@@ -122,10 +123,82 @@ var tower_types={
 			idle:{
 				src:"/imgtest/tower.png",
 				frames: 1,
-				frameSize: 512,
+				height: 512,
 			},
 		},
 	},
+}
+
+var bullet_types={
+	1:{
+		id: 1,
+		move_type: 2,
+		attack_type: 1,
+		speed: 1.2,
+		solid: 0,
+		textures:{
+			idle:{
+				src: "/imgtest/bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
+		},
+	},
+	2:{
+		id: 2,
+		name: "solid",
+		move_type: 1,
+		attack_type: 1,
+		speed: 0,
+		solid: 1,
+		textures:{
+			idle:{
+				src: "/imgtest/solid_bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
+		},
+	},
+	3:{
+		id: 3,
+		move_type: 2,
+		attack_type: 1,
+		speed: 2,
+		textures:{
+			idle:{
+				src: "/imgtest/bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
+		},
+	},
+	4:{
+		id: 4,
+		speed: 0,
+		textures:{
+			idle:{
+				src: "/imgtest/bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
+		},
+	},
+	5:{
+		id: 5,
+		speed: 0,
+		textures:{
+			idle:{
+				src: "/imgtest/bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
+		},
+	}
 }
 
 var maps={
@@ -165,8 +238,12 @@ for (var i =0;i<size*size;i++)
 //	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
 engine.setMap("4")
 //engine.stage.addChild(bunny)
-//for (var i=0;i<1;i++){	
-//	engine.mapObjects[i]=new Npc({type:1,grid:{x:Math.random()*size,y:Math.random()*size}})
+for (var i=0;i<1;i++){	
+//	engine.mapObjects[i]=new Npc({type:1,grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
+//	engine.mapObjects[i]=new Bullet({type:2,source:{x:0,y:0},grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
 //	engine.stage.addChild(engine.mapObjects[i])
-//}
+}
 
+//var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
+//var tile=new PIXI.TilingSprite(t,400,100)
+//engine.stage.addChild(tile)

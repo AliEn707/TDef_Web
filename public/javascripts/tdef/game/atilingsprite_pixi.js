@@ -1,7 +1,10 @@
 
-function ASprite(textures,params){
-	PIXI.Sprite.call(this, texture[0]);
+function ATilingSprite(textures,params){
 	params=params || {}
+	params.width=params.width || textures[0].width;
+	params.height=params.height || textures[0].height;
+
+	PIXI.TilingSprite.call(this, texture[0], params.width, params.height);
 	this.engine=getEngine() || {frameTime:1000/30};
 	this.current_frame=params.current_frame || 0
 	this.frames=textures
@@ -13,38 +16,43 @@ function ASprite(textures,params){
 	this.callbacks=params.callbacks || {obj:{}}
 	this.callbacks.actions= this.callbacks.actions || {}
 	if (params.width)
-		this.width=params.width;
+		this.srcWidth=params.width;
 	if (params.height)
-		this.height=params.height;
+		this.srcHeight=params.height;
 	if (params.anchor)
 		this.anchor=params.anchor;
 }
-ASprite.prototype=new PIXI.Sprite()
-ASprite.prototype.constructor= ASprite
+ATilingSprite.prototype=new PIXI.TilingSprite()
+ATilingSprite.prototype.constructor= ATilingSprite
 
-ASprite.prototype.getTexture= function (i){
+ATilingSprite.prototype.setHeight= function (height){
+	if (height){
+		this.height=height*this.srcHeight/(this.engine.map.nodesize*this.engine.map.scale.x);
+	}
+}
+
+ATilingSprite.prototype.getTexture= function (i){
 	if (i)
 		return this.frames[i];
 	else
 		return this.texture;
 }
-ASprite.prototype.setFrame= function (n,texture){
+ATilingSprite.prototype.setFrame= function (n,texture){
 	this.frames[n]=texture
 	if (this.current_frame==n)
 		this.updateFrame()
 }
 
-ASprite.prototype.updateFrame= function (){
-//	this.texture=this.frames[this.current_frame]
+ATilingSprite.prototype.updateFrame= function (){
 	this.setTexture(this.frames[this.current_frame])
 }
 
-ASprite.prototype.chooseFrame= function (n){
+ATilingSprite.prototype.chooseFrame= function (n){
 	this.current_frame=n
 	this.updateFrame()
 }
 
-ASprite.prototype.upFrame= function (n){
+ATilingSprite.prototype.upFrame= function (n){
 	this.counter+=this.countStep;
 	if (this.counter>=this.count){
 		this.counter=0;
@@ -52,7 +60,7 @@ ASprite.prototype.upFrame= function (n){
 	}
 }
 
-ASprite.prototype.nextFrame= function (n){
+ATilingSprite.prototype.nextFrame= function (n){
 	this.current_frame++
 	if (this.current_frame==this.frames.length){
 		if (this.loop)
@@ -66,30 +74,11 @@ ASprite.prototype.nextFrame= function (n){
 	this.updateFrame()
 }
 
-ASprite.prototype.prevFrame= function (n){
+ATilingSprite.prototype.prevFrame= function (n){
 	if (this.current_frame>0){
 		this.current_frame--
 		this.updateFrame()
 	}
-}
-
-ASprite.prototype.setHeight= function (height){
-
-}
-
-function getTextureFrames(opt){
-	var a=[];
-//	for (var i in opt){
-		var base=new PIXI.BaseTexture.fromImage(opt.src);
-		var height=opt.height || base.height;
-		var width=opt.width || height;
-		var frames=opt.frames || base.width/size;
-//		a[i]=[];
-		for(var j=0;j<frames;j++){
-			a.push(new PIXI.Texture(base, new PIXI.Rectangle(width*j, 0, width, height)));
-		}
-//	}
-	return a;
 }
 
 

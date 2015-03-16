@@ -434,7 +434,7 @@ package {
 					dataSeq.push("owner","int");
 					dataSeq.push("type","int");
 				}
-				if ((bitMask&NPC_POSITION)!=0){ //npc level
+				if ((bitMask&NPC_POSITION)!=0){ 
 					dataSeq.push("grid","{");
 					dataSeq.push("x","float");
 					dataSeq.push("y","float");
@@ -473,14 +473,20 @@ package {
 				return;
 			case MSG_BULLET:
 				outObj+=",objtype:\"Bullet\"";
+			//	if ((bitMask&BULLET_POSITION)!=0){
+				dataSeq.push("grid","{");
 				dataSeq.push("x","float");
 				dataSeq.push("y","float");
+				dataSeq.push("$","}");
+			//	}
 				if ((bitMask&BULLET_CREATE)!=0){ 
 					outObj+=",create:1";
 					dataSeq.push("type","int");
 					dataSeq.push("owner","int");
-					dataSeq.push("sx","float"); //source x
-					dataSeq.push("sy","float"); //source y
+					dataSeq.push("source","{");
+					dataSeq.push("x","float"); //source x
+					dataSeq.push("y","float"); //source y
+					dataSeq.push("$","}");
 				}
 				if ((bitMask&BULLET_DETONATE)!=0){ 
 					dataSeq.push("detonate","byte");
