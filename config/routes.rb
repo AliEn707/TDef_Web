@@ -1,5 +1,5 @@
 TDefWeb::Application.routes.draw do
-  get "images/:id" => 'images#get', as: "get_image"
+  get "image/:id" => 'images#get', as: "get_image"
   
   devise_for :users, controllers: { registrations: 'registrations' }
   

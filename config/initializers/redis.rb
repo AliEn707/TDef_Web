@@ -1,3 +1,8 @@
 
+$redis = nil
 
-$redis = nil#Redis.new(:host => 'localhost', :port => 6379) 
+if (!ENV['REDIS_SOCKET'].nil?) then
+	$redis=Redis.new(:path => ENV['REDIS_SOCKET'])
+elsif(!ENV['REDIS_PORT'].nil?) then
+	$redis=Redis.new(:host => 'localhost', :port => ENV['REDIS_PORT'].to_i) 
+end
