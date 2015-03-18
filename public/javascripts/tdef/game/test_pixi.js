@@ -208,7 +208,7 @@ var maps={
 	}
 }
 
-var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: false})
+var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: true})
 // create a texture from an image path
 var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 // create a new Sprite using the texture

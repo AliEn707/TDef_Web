@@ -53,6 +53,7 @@ function Grid(size,opt){
 	this.addChild(this.objs);
 	
 //	this.transformCorrection()
+	this.players=[];
 }
 
 

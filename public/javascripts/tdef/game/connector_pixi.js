@@ -15,8 +15,7 @@ function proceedReceivedData(str){
 		if (obj.objtype=="Player"){
 			//player
 			
-		}else//{
-			if (obj.objtype=="Npc" || obj.objtype=="Tower"){
+		}else{
 			if (!e.mapObjects[obj.id]){
 				e.mapObjects[obj.id]=eval("new "+obj.objtype+"(obj)");
 				e.stage.addChild(e.mapObjects[obj.id]);

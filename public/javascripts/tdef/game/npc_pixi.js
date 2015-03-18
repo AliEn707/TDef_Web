@@ -53,7 +53,7 @@ Npc.prototype.update= function (obj){
 	var l=Math.sqrt(dirx*dirx+diry*diry);
 	var timestep=latency;
 	if (this.time!=0)
-		timestep+=l//((this.dest_time-this.time)*4/100);
+		timestep+=((obj.time-this.time)*4/100);
 	//add time correction
 	this.direction.x=dirx/timestep;
 	this.direction.y=diry/timestep;
@@ -65,17 +65,19 @@ Npc.prototype.update= function (obj){
 //	this.destination=obj.grid;
 	this.time=obj.time;
 
+	this.grid=obj.grid;
+
 //TODO change to set death	
 	if (this.health<=0){
 //		console.log("deleted npc");
 		this.remove();
 	}
-	
 }
 
 Npc.prototype.proceed= function (){
-	this.grid.x+=this.direction.x*npc_types[this.type].move_speed*6/100;
-	this.grid.y+=this.direction.y*npc_types[this.type].move_speed*6/100;
+	//TODO: add interpolation
+//	this.grid.x+=this.direction.x//*npc_types[this.type].move_speed*6/100;
+//	this.grid.y+=this.direction.y//*npc_types[this.type].move_speed*6/100;
 	
 	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
