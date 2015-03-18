@@ -46,7 +46,7 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-#gem 'rack-mini-profiler', group: :development
+gem 'rack-mini-profiler', group: :development
 
 gem "twitter-bootstrap-rails"
 
@@ -84,3 +84,4 @@ else
 	#sudo apt-get install libgd2-noxpm-dev
 	gem 'fastimage_resize' , "2.0.3"
 end
+

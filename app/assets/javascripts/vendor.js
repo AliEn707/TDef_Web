@@ -10,22 +10,7 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require_tree .
-
-
-
-function toggle_qrdiv(){
-	obj=document.getElementById("qrdiv")
-	attr=obj.getAttribute("hidden")
-	if (attr==null){
-		document.cookie="qrcode=t"
-		obj.setAttribute("hidden","")
-		obj.parentNode.getElementsByTagName("arrow")[0].setAttribute("class","icon-arrow-up")
-	}else{
-		document.cookie="qrcode=f"
-		obj.removeAttribute("hidden")
-		obj.parentNode.getElementsByTagName("arrow")[0].setAttribute("class","icon-arrow-down")
-	}
-}
-
-
+//= require jquery
+//= require jquery_ujs
+//= require twitter/bootstrap
+//= require bootstrap
