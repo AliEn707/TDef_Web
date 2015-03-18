@@ -55,7 +55,7 @@ TDefWeb::Application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
   # Use a different cache store in production.
-   config.cache_store = :memory_store, { size: 40.megabytes }
+   config.cache_store = :memory_store, { size: 256.megabytes }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"
