@@ -37,7 +37,7 @@ TDefWeb::Application.configure do
   config.assets.digest = true
 
   # Version of your assets, change this if you want to expire all your assets.
-  config.assets.version = '1.0'
+  config.assets.version = '1.1'
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
@@ -56,8 +56,11 @@ TDefWeb::Application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
   # Use a different cache store in production.
-   config.cache_store = :memory_store, { size: 256.megabytes }
-
+	if (!ENV['REDIS_PORT'].nil?) then
+		config.cache_store = :redis_store, { :host => "localhost", :port => ENV['REDIS_PORT'].to_i , :db => 0, :expires_in => 90.minutes }
+	else
+		config.cache_store = :memory_store, { size: 384.megabytes }
+	end
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"
 

@@ -68,7 +68,8 @@ gem 'rqrcode'
 #gem "ruby-lzma"
 
 #redis
-gem 'redis', '2.1.1'
+gem 'redis-rails'
+
 
 #for use C code in ruby
 gem 'RubyInline'	
