@@ -1,5 +1,5 @@
-/**
- * @license
+ï»¿/**
+ * @license 
  * pixi.js - v2.2.7
  * Copyright (c) 2012-2014, Mat Groves
  * http://goodboydigital.com/
@@ -3589,7 +3589,7 @@ PIXI.Text.prototype.determineFontProperties = function(fontStyle)
 
         context.textBaseline = 'alphabetic';
         context.fillStyle = '#000';
-        context.fillText('|MÉq', 0, baseline);
+        context.fillText('|Mq', 0, baseline);
 
         var imagedata = context.getImageData(0, 0, width, height).data;
         var pixels = imagedata.length;
@@ -5114,7 +5114,7 @@ PIXI.Stage.prototype.getMousePosition = function()
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 
-// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+// requestAnimationFrame polyfill by Erik Mller. fixes from Paul Irish and Tino Zijdel
 
 // MIT license
 
