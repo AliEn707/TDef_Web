@@ -29,6 +29,11 @@ TDefWeb::Application.configure do
 #  config.assets.css_compressor = :yui
   config.assets.js_compressor = :uglify
 
+  config.assets.configure do |env|
+    if Rails.env.development? || Rails.env.test?
+      env.cache = ActiveSupport::Cache.lookup_store(:memory_store)
+    end
+  end
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false

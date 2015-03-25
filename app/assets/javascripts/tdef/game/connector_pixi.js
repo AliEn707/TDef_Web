@@ -1,11 +1,77 @@
 ﻿
 var jsReady = false;
 
-var connectorReady; //function in future
+var hideConnector; //function in future
 
 var latency;
 
-//rename to proceedReceivedData
+function isReady() {
+        return jsReady;
+}
+
+//get connector object to call functions
+function getConnector() {
+	movieName="connector";
+	if (navigator.appName.indexOf("Microsoft") != -1) {
+		return window[movieName];
+	} else {
+		return document[movieName];
+	}
+}
+
+///map network funtions
+
+var MSG_SPAWN_TOWER=1;
+var MSG_SPAWN_NPC=2;
+var MSG_DROP_TOWER=3;
+var MSG_MOVE_HERO=4;
+var MSG_SET_TARGET=5;
+//send to mapserver; 
+//str is string of pairs of params type,data,...
+//types: byte char short int uint float string
+//note: string only send string of bytes
+function mapSend(str) {
+	getConnector().mapSend(str);
+	//for spawn npc must be "byte,"+MSG_SPAWN_NPC+",int,"+num
+}
+
+//spawn Npc
+function mapSpawnNpc(num){
+	mapSend("byte,"+MSG_SPAWN_NPC+",int,"+num);
+}
+
+//spawn Tower
+function mapSpawnTower(num, node){
+	mapSend("byte,"+MSG_SPAWN_TOWER+",int,"+node+",short,"+num);
+}
+
+//move Hero
+function mapMoveHero(node){
+	mapSend("byte,"+MSG_MOVE_HERO+",int,"+node);
+}
+
+//connect to mapserver
+function mapConnect(host,port) {
+	getConnector().mapConnect(host,port);
+}
+
+//callback if cant connect
+function mapConnectionError(val){
+	console.log("can't connect: "+val);
+	//TODO add handler
+}
+
+//callback on map auth
+function mapAuthData(value) {
+//	console.log(value);
+	sendToJavaScript(value)
+	var obj=eval(value)
+	latency=obj.latency*6/100;
+	if (latency==0)
+		latency=2;
+}
+
+//callback on got objects data
 function proceedReceivedData(str){
 	var arr=eval(str);
 	delete str;
@@ -28,43 +94,15 @@ function proceedReceivedData(str){
 	}
 }
 
-function mapAuthData(str){
-	var obj=eval(str);
-}
-
-function isReady() {
-        return jsReady;
-}
-
-function getConnector() {
-	movieName="connector";
-	if (navigator.appName.indexOf("Microsoft") != -1) {
-		return window[movieName];
-	} else {
-		return document[movieName];
-	}
-}
-
-//map network funtions
-function mapConnect(host,port) {
-	getConnector().mapConnect(host,port);
-}
-
-
-function mapAuthData(value) {
-//	console.log(value);
-	sendToJavaScript(value)
-	var obj=eval(value)
-	latency=obj.latency*6/100;
-	if (latency==0)
-		latency=2;
-}
-
+//callback on connector initialising
 function connectorReady(){
 	console.log("Connector ready");
 	hideConnector(getConnector());
 }
 
+///functions for adding connectors
+
+//adding Flash connector to page
 function addConnectorSWF(place) {
 	var width=500
 	var obj = document.createElement('object')

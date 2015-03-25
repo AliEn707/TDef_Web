@@ -76,6 +76,7 @@ package {
 		output.appendText("Adding callback...\n");
 		ExternalInterface.addCallback("sendToActionScript", receivedFromJavaScript);
                 ExternalInterface.addCallback("mapConnect", connectMap);
+                ExternalInterface.addCallback("mapSend", sendMap);
 //                ExternalInterface.addCallback("startMap", startMap);
 		isReady = true;
 		ExternalInterface.call("connectorReady");
@@ -113,17 +114,23 @@ package {
 	//Sockets
 	private var mapAuthorised:Boolean=false;
 	
-	private function connectMap(host:String, port:String):void {
+	private function mapConnectError(value:String):void {
+		if (isReady) {
+			ExternalInterface.call("mapConnectionError", value);
+		}
+	}
+	
+	private function connectMap(host:String, port:String):int {
 	        logJS("Try to connect\n");
 		output.appendText(host+" "+port+"\n");
 		
 		mapSock= new Socket();
 		mapSock.endian = Endian.LITTLE_ENDIAN;
 		mapSock.addEventListener(Event.CONNECT, mapConnectHandler); 
-		mapSock.addEventListener(Event.CLOSE, closeHandler); 
-		mapSock.addEventListener(ErrorEvent.ERROR, errorHandler); 
-		mapSock.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler); 
-		mapSock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+		mapSock.addEventListener(Event.CLOSE, mapConnectCloseHandler); 
+		mapSock.addEventListener(ErrorEvent.ERROR, mapConnectErrorHandler); 
+		mapSock.addEventListener(IOErrorEvent.IO_ERROR, mapConnectIoErrorHandler); 
+		mapSock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, mapConnectSecurityErrorHandler);
     
 		try {
 			mapSock.connect(host, int(port));
@@ -139,18 +146,22 @@ package {
 		catch (error:IOError) {
 			logJS("An IO Error occurred: " + error.message + "\n");
 		}
+		return 0;
         }
 	
-	private function errorHandler(event:ErrorEvent):void {
+	private function mapConnectErrorHandler(event:ErrorEvent):void {
 		logJS("got Error" + event);
+		mapConnectError("Error");
 	}
 	
-	private function ioErrorHandler(event:IOErrorEvent):void {
+	private function mapConnectIoErrorHandler(event:IOErrorEvent):void {
 		logJS("got IOError"+event);
+		mapConnectError("IOError");
 	}
 	
-	private function securityErrorHandler(event:SecurityErrorEvent):void {
+	private function mapConnectSecurityErrorHandler(event:SecurityErrorEvent):void {
 		logJS("got SecurityError"+event);
+		mapConnectError("SecurityError");
 	}
 	
 	//time event wrapper for data handler
@@ -186,7 +197,7 @@ package {
 		currMsg=0;
 	}
 	
-  	private function closeHandler(event:Event):void {
+  	private function mapConnectCloseHandler(event:Event):void {
 		logJS("closed" + event+"\n");
 		mapAuthorised=false;
 		dataTimer.stop();
@@ -258,21 +269,58 @@ package {
 	private const BULLET_DETONATE:int=  BIT_2;
 	private const BULLET_CREATE:int=  BIT_3;
 	//player constants
-	private const PLAYER_HEALTH:int=   BIT_1
-	private const PLAYER_MONEY:int=   BIT_2
-	private const PLAYER_CREATE:int=   BIT_3
-	private const PLAYER_LEVEL:int=   BIT_4
-	private const PLAYER_HERO:int=   BIT_5
-	private const PLAYER_HERO_COUNTER:int=   BIT_6
-	private const PLAYER_TARGET:int=   BIT_7
+	private const PLAYER_HEALTH:int=   BIT_1;
+	private const PLAYER_MONEY:int=   BIT_2;
+	private const PLAYER_CREATE:int=   BIT_3;
+	private const PLAYER_LEVEL:int=   BIT_4;
+	private const PLAYER_HERO:int=   BIT_5;
+	private const PLAYER_HERO_COUNTER:int=   BIT_6;
+	private const PLAYER_TARGET:int=   BIT_7;
 	
 	private var dataSeq:Array = new Array();
 	private var outObj:String="";
 	private var currMsg:int=0;
 	
+	private function sendMap(value:String):int {
+		var arr:Array;
+		if (mapAuthorised){
+			arr=value.split(",");
+			try{
+				while(arr.length>1){
+					switch (arr.shift()){
+						case "byte":
+						case "char":
+							mapSock.writeByte(int(arr.shift()));
+							break;
+						case "short":
+							mapSock.writeShort(int(arr.shift()));
+							break;
+						case "int":
+							mapSock.writeInt(int(arr.shift()));
+							break;
+						case "uint":
+							mapSock.writeUnsignedInt(uint(arr.shift()));
+							break;
+						case "float":
+							mapSock.writeFloat(Number(arr.shift()));
+							break;
+						case "string":
+							mapSock.writeUTFBytes(arr.shift());
+							break;
+						
+					}
+				}
+			}
+			catch (error:Error){
+				return 1;
+			}
+		}
+		return 0;
+	}
+	
 	// push - add to end
 	// shift - get first
-	 private function proceedReceivedDataJS(value:String):void {
+	private function proceedReceivedDataJS(value:String):void {
 		if (isReady) {
 			ExternalInterface.call("proceedReceivedData", value);
 		}
@@ -290,12 +338,12 @@ package {
 				switch (dataSeq[0]){
 					case undefined: //lets see for next message
 						if (outObj.length>2){//send object to javasctript
-              var time:int=flash.utils.getTimer();
-              outObj+=",time:"+time+"},";
-              if (time-msgTime>33){
-                proceedReceivedDataJS(outObj+"])");
-                outObj="([";
-                msgTime=time;
+						        var time:int=flash.utils.getTimer();
+						        outObj+=",time:"+time+"},";
+						        if (time-msgTime>33){
+								proceedReceivedDataJS(outObj+"])");
+								outObj="([";
+								msgTime=time;
 							}
 						}
 						currMsg=mapSock.readByte();
