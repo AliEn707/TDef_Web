@@ -1,10 +1,16 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :encryptable,  :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,:confirmable,:timeoutable,
-         :recoverable, :rememberable, :trackable, :validatable
+	devise :database_authenticatable, :registerable,:confirmable,:timeoutable,
+		:recoverable, :rememberable, :trackable, :validatable
+	
+	#messaging
+	has_many :messages, :dependent => :destroy
+	has_many :income_messages, :as =>:msg_dest, :class_name => "Message", :dependent => :destroy
+	#another way, not very good
+#	has_many :income_messages, :through => :messages, :source =>:msg_dest,:source_type => 'Message', :dependent => :destroy
 
-  # Setup accessible (or protected) attributes for your model
+# Setup accessible (or protected) attributes for your model
  # attr_accessible :email, :password, :password_confirmation, :remember_me
 	def create
 		User.create(user_params)
