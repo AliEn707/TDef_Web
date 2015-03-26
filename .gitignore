@@ -19,3 +19,4 @@
 /tmp
 Gemfile.lock
 /public/assets
+db/schema.rb

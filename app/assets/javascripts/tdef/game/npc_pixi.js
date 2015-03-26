@@ -45,19 +45,25 @@ function Npc(opt){
 Npc.prototype= new PIXI.SpriteBatch()//DisplayObjectContainer();
 Npc.prototype.constructor= Npc;
 
-
+var arr=[];
 Npc.prototype.update= function (obj){
 //	var time=this.time;
 	var dirx=(obj.grid.x-this.grid.x);//(obj.grid.x-this.grid.x);
 	var diry=(obj.grid.y-this.grid.y);//(obj.grid.y-this.grid.y);
 	var l=Math.sqrt(dirx*dirx+diry*diry);
-	var timestep=latency;
-	if (this.time!=0)
-		timestep+=((obj.time-this.time)*4/100);
+	var timestep=1//latency;
+	if (this.time!=0){
+		timestep+=((obj.time-this.time)*3/100);
+	
+		if (!this.average_time)
+			this.average_time=timestep;
+		this.average_time+=timestep;
+		this.average_time/=2;
+	}
 	//add time correction
-	this.direction.x=dirx/timestep;
-	this.direction.y=diry/timestep;
-		
+	this.direction.x=dirx/this.average_time//timestep;
+	this.direction.y=diry/this.average_time//timestep;
+		arr.push(timestep)
 	this.health=obj.health || this.health;
 	this.shield=obj.shield || this.shield;
 	this.level=obj.level || this.level;
@@ -65,7 +71,7 @@ Npc.prototype.update= function (obj){
 //	this.destination=obj.grid;
 	this.time=obj.time;
 
-	this.grid=obj.grid;
+//	this.grid=obj.grid;
 
 //TODO change to set death	
 	if (this.health<=0){
@@ -76,8 +82,8 @@ Npc.prototype.update= function (obj){
 
 Npc.prototype.proceed= function (){
 	//TODO: add interpolation
-//	this.grid.x+=this.direction.x//*npc_types[this.type].move_speed*6/100;
-//	this.grid.y+=this.direction.y//*npc_types[this.type].move_speed*6/100;
+	this.grid.x+=this.direction.x//*npc_types[this.type].move_speed*6/100;
+	this.grid.y+=this.direction.y//*npc_types[this.type].move_speed*6/100;
 	
 	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
