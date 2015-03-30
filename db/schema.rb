@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150120090137) do
+ActiveRecord::Schema.define(version: 20150326072041) do
 
   create_table "client_files", force: true do |t|
     t.string   "path"
@@ -61,6 +61,19 @@ ActiveRecord::Schema.define(version: 20150120090137) do
     t.datetime "updated_at"
     t.boolean  "writed"
   end
+
+  create_table "messages", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "msg_dest_id"
+    t.string   "msg_dest_type"
+    t.string   "data"
+    t.datetime "sended_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "messages", ["msg_dest_id"], name: "index_messages_on_msg_dest_id"
+  add_index "messages", ["user_id"], name: "index_messages_on_user_id"
 
   create_table "servers", force: true do |t|
     t.string   "hostname"

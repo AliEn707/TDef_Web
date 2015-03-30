@@ -240,10 +240,13 @@ engine.setMap("4")
 //engine.stage.addChild(bunny)
 for (var i=0;i<1;i++){	
 //	engine.mapObjects[i]=new Npc({type:1,grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
-//	engine.mapObjects[i]=new Bullet({type:2,source:{x:0,y:0},grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
+//	engine.mapObjects[i]=new Bullet({type:2,source:{x:1,y:1},grid:{x:3/*Math.random()*size*/,y:3/*Math.random()*size*/}})
+//	engine.mapObjects[i].update({grid:{x:3,y:3}});
+//	engine.mapObjects[i].proceed();
 //	engine.stage.addChild(engine.mapObjects[i])
 }
 
-//var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
+var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
 //var tile=new PIXI.TilingSprite(t,400,100)
-//engine.stage.addChild(tile)
+var tile=new ATilingSprite([t],{loop:true, width: t.width, height:t.height})
+engine.stage.addChild(tile)

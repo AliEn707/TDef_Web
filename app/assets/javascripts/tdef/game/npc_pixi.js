@@ -45,7 +45,7 @@ function Npc(opt){
 Npc.prototype= new PIXI.SpriteBatch()//DisplayObjectContainer();
 Npc.prototype.constructor= Npc;
 
-var arr=[];
+
 Npc.prototype.update= function (obj){
 //	var time=this.time;
 	var dirx=(obj.grid.x-this.grid.x);//(obj.grid.x-this.grid.x);
@@ -63,7 +63,7 @@ Npc.prototype.update= function (obj){
 	//add time correction
 	this.direction.x=dirx/this.average_time//timestep;
 	this.direction.y=diry/this.average_time//timestep;
-		arr.push(timestep)
+		
 	this.health=obj.health || this.health;
 	this.shield=obj.shield || this.shield;
 	this.level=obj.level || this.level;
