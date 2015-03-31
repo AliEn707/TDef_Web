@@ -18,7 +18,7 @@ function Bullet(opt){
 		var s=this.map.nodesize*0.4*(opt.scale || 1);
 		sprite=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.5},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop,width: s/4,height: s});
 		if (bullet_types[this.type].solid){
-			this.sprites[i]=new ATilingSprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop, width:textures[i].width, height:textures[i].height});
+			this.sprites[i]=new ATilingSprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop, width:textures[i].width, height:textures[i].height, size:s});
 			this.sprites[i].scale=sprite.scale;
 		}else{
 			this.sprites[i]=sprite
@@ -60,12 +60,18 @@ Bullet.prototype.update= function (obj){
 	var dirx=(obj.grid.x-this.grid.x);//(obj.grid.x-this.grid.x);
 	var diry=(obj.grid.y-this.grid.y);//(obj.grid.y-this.grid.y);
 	var l=Math.sqrt(dirx*dirx+diry*diry);
-	var timestep=latency;
-	if (this.time!=0)
-		timestep+=l//((this.dest_time-this.time)*4/100);
+	var timestep=1;
+	if (this.time!=0){
+		timestep+=((obj.time-this.time)*3/100);
+	
+		if (!this.average_time)
+			this.average_time=timestep;
+		this.average_time+=timestep;
+		this.average_time/=2;
+	}
 	//add time correction
-	this.direction.x=dirx/timestep;
-	this.direction.y=diry/timestep;
+	this.direction.x=dirx/this.average_time//timestep;
+	this.direction.y=diry/this.average_time//timestep;
 	
 	//set rotation
 	var position=this.map.gridToScreen(obj.grid.y,obj.grid.x);
@@ -73,7 +79,10 @@ Bullet.prototype.update= function (obj){
 	var source=this.map.gridToScreen(this.source.y,this.source.x);
 	this.rotation=this.getAngle(source,position);
 	
-	this.grid=obj.grid;
+	this.time=obj.time;
+	if (bullet_types[this.type].solid){
+		this.grid=obj.grid;
+	}
 	
 	if (obj.detonate){
 		//TODO add boom sprite
@@ -87,9 +96,9 @@ Bullet.prototype.proceed= function (){
 		this.position=this.map.gridToScreen(this.source.y, this.source.x);
 		this.setHeight(this.getLength(this.position,this.map.gridToScreen(this.grid.y, this.grid.x)));
 	}else{		
+		this.grid.x+=this.direction.x//*bullet_types[this.type].move_speed*6/100;
+		this.grid.y+=this.direction.y//*bullet_types[this.type].move_speed*6/100;
 		this.position=this.map.gridToScreen(this.grid.y, this.grid.x);
-		this.grid.x+=this.direction.x*bullet_types[this.type].move_speed*6/100;
-		this.grid.y+=this.direction.y*bullet_types[this.type].move_speed*6/100;
 	}
 		this.position.y-=0.3*this.map.nodesize*this.map.scale.x;
 		this.depth=this.map.objDepth(this.grid.y,this.grid.x);
