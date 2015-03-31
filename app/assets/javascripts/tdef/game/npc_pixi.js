@@ -42,7 +42,7 @@ function Npc(opt){
 	this.addChild(this.sprites[this.sprite]);
 	
 }
-Npc.prototype= new PIXI.SpriteBatch()//DisplayObjectContainer();
+Npc.prototype= new PIXI.DisplayObjectContainer();
 Npc.prototype.constructor= Npc;
 
 

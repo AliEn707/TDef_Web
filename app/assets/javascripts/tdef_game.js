@@ -11,6 +11,7 @@
 // about supported directives.
 //
 //= require ./tdef/game/pixi.dev.js
+//= require ./tdef/game/aobject_pixi.js
 //= require ./tdef/game/asprite_pixi.js
 //= require ./tdef/game/atilingsprite_pixi.js
 //= require ./tdef/game/wall_pixi.js

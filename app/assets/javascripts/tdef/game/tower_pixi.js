@@ -41,7 +41,7 @@ function Tower(opt){
 	this.addChild(this.sprites[this.sprite]);
 	
 }
-Tower.prototype= new PIXI.SpriteBatch()//DisplayObjectContainer();
+Tower.prototype= new PIXI.DisplayObjectContainer();
 Tower.prototype.constructor= Tower;
 
 

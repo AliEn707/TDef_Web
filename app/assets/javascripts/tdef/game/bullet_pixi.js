@@ -19,7 +19,7 @@ function Bullet(opt){
 		sprite=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.5},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop,width: s/4,height: s});
 		if (bullet_types[this.type].solid){
 			this.sprites[i]=new ATilingSprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop, width:textures[i].width, height:textures[i].height, size:s});
-			this.sprites[i].scale=sprite.scale;
+			this.sprites[i].scale=sprite.getScale;
 		}else{
 			this.sprites[i]=sprite
 		}
@@ -91,7 +91,7 @@ Bullet.prototype.update= function (obj){
 }
 
 Bullet.prototype.proceed= function (){
-	
+	this.sprites[this.sprite].upFrame();
 	if (bullet_types[this.type].solid){
 		this.position=this.map.gridToScreen(this.source.y, this.source.x);
 		this.setHeight(this.getLength(this.position,this.map.gridToScreen(this.grid.y, this.grid.x)));
@@ -102,7 +102,6 @@ Bullet.prototype.proceed= function (){
 	}
 		this.position.y-=0.3*this.map.nodesize*this.map.scale.x;
 		this.depth=this.map.objDepth(this.grid.y,this.grid.x);
-		this.sprites[this.sprite].upFrame();
 		this.scale.x=this.map.scale.x;
 		this.scale.y=this.map.scale.x;
 }

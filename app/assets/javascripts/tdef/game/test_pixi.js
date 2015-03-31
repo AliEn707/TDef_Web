@@ -240,10 +240,10 @@ engine.setMap("4")
 //engine.stage.addChild(bunny)
 for (var i=0;i<1;i++){	
 //	engine.mapObjects[i]=new Npc({type:1,grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
-	engine.mapObjects[i]=new Bullet({type:1,source:{x:0,y:0},grid:{x:3/*Math.random()*size*/,y:3/*Math.random()*size*/}})
-	engine.mapObjects[i].update({grid:{x:5,y:5},time: 1});
-	engine.mapObjects[i].update({grid:{x:5,y:5},time: 5000});
-	engine.stage.addChild(engine.mapObjects[i])
+//	engine.mapObjects[i]=new Bullet({type:2,source:{x:1,y:1},grid:{x:3/*Math.random()*size*/,y:3/*Math.random()*size*/}})
+//	engine.mapObjects[i].update({grid:{x:5,y:5},time: 1});
+//	engine.mapObjects[i].update({grid:{x:5,y:5},time: 5000});
+//	engine.stage.addChild(engine.mapObjects[i])
 }
 
 //var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
