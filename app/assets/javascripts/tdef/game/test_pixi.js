@@ -1,4 +1,32 @@
 
+/***
+for storing delays
+Migration:
+
+$ rails g migration add_location_data_to_users location_data:text
+
+should create:
+
+class Migration0001
+  def change
+    add_column :users, :location_data, :text
+  end
+end
+
+Your Class Would Look Like:
+
+class User < ActiveRecord::Base
+  serialize :location_data
+end
+
+Available Actions:
+
+b = User.new
+b.location_data = [1,2,{foot: 3, bart: "noodles"}]
+b.save
+
+***/
+
 var npc_types={
 	0:{
 		id: 0,
@@ -158,6 +186,9 @@ var bullet_types={
 				frames: 1,
 				height: 256,
 				width: 64,
+				delays:{
+					last_frame: 0.4,
+				}
 			},
 		},
 	},
@@ -208,7 +239,7 @@ var maps={
 	}
 }
 
-var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: true})
+var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: true, frameTime:1000/30})
 // create a texture from an image path
 var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 // create a new Sprite using the texture
@@ -238,12 +269,16 @@ for (var i =0;i<size*size;i++)
 //	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
 engine.setMap("4")
 //engine.stage.addChild(bunny)
+data=[
+{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:24.374,y:29.4},$:0,type:2,owner:1,source:{$:0,x:27.125,y:28.5},$:0},
+{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:27.125,y:28.5},$:0,type:2,owner:2,source:{$:0,x:24.374,y:29.4},$:0}
+]
 for (var i=0;i<1;i++){	
-//	engine.mapObjects[i]=new Npc({type:1,grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
-//	engine.mapObjects[i]=new Bullet({type:2,source:{x:1,y:1},grid:{x:3/*Math.random()*size*/,y:3/*Math.random()*size*/}})
-//	engine.mapObjects[i].update({grid:{x:5,y:5},time: 1});
+	engine.mapObjects[i]=new Npc({type:1,grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
+//	engine.mapObjects[i]=new Bullet(data[i])
+//	engine.mapObjects[i].update({grid:{x:2,y:2},time: 1});
 //	engine.mapObjects[i].update({grid:{x:5,y:5},time: 5000});
-//	engine.stage.addChild(engine.mapObjects[i])
+	engine.stage.addChild(engine.mapObjects[i])
 }
 
 //var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");

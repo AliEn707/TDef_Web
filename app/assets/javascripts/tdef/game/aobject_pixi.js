@@ -11,7 +11,16 @@ function AObject(params){
 	this.counter=0;
 	this.callbacks=params.callbacks || {obj:{}}
 	this.callbacks.actions= this.callbacks.actions || {}
+		
+	this.engine=getEngine() || {frameTime:1000/30};
+	this.countStep=this.countStep || 13*this.engine.frameTime/1000;//0.2;
 	
+	this.delays={};
+	this._delays={};
+	for(var i in (params.delays || {})){
+		this.delays[i]=params.delays[i]*1000/this.engine.frameTime;
+		this._delays[i]=0;
+	}
 	
 //	this.updateFrame();
 	
@@ -56,15 +65,24 @@ AObject.prototype.nextFrame= function (n){
 	var prev=this.current_frame
 	this.current_frame++
 	if (this.current_frame==this.frames.length){
-		if (this.loop)
-			this.current_frame=0
-		else{
-			this.current_frame--
+		this.current_frame--;
+		var ended=true;
+		if (this.delays.last_frame){
+			if (this._delays.last_frame<this.delays.last_frame){
+				this._delays.last_frame++;
+				ended=false;
+			}else{
+				this._delays.last_frame=0;
+			}
+		}
+		if (ended){
+			if (this.loop)
+				this.current_frame=0;
 			if (this.callbacks.obj[this.callbacks.actions.endAnimation])
 				this.callbacks.obj[this.callbacks.actions.endAnimation]();
 		}
 	}
-	this.updateFrame()
+	this.updateFrame();
 }
 
 AObject.prototype.prevFrame= function (n){

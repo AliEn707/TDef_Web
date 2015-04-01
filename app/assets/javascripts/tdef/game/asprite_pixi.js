@@ -1,8 +1,6 @@
 
 function ASprite(textures,params){
 	AObject.call(this, params);
-	this.engine=getEngine() || {frameTime:1000/30};
-	this.countStep=this.countStep || 13*this.engine.frameTime/1000;//0.2;
 	
 	this.setFrames(textures, params);
 	

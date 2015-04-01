@@ -25,7 +25,7 @@ function Npc(opt){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
 		var s=this.map.nodesize*(opt.scale || 1);
-		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Npc_callbacks[i]||{}},loop:textures[i].loop,width:s,height:s});
+		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Npc_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
 	}
 	//changeble
 	this.sprite="idle";

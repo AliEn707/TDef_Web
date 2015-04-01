@@ -29,7 +29,7 @@ function Tower(opt){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
 		var s=this.map.nodesize*1.5*(opt.scale || 1);
-		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.72},callbacks:{obj:this,actions:Tower_callbacks[i]||{}},loop:textures[i].loop,width:s,height:s});
+		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.72},callbacks:{obj:this,actions:Tower_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
 	}
 	//changeble
 	this.sprite="idle";
