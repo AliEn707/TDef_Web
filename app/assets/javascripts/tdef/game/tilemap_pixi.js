@@ -2,60 +2,45 @@ Grid.prototype = new PIXI.DisplayObjectContainer();
 Grid.prototype.constructor = Grid;
 
 function Grid(size,opt){
-	opt=opt || {}
+	opt=opt || {};
 	PIXI.SpriteBatch.call(this);
 	this.interactive = true;
-	
+	this.actions=["drag","press"];
+		
 	this.width=getEngine().renderer.view.width
 	this.height=getEngine().renderer.view.height
 	this.size = size;
 	this.fullsize = size*size;
-	this.nodesize=50
+	this.nodesize=50;
 	
-	this.scale.x = 1
+	this.scale.x = 1;
 	this.scale.y = 0.5;
-	this.position.x=0
-	this.position.y=0
+	this.position.x=0;
+	this.position.y=0;
 	this.dragging = false;
-	this.mousePressPoint=[0,0]
 	this.hitArea= new PIXI.Rectangle(0,-this.size*this.nodesize*0.705,this.size*this.nodesize*1.41,this.size*this.nodesize*1.41)
 	
-	this.mousedown = this.touchstart = function(data) {
-		this.mousePressPoint[0] = data.getLocalPosition(this.parent).x -
-                                this.position.x;
-		this.mousePressPoint[1] = data.getLocalPosition(this.parent).y -
-                                this.position.y;
-		this.dragging = true;
-	}
-	this.mouseup = this.mouseupoutside = this.touchend = this.touchendoutside = function(data) {
-		this.dragging = false;
-	}
-	this.mousemove = this.touchmove = function(data){
-		if(this.dragging){
-			var position = data.getLocalPosition(this.parent);
-			this.position.x = position.x - this.mousePressPoint[0];
-			this.position.y = position.y - this.mousePressPoint[1];
-			this.transformCorrection();
-		}
-	}
+	this.mousedown = this.touchstart = startDragging;
+	this.mouseup = this.mouseupoutside = this.touchend = this.touchendoutside = stopDragging;
 	
-	this.nodes= new PIXI.DisplayObjectContainer()//PIXI.SpriteBatch()
-	this.nodes.rotation=-Math.PI/4
+	this.mousemove = this.touchmove = proceedDragging;
+	
+	this.nodes= new PIXI.DisplayObjectContainer();//PIXI.SpriteBatch()
+	this.nodes.rotation=-Math.PI/4;
 	this.addChild(this.nodes);
-	this.nodesOut=new Array(4)
+	this.nodesOut=new Array(4);
 	for (var i =0;i<4;i++){
 		this.nodesOut[i]= new PIXI.DisplayObjectContainer()//PIXI.SpriteBatch();
 		this.nodesOut[i].rotation=-Math.PI/4;
 		this.addChild(this.nodesOut[i]);
 	}
 	
-	this.objs= new PIXI.SpriteBatch()//PIXI.DisplayObjectContainer
+	this.objs= new PIXI.SpriteBatch();//PIXI.DisplayObjectContainer
 	this.addChild(this.objs);
 	
 //	this.transformCorrection()
 	this.players=[];
 }
-
 
 Grid.prototype.resize = function(x,y){
 	this.transformCorrection();

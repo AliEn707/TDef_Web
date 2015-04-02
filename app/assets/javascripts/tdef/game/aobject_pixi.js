@@ -96,17 +96,6 @@ AObject.prototype.getScale= function (){
 	return this.frames[this.current_frame].scale;
 }
 
-function getTextureFrames(opt){
-	var a=[];
-//	for (var i in opt){
-		var base=new PIXI.BaseTexture.fromImage(opt.src);
-		var height=opt.height || base.height;
-		var width=opt.width || height;
-		var frames=opt.frames || base.width/size;
-//		a[i]=[];
-		for(var j=0;j<frames;j++){
-			a.push(new PIXI.Texture(base, new PIXI.Rectangle(width*j, 0, width, height)));
-		}
-//	}
-	return a;
+AObject.prototype.getAttr= function (attr){
+	return this.frames[this.current_frame][attr];
 }

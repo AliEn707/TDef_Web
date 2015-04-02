@@ -1,4 +1,6 @@
-﻿function TDefEngine(place, opt){
+﻿var dragFree=true;
+
+function TDefEngine(place, opt){
 	opt = opt || {};
 	opt.defines=opt.defines || {};
 	
@@ -12,6 +14,7 @@
 	this.stage = new PIXI.Stage(0x000000);
 	// create a renderer instance
 	this.renderer = opt.webgl ?new PIXI.autoDetectRenderer(width, height)  : new PIXI.CanvasRenderer(width, height);
+	this.renderer.view.oncontextmenu=function (){return false;}
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
 	this.place=place;

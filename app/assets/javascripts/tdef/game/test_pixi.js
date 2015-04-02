@@ -274,14 +274,21 @@ data=[
 {msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:27.125,y:28.5},$:0,type:2,owner:2,source:{$:0,x:24.374,y:29.4},$:0}
 ]
 for (var i=0;i<1;i++){	
-	engine.mapObjects[i]=new Npc({type:1,grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
+//	engine.mapObjects[i]=new Npc({type:1,grid:{x:1/*Math.random()*size*/,y:1/*Math.random()*size*/}})
 //	engine.mapObjects[i]=new Bullet(data[i])
 //	engine.mapObjects[i].update({grid:{x:2,y:2},time: 1});
 //	engine.mapObjects[i].update({grid:{x:5,y:5},time: 5000});
-	engine.stage.addChild(engine.mapObjects[i])
+//	engine.stage.addChild(engine.mapObjects[i])
 }
 
-//var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
+var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
 //var tile=new PIXI.TilingSprite(t,400,100)
 //var tile=new ATilingSprite([t],{loop:true, width: 400, height:100})
 //engine.stage.addChild(tile)
+
+var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
+var t2=getTextureFrames(npc_types[0].textures["idle"]);
+
+engine.mapObjects["button"]=new ButtonContainer({sprite:{textures:t1,opt:{width:400,height:400}},focused:{textures:t2},position:{x:0,y:0},actions:["press","drag"]});
+engine.mapObjects["button"].addButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+engine.stage.addChild(engine.mapObjects["button"]);
