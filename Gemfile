@@ -39,8 +39,7 @@ end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
-# Use unicorn as the app server
-# gem 'unicorn'
+
 
 # Use Capistrano for deployment
 gem 'capistrano', group: :development
@@ -79,13 +78,26 @@ gem 'redis-rails'
 #for use C code in ruby
 gem 'RubyInline'	
 	
+
+	
 if RUBY_PLATFORM=~ /mingw/ 
-	#fast webserver
+	#only win
+	
 	gem "thin"
 else
 	#fast webserver
-	gem 'puma', '2.11.1'
-
+	if (ENV["RAILS_WEBSERV"]=="thin") then
+		gem "thin"
+	elsif (ENV["RAILS_WEBSERV"]=="unicorn") then
+		gem 'unicorn-rails'
+	elsif (ENV["RAILS_WEBSERV"]=="webrick") then
+		gem 'webrick'
+	elsif (ENV["RAILS_WEBSERV"]=="rainbows") then
+		gem 'rainbows-rails'
+	else
+		gem 'puma', '2.11.1'
+	end
+	
 	#for resising images
 	#sudo apt-get install libgd2-noxpm-dev
 	gem 'fastimage_resize' , "2.0.3"
