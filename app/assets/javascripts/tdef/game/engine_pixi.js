@@ -10,10 +10,13 @@ function TDefEngine(place, opt){
 	this.webgl=opt.webgl || true;
 	this.frameTime=opt.frameTime || 1000/30;
 	var width=place.offsetWidth || window.innerWidth;
-	var height=window.innerHeight - 5 - (place.offsetTop || 0);
+	var height=window.innerHeight - 10 - (place.offsetTop || 0);
 	this.stage = new PIXI.Stage(0x000000);
+	console.log(place)
+	console.log(place.offsetTop)
+	console.log(width, height)
 	// create a renderer instance
-	this.renderer = opt.webgl ?new PIXI.autoDetectRenderer(width, height)  : new PIXI.CanvasRenderer(width, height);
+	this.renderer = opt.webgl ? new PIXI.autoDetectRenderer(width, height)  : new PIXI.CanvasRenderer(width, height);
 	this.renderer.view.oncontextmenu=function (){return false;}
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
@@ -61,10 +64,10 @@ TDefEngine.prototype.render= function (){
 }
 
 TDefEngine.prototype.resize=function (){
-	var that = getEngine() ;
+	var that = getEngine();
 	var place=that.place;
-	var width=window.innerWidth - (place.offsetLeft*2 || 0);
-	var height=window.innerHeight - 5 - (place.offsetTop || 0);
+	var width=place.offsetWidth || window.innerWidth;
+	var height=window.innerHeight - 10 - (place.offsetTop || 0);
 	
 	that.renderer.resize(width,height);
 	that.map.resize(width,height);

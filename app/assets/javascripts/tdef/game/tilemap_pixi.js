@@ -67,6 +67,14 @@ Grid.prototype.zoom = function(s,x,y){
 	this.transformCorrection();
 }
 
+Grid.prototype.pressAction=function(){
+	var point=this.screenToGrid(this.screenPressPoint.x,this.screenPressPoint.y);
+	if (point.x>=0 && point.x<this.size && point.y>=0 && point.y<this.size){
+		var id=this.getId(point);
+		console.log(id);
+	}
+}
+
 Grid.prototype.transformCorrection=function(){
 	var width=getEngine().renderer.view.width;
 	var height=getEngine().renderer.view.height;
@@ -130,6 +138,10 @@ Grid.prototype.screenToGrid=function (x, y){
 			y: ((500*y)/(707*sy)+(500*x)/(707*sx)-(500*sx*ty+500*sy*tx)/(707*sx*sy))/nodeSize}
 }
 
+
+Grid.prototype.getId = function(pos){
+	return parseInt(pos.y)*this.size+parseInt(pos.x);
+}
 
 Grid.prototype.getPosition = function(id){
 	return {x: parseInt(id%this.size) * this.nodesize, y: parseInt(id/this.size) * this.nodesize}

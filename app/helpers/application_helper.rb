@@ -43,7 +43,9 @@ module ApplicationHelper
 						{'name'=>t(:maps),'path'=>tdef_map_all_path},
 						{'name'=>t(:servers),'path'=>tdef_server_all_path},
 						{'name'=>t(:locales),'path'=>tdef_locales_all_path},
-						{'name'=>t(:game),'path'=>tdef_game_path}]
+						{'name'=>t(:game),'path'=>tdef_game_path},
+						{'name'=>t(:flash_test),'path'=>"/ExternalInterfaceExample.html"}
+					]
 			else
 				a<<[{'name'=>t(:tdef)},
 						{'name'=>t(:game),'path'=>tdef_game_path}]

@@ -1,9 +1,9 @@
-<a href="/ExternalInterfaceExample.html">Flash test</a>
 <form name="form1" onsubmit="return false;">
  	 <input type="text" name="host" value="<%=request.host%>" />
          <input type="text" name="port" value="34140" />
          <input type="button" value="mapConnect" onclick="mapConnect(this.form.host.value,this.form.port.value);" /><br />
 </form>
+<div id="gameDiv" style="position:relative; top: -5px;"></div>
 
 <%= javascript_include_tag "tdef_game" %>
 
@@ -26,6 +26,6 @@ function sendToActionScript(value) {
  </script>
 
 
-<div id="gameDiv" style="position:relative; top:10px;"></div>
+
 
 

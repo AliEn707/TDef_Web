@@ -289,6 +289,6 @@ var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
 var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
 var t2=getTextureFrames(npc_types[0].textures["idle"]);
 
-engine.mapObjects["button"]=new ButtonContainer({sprite:{textures:t1,opt:{width:400,height:400}},focused:{textures:t2},position:{x:0,y:0},actions:["press","drag"]});
+engine.mapObjects["button"]=new ButtonContainer({sprite:{textures:t1,opt:{width:400,height:400}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
 engine.mapObjects["button"].addButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 engine.stage.addChild(engine.mapObjects["button"]);
