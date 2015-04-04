@@ -119,9 +119,10 @@
       </div><!--/row-->
 
 	<div id="footer" style="position:fixed; bottom: 0px;">
-	<%cache("qrcode"+request.url) do %>
+	<%url=request.url.split("?")[0]%>
+	<%cache("qrcode"+url) do %>
 		<div id="qrdiv" <%='hidden="' if cookies[:qrcode]=='t'%>>
-			<img src="<%=qrcode64(request.url)%>" />
+			<img src="<%=qrcode(url)%>" />
 		</div>
 	<%end%>
 		<p>

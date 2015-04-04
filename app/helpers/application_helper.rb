@@ -65,23 +65,8 @@ module ApplicationHelper
 		a	
 	end
 	
-	def qrcode(path)
-		RQRCode::QRCode.new(path, :size => 7, :level => :h )
-	end
-	
-	def qrcode64(data,size=2)
-		qr = qrcode(data)
-		png = ChunkyPNG::Image.new(qr.modules.size*size, qr.modules.size*size , ChunkyPNG::Color::TRANSPARENT)
-		qr.modules.each_index do |x| 
-			 qr.modules.each_index do |y| 
-				size.times do |i|
-					size.times do |j|
-						png[x*size+i,y*size+j]=(qr.dark?(x,y))? ChunkyPNG::Color.rgba(0,0,0,255) : ChunkyPNG::Color.rgba(255,255,255,255)
-					end 
-				end 
-			end 
-		end 
-		("data:image/png;base64,"+Base64.encode64(png.to_blob)).html_safe
+	def qrcode(data,size=2)
+		return qrcode_path+"?url="+data;
 	end
 	
 end
