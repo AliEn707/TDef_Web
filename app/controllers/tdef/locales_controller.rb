@@ -2,7 +2,7 @@ class Tdef::LocalesController < ApplicationController
 	before_action :authenticate_user!
 	before_action :is_admin?
 	def show_all
-	  @locales=Tdef::Locale.all
+	  @locales=Tdef::Locale.includes(:locale_datas)
 	end
 	def edit
 		@a=request.POST

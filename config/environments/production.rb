@@ -2,9 +2,11 @@ TDefWeb::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
+  config.preload_frameworks = true
   config.cache_classes = true
   config.cache_template_loading = true
-
+  config.dependency_loading = false
+  config.allow_concurrency = true
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both thread web servers
   # and those relying on copy on write to perform better.
@@ -30,7 +32,7 @@ TDefWeb::Application.configure do
   config.assets.js_compressor = :uglify
 
   config.assets.configure do |env|
-    env.cache = ActiveSupport::Cache.lookup_store(:memory_store)
+    env.cache = ActiveSupport::Cache.lookup_store(:memory_store,{size: 64.megabytes})
   end
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -103,6 +105,6 @@ TDefWeb::Application.configure do
 		authentication:       'login',
 		enable_starttls_auto: true  }
 	config.action_mailer.default_options = {from: 'test@wsstudio.tk'}
-	Rails.application.routes.default_url_options[:host] = 'wsstudio.tk'
-	
+#	Rails.application.routes.default_url_options[:host] = 'wsstudio.tk'
+	config.action_mailer.default_url_options = { host: 'wsstudio.tk', port: 3000 }
 end
