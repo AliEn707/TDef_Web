@@ -30,9 +30,7 @@ TDefWeb::Application.configure do
   config.assets.js_compressor = :uglify
 
   config.assets.configure do |env|
-    if Rails.env.development? || Rails.env.test?
-      env.cache = ActiveSupport::Cache.lookup_store(:memory_store)
-    end
+    env.cache = ActiveSupport::Cache.lookup_store(:memory_store)
   end
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -62,9 +60,9 @@ TDefWeb::Application.configure do
 
   # Use a different cache store in production.
 	if (!ENV['REDIS_HOST'].nil? || !ENV['REDIS_PORT'].nil?) then
-		config.cache_store = :redis_store, { :host => ENV['REDIS_HOST'] || "localhost", :port => ENV['REDIS_PORT'].to_i || 6379 , :db => 0, :expires_in => 90.minutes }
+		config.cache_store = :redis_store, { :host => ENV['REDIS_HOST'] || "localhost", :port => ENV['REDIS_PORT'].nil? ? 6379 : ENV['REDIS_PORT'].to_i , :db => 0, :expires_in => 90.minutes }
 	else
-		config.cache_store = :memory_store, { size: 384.megabytes }
+		config.cache_store = :memory_store, { size: (ENV['MEMSTORE_SIZE'].nil? ? 256 : ENV['MEMSTORE_SIZE'].to_i).megabytes }
 	end
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"
