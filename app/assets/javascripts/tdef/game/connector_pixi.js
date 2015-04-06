@@ -78,17 +78,21 @@ function proceedReceivedData(str){
 	var e=getEngine();
 	for(var i in arr){
 		var obj=arr[i];
-		if (obj.objtype=="Player"){
-			//player
-			
+		if (obj.objtype){
+			if (obj.objtype=="Player"){
+				//player
+				
+			}else{
+				if (!e.mapObjects[obj.id]){
+					e.mapObjects[obj.id]=eval("new "+obj.objtype+"(obj)");
+					e.stage.addChild(e.mapObjects[obj.id]);
+				}
+				if (e.mapObjects[obj.id]){
+					e.mapObjects[obj.id].update(obj);
+				}
+			}
 		}else{
-			if (!e.mapObjects[obj.id]){
-				e.mapObjects[obj.id]=eval("new "+obj.objtype+"(obj)");
-				e.stage.addChild(e.mapObjects[obj.id]);
-			}
-			if (e.mapObjects[obj.id]){
-				e.mapObjects[obj.id].update(obj);
-			}
+			console.log(obj)
 		}
 		//console.log(str)
 	}

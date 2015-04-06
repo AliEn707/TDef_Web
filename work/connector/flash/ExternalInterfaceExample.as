@@ -213,6 +213,10 @@ package {
 	private const MSG_TOWER:int= 2;
 	private const MSG_BULLET:int= 3;
 	private const MSG_PLAYER:int= 4;
+	private const MSG_INFO:int= 5;
+	//additional messages to client
+	private const MSG_INFO_WAITING_TIME:int= 1;
+	
 	//msg to server
 	private const MSG_SPAWN_TOWER:int= 1;
 	private const MSG_SPAWN_NPC:int= 2;
@@ -276,6 +280,7 @@ package {
 	private const PLAYER_HERO:int=   BIT_5;
 	private const PLAYER_HERO_COUNTER:int=   BIT_6;
 	private const PLAYER_TARGET:int=   BIT_7;
+	private const PLAYER_FAIL:int=   BIT_8;
 	
 	private var dataSeq:Array = new Array();
 	private var outObj:String="";
@@ -347,7 +352,7 @@ package {
 							}
 						}
 						currMsg=mapSock.readByte();
-						dataSeq.push("oid");
+						dataSeq.push("bitmask");
 						outObj+="{msg:"+currMsg;
 					
 						break;
@@ -477,6 +482,7 @@ package {
 		switch (currMsg){
 			case MSG_NPC:
 				outObj+=",objtype:\"Npc\"";
+				dataSeq.push("id","int");
 				if ((bitMask&NPC_CREATE)!=0){ //npc create
 					outObj+=",create:1";
 					dataSeq.push("owner","int");
@@ -500,6 +506,7 @@ package {
 				return;
 			case MSG_TOWER:
 				outObj+=",objtype:\"Tower\"";
+				dataSeq.push("id","int");
 				if ((bitMask&TOWER_CREATE)!=0){ 
 					outObj+=",create:1";
 					dataSeq.push("type","int");
@@ -521,6 +528,7 @@ package {
 				return;
 			case MSG_BULLET:
 				outObj+=",objtype:\"Bullet\"";
+				dataSeq.push("id","int");
 			//	if ((bitMask&BULLET_POSITION)!=0){
 				dataSeq.push("grid","{");
 				dataSeq.push("x","float");
@@ -542,6 +550,7 @@ package {
 				return;
 			case MSG_PLAYER:
 				outObj+=",objtype:\"Player\"";
+				dataSeq.push("id","int");
 				if ((bitMask&PLAYER_CREATE)!=0){ 
 					dataSeq.push("pid","int");
 					dataSeq.push("tower_set","{");
@@ -589,6 +598,16 @@ package {
 				}
 				if ((bitMask&PLAYER_TARGET)!=0){ 
 					dataSeq.push("target","short");
+				}
+				if ((bitMask&PLAYER_FAIL)!=0){
+					outObj+=",fail:1";
+					dataSeq.push("exp","int");
+				}
+				return;
+			case MSG_INFO:
+				if (bitMask==MSG_INFO_WAITING_TIME){
+					outObj+=",type:'time'";
+					dataSeq.push("data","short");
 				}
 				return;
 			default:

@@ -12,9 +12,6 @@ function TDefEngine(place, opt){
 	var width=place.offsetWidth || window.innerWidth;
 	var height=window.innerHeight - 10 - (place.offsetTop || 0);
 	this.stage = new PIXI.Stage(0x000000);
-	console.log(place)
-	console.log(place.offsetTop)
-	console.log(width, height)
 	// create a renderer instance
 	this.renderer = opt.webgl ? new PIXI.autoDetectRenderer(width, height)  : new PIXI.CanvasRenderer(width, height);
 	this.renderer.view.oncontextmenu=function (){return false;}
@@ -55,10 +52,10 @@ TDefEngine.prototype.render= function (){
 	var that=getEngine();
 //	requestAnimFrame( that.render );
 	//that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
-	shellSort(that.stage.children, function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	that.keysProcessor();
 	that.objectsProcessor();
 	
+	shellSort(that.stage.children, function(a,b){return a.depth<b.depth; return 0;})
 	that.renderer.render(that.stage);
 	//bunny.nextFrame()
 }

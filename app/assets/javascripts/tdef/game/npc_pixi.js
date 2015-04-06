@@ -13,7 +13,7 @@ var Npc_callbacks={
 
 function Npc(opt){
 	opt=opt || {};
-	PIXI.SpriteBatch.call(this);
+	PIXI.DisplayObjectContainer.call(this);
 	this.map=getEngine().map;
 	//static
 	this.id=opt.id || 0
@@ -40,7 +40,7 @@ function Npc(opt){
 	this.time=opt.time || 0;
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 	this.addChild(this.sprites[this.sprite]);
-	
+
 }
 Npc.prototype= new PIXI.DisplayObjectContainer();
 Npc.prototype.constructor= Npc;
@@ -85,12 +85,13 @@ Npc.prototype.proceed= function (){
 	this.grid.x+=this.direction.x//*npc_types[this.type].move_speed*6/100;
 	this.grid.y+=this.direction.y//*npc_types[this.type].move_speed*6/100;
 	
-	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
-	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 	//proseed sprite
 	this.sprites[this.sprite].upFrame();
 	this.scale.x=this.map.scale.x;
 	this.scale.y=this.map.scale.x;
+	
+	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
+	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 }
 
 Npc.prototype.setSprite= function (name){
