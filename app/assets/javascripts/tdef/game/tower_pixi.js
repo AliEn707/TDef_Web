@@ -14,7 +14,8 @@ var Tower_callbacks={
 function Tower(opt){
 	opt=opt || {};
 	PIXI.SpriteBatch.call(this);
-	this.map=getEngine().map;
+	this.engine=getEngine();
+	this.map=this.engine.map;
 	//static
 	this.id=opt.id || 0;
 	this.type=opt.type || 1;
@@ -28,7 +29,7 @@ function Tower(opt){
 	for (var i in textures){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
-		var s=this.map.nodesize*1.5*(opt.scale || 1);
+		var s=this.map.nodesize*1.4*(opt.scale || 1);
 		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.72},callbacks:{obj:this,actions:Tower_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
 	}
 	//changeble
@@ -46,7 +47,8 @@ Tower.prototype.constructor= Tower;
 
 
 Tower.prototype.update= function (obj){
-
+	if (obj.health<0)
+		this.remove;
 }
 
 Tower.prototype.proceed= function (){
@@ -65,7 +67,7 @@ Tower.prototype.setSprite= function (name){
 }
 
 Tower.prototype.remove= function (){
-	var engine=getEngine();
+	var engine=this.engine;
 	engine.stage.removeChild(this);
 	delete engine.mapObjects[this.id];
 }

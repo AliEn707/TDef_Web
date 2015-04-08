@@ -1,3 +1,5 @@
+
+
 Grid.prototype = new PIXI.DisplayObjectContainer();
 Grid.prototype.constructor = Grid;
 
@@ -25,6 +27,7 @@ function Grid(size,opt){
 	
 	this.mousemove = this.touchmove = proceedDragging;
 	
+	
 	this.nodes= new PIXI.DisplayObjectContainer();//PIXI.SpriteBatch()
 	this.nodes.rotation=-Math.PI/4;
 	this.addChild(this.nodes);
@@ -35,12 +38,19 @@ function Grid(size,opt){
 		this.addChild(this.nodesOut[i]);
 	}
 	
+	this.buildable= new PIXI.DisplayObjectContainer();
+	this.buildable.rotation=-Math.PI/4;
+	this.addChild(this.buildable);
+	
 	this.objs= new PIXI.SpriteBatch();//PIXI.DisplayObjectContainer
 	this.addChild(this.objs);
 	
 //	this.transformCorrection()
 	this.players=[];
 }
+
+focusTexturePath="/imgtest/build.png";
+buildableTexturePath="/imgtest/tower_mark.png";
 
 Grid.prototype.resize = function(x,y){
 	this.transformCorrection();
@@ -67,12 +77,28 @@ Grid.prototype.zoom = function(s,x,y){
 	this.transformCorrection();
 }
 
+Grid.prototype.inArea=function(point){
+	return point.x>=0 && point.x<this.size && point.y>=0 && point.y<this.size;
+}
+
 Grid.prototype.pressAction=function(){
 	var point=this.screenToGrid(this.screenPressPoint.x,this.screenPressPoint.y);
-	if (point.x>=0 && point.x<this.size && point.y>=0 && point.y<this.size){
+	if (this.inArea(point)){
 		var id=this.getId(point);
 		console.log(id);
+		if (this.currentAction)
+			this.currentAction(id);
 	}
+}
+
+Grid.prototype.moveAction=function(data){
+	var position=data.getLocalPosition(this.stage);
+	var grid=this.screenToGrid(position.x,position.y);
+	if (!this.inArea(grid))
+		return;
+	var id=this.getId(grid);
+	//procced cursor on map
+	this.focusedNode.position=this.getPosition(id);
 }
 
 Grid.prototype.transformCorrection=function(){
@@ -147,8 +173,62 @@ Grid.prototype.getPosition = function(id){
 	return {x: parseInt(id%this.size) * this.nodesize, y: parseInt(id/this.size) * this.nodesize}
 }
 
-Grid.prototype.setOuterNode = function(pos, id, terrain,x,y){
-	node=new PIXI.Sprite(terrain)
+//used to get texture for setFocus
+Grid.prototype.getFocusTexture = function(path, opt){
+	return new PIXI.Texture.fromImage(path);
+}
+
+Grid.prototype.setFocus = function(texture, opt){
+	this.focusedNodeContainer=new PIXI.DisplayObjectContainer();
+	this.focusedNodeContainer.rotation=-Math.PI/4;
+	this.focusedNode=new PIXI.Sprite(texture);
+	this.focusedNode.height=this.nodesize
+	this.focusedNode.width=this.nodesize
+	
+	this.focusedNodeContainer.addChild(this.focusedNode);
+	this.addChild(this.focusedNodeContainer);
+}
+
+//uset to get texture for setBuildableNode
+Grid.prototype.getBuildableTexture = function(path, opt){
+	return new PIXI.Texture.fromImage(path);
+}
+
+Grid.prototype.setBuildableNode = function(id, terrain, opt){
+	opt=opt || {};
+	var node=new PIXI.Sprite(terrain)
+	var pos=this.getPosition(id)
+	
+	node.height=this.nodesize
+	node.width=this.nodesize
+	node.position.x=pos.x
+	node.position.y=pos.y
+	node.rotation=Math.PI/2;
+	node.anchor.y=1;
+	node.id=id
+	
+	this.buildable.addChild(node);
+}
+
+//set texture for node in map
+Grid.prototype.setNode = function(id, terrain, opt){
+	opt=opt || {};
+	var node=new PIXI.Sprite(terrain)
+	var pos=this.getPosition(id)
+	
+	node.height=this.nodesize
+	node.width=this.nodesize
+	node.position.x=pos.x
+	node.position.y=pos.y
+	node.rotation=Math.PI/2;
+	node.anchor.y=1;
+	node.id=id
+	this.nodes.addChildAt(node, id);
+}
+
+//set texture for nodes out of map
+Grid.prototype.setOuterNode = function(pos, id, terrain, x, y){
+	var node=new PIXI.Sprite(terrain)
 	
 	node.height=this.nodesize
 	node.width=this.nodesize
@@ -160,22 +240,6 @@ Grid.prototype.setOuterNode = function(pos, id, terrain,x,y){
 	
 	this.nodesOut[pos].addChildAt(node, id);
 }
-
-Grid.prototype.setNode = function(id, terrain){
-	node=new PIXI.Sprite(terrain)
-	pos=this.getPosition(id)
-	
-	node.height=this.nodesize
-	node.width=this.nodesize
-	node.position.x=pos.x
-	node.position.y=pos.y
-	node.rotation=Math.PI/2;
-	node.anchor.y=1;
-	node.id=id
-	
-	this.nodes.addChildAt(node, id);
-}
-
 
 Grid.prototype.getNode = function(id){
 	return this.getChildAt(0).getChildAt(id);

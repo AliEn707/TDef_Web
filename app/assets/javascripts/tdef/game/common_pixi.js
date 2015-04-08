@@ -27,8 +27,9 @@ function startDragging(data) {
 	//set point for click check
 	if (!this.screenPressPoint)
 		this.screenPressPoint={};
-	this.screenPressPoint.x = data.getLocalPosition(this.stage).x;
-	this.screenPressPoint.y = data.getLocalPosition(this.stage).y;
+	var stage=this.stage || getEngine().stage;
+	this.screenPressPoint.x = data.getLocalPosition(stage).x;
+	this.screenPressPoint.y = data.getLocalPosition(stage).y;
 	
 	incredibleHack.call(this.stage);
 }
@@ -38,17 +39,21 @@ function stopDragging(data) {
 			if (!this.screenPressPoint)
 				this.screenPressPoint={};
 			var screenPressPoint={};
-			screenPressPoint.x = data.getLocalPosition(this.stage).x;
-			screenPressPoint.y = data.getLocalPosition(this.stage).y;
-			if (this.screenPressPoint.x==screenPressPoint.x && this.screenPressPoint.y==screenPressPoint.y)
+			var stage=this.stage || getEngine().stage;
+			screenPressPoint.x = data.getLocalPosition(stage).x;
+			screenPressPoint.y = data.getLocalPosition(stage).y;
+			if (this.screenPressPoint.x==screenPressPoint.x && this.screenPressPoint.y==screenPressPoint.y){
 				if (this.pressAction)
 					this.pressAction();
+			}
 		}
 		this.dragging = false;
 		dragObj=false;
 }
 
 function proceedDragging(data){
+	if (this.moveAction)
+		this.moveAction(data);
 	if(this.dragging){
 		var position = data.getLocalPosition(this.parent);
 		this.position.x = position.x - this.mousePressPoint.x;

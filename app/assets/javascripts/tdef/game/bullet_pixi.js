@@ -6,7 +6,8 @@ var Bullet_callbacks={
 function Bullet(opt){
 	opt=opt || {};
 	PIXI.SpriteBatch.call(this);
-	this.map=getEngine().map;
+	this.engine=getEngine();
+	this.map=this.engine.map;
 	//static
 	this.id=opt.id || 0
 	this.type=opt.type || 1;
@@ -15,7 +16,7 @@ function Bullet(opt){
 	for (var i in textures){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
-		var s=this.map.nodesize*0.4*(opt.scale || 1);
+		var s=this.map.nodesize*0.3*(opt.scale || 1);
 		sprite=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.5},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width: s/4,height: s});
 		if (bullet_types[this.type].solid){
 			this.sprites[i]=new ATilingSprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays, width:textures[i].width, height:textures[i].height, size:s});

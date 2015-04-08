@@ -98,6 +98,7 @@ TDefEngine.prototype.parseMap = function(map){
 		data.size=parseInt(mp[0]);
 		data.walkable=mp[1];
 		data.buildable=mp[2];
+		//TODO: full parse
 		//mg
 		data.textures={};
 		//load textures
@@ -140,8 +141,15 @@ TDefEngine.prototype.setMap= function (m){
 	
 	var fullsize=opt.size*opt.size;
 	var size=map.size;
-	for(var i=0;i<fullsize;i++)
+	map.setFocus(map.getFocusTexture(focusTexturePath));
+	var buildableTexture=map.getBuildableTexture(buildableTexturePath);
+	for(var i=0;i<fullsize;i++){
 		map.setNode(i,opt.textures[opt.nodes[i]]);
+	//	console.log(opt.buildable,opt.buildable[i])
+		if (opt.buildable[i]=="1")
+			map.setBuildableNode(i,buildableTexture);
+		
+	}
 	var k = 0, i, j;
 	for(i=-1;i>-(size/2+size%2+1);i--)
 		for(j=-i-1;j<size-(-i-1);j++) {
