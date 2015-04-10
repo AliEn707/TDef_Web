@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20150326072041) do
     t.boolean  "admin"
     t.string   "name"
     t.string   "locale",                 default: "en"
+    t.string   "time_zone",              default: ""
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require bootstrap
-//= require_tree ./primary
+//= require_tree ./application
 
 
 

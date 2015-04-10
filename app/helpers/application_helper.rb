@@ -50,7 +50,8 @@ module ApplicationHelper
 				a<<[{'name'=>t(:tdef)},
 						{'name'=>t(:game),'path'=>tdef_game_path}]
 			end
-
+				a<<[{'name'=>t(:social)},
+						{'name'=>t(:messages),'path'=>messages_path}]
 #			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else
 			a<<[{'name'=>t(:sign_in), 'path'=> new_user_session_path}]

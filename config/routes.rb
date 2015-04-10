@@ -1,4 +1,7 @@
 TDefWeb::Application.routes.draw do
+  get "messages" => "messages#show", as: "messages" 
+  post "messages" => "messages#create" 
+  
   get "qrcode" =>"qrcode#qrcode", as: "qrcode"
   get "image/:id" => 'images#get', as: "get_image"
   

@@ -12,7 +12,7 @@ u=User.create(email:'user@test.test', name: "user", password:'000000', password_
 u=User.create(email:'admin@test.test', name: "admin", password:'000000', password_confirmation:'000000',confirmed_at: Time.now)
 u.admin=true
 u.save
-u=User.create(email:'test@test.test', password:'000000', password_confirmation:'000000',confirmed_at: Time.now)
+u=User.create(email:'test@test.test', name: "test",password:'000000', password_confirmation:'000000',confirmed_at: Time.now)
 u.admin=true
 u.save
 

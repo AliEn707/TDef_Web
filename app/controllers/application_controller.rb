@@ -3,7 +3,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
 	protect_from_forgery with: :exception
 	before_action :set_locale
-	def set_locale
+	before_action :set_timezone
+        def set_locale
 		locale=I18n.default_locale
 		if !current_user.nil?
 			locale=current_user.locale
@@ -20,6 +21,10 @@ class ApplicationController < ActionController::Base
 			end
 		end
 		I18n.locale = locale
+	end
+	
+        def set_timezone
+		Time.zone = current_user.time_zone if !current_user.nil?
 	end
 	
 	def not_found

@@ -43,6 +43,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
 	  t.string :name
 	  
 	  t.string :locale, :default => :en
+	  t.string :time_zone, :default => "UTC"
 	  
 	  t.timestamps
     end

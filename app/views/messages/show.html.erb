@@ -1,0 +1,24 @@
+<br>
+income:
+<%@income_messages.each do |m|%>
+	<%= content_tag :div do -%>
+		"<%=m.data%>" from <%=m.user.name%> at <%= m.sended_at%>
+	<%end%>
+<%end%>
+<br>
+outcome:
+<br>
+<%@messages.each do |m|%>
+	<%= content_tag :div do -%>
+		"<%=m.data%>" to <%=m.msg_dest.name%> at <%= m.sended_at%>
+	<%end%>
+<%end%>
+<br>
+<%=simple_form_for Message.new do |f|%>
+<%=f.input_field :user_id, as: :hidden,  value: current_user.id%>
+<%=f.input_field :msg_dest_type, as: :hidden,  value: "User"%>
+<%=f.select :msg_dest_id, User.all.map { |u| [u.name, u.id] } %>
+<%=f.input :data, label: "Message"%>
+<%=f.submit%>
+
+<%end%>

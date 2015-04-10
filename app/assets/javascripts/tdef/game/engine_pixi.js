@@ -1,4 +1,5 @@
-﻿var dragFree=true;
+﻿var locales={};
+
 
 function TDefEngine(place, opt){
 	opt = opt || {};
