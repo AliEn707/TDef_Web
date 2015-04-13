@@ -4,8 +4,6 @@
 function TDefEngine(place, opt){
 	opt = opt || {};
 	opt.defines=opt.defines || {};
-	
-	this.mapObjects={};//contains npc,towers,bullets
 		
 	place=place || document.body;
 	this.webgl=opt.webgl || true;
@@ -230,9 +228,10 @@ TDefEngine.prototype.keysProcessor=function() {
 }
 
 TDefEngine.prototype.objectsProcessor=function() {
-	var objs=this.mapObjects;
+	var objs=this.map.objects;
 	
 	for(var i in objs){
-		objs[i].proceed();
+		if (objs[i].proceed)
+			objs[i].proceed();
 	}
 }

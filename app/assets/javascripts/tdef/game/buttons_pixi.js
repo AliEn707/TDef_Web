@@ -1,6 +1,9 @@
 function ButtonContainer(opt){
 	PIXI.DisplayObjectContainer.call(this);
-	this.unfocused=new ASprite(opt.sprite.textures,opt.sprite.opt);
+	
+	this.unfocused=new ASprite(opt.sprite.textures,opt.sprite.opt || {});
+	this.addChild(this.unfocused);
+	
 	this.buttons=[];
 	if (opt.hitArea)
 		this.hitArea=new PIXI.Rectangle(opt.hitArea.x,opt.hitArea.y,opt.hitArea.width,opt.hitArea.height);
@@ -40,7 +43,6 @@ function ButtonContainer(opt){
 	this.pressAction=opt.pressAction;
 	this.innerArea=opt.innerArea || {x:0,y:0,width:this.unfocused.getAttr("width"),height:this.unfocused.getAttr("height")};
 	
-	this.addChild(this.unfocused);
 }
 
 ButtonContainer.prototype= new PIXI.DisplayObjectContainer();
@@ -50,6 +52,7 @@ ButtonContainer.prototype.addButton=function (opt){
 	var button=new ButtonContainer(opt);
 	this.buttons.push(button);
 	this.addChild(button);
+	return button;
 }
 
 ButtonContainer.prototype.proceed=function (){
@@ -59,6 +62,7 @@ ButtonContainer.prototype.proceed=function (){
 	for(var i in this.buttons)
 		this.buttons[i].proceed();
 }
+
 
 ButtonContainer.prototype.transformCorrection=function (){
 	if (this.parent.innerArea){
@@ -71,4 +75,36 @@ ButtonContainer.prototype.transformCorrection=function (){
 		if (this.position.x+this.width>this.parent.innerArea.x+this.parent.innerArea.width)
 			this.position.x-=(this.position.x+this.width)-(this.parent.innerArea.x+this.parent.innerArea.width);
 	}
+}
+
+ButtonContainer.prototype.keyPadInit=function (obj){
+	obj=obj || {};
+	this.keypad={};
+	this.rows=obj.rows || 1;
+	this.columns=obj.columns || 1;
+	this.buttonSize=obj.buttonSize || {x: this.unfocused.getAttr("width")/this.columns,y: this.unfocused.getAttr("height")/this.rows};
+	this.buttonDist=obj.buttonDist || 5;
+}
+
+ButtonContainer.prototype.keyPadAddButton=function (pos,opt){
+	var button = this.addButton(opt);
+	if (this.keypad){
+		this.keypad[pos]=button;
+		if (pos> this.rows*this.columns)
+			console.log("Button possition "+pos+" out of keypad");
+		var position = {
+				y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos/this.columns)*(this.buttonSize.x+this.buttonDist),
+				x: (this.innerArea.x || 0)+this.buttonDist+parseInt((pos%this.columns)/this.rows)*(this.buttonSize.y+this.buttonDist) 
+			};
+		button.position=position;
+		button.width=this.buttonSize.x;
+		button.height=this.buttonSize.y;
+		if (button.actions.indexOf("drag")>-1)
+			delete button.actions[button.actions.indexOf("drag")];
+	}
+	return button;
+}
+
+ButtonContainer.prototype.keyPadGetButton=function (pos){
+	return this.keypad[pos];
 }

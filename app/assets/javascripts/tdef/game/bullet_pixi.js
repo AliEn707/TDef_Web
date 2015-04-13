@@ -127,6 +127,6 @@ Bullet.prototype.setSprite= function (name){
 Bullet.prototype.remove= function (){
 	var engine=getEngine();
 	engine.stage.removeChild(this);
-	delete engine.mapObjects[this.id];
+	delete engine.map.objects[this.id];
 }
 

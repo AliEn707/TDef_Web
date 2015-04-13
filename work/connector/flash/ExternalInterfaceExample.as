@@ -273,7 +273,7 @@ package {
 	private const BULLET_DETONATE:int=  BIT_2;
 	private const BULLET_CREATE:int=  BIT_3;
 	//player constants
-	private const PLAYER_HEALTH:int=   BIT_1;
+	private const PLAYER_BASE:int=   BIT_1;
 	private const PLAYER_MONEY:int=   BIT_2;
 	private const PLAYER_CREATE:int=   BIT_3;
 	private const PLAYER_LEVEL:int=   BIT_4;
@@ -587,8 +587,8 @@ package {
 				if ((bitMask&PLAYER_HERO_COUNTER)!=0){ 
 					dataSeq.push("hero_counter","int");
 				}
-				if ((bitMask&PLAYER_HEALTH)!=0){ //what is it??
-					dataSeq.push("health","int");
+				if ((bitMask&PLAYER_BASE)!=0){ //what is it??
+					dataSeq.push("base","int");
 				}
 				if ((bitMask&PLAYER_LEVEL)!=0){ 
 					dataSeq.push("level","int");
@@ -597,7 +597,7 @@ package {
 					dataSeq.push("money","int");
 				}
 				if ((bitMask&PLAYER_TARGET)!=0){ 
-					dataSeq.push("target","short");
+					dataSeq.push("targeting","short");
 				}
 				if ((bitMask&PLAYER_FAIL)!=0){
 					outObj+=",fail:1";

@@ -69,6 +69,10 @@ function mapAuthData(value) {
 	latency=obj.latency*6/100;
 	if (latency==0)
 		latency=2;
+	var engine=getEngine();
+	engine.map.players.total=obj.players;
+	engine.map.players.id=obj.id;
+	
 }
 
 //callback on got objects data
@@ -81,14 +85,17 @@ function proceedReceivedData(str){
 		if (obj.objtype){
 			if (obj.objtype=="Player"){
 				//player
-				
+				if (!e.map.players[obj.id])
+					e.map.players[obj.id]=eval("new "+obj.objtype+"(obj)");
+				if (e.map.players[obj.id])
+					e.map.players[obj.id].update(obj);
 			}else{
-				if (!e.mapObjects[obj.id]){
-					e.mapObjects[obj.id]=eval("new "+obj.objtype+"(obj)");
-					e.stage.addChild(e.mapObjects[obj.id]);
+				if (!e.map.objects[obj.id]){
+					e.map.objects[obj.id]=eval("new "+obj.objtype+"(obj)");
+					e.stage.addChild(e.map.objects[obj.id]);
 				}
-				if (e.mapObjects[obj.id]){
-					e.mapObjects[obj.id].update(obj);
+				if (e.map.objects[obj.id]){
+					e.map.objects[obj.id].update(obj);
 				}
 			}
 		}else{

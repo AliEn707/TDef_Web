@@ -8,6 +8,8 @@ function Grid(size,opt){
 	PIXI.SpriteBatch.call(this);
 	this.interactive = true;
 	this.actions=["drag","press"];
+	if (!this.engine)
+		this.engine=getEngine();
 		
 	this.width=getEngine().renderer.view.width
 	this.height=getEngine().renderer.view.height
@@ -45,8 +47,10 @@ function Grid(size,opt){
 	this.objs= new PIXI.SpriteBatch();//PIXI.DisplayObjectContainer
 	this.addChild(this.objs);
 	
+	this.objects={};//contains npc,towers,bullets
+
 //	this.transformCorrection()
-	this.players=[];
+	this.players={};
 }
 
 focusTexturePath="/imgtest/build.png";
@@ -256,12 +260,24 @@ Grid.prototype.setWall = function(wall){
 	
 	wc.addChild(wcc);
 	wc.depth=this.objDepth(w.position.x/this.nodesize+0.5,w.position.y/this.nodesize+0.5);
-	
+	var i=0;
+	while (this.objects["wall"+i]) i++; //bad but is
+	this.objects["wall"+i]=wc;
 	this.engine.stage.addChild(wc);
 }
 
 Grid.prototype.setWallComplete = function(wall){
 	
 }
+
+//clean objects from stage
+Grid.prototype.clean = function(){
+	for(var i in this.objects){
+		this.engine.stage.removeChild(this.objects[i]);
+	}
+	this.engine.stage.removeChild(this);
+}
+
+
 
 

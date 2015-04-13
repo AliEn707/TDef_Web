@@ -69,6 +69,6 @@ Tower.prototype.setSprite= function (name){
 Tower.prototype.remove= function (){
 	var engine=this.engine;
 	engine.stage.removeChild(this);
-	delete engine.mapObjects[this.id];
+	delete engine.map.objects[this.id];
 }
 
