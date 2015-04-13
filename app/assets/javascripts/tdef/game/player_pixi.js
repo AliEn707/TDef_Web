@@ -44,7 +44,7 @@ function Player(opt){
 	var cont=[PIXI.Texture.fromImage("/imgtest/build.png")];
 	
 	var engine=getEngine();
-	if (engine.map.players.id=this.id){
+	if (engine.map.players.id==this.id){
 		var buttonSize={x:50,y:50}
 		
 		var size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}
