@@ -345,7 +345,7 @@ package {
 						if (outObj.length>2){//send object to javasctript
 						        var time:int=flash.utils.getTimer();
 						        outObj+=",time:"+time+"},";
-						        if (time-msgTime>33){
+						        if (time-msgTime>90){
 								proceedReceivedDataJS(outObj+"])");
 								outObj="([";
 								msgTime=time;

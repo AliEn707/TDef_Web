@@ -64,10 +64,12 @@ Npc.prototype.update= function (obj){
 	//add time correction
 	this.direction.x=dirx/this.average_time//timestep;
 	this.direction.y=diry/this.average_time//timestep;
-		
-	this.health=obj.health || this.health;
-	this.shield=obj.shield || this.shield;
-	this.level=obj.level || this.level;
+	if (!obj.health===undefined)
+		this.health=obj.health;
+	if (!obj.shield===undefined)
+		this.shield=obj.shield;
+	if (!obj.level===undefined)
+		this.level=obj.level;
 	//set new step
 //	this.destination=obj.grid;
 	this.time=obj.time;
@@ -75,7 +77,7 @@ Npc.prototype.update= function (obj){
 //	this.grid=obj.grid;
 
 //TODO change to set death	
-	if (this.health<=0){
+	if (this.health<=0 || obj.health<=0){
 //		console.log("deleted npc");
 		this.remove();
 	}

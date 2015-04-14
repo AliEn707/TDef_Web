@@ -3,7 +3,6 @@ function ASprite(textures,params){
 	AObject.call(this, params);
 	
 	this.setFrames(textures, params);
-	console.log(textures[0].width)
 	this.addChild(this.frames[this.current_frame]);
 }
 ASprite.prototype=new AObject();

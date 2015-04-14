@@ -47,8 +47,10 @@ Tower.prototype.constructor= Tower;
 
 
 Tower.prototype.update= function (obj){
-	if (obj.health<0)
-		this.remove;
+	if (!obj.health===undefined)
+		this.health=obj.health;
+	if (obj.health<=0 || this.health<=0)
+		this.remove();
 }
 
 Tower.prototype.proceed= function (){
