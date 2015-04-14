@@ -38,7 +38,7 @@ function Tower(opt){
 	this.health=opt.health || 0;
 	this.shield=opt.shield || 0;
 	this.energy=opt.energy || 0;
-	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
+	this.depth=this.map.objDepth(this.grid.x,this.grid.y);
 	this.addChild(this.sprites[this.sprite]);
 	
 }
@@ -53,7 +53,7 @@ Tower.prototype.update= function (obj){
 
 Tower.prototype.proceed= function (){
 	this.position=this.map.gridToScreen(this.grid.x,this.grid.y);
-	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
+	this.depth=this.map.objDepth(this.grid.x,this.grid.y);
 	//proseed sprite
 	this.sprites[this.sprite].upFrame();
 	this.scale.x=this.map.scale.x;

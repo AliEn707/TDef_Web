@@ -54,7 +54,7 @@ TDefEngine.prototype.render= function (){
 	that.keysProcessor();
 	that.objectsProcessor();
 	
-	shellSort(that.stage.children, function(a,b){return a.depth<b.depth; return 0;})
+	shellSort(that.stage.children, function(a,b){return (a.depth)<(b.depth);})
 	that.renderer.render(that.stage);
 	//bunny.nextFrame()
 }

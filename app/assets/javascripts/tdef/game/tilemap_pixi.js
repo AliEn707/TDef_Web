@@ -85,6 +85,10 @@ Grid.prototype.inArea=function(point){
 	return point.x>=0 && point.x<this.size && point.y>=0 && point.y<this.size;
 }
 
+Grid.prototype.setAction=function(a){
+	this.currentAction=a;
+}
+
 Grid.prototype.pressAction=function(){
 	var point=this.screenToGrid(this.screenPressPoint.x,this.screenPressPoint.y);
 	if (this.inArea(point)){
@@ -92,6 +96,8 @@ Grid.prototype.pressAction=function(){
 		console.log(id);
 		if (this.currentAction)
 			this.currentAction(id);
+	}else{
+		this.currentAction=0;
 	}
 }
 

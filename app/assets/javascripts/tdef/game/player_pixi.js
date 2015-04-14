@@ -41,8 +41,8 @@ function Player(opt){
 	
 	//TODO:remove	
 	var t=[new PIXI.Texture.fromImage("/imgtest/red.jpeg")]
-	var cont=[PIXI.Texture.fromImage("/imgtest/build.png")];
-	
+	var tw=[new PIXI.Texture.fromImage("/imgtest/green.jpg")]
+	var cont=[new PIXI.Texture.fromImage("/imgtest/build.png")];
 	var engine=getEngine();
 	if (engine.map.players.id==this.id){
 		var buttonSize={x:50,y:50}
@@ -57,9 +57,21 @@ function Player(opt){
 		this.set.npc.buttons=buttons;
 		engine.map.objects["npc_set"]=buttons;
 		engine.stage.addChild(buttons);
+	
+		buttonSize={x:50,y:50}
+		
+		size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}
+		buttons=new ButtonContainer({sprite:{textures:cont,opt:size},position:{x:100,y:200},actions:["drag"]});
+		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize});
+		for(var i in this.set.tower)
+			if (parseInt(i) || parseInt(i)==0){
+				this.set.tower[i].button=buttons.keyPadAddButton(parseInt(i),{sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}});
+			}
+		this.set.tower.buttons=buttons;
+		engine.map.objects["tower_set"]=buttons;
+		engine.stage.addChild(buttons);
 	}
-	//TODO: add spawn towers
-
+	
 }
 
 Player.prototype.constructor= Player;

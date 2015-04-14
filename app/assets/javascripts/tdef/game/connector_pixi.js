@@ -59,7 +59,11 @@ function mapConnect(host,port) {
 function mapConnectionError(val){
 	console.log("can't connect: "+val);
 	//TODO add handler
+//	var engine=getEngine();
+//	engine.map.clean;
 }
+
+//callback if cant connect
 
 //callback on map auth
 function mapAuthData(value) {

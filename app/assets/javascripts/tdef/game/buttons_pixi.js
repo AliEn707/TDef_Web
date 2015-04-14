@@ -3,7 +3,6 @@ function ButtonContainer(opt){
 	
 	this.unfocused=new ASprite(opt.sprite.textures,opt.sprite.opt || {});
 	this.addChild(this.unfocused);
-	
 	this.buttons=[];
 	if (opt.hitArea)
 		this.hitArea=new PIXI.Rectangle(opt.hitArea.x,opt.hitArea.y,opt.hitArea.width,opt.hitArea.height);
@@ -39,7 +38,7 @@ function ButtonContainer(opt){
 				this.outerAction();
 		}
 	}
-
+	this.depth=0;//allways on screen
 	this.pressAction=opt.pressAction;
 	this.innerArea=opt.innerArea || {x:0,y:0,width:this.unfocused.getAttr("width"),height:this.unfocused.getAttr("height")};
 	

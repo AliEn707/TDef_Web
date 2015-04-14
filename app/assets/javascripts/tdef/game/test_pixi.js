@@ -256,6 +256,7 @@ var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 
 //	stage.addChild(bunny);
 
+var atlas = new PIXI.Texture.fromImage("/imgtest/green.jpg")
 var atlas = new PIXI.BaseTexture.fromImage("/imgtest/red.jpeg");
 //	var a=new Grid(5)
 var size=30
