@@ -115,11 +115,11 @@
       </div><!--/row-->
 	<div id="footer" style="position:fixed; bottom: 0px;">
 	<%url=request.url.split("?")[0]%>
-	<%cache("qrcode"+url) do %>
-		<div id="qrdiv" <%='hidden="' if cookies[:qrcode]=='t'%>>
+	<div id="qrdiv" <%='hidden="' if cookies[:qrcode]=='t'%>>
+		<%cache("qrcode"+url) do %>
 			<img src="<%=qrcode(url)%>" />
-		</div>
-	<%end%>
+		<%end%>
+	</div>
 		<p>
 			<button class="btn btn-mini btn-inverse" onclick="toggle_qrdiv()">
 				<arrow class="icon-arrow-<%=cookies[:qrcode]=='t' ? 'up' : 'down'%>"  > </arrow>
