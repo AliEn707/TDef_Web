@@ -2,7 +2,7 @@
 income:
 <%@income_messages.each do |m|%>
 	<%= content_tag :div do -%>
-		"<%=m.data%>" from <%=m.user.name%> at <%= m.sended_at%>
+		"<%=m.data%>" from <%=m.user.name%> at <%= m.created_at%>
 	<%end%>
 <%end%>
 <br>
@@ -10,7 +10,7 @@ outcome:
 <br>
 <%@messages.each do |m|%>
 	<%= content_tag :div do -%>
-		"<%=m.data%>" to <%=m.msg_dest.name%> at <%= m.sended_at%>
+		"<%=m.data%>" to <%=m.msg_dest.name%> at <%= m.created_at%>
 	<%end%>
 <%end%>
 <br>

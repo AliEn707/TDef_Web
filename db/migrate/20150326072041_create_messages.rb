@@ -6,7 +6,6 @@ class CreateMessages < ActiveRecord::Migration
 	t.string :msg_dest_type
 	
 	t.string :data
-	t.datetime :sended_at
 	
 	t.timestamps
     end
