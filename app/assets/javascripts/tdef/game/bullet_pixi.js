@@ -57,7 +57,7 @@ Bullet.prototype.getAngle= function (source,position){
 	var v={x:position.x-source.x,y:position.y-source.y};
 	var length=Math.sqrt(v.x*v.x+v.y*v.y);
 	var angle=length!=0 ? Math.acos(-(v.y)/(length)) : 0;
-	return angle*( v.y<0 ? -1 : 1);//cos is on half of circle
+	return angle*( v.x<0 ? -1 : 1);//cos is on half of circle
 }
 
 Bullet.prototype.setRotation= function (obj){

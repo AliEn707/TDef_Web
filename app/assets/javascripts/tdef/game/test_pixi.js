@@ -48,15 +48,15 @@ var npc_types={
 				frames: 8,
 				height: 128,
 			},
-			walkleft:{
-				src:"/imgtest/wl.jpeg",
+			walk_left:{
+				src:"/imgtest/wl.png",
 				frames: 8,
-				height: 128
+				height: 128,
 			},
-			walkright:{
+			walk_right:{
 				src:"/imgtest/wr.png",
 				frames: 8,
-				height: 128
+				height: 128,
 			},
 		}
 	},
@@ -81,13 +81,13 @@ var npc_types={
 				height: 128,
 				width: 128,
 			},
-			walkleft:{
-				src:"/imgtest/wl.jpeg",
+			walk_left:{
+				src:"/imgtest/wl.png",
 				frames: 8,
 				height: 128,
 				loop: true
 			},
-			walkright:{
+			walk_right:{
 				src:"/imgtest/wr.png",
 				frames: 8,
 				height: 128,
@@ -187,7 +187,7 @@ var bullet_types={
 				height: 256,
 				width: 64,
 				delays:{
-					last_frame: 0.4,
+					last_frame: 0.9,
 				}
 			},
 		},
@@ -256,7 +256,7 @@ var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 
 //	stage.addChild(bunny);
 
-var atlas = new PIXI.Texture.fromImage("/imgtest/green.jpg")
+//var atlas = new PIXI.Texture.fromImage("/imgtest/green.jpg")
 var atlas = new PIXI.BaseTexture.fromImage("/imgtest/red.jpeg");
 //	var a=new Grid(5)
 var size=30
@@ -271,8 +271,10 @@ for (var i =0;i<size*size;i++)
 engine.setMap("4")
 //engine.stage.addChild(bunny)
 data=[
-{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:24.374,y:29.4},$:0,type:2,owner:1,source:{$:0,x:27.125,y:28.5},$:0},
-{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:27.125,y:28.5},$:0,type:2,owner:2,source:{$:0,x:24.374,y:29.4},$:0}
+	{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:24.374,y:29.4},$:0,type:2,owner:1,source:{$:0,x:27.125,y:28.5},$:0},
+	{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:27.125,y:28.5},$:0,type:2,owner:2,source:{$:0,x:24.374,y:29.4},$:0},
+	{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,y:24.374,x:29.4},$:0,type:2,owner:1,source:{$:0,y:27.125,x:28.5},$:0},
+	{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,y:27.125,x:28.5},$:0,type:2,owner:2,source:{$:0,y:24.374,x:29.4},$:0},
 ]
 for (var i=0;i<1;i++){	
 //	engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})

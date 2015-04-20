@@ -681,11 +681,22 @@ function mapEditor_completeMapInfo() {
 	text += 'max_towers ' + document.getElementsByName("max_towers")[0].value + '\n'
 	text += 'max_bullets ' + document.getElementsByName("max_bullets")[0].value + '\n'
 	text += 'bases ' + bases.length + '\n'
-	for (var i = 0; i < bases.length; i++)
-		text += i + ' ' + bases[i] + ' ' + (document.getElementById('b' + bases[i]).selectedIndex - 1) + ' \n'
 	var els = document.getElementsByName("pcbase[]")
+	if (els[0] != null) { //pc base selected
+		var tmp = els[0].selectedIndex
+		text += tmp + ' ' + bases[0] + ' ' + (document.getElementById('b' + bases[0]).selectedIndex - 1) + ' \n'	
+		for (var i = 1; i < bases.length; i++)
+			if (i != tmp)
+				text += i + ' ' + bases[i] + ' ' + (document.getElementById('b' + bases[i]).selectedIndex - 1) + ' \n'
+			else
+				text += 0 + ' ' + bases[i] + ' ' + (document.getElementById('b' + bases[i]).selectedIndex - 1) + ' \n'
+	} else {
+		text += '0 0 -1 \n' //fake pc base
+		for (var i = 0; i < bases.length; i++)
+			text += (i + 1) + ' ' + bases[i] + ' ' + (document.getElementById('b' + bases[i]).selectedIndex - 1) + ' \n'		
+	}
 	if (els[0] != null)
-		text += 'pc_base ' + els[0].selectedIndex + ' ' + els[1].value + '\n'
+		text += 'pc_base ' + '0 ' + els[1].value + '\n'
 	text += 'points ' + respawns.length + '\n'
 	for (var i = 0; i < respawns.length; i++)
 		text += i + ' ' + respawns[i] + '\n'
@@ -700,12 +711,14 @@ function mapEditor_completeMapInfo() {
 	document.getElementById('completeInfo').innerHTML = text
 }
 
-function mapEditor_loadBasesResps(text, i, str, brushMode) {
+function mapEditor_loadBasesResps(text, i, str, brushMode, obj) {
 	if (text[i].search(str) != -1) {
 		var length = parseInt(text[i].split(' ')[1])
 		mode = brushMode //mapEditor_brush mode
 		for (var j = 1; j <= length; j++) {
 			var temp = text[++i].split(' ')
+			if (temp[0] == '0' && mode == 2 && obj !== undefined) //pc base
+				obj.index = j - 1
 			var index = parseInt(temp[1])
 			var clickX = Math.floor(index/size)*nodeSize, clickY = index%size*nodeSize
 			mapEditor_brush(clickX, clickY)
@@ -755,7 +768,7 @@ function mapEditor_loadMap() {
 			i += parseInt(text[i].split(' ')[1])
 			continue
 		}
-		i = mapEditor_loadBasesResps(text, i, "points", 3)
+		i = mapEditor_loadBasesResps(text, i, "points", 3, undefined)
 		if (text[i].search("waves") != -1) {
 			var length = parseInt(text[i].split(' ')[1]) //number of waves
 			for (var j = 1; j <= length; j++)
@@ -768,7 +781,8 @@ function mapEditor_loadMap() {
 			continue		
 		}
 	}
-	mapEditor_loadBasesResps(text, basesIndex, "bases", 2)
+	var pcBaseObj = { index: 0 }
+	mapEditor_loadBasesResps(text, basesIndex, "bases", 2, pcBaseObj)
 	while (partsIndex < text.length && text[partsIndex].search("parts") != -1) {
 		var tmp = text[partsIndex].split(' ')
 		var length = parseInt(tmp[1]) //number of parts
@@ -786,7 +800,7 @@ function mapEditor_loadMap() {
 		var params = text[pcBase].split(' ')
 		document.getElementById('pc_base').checked = true
 		mapEditor_togglePCbase(document.getElementById('pc_base'))
-		document.getElementById('pcbase').childNodes[3].selectedIndex = parseInt(params[1])
+		document.getElementById('pcbase').childNodes[3].selectedIndex = pcBaseObj.index
 		document.getElementById('pcbase').childNodes[4].value = params[2]
 	}
 	mapEditor_drawMap()

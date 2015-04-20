@@ -54,7 +54,24 @@ ButtonContainer.prototype.addButton=function (opt){
 	return button;
 }
 
+ButtonContainer.prototype.setWidthHeight=function (){
+	if (this.$width){
+		if (this.getChildAt(0).hasLoaded()){
+			this.width=this.$width;
+			delete this.$width;
+		}
+	}
+	if (this.$height){
+		if (this.getChildAt(0).hasLoaded()){
+			this.height=this.$height;
+			delete this.$height;
+		}
+	}
+}
+
 ButtonContainer.prototype.proceed=function (){
+	//check size of button
+	this.setWidthHeight();
 	//change frame for background
 	this.getChildAt(0).upFrame();
 	//and for all buttons
@@ -96,8 +113,9 @@ ButtonContainer.prototype.keyPadAddButton=function (pos,opt){
 				x: (this.innerArea.x || 0)+this.buttonDist+parseInt((pos%this.columns)/this.rows)*(this.buttonSize.y+this.buttonDist) 
 			};
 		button.position=position;
-		button.width=this.buttonSize.x;
-		button.height=this.buttonSize.y;
+			console.log(this.width);
+		button.$width=this.buttonSize.x;
+		button.$height=this.buttonSize.y;
 		if (button.actions.indexOf("drag")>-1)
 			delete button.actions[button.actions.indexOf("drag")];
 	}

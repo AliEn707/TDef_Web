@@ -35,6 +35,10 @@ AObject.prototype.getTexture= function (i){
 		return this.frames[this.current_frame].texture;
 }
 
+AObject.prototype.hasLoaded= function (){
+	return this.frames[this.current_frame].texture.baseTexture.hasLoaded;
+}
+
 AObject.prototype.updateFrame= function (){
 	//height must be setted manualy
 //	var height;

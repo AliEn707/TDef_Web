@@ -40,12 +40,58 @@ function Npc(opt){
 	this.energy=opt.energy || 0;
 	this.time=opt.time || 0;
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
+	
 	this.addChild(this.sprites[this.sprite]);
 
 }
 Npc.prototype= new PIXI.DisplayObjectContainer();
 Npc.prototype.constructor= Npc;
 
+
+Npc.prototype.getAngle= function (v){
+	var length=Math.sqrt(v.x*v.x+v.y*v.y);
+	var angle=length!=0 ? Math.acos((v.y)/(length)) : 0;
+	return angle*( v.x<0 ? -1 : 1);//cos is on half of circle
+}
+
+Npc.prototype.setSpriteByVector= function (v){
+	var ang=this.getAngle(v);
+	var p8=Math.PI/8;
+	//need to correct
+	if (ang>9*p8 || ang<=-5*p8){
+		this.setSpriteAdd("left");
+		return;
+	}
+	if (ang>-5*p8 && ang<=-3*p8){
+		this.setSpriteAdd("leftup");
+		return;
+	}
+	if (ang>-3*p8 && ang<=-p8){
+		this.setSpriteAdd("up");
+		return;
+	}
+	if (ang>-p8 && ang<=p8){
+		this.setSpriteAdd("rightup");
+		return;
+	}
+	if (ang>p8 && ang<=3*p8){
+		console.log("right")
+		this.setSpriteAdd("right");
+		return;
+	}
+	if (ang>3*p8 && ang<=5*p8){
+		this.setSpriteAdd("rightdown");
+		return;
+	}
+	if (ang>5*p8 && ang<=7*p8){
+		this.setSpriteAdd("down");
+		return;
+	}
+	if (ang>7*p8 && ang<=9*p8){
+		this.setSpriteAdd("leftdown");
+		return;
+	}
+}
 
 Npc.prototype.update= function (obj){
 //	var time=this.time;
@@ -64,6 +110,9 @@ Npc.prototype.update= function (obj){
 	//add time correction
 	this.direction.x=dirx/this.average_time//timestep;
 	this.direction.y=diry/this.average_time//timestep;
+	
+	this.setSpriteByVector(this.direction);
+	
 	if (!obj.health===undefined)
 		this.health=obj.health;
 	if (!obj.shield===undefined)
@@ -95,6 +144,14 @@ Npc.prototype.proceed= function (){
 	
 	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
+}
+
+Npc.prototype.setSpriteAdd= function (name){
+	var sprite=this.sprite.split("_");
+	if (sprite.length>1)
+		if (sprite[1]!=name)
+			if (this.sprites[sprite[0]+"_"+name])
+				this.setSprite(sprite[0]+"_"+name);
 }
 
 Npc.prototype.setSprite= function (name){
