@@ -42,7 +42,9 @@
 					<%= content_tag :tr do -%>
 						<%= content_tag :td, width: "80px" do -%>
 							<%= content_tag :locale  do -%>
-								<%=l_l.name%>
+								<%= content_tag :span, title: "created by #{d_d.user.name}"  do -%>
+									<%=l_l.name%>
+								<%end%>
 							<%end%>
 						<%end%>
 						<%= content_tag :td, width: "20%" do -%>

@@ -23,19 +23,17 @@ class Tdef::LocalesController < ApplicationController
 					value=request.POST['value'][i_i]
 					if  (key!="" && name!="" && value!="")
 						h_h[name]=Tdef::Locale.find_by(name: name) if h_h[name].nil?
-						h_h[name]=Tdef::Locale.create(name: name) if h_h[name].nil?
-						locale=Tdef::LocaleData.find_by(key: key, locale_id: h_h[name].id)
+						h_h[name]=Tdef::Locale.create(name: name, accepted: true) if h_h[name].nil?
+						locale=Tdef::LocaleData.where(key: key, locale_id: h_h[name].id).first
 						locale=Tdef::LocaleData.create(key: key) if locale.nil?
-						locale.value=value
-						
+						locale.value=value;
+						locale.user_id=current_user.id;
 						h_h[name].locale_datas<<locale
 					end
 				end
 			end
 		end
-		h_h.each do |k,v|
-#			v.write_file
-		end
-		redirect_to tdef_locales_all_path
+
+		redirect_to :back
 	end
 end

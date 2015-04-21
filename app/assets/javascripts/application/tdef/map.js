@@ -433,7 +433,7 @@ function mapEditor_init() { //init data
 	mapEditor_textureBrushChange(document.getElementById('textureBrush'))
 	for (var i = 0; i < textures.length; i++) {
 		images[i] = new Image()
-		images[i].src = previews[i]
+		images[i].src = textures[i]
 	}
 	walls.length = 0
 	objects.length = 0
@@ -453,8 +453,13 @@ function mapEditor_drawNode(index) {
 	ctx.lineWidth = 1
 	if (editor == 'textureEdit') {
 		ctx.globalAlpha = 1
-		if (nodesTextures[index] != -1) 
-			ctx.drawImage(images[nodesTextures[index]], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize);
+		if (nodesTextures[index] != -1) {
+			ctx.save();
+				ctx.translate(x*nodeSize+1,y*nodeSize+1)
+				ctx.rotate(90*Math.PI/180)
+				ctx.drawImage(images[nodesTextures[index]], 0, -nodeSize, nodeSize, nodeSize);
+			ctx.restore();
+		}
 	}
 	if (editor == 'mapEdit' || (editor == 'textureEdit' && document.getElementById('opacity').checked)) { //awesome
 		if (editor == 'textureEdit' && document.getElementById('opacity').checked)
@@ -499,7 +504,11 @@ function mapEditor_drawOuterNode(x, y, textureIndex) {
 	ctx.scale(scale,scale*0.5);
 	ctx.rotate(-45*Math.PI/180)
 	ctx.lineWidth = 1	
-	ctx.drawImage(images[textureIndex], x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize)
+	ctx.save();
+		ctx.translate(x*nodeSize+1,y*nodeSize+1)
+		ctx.rotate(90*Math.PI/180)
+		ctx.drawImage(images[textureIndex], 0, -nodeSize, nodeSize, nodeSize);
+	ctx.restore();
 	ctx.strokeStyle = "#000000"
 	ctx.strokeRect(x*nodeSize+1, y*nodeSize+1, nodeSize, nodeSize) //draw frame
 	/*ctx.setTransform(0,0,0,0,0,0)
@@ -839,7 +848,7 @@ var objects = []
 
 function mapEditor_setTexture(num) {
 	currentTexture = num
-	document.getElementById('currentTexture').src = previews[num]
+	document.getElementById('currentTexture').src = textures[num]
 	document.getElementById('popup').style.display = 'none'
 }
 
@@ -886,7 +895,7 @@ function mapEditor_selectTexture() {
 			elm.setAttribute("id", 'tex' + i)
 			elm.setAttribute("height", '64')
 			elm.setAttribute("width", '64')
-			elm.setAttribute("src", previews[i])
+			elm.setAttribute("src", textures[i])
 			elm.setAttribute("onclick", 'mapEditor_setTexture(' + i + ')')
 			elm.setAttribute("class","img-polaroid")
 			elm.style.position = 'relative'

@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
 	has_many :income_messages, :as =>:msg_dest, :class_name => "Message", :dependent => :destroy
 	#another way, not very good
 #	has_many :income_messages, :through => :messages, :source =>:msg_dest,:source_type => 'Message', :dependent => :destroy
+	has_many :locale_datas
 
 # Setup accessible (or protected) attributes for your model
  # attr_accessible :email, :password, :password_confirmation, :remember_me
