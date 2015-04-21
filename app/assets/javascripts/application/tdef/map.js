@@ -969,7 +969,7 @@ function mapEditor_saveTextures() {
 	/////
 	var tmp = []
 	for (var i in usable) {
-		var tex = textures[i].replace(/^[/].*?\/|\..*?$/g, '')
+		var tex = textures[i]//.replace(/^[/].*?\/|\..*?$/g, '')
 		tmp.push(usable[i] + 1 + ' ' + tex + '\n')
 	}
 	tmp.sort()
@@ -1007,10 +1007,10 @@ function mapEditor_loadTextures() {
 	for (; text[i] != '-'; i++) {
 		texs = text[i].split(' ')
 		var index = parseInt(texs[0]) - 1
-		tempTextures[index] = textures.indexOf("/textures/" + texs[1])
-		/*textures[index] = "/textures/" + texs[1] + ".png" //Don't change path, please
+		tempTextures[index] = textures.indexOf(texs[1])
+//		textures[index] = "/textures/" + texs[1] + ".png" //Don't change path, please
 		images[index] = new Image()
-		images[index].src = previews[index]*/
+		images[index].src = textures[index]
 	}
 console.log(tempTextures)
 	var length = 0, big = size*size
