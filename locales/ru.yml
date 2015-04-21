@@ -20,6 +20,9 @@
   servers: Сервера
   locales: Локализации
   locale: Локализация
+  delete_locale: Вы хотите удалить локаль?
+  locale_not_found: Локаль не найдена
+  locale_deleted: Локаль удалена
   key: Ключ
   value: Значение
   preview: Превью

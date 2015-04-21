@@ -22,6 +22,7 @@ TDefWeb::Application.routes.draw do
   get "/TDef/locales/show_all" => "tdef/locales#show_all" , as: "tdef_locales_all"
   post "/TDef/locales/show_all" => "tdef/locales#show_all"
   post "/TDef/locales/edit" => "tdef/locales#edit", as: "tdef_locales_edit"
+  delete "/TDef/locales/remove" => "tdef/locales#remove", as: "tdef_locales_remove"
   
   post "/TDef/map/upload" => "tdef/map#upload", as: "tdef_map_upload"
   get "/TDef/map/upload" => "tdef/map#upload"

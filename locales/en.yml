@@ -3,4 +3,6 @@
   test: This is only test
   message_sent: Message sent
   sign_in: Sign in
-  
+  delete_locale: Do you want to delete next locale?
+  locale_not_found: Locale not found
+  locale_deleted: Locale deleted

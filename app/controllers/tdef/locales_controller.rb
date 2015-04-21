@@ -2,7 +2,7 @@ class Tdef::LocalesController < ApplicationController
 	before_action :authenticate_user!
 	before_action :is_admin?
 	def show_all
-	  @locales=Tdef::Locale.includes(:locale_datas)
+	  @locales=Tdef::Locale.all
 	end
 	def edit
 		@a=request.POST
@@ -23,9 +23,9 @@ class Tdef::LocalesController < ApplicationController
 					value=request.POST['value'][i_i]
 					if  (key!="" && name!="" && value!="")
 						h_h[name]=Tdef::Locale.find_by(name: name) if h_h[name].nil?
-						h_h[name]=Tdef::Locale.create(name: name, accepted: true) if h_h[name].nil?
+						h_h[name]=Tdef::Locale.create(name: name) if h_h[name].nil?
 						locale=Tdef::LocaleData.where(key: key, locale_id: h_h[name].id).first
-						locale=Tdef::LocaleData.create(key: key) if locale.nil?
+						locale=Tdef::LocaleData.create(key: key, accepted: true) if locale.nil?
 						locale.value=value;
 						locale.user_id=current_user.id;
 						h_h[name].locale_datas<<locale
@@ -35,5 +35,19 @@ class Tdef::LocalesController < ApplicationController
 		end
 
 		redirect_to :back
+	end
+	def remove
+		key=:alert
+		value=t(:locale_not_found)
+		if (!params["name"].nil?) then
+			l=Tdef::Locale.where(name: params["name"]).first
+			if (!l.nil?) then
+				l.locale_datas.each{|ld| ld.destroy}
+				l.destroy
+				key=:notice
+				value=t(:locale_deleted)
+			end
+		end
+		redirect_to :back, key=> value
 	end
 end

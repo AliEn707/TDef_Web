@@ -172,15 +172,20 @@ function locales_add(obj){
 }
 
 function locales_new(obj){
-	tr=obj.parentNode.parentNode.parentNode
-	tabs=document.getElementById("tabs")
-	name=document.getElementById("newloc").value
+	var tr=obj.parentNode.parentNode.parentNode
+	var tabs=document.getElementById("tabs")
+	var name=document.getElementById("newloc").value
 	
-	tabs.innerHTML+='<li id='+name+'><a href="#", onclick="locales_change(this)">'+name+'</a></li>'
-	all=document.getElementById("locales_all")
-	all.innerHTML+='<table class="table table-striped" id="table_'+name+'" style="display: none;"><tbody></tbody></table>'
-
+	if (!document.getElementById(name)){
+		tabs.innerHTML+='<li id='+name+'><a href="#", onclick="locales_change(this)">'+name+'</a></li>'
+		var all=document.getElementById("locales_all")
+		all.innerHTML+='<table class="table table-striped" id="table_'+name+'" style="display: none;"><tbody></tbody></table>'
+	}
+	var li=document.getElementById(name)
+	locales_change(li.children[0])
 }
+
+
 
 
 

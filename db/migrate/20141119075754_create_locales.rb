@@ -5,5 +5,6 @@ class CreateLocales < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :locales, :name, :unique => true
   end
 end

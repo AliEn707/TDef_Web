@@ -9,16 +9,22 @@
 				<%=link_to @locales[i].name,"#",onclick: 'locales_change(this)' %> 
 			</li>
 		<%end%>
-			<li class='pull-right'>
+			<%= content_tag :li, class: "pull-right" do -%>
 				<button form="form" class="btn btn-inverse"><%=t(:apply_changes)%></button>
-			</li>
+			<%end%>
 			<li class='pull-right'>
-				<span class="input-append">
-					<input class="span4" id="newloc" size="5" type="text" >
-					<button class="btn btn btn-inverse" onclick="locales_new(this)"><b>+</b></button>
-				</span>
+					<span class="input-append">
+						<input form="remove_form" class="span4" id="newloc" size="5" type="text" name="name">
+						<%= content_tag :div, class: "btn-group" do -%>
+							<button class="btn btn btn-inverse" onclick="locales_new(this)">
+								<b>+</b>
+							</button>
+							<%= content_tag :button, class: "btn btn-danger",onclick: 'locale_remove(this)'  do -%>
+								<b >x</b>
+							<%end%>
+						<%end%>
+					</span>
 			</li>
-			
 	</ul>
 
 	<%= content_tag :table, class:"table table-striped", style: "display: table;" do -%>
@@ -74,6 +80,21 @@
 	<%end%>
 
 	<%= form_tag(tdef_locales_edit_path,method: :post, id: 'form',enctype: "multipart/form-data") do -%>
-
+	<%end%>
+	<%= form_tag(tdef_locales_remove_path,method: :delete, id: 'remove_form',enctype: "multipart/form-data") do -%>
 	<%end%>
 <%end%>
+
+
+<script>
+function locale_remove(obj){
+	tr=obj.parentNode.parentNode.parentNode
+	var form=document.getElementById("remove_form")
+	var input=document.getElementById("newloc")
+	var locale=prompt('<%=t(:delete_locale)%>',input.value)
+	if (locale){
+		input.value=locale
+		form.submit()
+	}
+}
+</script>

@@ -31,15 +31,7 @@
 				<%end%>
 			<%end%>
 			<%= content_tag :td do -%>
-				<% if m_m.writed then%>
-					<span class="label label-success">
-						<i class="icon-ok-sign icon-2x"></i>
-					</span>
-				<%else%>
-					<span class="label label-warning">
-						<i class="icon-remove-sign icon-2x"></i>
-					</span>
-				<%end%>
+				<%= m_m.description%>
 			<%end%>
 			<%= content_tag :td, width: "78px" do -%>
 				<div class="btn-group btn-block" >

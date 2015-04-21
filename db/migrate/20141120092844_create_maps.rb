@@ -5,7 +5,6 @@ class CreateMaps < ActiveRecord::Migration
 	t.text :data
 	t.text :grafics
 	t.integer :players
-	t.text :icon, :default => ""
 	t.boolean :completed
 	t.timestamps
     end
