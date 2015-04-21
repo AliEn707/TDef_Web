@@ -59,7 +59,9 @@
 							</a>
 							<ul class="dropdown-menu">
 								<%1.step(m.size-1,1) do |i|%>
-									<li><%= link_to m[i]['name'], m[i]['path'],:method=> m[i][:method]  %></li>
+									<li>
+										<%= link_to m[i]['name'], m[i]['path'],:method=> m[i][:method]  %>
+									</li>
 								<%end%>
 							</ul>
 						</li>

@@ -23,10 +23,10 @@ Tdef::Map.create(name: "test",data: "test map data file",grafics: "test map graf
 Tdef::Server.create(hostname: "home.wsstudio.tk", port: 32000, rooms: 15, startport: 32001)
 
 locale=Tdef::Locale.create(name:"en")
-locale.locale_datas<<Tdef::LocaleData.create(key:"#test1",value:"value of test key")
-locale.locale_datas<<Tdef::LocaleData.create(key:"#test2",value:"значение тестового ключа")
-locale.locale_datas<<Tdef::LocaleData.create(key:"#test3",value:"テストキーの値を")
-locale.locale_datas<<Tdef::LocaleData.create(key:"#test_map",value:"Начать test карту")
+locale.locale_datas<<Tdef::LocaleData.create(key:"#test1",value:"value of test key",user_id: 2)
+locale.locale_datas<<Tdef::LocaleData.create(key:"#test2",value:"значение тестового ключа",user_id: 2)
+locale.locale_datas<<Tdef::LocaleData.create(key:"#test3",value:"テストキーの値を",user_id: 2)
+locale.locale_datas<<Tdef::LocaleData.create(key:"#test_map",value:"Начать test карту",user_id: 2)
 locale.save
 
 Tdef::Locale.create(name:"ru")

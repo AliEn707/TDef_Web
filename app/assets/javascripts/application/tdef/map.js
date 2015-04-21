@@ -571,12 +571,14 @@ function mapEditor_addPart(obj) {
 			select.options[select.options.length - 1].setAttribute("disabled", "disabled")
 	}
 	div.appendChild(select)
+	div.innerHTML += '<br>'
 	var inputs = new Array(3)
 	for (var i = 0; i < 3; i++) { //create 
 		inputs[i] = document.createElement('input')
 		inputs[i].setAttribute('type', 'value')
 		inputs[i].setAttribute('name','wave'+num+ '[part' + numbersOfParts[num]+'[]]')
-		inputs[i].setAttribute('size','3')
+		inputs[i].setAttribute('size', "3")
+		inputs[i].style.width = '50px'
 		inputs[i].setAttribute('value',i==0?"npcid":i==1?'num':'delay')
 		div.appendChild(inputs[i])
 	}
@@ -610,7 +612,8 @@ function mapEditor_addWave() {
 	var delay = document.createElement('input')
 	delay.setAttribute('type', 'text')
 	delay.setAttribute('value', 'delay')
-	delay.setAttribute('size', 5)
+	delay.setAttribute('size', '5')
+	delay.style.width = '50px'
 	delay.setAttribute('name', 'wave' + numberOfWaves + '[delay]')
 	
 	div.appendChild(span)
@@ -689,8 +692,8 @@ function mapEditor_completeMapInfo() {
 	text += 'max_npcs ' + document.getElementsByName("max_npcs")[0].value + '\n'
 	text += 'max_towers ' + document.getElementsByName("max_towers")[0].value + '\n'
 	text += 'max_bullets ' + document.getElementsByName("max_bullets")[0].value + '\n'
-	text += 'bases ' + bases.length + '\n'
 	var els = document.getElementsByName("pcbase[]")
+	text += 'bases ' + (els[0] != null ? bases.length : bases.length + 1)+ '\n'
 	if (els[0] != null) { //pc base selected
 		var tmp = els[0].selectedIndex
 		text += tmp + ' ' + bases[0] + ' ' + (document.getElementById('b' + bases[0]).selectedIndex - 1) + ' \n'	
@@ -700,7 +703,16 @@ function mapEditor_completeMapInfo() {
 			else
 				text += 0 + ' ' + bases[i] + ' ' + (document.getElementById('b' + bases[i]).selectedIndex - 1) + ' \n'
 	} else {
-		text += '0 0 -1 \n' //fake pc base
+		for (var i = 0; i < size*size; i++) {
+			var j = 0
+			for (j = 0; j < bases.length; j++)
+				if (bases[j] == i)
+					break
+			if (j == bases.length) {
+				text += '0 ' + i + ' -1 \n' //fake pc base
+				break
+			}				
+		}
 		for (var i = 0; i < bases.length; i++)
 			text += (i + 1) + ' ' + bases[i] + ' ' + (document.getElementById('b' + bases[i]).selectedIndex - 1) + ' \n'		
 	}
@@ -717,7 +729,7 @@ function mapEditor_completeMapInfo() {
 			text += (params[0].selectedIndex - 1) + ' ' + params[1].value + ' ' + params[2].value + ' ' + params[3].value + '\n'
 		}
 	}
-	document.getElementById('completeInfo').innerHTML = text
+	document.getElementById('completeInfo').value = text
 }
 
 function mapEditor_loadBasesResps(text, i, str, brushMode, obj) {
@@ -728,6 +740,8 @@ function mapEditor_loadBasesResps(text, i, str, brushMode, obj) {
 			var temp = text[++i].split(' ')
 			if (temp[0] == '0' && mode == 2 && obj !== undefined) //pc base
 				obj.index = j - 1
+			if (temp[0] == '0' && temp[2] == '-1') //pc base
+				continue
 			var index = parseInt(temp[1])
 			var clickX = Math.floor(index/size)*nodeSize, clickY = index%size*nodeSize
 			mapEditor_brush(clickX, clickY)
