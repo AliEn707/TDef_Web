@@ -233,7 +233,7 @@ var bullet_types={
 }
 
 
-var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: true, frameTime:1000/30})
+var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: true, frameTime:1000/30, textures:{health: {src:"/imgtest/health.png"}}})
 // create a texture from an image path
 var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 // create a new Sprite using the texture
@@ -272,6 +272,7 @@ data=[
 ]
 for (var i=0;i<1;i++){	
 //	engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})
+//	engine.map.objects[i]=new Tower({})
 //	engine.map.objects[i]=new Bullet(data[i])
 //	engine.map.objects[i].update({grid:{x:2,y:2},time: 1});
 //	engine.map.objects[i].update({grid:{x:5,y:5},time: 5000});

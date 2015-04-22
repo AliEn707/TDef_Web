@@ -26,12 +26,20 @@ function Tower(opt){
 //	this.position=this.map.gridToScreen(this.grid.x,this.grid.y);
 	var textures=tower_types[this.type].textures;
 	this.sprites={};
+	var s=this.map.nodesize*1.4*(opt.scale || 1);
 	for (var i in textures){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
-		var s=this.map.nodesize*1.4*(opt.scale || 1);
 		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.72},callbacks:{obj:this,actions:Tower_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
 	}
+	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
+	this.health_sprite.height=this.health_sprite.height/this.health_sprite.width*this.map.nodesize;
+	this.health_sprite.width=this.map.nodesize;
+	this.health_sprite.position.y=-s*0.8;
+	this.health_sprite.position.x=-this.health_sprite.width*0.5;
+	this.health_sprite.anchor.x=0;
+	this.health_sprite.anchor.y=1;
+	this.addChild(this.health_sprite);
 	//changeble
 	this.sprite="idle";
 	this.level=opt.level || 0;
@@ -39,16 +47,22 @@ function Tower(opt){
 	this.shield=opt.shield || 0;
 	this.energy=opt.energy || 0;
 	this.depth=this.map.objDepth(this.grid.x,this.grid.y);
-	this.addChild(this.sprites[this.sprite]);
-	
+	this.addChildAt(this.sprites[this.sprite],0);
 }
 Tower.prototype= new PIXI.DisplayObjectContainer();
 Tower.prototype.constructor= Tower;
 
 
+Tower.prototype.setHealth= function (health){
+	this.health=health;
+	var obj=this.health/tower_types[this.type].health;
+	if (obj>1)
+		obj=1;
+	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.texture.width*obj,height:this.engine.textures.health.texture.height});
+}
 Tower.prototype.update= function (obj){
-	if (!obj.health===undefined)
-		this.health=obj.health;
+	if (obj.health!=undefined)
+		this.setHealth(obj.health);
 	if (obj.health<=0 || this.health<=0)
 		this.remove();
 }
@@ -65,7 +79,7 @@ Tower.prototype.proceed= function (){
 Tower.prototype.setSprite= function (name){
 	this.removeChild(this.sprites[this.sprite]);
 	this.sprite=name;
-	this.addChild(this.sprites[this.sprite]);
+	this.addChildAt(this.sprites[this.sprite],0);
 }
 
 Tower.prototype.remove= function (){

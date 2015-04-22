@@ -22,12 +22,20 @@ function Npc(opt){
 	this.owner=opt.owner || 0;
 	var textures=npc_types[this.type].textures;
 	this.sprites={};
+	var s=this.map.nodesize*0.79*(opt.scale || 1);
 	for (var i in textures){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
-		var s=this.map.nodesize*0.79*(opt.scale || 1);
 		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Npc_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
 	}
+	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
+	this.health_sprite.height=this.health_sprite.height/this.health_sprite.width*this.map.nodesize;
+	this.health_sprite.width=this.map.nodesize;
+	this.health_sprite.position.y=-s*0.8;
+	this.health_sprite.position.x=-this.health_sprite.width*0.5;
+	this.health_sprite.anchor.x=0;
+	this.health_sprite.anchor.y=1;
+	this.addChild(this.health_sprite);
 	//changeble
 	this.sprite="idle";
 	this.grid={x: opt.grid.x || 0,y: opt.grid.y || 0};
@@ -41,12 +49,19 @@ function Npc(opt){
 	this.time=opt.time || 0;
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
 	
-	this.addChild(this.sprites[this.sprite]);
+	this.addChildAt(this.sprites[this.sprite],0);
 
 }
 Npc.prototype= new PIXI.DisplayObjectContainer();
 Npc.prototype.constructor= Npc;
 
+Npc.prototype.setHealth= function (health){
+	this.health=health;
+	var obj=this.health/npc_types[this.type].health;
+	if (obj>1)
+		obj=1;
+	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.texture.width*obj,height:this.engine.textures.health.texture.height});
+}
 
 Npc.prototype.getAngle= function (v){
 	var length=Math.sqrt(v.x*v.x+v.y*v.y);
@@ -113,11 +128,12 @@ Npc.prototype.update= function (obj){
 	
 	this.setSpriteByVector(this.direction);
 	
-	if (!obj.health===undefined)
-		this.health=obj.health;
-	if (!obj.shield===undefined)
+	if (obj.health!=undefined){
+		this.setHealth(obj.health);
+	}
+	if (obj.shield!=undefined)
 		this.shield=obj.shield;
-	if (!obj.level===undefined)
+	if (obj.level!=undefined)
 		this.level=obj.level;
 	//set new step
 //	this.destination=obj.grid;
@@ -158,7 +174,7 @@ Npc.prototype.setSprite= function (name){
 	this.removeChild(this.sprites[this.sprite]);
 	this.sprite=name;
 	this.sprites[this.sprite].counter=0;
-	this.addChild(this.sprites[this.sprite]);
+	this.addChildAt(this.sprites[this.sprite],0);
 }
 
 Npc.prototype.remove= function (){

@@ -11,7 +11,6 @@ function AObject(params){
 	this.counter=0;
 	this.callbacks=params.callbacks || {obj:{}}
 	this.callbacks.actions= this.callbacks.actions || {}
-		
 	this.engine=getEngine() || {frameTime:1000/30};
 	this.countStep=this.countStep || 13*this.engine.frameTime/1000;//0.2;
 	

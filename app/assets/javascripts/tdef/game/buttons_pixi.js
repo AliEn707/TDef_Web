@@ -113,8 +113,8 @@ ButtonContainer.prototype.keyPadAddButton=function (pos,opt){
 				x: (this.innerArea.x || 0)+this.buttonDist+parseInt((pos%this.columns)/this.rows)*(this.buttonSize.y+this.buttonDist) 
 			};
 		button.position=position;
-			console.log(this.width);
-		button.$width=this.buttonSize.x;
+		//some kind of hack
+		button.$width=this.buttonSize.x; 
 		button.$height=this.buttonSize.y;
 		if (button.actions.indexOf("drag")>-1)
 			delete button.actions[button.actions.indexOf("drag")];

@@ -63,9 +63,12 @@ class Tdef::MapController < ApplicationController
 	
 	def get
 		data={}
-		map=Rails.cache.fetch('TDef_map_'+params["name"].to_s,expires_in: 10.minutes) {Tdef::Map.where(name: params["name"]).first}
-		data["mp"]=map.data
-		data["mg"]=map.grafics
-		render :text=> data.to_json, layout: false
+		out=Rails.cache.fetch('TDef_map_'+params["name"].to_s,expires_in: 10.minutes) do
+			map=Tdef::Map.where(name: params["name"]).first
+			data["mp"]=map.data
+			data["mg"]=map.grafics
+			data.to_json
+		end
+		render :text=> out, layout: false
 	end
 end

@@ -18,11 +18,14 @@ function TDefEngine(place, opt){
 	place.appendChild(this.renderer.view);
 	this.place=place;
 	//requestAnimFrame( this.render );
-	
+	this.textures=opt.textures || {};
+	for (var i in this.textures){
+		this.textures[i].texture=new PIXI.BaseTexture.fromImage(this.textures[i].src);
+	}
 	window.engine=this;
 	window.onresize = this.resize;
 	this.keys=[]
-	this.settings={
+	this.settings=opt.settings || {
 			moveSpeed: 4.1, 
 			zoomSpeed: 0.02,
 			xInverted:1, 

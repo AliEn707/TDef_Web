@@ -265,7 +265,7 @@ Grid.prototype.setWall = function(wall){
 	wcc.addChild(w);
 	
 	wc.addChild(wcc);
-	wc.depth=this.objDepth(w.position.x/this.nodesize+0.5,w.position.y/this.nodesize+0.5);
+	wc.depth=this.objDepth(w.position.x/this.nodesize+0.5,w.position.y/this.nodesize+0.5)+0.02;
 	var i=0;
 	while (this.objects["wall"+i]) i++; //bad but is
 	this.objects["wall"+i]=wc;
