@@ -1,5 +1,5 @@
 ﻿var locales={};
-
+var maps={};
 
 function TDefEngine(place, opt){
 	opt = opt || {};
@@ -89,6 +89,12 @@ TDefEngine.prototype.weelHandler= function (e){
 }
 
 TDefEngine.prototype.parseMap = function(map){
+	if (!maps[map]){
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '/TDef/map/get?name='+map, false);
+		xhr.send();
+		maps[map]=JSON.parse(xhr.responseText);
+	}
 	if (!maps[map].data){
 		var mp=maps[map].mp.split("\n");
 		var mg=maps[map].mg.split("\n");

@@ -19,14 +19,38 @@
 			<canvas height='1000' width='1000' id='map'>Update your browser!</canvas>
 			<table style="position:absolute; top:10px; right:0px">
 				<tr>
-					<td><button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0.05,0,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">+</button></td>
-					<td><button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0,0,-10)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">^</button></td>
-					<td><button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(-0.05,0,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">-</button></td>
+					<td>
+						<button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0.05,0,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">
+							<i class="icon-zoom-in"> </i>
+						</button>
+					</td>
+					<td>
+						<button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0,0,-10)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">
+						<i class="icon-arrow-up"> </i>
+						</button>
+					</td>
+					<td>
+						<button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(-0.05,0,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">
+							<i class="icon-zoom-out"> </i>
+						</button>
+					</td>
 				</tr>
 				<tr>
-					<td><button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0,-10,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)"><-</button></td>
-					<td><button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0,0,10)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">v</button></td>
-					<td><button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0,10,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">-></button></td>
+					<td>
+						<button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0,-10,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">
+						<i class="icon-arrow-left"> </i>
+						</button>
+					</td>
+					<td>
+						<button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0,0,10)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">
+						<i class="icon-arrow-down"> </i>
+						</button>
+					</td>
+					<td>
+						<button class="btn btn-inverse" style="width: 3em; height: 2em" onmousedown="mapEditor_controlScreen(0,10,0)" onmouseup="clearInterval(mousedownID)" onmouseout="clearInterval(mousedownID)">
+						<i class="icon-arrow-right"> </i>
+						</button>
+					</td>
 				</tr>
 			</table>
 		</td>
@@ -110,6 +134,7 @@
 			</div>	
 			<%= form_tag(tdef_map_upload_path,method: :post, id: 'form') do -%>
 				Map name: <%=text_field_tag "mapname", @map['name'] %>
+				Description: <%=text_field_tag "description", @map['description'] %>
 				<input type = "hidden" name = "img" id = "img">
 				<input type="button" value="Complete" onclick="mapEditor_completeAndSave()"><br>
 				<input type="button" value="Save" onclick="mapEditor_sendToServer()">

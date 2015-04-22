@@ -31,7 +31,8 @@ TDefWeb::Application.routes.draw do
   get "/TDef/map/complete" => "tdef/map#complete", as: "tdef_map_complete"
   get "/TDef/map/textures" => "tdef/map#textures", as: "tdef_map_textures"
   get "/TDef/map/show_all" => "tdef/map#show_all", as: "tdef_map_all"
-  get "/TDef/map/delete/:id.png" => "tdef/map#delete", as: "tdef_map_delete"
+  get "/TDef/map/delete/:id" => "tdef/map#delete", as: "tdef_map_delete"
+  get "/TDef/map/get" => "tdef/map#get", as: "tdef_map_get"
   
   get "/TDef/game" => "tdef/game#game", as: "tdef_game"
   

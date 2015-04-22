@@ -1,5 +1,5 @@
 class Tdef::MapController < ApplicationController
-	before_action :authenticate_user!
+	before_action :authenticate_user!, except: [:get]
 	before_action :is_admin?
 	def textures
 		textures=[
@@ -24,17 +24,19 @@ class Tdef::MapController < ApplicationController
 	def upload
 		if request.post?
 			m_m=Tdef::Map.find_by(name: request.POST['mapname'])
-			m_m=Tdef::Map.new(name: request.POST['mapname']) if m_m.nil?
+			m_m=Tdef::Map.new(name: request.POST['mapname'], user: current_user.id) if m_m.nil?
 			m_m.description=request.POST['description'] if !request.POST['description'].nil? 
 			m_m.data=request.POST['completeInfo'] if !request.POST['completeInfo'].nil? 
 			m_m.grafics=request.POST['saveTexturesField'] if !request.POST['saveTexturesField'].nil?
 			m_m.image=Image.create(format: request.POST['img'][/[\w ]*\/[\w]*/],data: Base64.decode64(request.POST['img'].sub(/data:[\w \/]*;base64,/,""))) if !request.POST['img'].nil?
 			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
+			m_m.last_modified=current_user
 			m_m.save
 		end
 		if request.get? && request.GET['id'] then
 			m_m=Tdef::Map.find(request.GET['id'])
 			m_m.completed=true if request.GET.include?('complete')
+			m_m.last_modified=current_user
 			m_m.save
 		end
 #		if !m_m.nil?
@@ -57,5 +59,13 @@ class Tdef::MapController < ApplicationController
 	def delete
 		Tdef::Map.find(params[:id]).destroy
 		redirect_to :back
+	end
+	
+	def get
+		data={}
+		map=Rails.cache.fetch('TDef_map_'+params["name"].to_s,expires_in: 10.minutes) {Tdef::Map.where(name: params["name"]).first}
+		data["mp"]=map.data
+		data["mg"]=map.grafics
+		render :text=> data.to_json, layout: false
 	end
 end

@@ -8,11 +8,11 @@ class User < ActiveRecord::Base
 	has_many :messages, :dependent => :destroy
 	has_many :income_messages, :as =>:msg_dest, :class_name => "Message", :dependent => :destroy
 	#another way, not very good
-#	has_many :income_messages, :through => :messages, :source =>:msg_dest,:source_type => 'Message', :dependent => :destroy
+#	has_many :income_messages, :through => :messages, :source =>:msg_dest, :source_type => 'Message', :dependent => :destroy
 	has_many :locale_datas
+	has_many :maps
+	has_many :modified_maps, class_name: "Tdef::Map" , foreign_key: :last_modified_id
 
-# Setup accessible (or protected) attributes for your model
- # attr_accessible :email, :password, :password_confirmation, :remember_me
 	def create
 		User.create(user_params)
 	end
@@ -20,7 +20,13 @@ class User < ActiveRecord::Base
 	def use_params
 		params.require(:user).permit(:email, :password, :password_confirmation, :remember_me,:confirmed_at,:admin)
 	end
-	
+=begin	
+	 def self.serialize_from_session(key, salt)
+		single_key = key.is_a?(Array) ? key.first : key
+		User.where(:id => single_key).entries.first
+		p 
+	end
+=end	
 end
 
 

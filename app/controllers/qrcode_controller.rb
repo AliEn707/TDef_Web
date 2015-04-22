@@ -1,4 +1,5 @@
 class QrcodeController < ApplicationController
+	before_action :authenticate_user!, except: [:qrcode]
 	def qrcode
 		url=params["url"].split("?")[0];
 		data="";
