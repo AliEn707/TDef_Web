@@ -18,7 +18,7 @@ function Npc(opt){
 	this.map=this.engine.map;
 	//static
 	this.id=opt.id || 0
-	this.type=opt.type || 1;
+	this.type=opt.type != undefined ? opt.type : 1;
 	this.owner=opt.owner || 0;
 	var textures=npc_types[this.type].textures;
 	this.sprites={};
@@ -57,7 +57,8 @@ Npc.prototype.constructor= Npc;
 
 Npc.prototype.setHealth= function (health){
 	this.health=health;
-	var obj=this.health/npc_types[this.type].health;
+	var type_health=this.type>0 ? npc_types[this.type].health : this.engine.map.players[this.owner].type.hero.health;
+	var obj=this.health/type_health;
 	if (obj>1)
 		obj=1;
 	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.texture.width*obj,height:this.engine.textures.health.texture.height});

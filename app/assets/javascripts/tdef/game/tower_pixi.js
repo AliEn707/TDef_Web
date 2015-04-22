@@ -18,7 +18,7 @@ function Tower(opt){
 	this.map=this.engine.map;
 	//static
 	this.id=opt.id || 0;
-	this.type=opt.type || 1;
+	this.type=opt.type != undefined ? opt.type : 1;
 	this.owner=opt.owner || 0;
 	this.grid=this.map.getPosition(opt.position || 3);
 	this.grid.x=this.grid.x/this.map.nodesize+0.5;
@@ -55,7 +55,8 @@ Tower.prototype.constructor= Tower;
 
 Tower.prototype.setHealth= function (health){
 	this.health=health;
-	var obj=this.health/tower_types[this.type].health;
+	var type_health=this.type>0 ? tower_types[this.type].health : this.engine.map.players[this.owner].type.base.health;
+	var obj=this.health/type_health;
 	if (obj>1)
 		obj=1;
 	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.texture.width*obj,height:this.engine.textures.health.texture.height});

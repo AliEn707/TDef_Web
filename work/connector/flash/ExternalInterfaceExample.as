@@ -1,3 +1,4 @@
+//on server manager need to add listener on port 843, for sending private pollicy file
 package {
     import flash.system.Security
     import flash.display.Sprite;

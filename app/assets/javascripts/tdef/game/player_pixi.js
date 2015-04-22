@@ -39,14 +39,15 @@ function Player(opt){
 	this.hero=opt.hero;
 	this.targeting=opt.targeting;
 	
+		var engine=getEngine();
+	
 	//TODO:remove	
 	var t=[new PIXI.Texture.fromImage("/imgtest/red.jpeg")]
 	var tw=[new PIXI.Texture.fromImage("/imgtest/green.jpg")]
-	var cont=[new PIXI.Texture.fromImage("/imgtest/build.png")];
-	var engine=getEngine();
+	
 	if (engine.map.players.id==this.id){
 		var buttonSize={x:50,y:50}
-		
+		var cont=[new PIXI.Texture(engine.textures.npc_set_background.texture)];
 		var size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}
 		var buttons=new ButtonContainer({sprite:{textures:cont,opt:size},position:{x:100,y:100},actions:["drag"]});
 		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize});
@@ -57,9 +58,9 @@ function Player(opt){
 		this.set.npc.buttons=buttons;
 		engine.map.objects["npc_set"]=buttons;
 		engine.stage.addChild(buttons);
-	
-		buttonSize={x:50,y:50}
 		
+		cont=[new PIXI.Texture(engine.textures.tower_set_background.texture)];
+		buttonSize={x:50,y:50}
 		size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}
 		buttons=new ButtonContainer({sprite:{textures:cont,opt:size},position:{x:100,y:200},actions:["drag"]});
 		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize});
@@ -78,8 +79,10 @@ Player.prototype.constructor= Player;
 
 
 Player.prototype.update= function (opt){
-	this.base=opt.base;
-	this.hero=opt.hero;
+	if (opt.base!=undefined)
+		this.base=opt.base;
+	if (opt.hero!=undefined)
+		this.hero=opt.hero;
 	this.hero_counter=opt.hero_counter;
 	this.targeting=opt.targeting;
 }

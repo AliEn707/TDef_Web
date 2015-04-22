@@ -233,7 +233,22 @@ var bullet_types={
 }
 
 
-var engine = new TDefEngine(document.getElementById("gameDiv"),{webgl: true, frameTime:1000/30, textures:{health: {src:"/imgtest/health.png"}}})
+var engine = new TDefEngine(document.getElementById("gameDiv"),
+						{
+							webgl: true, 
+							frameTime:1000/30, 
+							textures:{
+								health: {
+									src:"/imgtest/health.png"
+								}, 
+								tower_set_background:{
+									src:"/imgtest/build.png"
+								},
+								npc_set_background:{
+									src:"/imgtest/build.png"
+								}
+							}
+						});
 // create a texture from an image path
 var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 // create a new Sprite using the texture
