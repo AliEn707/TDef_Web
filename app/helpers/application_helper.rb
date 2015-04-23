@@ -44,6 +44,7 @@ module ApplicationHelper
 						{'name'=>t(:servers),'path'=>tdef_server_all_path},
 						{'name'=>t(:locales),'path'=>tdef_locales_all_path},
 						{'name'=>t(:game),'path'=>tdef_game_path},
+						{'name'=>t(:shell),'path'=>tdef_shell_path},
 						{'name'=>t(:flash_test),'path'=>"/ExternalInterfaceExample.html"}
 					]
 			else

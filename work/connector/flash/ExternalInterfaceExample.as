@@ -19,8 +19,10 @@ package {
         private var sendBtn:Sprite;
 	private var isReady:Boolean=false;
 
-	private var mapSock:Socket = new Socket();
+	private var mapSock:Socket;
+	private var publicSock:Socket;
 	private var dataTimer:Timer = new Timer(160, 0);//40, 0);
+	private var publicTimer:Timer = new Timer(200, 0);//40, 0);
 	
         public function ExternalInterfaceExample() {
 		Security.allowDomain("*");
@@ -77,7 +79,9 @@ package {
 		output.appendText("Adding callback...\n");
 		ExternalInterface.addCallback("sendToActionScript", receivedFromJavaScript);
                 ExternalInterface.addCallback("mapConnect", connectMap);
+                ExternalInterface.addCallback("publicConnect", connectPublic);
                 ExternalInterface.addCallback("mapSend", sendMap);
+                ExternalInterface.addCallback("publicSend", sendPublic);
 //                ExternalInterface.addCallback("startMap", startMap);
 		isReady = true;
 		ExternalInterface.call("connectorReady");
@@ -112,7 +116,164 @@ package {
 		logJS(input.text);
         }
 	
-	//Sockets
+	///Sockets
+	
+	///public
+	private var publicAuthorised:Boolean=false;
+	private var publicMsg:int;
+	
+	private function publicConnectError(value:String):void {
+		if (isReady) {
+			ExternalInterface.call("publicConnectionError", value);
+		}
+	}
+	private var user:String;
+	private var pass:String;
+	private var user_id:int=0;
+	
+	private function sendPublic(value:String):int {
+		if (publicAuthorised){
+			return sendSocket(publicSock,value);
+		}
+		return 0;
+	}
+	
+	private function connectPublic(host:String, port:String, u:String, p:String):int {
+	        logJS("Try to connect\n");
+		output.appendText(host+" "+port+"\n");
+		user=u;
+		pass=p;
+		publicSock= new Socket();
+		publicSock.endian = Endian.LITTLE_ENDIAN;
+		publicSock.addEventListener(Event.CONNECT, publicConnectHandler); 
+		publicSock.addEventListener(Event.CLOSE, publicConnectCloseHandler); 
+		publicSock.addEventListener(ErrorEvent.ERROR, publicConnectErrorHandler); 
+		publicSock.addEventListener(IOErrorEvent.IO_ERROR, publicConnectIoErrorHandler); 
+		publicSock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, publicConnectSecurityErrorHandler);
+		
+		publicMsg=0;
+		
+		try {
+			publicSock.connect(host, int(port));
+		}
+		catch (error:Error) {
+			logJS("An Error occurred: " + error.message + "\n");
+		}
+		catch (error:SecurityError) {
+			logJS("An SecurityError occurred: " + error.message + "\n");
+		}
+		catch (error:IOError) {
+			logJS("An IO Error occurred: " + error.message + "\n");
+		}
+		return 0;
+        }
+	
+	private function publicConnectErrorHandler(event:ErrorEvent):void {
+		logJS("got Error" + event);
+		publicConnectError("Error");
+	}
+	
+	private function publicConnectIoErrorHandler(event:IOErrorEvent):void {
+		logJS("got IOError"+event);
+		publicConnectError("IOError");
+	}
+	
+	private function publicConnectSecurityErrorHandler(event:SecurityErrorEvent):void {
+		logJS("got SecurityError"+event);
+		publicConnectError("SecurityError");
+	}
+	
+	private function publicConnectHandler(event:Event):void {
+		logJS("connected " + event+"\n");
+		//send hello
+		publicSock.writeUTFBytes("FlashHello^_^");
+		publicSock.flush();
+		//add data listener
+		publicSock.addEventListener(ProgressEvent.SOCKET_DATA, publicDataHandler); 
+		//check messages by timer, if no additional data
+		
+		publicTimer.addEventListener(TimerEvent.TIMER, publicTimeDataHandler);
+		publicTimer.start();
+		publicMsg=0;
+	}
+	
+  	private function publicConnectCloseHandler(event:Event):void {
+		logJS("closed" + event+"\n");
+		publicAuthFail();
+		publicAuthorised=false;
+		publicTimer.removeEventListener(TimerEvent.TIMER, publicTimeDataHandler);
+		publicTimer.stop();
+	}
+	
+	//time event wrapper for data handler
+	private function publicTimeDataHandler(event:TimerEvent):void {
+//		logJS("got timer data" + event+"\n");
+		if (publicSock.bytesAvailable>0){
+			var pevent:ProgressEvent;
+			publicDataHandler(pevent);
+		}
+	}
+	
+	//when socket has data
+	private function publicDataHandler(event:ProgressEvent):void {
+//		logJS("got data" + event+"\n");
+		if (publicAuthorised){
+			publicGetMessage();
+//			logJS("got data " + mapSock.readUTFBytes(mapSock.bytesAvailable));
+		}else{
+			publicAuth();
+		}
+	}
+	
+	private function publicAuthFail():void {
+		ExternalInterface.call("publicAuthFail");
+	}
+	
+	private function publicAuth():void {
+		var id:int;
+		var loop:Boolean=true;
+		switch (publicMsg){
+			case 0:
+				try{
+					id=publicSock.readInt();
+					publicSock.writeInt(user.length);
+					publicSock.writeUTFBytes(user);
+					publicSock.writeUTFBytes(pass);
+					publicSock.flush();
+					publicMsg++;
+					logJS("got "+id);
+				}
+				catch(error:Error){
+//					logJS("id error"+error+"\n");
+				}
+				break;
+			case 1:
+				try{
+					id=publicSock.readInt();
+					publicMsg++;
+					logJS("answer: "+id);
+					if (id!=0)
+						publicAuthorised=true;
+					else{
+						publicSock.close();
+						publicAuthFail();
+						var event:Event;
+						publicConnectCloseHandler(event);//clear handlers
+					}
+				}
+				catch(error:Error){
+//					logJS("players error"+error+"\n");
+				}
+				break;
+		}
+	}
+	
+	private function publicGetMessage():void {
+		
+	}
+	
+///------------------------------------------------------------------------------------------------------	
+	//map
 	private var mapAuthorised:Boolean=false;
 	
 	private function mapConnectError(value:String):void {
@@ -132,7 +293,9 @@ package {
 		mapSock.addEventListener(ErrorEvent.ERROR, mapConnectErrorHandler); 
 		mapSock.addEventListener(IOErrorEvent.IO_ERROR, mapConnectIoErrorHandler); 
 		mapSock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, mapConnectSecurityErrorHandler);
-    
+		
+		currMsg=0;
+		
 		try {
 			mapSock.connect(host, int(port));
 //			mapSock.connect("smtp.yandex.ru", 25);
@@ -201,6 +364,7 @@ package {
   	private function mapConnectCloseHandler(event:Event):void {
 		logJS("closed" + event+"\n");
 		mapAuthorised=false;
+		dataTimer.removeEventListener(TimerEvent.TIMER, mapTimeDataHandler);
 		dataTimer.stop();
 	}
 	
@@ -288,38 +452,43 @@ package {
 	private var currMsg:int=0;
 	
 	private function sendMap(value:String):int {
-		var arr:Array;
 		if (mapAuthorised){
-			arr=value.split(",");
-			try{
-				while(arr.length>1){
-					switch (arr.shift()){
-						case "byte":
-						case "char":
-							mapSock.writeByte(int(arr.shift()));
-							break;
-						case "short":
-							mapSock.writeShort(int(arr.shift()));
-							break;
-						case "int":
-							mapSock.writeInt(int(arr.shift()));
-							break;
-						case "uint":
-							mapSock.writeUnsignedInt(uint(arr.shift()));
-							break;
-						case "float":
-							mapSock.writeFloat(Number(arr.shift()));
-							break;
-						case "string":
-							mapSock.writeUTFBytes(arr.shift());
-							break;
-						
-					}
+			return sendSocket(mapSock,value);
+		}
+		return 0;
+	}
+	
+	private function sendSocket(sock:Socket,value:String):int {
+		var arr:Array;
+		arr=value.split(",");
+		try{
+			while(arr.length>1){
+				switch (arr.shift()){
+					case "byte":
+					case "char":
+						sock.writeByte(int(arr.shift()));
+						break;
+					case "short":
+						sock.writeShort(int(arr.shift()));
+						break;
+					case "int":
+						sock.writeInt(int(arr.shift()));
+						break;
+					case "uint":
+						sock.writeUnsignedInt(uint(arr.shift()));
+						break;
+					case "float":
+						sock.writeFloat(Number(arr.shift()));
+						break;
+					case "string":
+						sock.writeUTFBytes(arr.shift());
+						break;
+					
 				}
 			}
-			catch (error:Error){
-				return 1;
-			}
+		}
+		catch (error:Error){
+			return 1;
 		}
 		return 0;
 	}
@@ -333,6 +502,7 @@ package {
 	}
 	
 	private var msgTime:int=0;
+	
 	private function mapGetMessage():void {
 		var data:Number;
 		var str:String;

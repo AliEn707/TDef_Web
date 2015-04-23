@@ -32,4 +32,8 @@ class Tdef::ServerController < ApplicationController
 	def info
 		params['id']
 	end
+	
+	def shell
+		@url="http://#{request.host}:4200"
+	end
 end

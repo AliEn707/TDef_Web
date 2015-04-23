@@ -19,6 +19,19 @@ function getConnector() {
 	}
 }
 
+///public network functions
+
+//callback on public autentification fail
+function publicAuthFail(){
+	console.log("public auth fail");
+	//TODO: add some actions
+}
+
+function publicSend(str) {
+	getConnector().publicSend(str);
+	//for spawn npc must be "byte,"+MSG_SPAWN_NPC+",int,"+num
+}
+
 ///map network funtions
 
 var MSG_SPAWN_TOWER=1;
