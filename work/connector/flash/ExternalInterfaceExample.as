@@ -79,8 +79,9 @@ package {
 		output.appendText("Adding callback...\n");
 		ExternalInterface.addCallback("sendToActionScript", receivedFromJavaScript);
                 ExternalInterface.addCallback("mapConnect", connectMap);
-                ExternalInterface.addCallback("publicConnect", connectPublic);
+                ExternalInterface.addCallback("mapClose", closeMap);
                 ExternalInterface.addCallback("mapSend", sendMap);
+                ExternalInterface.addCallback("publicConnect", connectPublic);
                 ExternalInterface.addCallback("publicSend", sendPublic);
 //                ExternalInterface.addCallback("startMap", startMap);
 		isReady = true;
@@ -118,9 +119,59 @@ package {
 	
 	///Sockets
 	
+	private function sendSocket(sock:Socket,value:String):int {
+		var arr:Array;
+		arr=value.split(",");
+		try{
+			while(arr.length>1){
+				switch (arr.shift()){
+					case "byte":
+					case "char":
+						sock.writeByte(int(arr.shift()));
+						break;
+					case "short":
+						sock.writeShort(int(arr.shift()));
+						break;
+					case "int":
+						sock.writeInt(int(arr.shift()));
+						break;
+					case "uint":
+						sock.writeUnsignedInt(uint(arr.shift()));
+						break;
+					case "float":
+						sock.writeFloat(Number(arr.shift()));
+						break;
+					case "string":
+						sock.writeUTF(arr.shift());
+						break;
+					
+				}
+			}
+		}
+		catch (error:Error){
+			return 1;
+		}
+		return 0;
+	}
+	
 	///public
+///--------------------------------------------------------------------------------------------------------
+	
+	//bitmasks
+	private var BM_EVENT_MAP_NAME:int= 1;
+	//out message types
+	private var MESSAGE_PLAYER_CHANGE:int= 1;
+	private var MESSAGE_EVENT_CHANGE:int= 2;
+	private var MESSAGE_GAME_START:int= 3;
+	//
+	private var MESSAGE_CREATED:int= 2;
+	private var MESSAGE_CHANGED:int= 2;
+	private var MESSAGE_DELETED:int= 2;
+	
 	private var publicAuthorised:Boolean=false;
 	private var publicMsg:int;
+	private var publicDataSeq:Array = new Array();
+	private var publicOutObj:String = "";
 	
 	private function publicConnectError(value:String):void {
 		if (isReady) {
@@ -252,9 +303,10 @@ package {
 					id=publicSock.readInt();
 					publicMsg++;
 					logJS("answer: "+id);
-					if (id!=0)
+					if (id!=0){
 						publicAuthorised=true;
-					else{
+						publicOutObj="([";
+					}else{
 						publicSock.close();
 						publicAuthFail();
 						var event:Event;
@@ -268,18 +320,140 @@ package {
 		}
 	}
 	
-	private function publicGetMessage():void {
-		
+	private function proceedPublicMessagesJS(value:String):void {
+		if (isReady) {
+			ExternalInterface.call("proceedPublicMessages", value);
+		}
 	}
 	
+	private var publicMsgTime:int=0;
+	
+	private function publicGetMessage():void {
+		var data:Number;
+		var str:String;
+		do {
+//			logJS(mapDataSeq+" || "+mapDataSeq[0]);
+			try{
+				switch (publicDataSeq[0]){
+					case undefined: //lets see for next message
+						logJS("new message");
+						if (publicOutObj.length>2){//send object to javasctript
+						        var time:int=flash.utils.getTimer();
+						        publicOutObj+=",time:"+time+"},";
+						        if (time-publicMsgTime>90){
+								proceedPublicMessagesJS(publicOutObj+"])");
+								publicOutObj="([";
+								publicMsgTime=time;
+							}
+						}
+						publicMsg=publicSock.readByte();
+						publicDataSeq.push("bitmask");
+						publicOutObj+="{msg:"+publicMsg;
+					
+						break;
+					
+					case "bitmask": //need to get bitmask
+						
+						var bitMask:int;
+						bitMask=publicSock.readInt();
+						publicDataSeq.shift();
+						publicGetParamsByBitMask(bitMask);
+						
+						break;
+						
+					default:
+						switch (publicDataSeq[1]){
+							case "{":
+								str="{$:0";
+								break;
+							case "}":
+								publicOutObj+="}";
+							case "none":
+							case "nil":
+							case "null":
+								str="0";
+								break;
+							case "int":
+								data=publicSock.readInt();
+								str=data+""
+								break;						
+							case "short":
+								data=publicSock.readShort();
+								str=data+""
+								break;						
+							case "byte":
+							case "char":
+								data=publicSock.readByte();
+								str=data+""
+								break;						
+							case "float":
+								data=publicSock.readFloat();
+								str=data+""
+								break;
+							case "string": //we have short: sizeof string than string  in socket
+								str="\""+publicSock.readUTF()+"\"";
+//								publicDataSeq.splice(2,1);
+//								break;
+						}
+						publicOutObj+=","+publicDataSeq[0]+":"+str;
+						publicDataSeq.shift();
+						publicDataSeq.shift();
+	//						publicDataSeq.splice(0,2);
+						
+						break;
+						
+				}
+			}
+			catch (error:Error){
+				logJS(""+error);
+				return;
+			}
+//			logJS("step");
+		} while(publicSock.bytesAvailable>0);
+	}
+	
+	private function publicGetParamsByBitMask(bitMask:int):void{
+		var i:int;
+		//here must be list of getting obj params 
+		switch (publicMsg){
+			case MESSAGE_EVENT_CHANGE:
+				publicOutObj+=",objtype:\"Event\"";
+				publicDataSeq.push("id","int");
+				publicDataSeq.push("rooms","int");
+				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
+					publicDataSeq.push("map","string");
+				}
+				return;
+			case MESSAGE_PLAYER_CHANGE:
+				publicOutObj+=",objtype:\"Player\"";
+//				if (bitMask)
+				return;
+			case MESSAGE_GAME_START:
+				publicOutObj+=",objtype:\"Player\"";
+				publicOutObj+=",event_id:"+bitMask;
+				publicDataSeq.push("host","string");
+				publicDataSeq.push("port","int");
+//				if (bitMask)
+				return;
+			default:
+				logJS("unnown public message");
+				break;
+		}
+	}
 ///------------------------------------------------------------------------------------------------------	
-	//map
+	///map
 	private var mapAuthorised:Boolean=false;
 	
 	private function mapConnectError(value:String):void {
 		if (isReady) {
 			ExternalInterface.call("mapConnectionError", value);
 		}
+	}
+	
+	private function closeMap(host:String, port:String):void {
+		mapSock.close();
+		var event:Event;
+		mapConnectCloseHandler(event);
 	}
 	
 	private function connectMap(host:String, port:String):int {
@@ -397,7 +571,7 @@ package {
 	private const BIT_6:int= 32;
 	private const BIT_7:int= 64;
 	private const BIT_8:int= 128;
-	private const BIT_9:int=256;
+	private const BIT_9:int= 256;
 	private const BIT_10:int= 512;
 	private const BIT_11:int= 1024;
 	private const BIT_12:int= 2048;
@@ -447,8 +621,8 @@ package {
 	private const PLAYER_TARGET:int=   BIT_7;
 	private const PLAYER_FAIL:int=   BIT_8;
 	
-	private var dataSeq:Array = new Array();
-	private var outObj:String="";
+	private var mapDataSeq:Array = new Array();
+	private var mapObj:String="";
 	private var currMsg:int=0;
 	
 	private function sendMap(value:String):int {
@@ -458,46 +632,11 @@ package {
 		return 0;
 	}
 	
-	private function sendSocket(sock:Socket,value:String):int {
-		var arr:Array;
-		arr=value.split(",");
-		try{
-			while(arr.length>1){
-				switch (arr.shift()){
-					case "byte":
-					case "char":
-						sock.writeByte(int(arr.shift()));
-						break;
-					case "short":
-						sock.writeShort(int(arr.shift()));
-						break;
-					case "int":
-						sock.writeInt(int(arr.shift()));
-						break;
-					case "uint":
-						sock.writeUnsignedInt(uint(arr.shift()));
-						break;
-					case "float":
-						sock.writeFloat(Number(arr.shift()));
-						break;
-					case "string":
-						sock.writeUTFBytes(arr.shift());
-						break;
-					
-				}
-			}
-		}
-		catch (error:Error){
-			return 1;
-		}
-		return 0;
-	}
-	
 	// push - add to end
 	// shift - get first
-	private function proceedReceivedDataJS(value:String):void {
+	private function proceedMapMessagesJS(value:String):void {
 		if (isReady) {
-			ExternalInterface.call("proceedReceivedData", value);
+			ExternalInterface.call("proceedMapMessages", value);
 		}
 	}
 	
@@ -506,53 +645,44 @@ package {
 	private function mapGetMessage():void {
 		var data:Number;
 		var str:String;
-//		dataSeq.push("push","float",5)//add to end
+//		mapDataSeq.push("push","float",5)//add to end
 		//see first
 		do {
-//			logJS(dataSeq+" || "+dataSeq[0]);
+//			logJS(mapDataSeq+" || "+mapDataSeq[0]);
 			try{
-				switch (dataSeq[0]){
+				switch (mapDataSeq[0]){
 					case undefined: //lets see for next message
-						if (outObj.length>2){//send object to javasctript
+						if (mapObj.length>2){//send object to javasctript
 						        var time:int=flash.utils.getTimer();
-						        outObj+=",time:"+time+"},";
+						        mapObj+=",time:"+time+"},";
 						        if (time-msgTime>90){
-								proceedReceivedDataJS(outObj+"])");
-								outObj="([";
+								proceedMapMessagesJS(mapObj+"])");
+								mapObj="([";
 								msgTime=time;
 							}
 						}
 						currMsg=mapSock.readByte();
-						dataSeq.push("bitmask");
-						outObj+="{msg:"+currMsg;
+						mapDataSeq.push("bitmask");
+						mapObj+="{msg:"+currMsg;
 					
-						break;
-					
-					case "oid": 
-						
-						data=mapSock.readInt();
-						dataSeq.shift();
-						dataSeq.push("bitmask");
-						outObj+=",id:"+data;
-						
 						break;
 					
 					case "bitmask": //need to get bitmask
 						
 						var bitMask:int;
 						bitMask=mapSock.readInt();
-						dataSeq.shift();
-						getParamsByBitMask(bitMask);
+						mapDataSeq.shift();
+						mapGetParamsByBitMask(bitMask);
 						
 						break;
 						
 					default:
-						switch (dataSeq[1]){
+						switch (mapDataSeq[1]){
 							case "{":
 								str="{$:0";
 								break;
 							case "}":
-								outObj+="}";
+								mapObj+="}";
 							case "none":
 							case "nil":
 							case "null":
@@ -576,14 +706,14 @@ package {
 								str=data+""
 								break;
 //							case "string": //we have third argument string size
-//								str=mapSock.readUTFBytes(dataSeq[2]);
-//								dataSeq.splice(2,1);
+//								str=mapSock.readUTFBytes(mapDataSeq[2]);
+//								mapDataSeq.splice(2,1);
 //								break;
 						}
-						outObj+=","+dataSeq[0]+":"+str;
-						dataSeq.shift();
-						dataSeq.shift();
-	//						dataSeq.splice(0,2);
+						mapObj+=","+mapDataSeq[0]+":"+str;
+						mapDataSeq.shift();
+						mapDataSeq.shift();
+	//						mapDataSeq.splice(0,2);
 						
 						break;
 						
@@ -606,7 +736,7 @@ package {
 			case 0:
 				try{
 					id=mapSock.readInt();
-					outObj="({id:"+id;
+					mapObj="({id:"+id;
 					currMsg++;
 					logJS("got id "+id);
 				}
@@ -617,7 +747,7 @@ package {
 			case 1:
 				try{
 					id=mapSock.readInt();
-					outObj+=",players:"+id;
+					mapObj+=",players:"+id;
 					currMsg++;
 					logJS("got players "+id);
 					mapSock.writeInt(0);
@@ -633,12 +763,12 @@ package {
 					id=mapSock.readInt();
 					latency=flash.utils.getTimer()-latency;
 					logJS("latency "+latency);
-					outObj+=",latency:"+latency;
+					mapObj+=",latency:"+latency;
 					mapAuthorised=true;
 					currMsg=0;
 					//send to Javascript
-					ExternalInterface.call("mapAuthData", outObj+"})");
-					outObj="([";
+					ExternalInterface.call("mapAuthData", mapObj+"})");
+					mapObj="([";
 				}
 				catch(error:Error){
 //					logJS("players error"+error+"\n");
@@ -647,138 +777,138 @@ package {
 		}
 	}
 	
-	private function getParamsByBitMask(bitMask:int):void{
+	private function mapGetParamsByBitMask(bitMask:int):void{
 		var i:int;
 		//here must be list of getting obj params 
 		switch (currMsg){
 			case MSG_NPC:
-				outObj+=",objtype:\"Npc\"";
-				dataSeq.push("id","int");
+				mapObj+=",objtype:\"Npc\"";
+				mapDataSeq.push("id","int");
 				if ((bitMask&NPC_CREATE)!=0){ //npc create
-					outObj+=",create:1";
-					dataSeq.push("owner","int");
-					dataSeq.push("type","int");
+					mapObj+=",create:1";
+					mapDataSeq.push("owner","int");
+					mapDataSeq.push("type","int");
 				}
 				if ((bitMask&NPC_POSITION)!=0){ 
-					dataSeq.push("grid","{");
-					dataSeq.push("x","float");
-					dataSeq.push("y","float");
-					dataSeq.push("$","}");
+					mapDataSeq.push("grid","{");
+					mapDataSeq.push("x","float");
+					mapDataSeq.push("y","float");
+					mapDataSeq.push("$","}");
 				}
 				if ((bitMask&NPC_LEVEL)!=0){ //npc level
-					dataSeq.push("level","short");
+					mapDataSeq.push("level","short");
 				}
 				if ((bitMask&NPC_HEALTH)!=0){ //npc health
-					dataSeq.push("health","int");
+					mapDataSeq.push("health","int");
 				}
 				if ((bitMask&NPC_SHIELD)!=0){ //npc health
-					dataSeq.push("shield","int");
+					mapDataSeq.push("shield","int");
 				}
 				return;
 			case MSG_TOWER:
-				outObj+=",objtype:\"Tower\"";
-				dataSeq.push("id","int");
+				mapObj+=",objtype:\"Tower\"";
+				mapDataSeq.push("id","int");
 				if ((bitMask&TOWER_CREATE)!=0){ 
-					outObj+=",create:1";
-					dataSeq.push("type","int");
-					dataSeq.push("owner","int");
-					dataSeq.push("position","int");
+					mapObj+=",create:1";
+					mapDataSeq.push("type","int");
+					mapDataSeq.push("owner","int");
+					mapDataSeq.push("position","int");
 				}
 				if ((bitMask&TOWER_TARGET)!=0){ 
-					dataSeq.push("target","short");
+					mapDataSeq.push("target","short");
 				}
 				if ((bitMask&TOWER_LEVEL)!=0){ 
-					dataSeq.push("level","short");
+					mapDataSeq.push("level","short");
 				}
 				if ((bitMask&TOWER_HEALTH)!=0){ 
-					dataSeq.push("health","int");
+					mapDataSeq.push("health","int");
 				}
 				if ((bitMask&TOWER_SHIELD)!=0){ 
-					dataSeq.push("shield","int");
+					mapDataSeq.push("shield","int");
 				}
 				return;
 			case MSG_BULLET:
-				outObj+=",objtype:\"Bullet\"";
-				dataSeq.push("id","int");
+				mapObj+=",objtype:\"Bullet\"";
+				mapDataSeq.push("id","int");
 			//	if ((bitMask&BULLET_POSITION)!=0){
-				dataSeq.push("grid","{");
-				dataSeq.push("x","float");
-				dataSeq.push("y","float");
-				dataSeq.push("$","}");
+				mapDataSeq.push("grid","{");
+				mapDataSeq.push("x","float");
+				mapDataSeq.push("y","float");
+				mapDataSeq.push("$","}");
 			//	}
 				if ((bitMask&BULLET_CREATE)!=0){ 
-					outObj+=",create:1";
-					dataSeq.push("type","int");
-					dataSeq.push("owner","int");
-					dataSeq.push("source","{");
-					dataSeq.push("x","float"); //source x
-					dataSeq.push("y","float"); //source y
-					dataSeq.push("$","}");
+					mapObj+=",create:1";
+					mapDataSeq.push("type","int");
+					mapDataSeq.push("owner","int");
+					mapDataSeq.push("source","{");
+					mapDataSeq.push("x","float"); //source x
+					mapDataSeq.push("y","float"); //source y
+					mapDataSeq.push("$","}");
 				}
 				if ((bitMask&BULLET_DETONATE)!=0){ 
-					dataSeq.push("detonate","byte");
+					mapDataSeq.push("detonate","byte");
 				}
 				return;
 			case MSG_PLAYER:
-				outObj+=",objtype:\"Player\"";
-				dataSeq.push("id","int");
+				mapObj+=",objtype:\"Player\"";
+				mapDataSeq.push("id","int");
 				if ((bitMask&PLAYER_CREATE)!=0){ 
-					dataSeq.push("pid","int");
-					dataSeq.push("tower_set","{");
+					mapDataSeq.push("pid","int");
+					mapDataSeq.push("tower_set","{");
 					for(i=0;i<NPC_SET_SIZE;i++){
-						dataSeq.push(""+i,"{");
-						dataSeq.push("id","int");
-						dataSeq.push("size","int");
-						dataSeq.push("$","}");
+						mapDataSeq.push(""+i,"{");
+						mapDataSeq.push("id","int");
+						mapDataSeq.push("size","int");
+						mapDataSeq.push("$","}");
 					}
-					dataSeq.push("$","}");//TODO : add normal parser
-					dataSeq.push("npc_set","{");//fix
+					mapDataSeq.push("$","}");//TODO : add normal parser
+					mapDataSeq.push("npc_set","{");//fix
 					for(i=0;i<TOWER_SET_SIZE;i++){
-						dataSeq.push(""+i,"{");
-						dataSeq.push("id","int");
-						dataSeq.push("size","int");
-						dataSeq.push("$","}");
+						mapDataSeq.push(""+i,"{");
+						mapDataSeq.push("id","int");
+						mapDataSeq.push("size","int");
+						mapDataSeq.push("$","}");
 					}
-					dataSeq.push("$","}");
-					dataSeq.push("group","int");
-					dataSeq.push("_hero_counter","int");
-					dataSeq.push("base","int");
+					mapDataSeq.push("$","}");
+					mapDataSeq.push("group","int");
+					mapDataSeq.push("_hero_counter","int");
+					mapDataSeq.push("base","int");
 					
-					dataSeq.push("base_type","{");//fix
-					dataSeq.push("health","int");//fix
-					dataSeq.push("$","}");
-					dataSeq.push("hero_type","{");//fix
-					dataSeq.push("health","int");//fix
-					dataSeq.push("shield","int");//fix
-					dataSeq.push("$","}");
+					mapDataSeq.push("base_type","{");//fix
+					mapDataSeq.push("health","int");//fix
+					mapDataSeq.push("$","}");
+					mapDataSeq.push("hero_type","{");//fix
+					mapDataSeq.push("health","int");//fix
+					mapDataSeq.push("shield","int");//fix
+					mapDataSeq.push("$","}");
 				}
 				if ((bitMask&PLAYER_HERO)!=0){ 
-					dataSeq.push("hero","int");
+					mapDataSeq.push("hero","int");
 				}
 				if ((bitMask&PLAYER_HERO_COUNTER)!=0){ 
-					dataSeq.push("hero_counter","int");
+					mapDataSeq.push("hero_counter","int");
 				}
 				if ((bitMask&PLAYER_BASE)!=0){ //what is it??
-					dataSeq.push("base","int");
+					mapDataSeq.push("base","int");
 				}
 				if ((bitMask&PLAYER_LEVEL)!=0){ 
-					dataSeq.push("level","int");
+					mapDataSeq.push("level","int");
 				}
 				if ((bitMask&PLAYER_MONEY)!=0){ 
-					dataSeq.push("money","int");
+					mapDataSeq.push("money","int");
 				}
 				if ((bitMask&PLAYER_TARGET)!=0){ 
-					dataSeq.push("targeting","short");
+					mapDataSeq.push("targeting","short");
 				}
 				if ((bitMask&PLAYER_FAIL)!=0){
-					outObj+=",fail:1";
-					dataSeq.push("exp","int");
+					mapObj+=",fail:1";
+					mapDataSeq.push("exp","int");
 				}
 				return;
 			case MSG_INFO:
 				if (bitMask==MSG_INFO_WAITING_TIME){
-					outObj+=",type:'time'";
-					dataSeq.push("data","short");
+					mapObj+=",type:'time'";
+					mapDataSeq.push("data","short");
 				}
 				return;
 			default:

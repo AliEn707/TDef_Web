@@ -756,9 +756,9 @@ function mapEditor_loadBasesResps(text, i, str, brushMode, obj) {
 function mapEditor_setParams(obj, text, partsIndex, index) {
 	var params = text[partsIndex].split(' ')
 	obj.childNodes[index].childNodes[2].selectedIndex = parseInt(params[0]) + 1
-	obj.childNodes[index].childNodes[3].value = params[1]
-	obj.childNodes[index].childNodes[4].value = params[2]
-	obj.childNodes[index].childNodes[5].value = params[3]
+	obj.childNodes[index].childNodes[4].value = params[1]
+	obj.childNodes[index].childNodes[5].value = params[2]
+	obj.childNodes[index].childNodes[6].value = params[3]
 }
 
 function mapEditor_loadMap() {

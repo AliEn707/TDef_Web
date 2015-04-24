@@ -62,9 +62,14 @@ TDefWeb::Application.configure do
 
   # Use a different cache store in production.
 	if (!ENV['REDIS_HOST'].nil? || !ENV['REDIS_PORT'].nil?) then
-		config.cache_store = :redis_store, { :host => ENV['REDIS_HOST'] || "localhost", :port => (ENV['REDIS_PORT'] || 6379).to_i , :db => 0, :expires_in => 90.minutes }
+		host=ENV['REDIS_HOST'] || "localhost"
+		port=ENV['REDIS_PORT'] || 6379
+		puts "using redis store on #{host}:#{port}"
+		config.cache_store = :redis_store, { :host => host, :port => port.to_i , :db => 0, :expires_in => 90.minutes }
 	else
-		config.cache_store = :memory_store, { size: (ENV['MEMSTORE_SIZE'] || 256).to_i.megabytes }
+		size=ENV['MEMSTORE_SIZE'] || 256
+		puts "use memory store: #{size} megabytes"
+		config.cache_store = :memory_store, { size: size.to_i.megabytes }
 	end
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"

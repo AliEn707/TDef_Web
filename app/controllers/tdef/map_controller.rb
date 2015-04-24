@@ -24,7 +24,7 @@ class Tdef::MapController < ApplicationController
 	def upload
 		if request.post?
 			m_m=Tdef::Map.find_by(name: request.POST['mapname'])
-			m_m=Tdef::Map.new(name: request.POST['mapname'], user: current_user.id) if m_m.nil?
+			m_m=Tdef::Map.new(name: request.POST['mapname'], user: current_user) if m_m.nil?
 			m_m.description=request.POST['description'] if !request.POST['description'].nil? 
 			m_m.data=request.POST['completeInfo'] if !request.POST['completeInfo'].nil? 
 			m_m.grafics=request.POST['saveTexturesField'] if !request.POST['saveTexturesField'].nil?

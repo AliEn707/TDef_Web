@@ -39,10 +39,12 @@ function stopDragging(data) {
 			if (!this.screenPressPoint)
 				this.screenPressPoint={};
 			var screenPressPoint={};
-			var stage=this.stage || getEngine().stage;
+			var engine=getEngine();
+			var stage=this.stage || engine.stage;
 			screenPressPoint.x = data.getLocalPosition(stage).x;
 			screenPressPoint.y = data.getLocalPosition(stage).y;
-			if (this.screenPressPoint.x==screenPressPoint.x && this.screenPressPoint.y==screenPressPoint.y){
+			if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
+					Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
 				if (this.pressAction)
 					this.pressAction();
 			}

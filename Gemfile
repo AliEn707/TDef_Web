@@ -42,7 +42,12 @@ end
 
 
 # Use Capistrano for deployment
-gem 'capistrano', group: :development
+group :development do
+	gem 'capistrano'
+	gem 'capistrano-rails'
+	gem 'capistrano-bundler'
+	gem 'capistrano-rvm'
+end
 
 #creating simple forms
 gem 'simple_form'

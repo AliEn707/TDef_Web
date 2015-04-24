@@ -32,6 +32,7 @@ function TDefEngine(place, opt){
 			yInverted:-1, 
 			weelInverted: -1,
 			mouseMove: true,
+			clickAreaSize:4,
 			defines:{
 				keys:{
 					mapMoveLeft:65, /*a*/
@@ -243,4 +244,10 @@ TDefEngine.prototype.objectsProcessor=function() {
 		if (objs[i].proceed)
 			objs[i].proceed();
 	}
+}
+
+TDefEngine.prototype.closeMap=function() {
+	mapClose();
+	this.map.clean;
+	
 }

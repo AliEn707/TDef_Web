@@ -21,6 +21,12 @@ function getConnector() {
 
 ///public network functions
 
+//connect to public
+//publicConnect("localhost","7001","test","12345678901234567890123456789012")
+function publicConnect(host,port, name, pass) {
+	getConnector().publicConnect(host,port,name,pass);
+}
+
 //callback on public autentification fail
 function publicAuthFail(){
 	console.log("public auth fail");
@@ -30,6 +36,10 @@ function publicAuthFail(){
 function publicSend(str) {
 	getConnector().publicSend(str);
 	//for spawn npc must be "byte,"+MSG_SPAWN_NPC+",int,"+num
+}
+
+function proceedPublicMessages(str){
+	console.log(str)
 }
 
 ///map network funtions
@@ -68,6 +78,11 @@ function mapConnect(host,port) {
 	getConnector().mapConnect(host,port);
 }
 
+//connect to mapserver
+function mapClose(host,port) {
+	getConnector().mapClose();
+}
+
 //callback if cant connect
 function mapConnectionError(val){
 	console.log("can't connect: "+val);
@@ -93,7 +108,7 @@ function mapAuthData(value) {
 }
 
 //callback on got objects data
-function proceedReceivedData(str){
+function proceedMapMessages(str){
 	var arr=eval(str);
 	delete str;
 	var e=getEngine();
