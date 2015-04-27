@@ -22,7 +22,7 @@ package {
 	private var mapSock:Socket;
 	private var publicSock:Socket;
 	private var dataTimer:Timer = new Timer(160, 0);//40, 0);
-	private var publicTimer:Timer = new Timer(200, 0);//40, 0);
+	private var publicTimer:Timer = new Timer(190, 0);//40, 0);
 	
         public function ExternalInterfaceExample() {
 		Security.allowDomain("*");
@@ -119,6 +119,41 @@ package {
 	
 	///Sockets
 	
+	//bit constants
+	private const BIT_1:int= 1;
+	private const BIT_2:int= 2;
+	private const BIT_3:int= 4;
+	private const BIT_4:int= 8;
+	private const BIT_5:int= 16;
+	private const BIT_6:int= 32;
+	private const BIT_7:int= 64;
+	private const BIT_8:int= 128;
+	private const BIT_9:int= 256;
+	private const BIT_10:int= 512;
+	private const BIT_11:int= 1024;
+	private const BIT_12:int= 2048;
+	private const BIT_13:int= 4096;
+	private const BIT_14:int= 8192;
+	private const BIT_15:int= 16384;
+	private const BIT_16:int= 32768;
+	private const BIT_17:int= 65536;
+	private const BIT_18:int= 131072;
+	private const BIT_19:int= 262144;
+	private const BIT_20:int= 524288;
+	private const BIT_21:int= 1048576;
+	private const BIT_22:int= 2097152;
+	private const BIT_23:int= 4194304;
+	private const BIT_24:int= 8388608;
+	private const BIT_25:int= 16777216;
+	private const BIT_26:int= 33554432;
+	private const BIT_27:int= 67108864;
+	private const BIT_28:int= 134217728;
+	private const BIT_29:int= 268435456;
+	private const BIT_30:int= 536870912;
+	private const BIT_31:int= 1073741824;
+//	private const BIT_32:uint= 2147483648;
+
+	
 	private function sendSocket(sock:Socket,value:String):int {
 		var arr:Array;
 		arr=value.split(",");
@@ -158,7 +193,9 @@ package {
 ///--------------------------------------------------------------------------------------------------------
 	
 	//bitmasks
-	private var BM_EVENT_MAP_NAME:int= 1;
+	private var BM_EVENT_MAP_NAME:int= BIT_1;
+	
+	private var BM_PLAYER_ROOM:int= BIT_3; 
 	//out message types
 	private var MESSAGE_PLAYER_CHANGE:int= 1;
 	private var MESSAGE_EVENT_CHANGE:int= 2;
@@ -332,11 +369,11 @@ package {
 		var data:Number;
 		var str:String;
 		do {
-//			logJS(mapDataSeq+" || "+mapDataSeq[0]);
+//			logJS(publicDataSeq+" || "+publicDataSeq[0]);
 			try{
 				switch (publicDataSeq[0]){
 					case undefined: //lets see for next message
-						logJS("new message");
+//						logJS("new message");
 						if (publicOutObj.length>2){//send object to javasctript
 						        var time:int=flash.utils.getTimer();
 						        publicOutObj+=",time:"+time+"},";
@@ -353,7 +390,8 @@ package {
 						break;
 					
 					case "bitmask": //need to get bitmask
-						
+						logJS("get bitmask");
+
 						var bitMask:int;
 						bitMask=publicSock.readInt();
 						publicDataSeq.shift();
@@ -362,6 +400,7 @@ package {
 						break;
 						
 					default:
+						logJS("get "+publicDataSeq[1]);
 						switch (publicDataSeq[1]){
 							case "{":
 								str="{$:0";
@@ -418,15 +457,24 @@ package {
 		switch (publicMsg){
 			case MESSAGE_EVENT_CHANGE:
 				publicOutObj+=",objtype:\"Event\"";
-				publicDataSeq.push("id","int");
-				publicDataSeq.push("rooms","int");
-				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
-					publicDataSeq.push("map","string");
-				}
+				publicOutObj+=",id:"+bitMask;
+//				publicDataSeq.push("id","int");
+//				publicDataSeq.push("rooms","int");
+//				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
+				publicDataSeq.push("map","string");
+//				}
 				return;
 			case MESSAGE_PLAYER_CHANGE:
+				logJS("MESSAGE_PLAYER_CHANGE");
 				publicOutObj+=",objtype:\"Player\"";
-//				if (bitMask)
+				publicDataSeq.push("id","int");
+				if ((bitMask&BM_PLAYER_ROOM)!=0){
+					logJS("BM_PLAYER_ROOM");
+					publicDataSeq.push("room","{");
+					publicDataSeq.push("type","int");
+					publicDataSeq.push("id","int");
+					publicDataSeq.push("$","}");
+				}
 				return;
 			case MESSAGE_GAME_START:
 				publicOutObj+=",objtype:\"Player\"";
@@ -562,39 +610,6 @@ package {
 	private const MSG_DROP_TOWER:int= 3;
 	private const MSG_MOVE_HERO:int= 4;
 	private const MSG_SET_TARGET:int= 5;
-	//bit constants
-	private const BIT_1:int= 1;
-	private const BIT_2:int= 2;
-	private const BIT_3:int= 4;
-	private const BIT_4:int= 8;
-	private const BIT_5:int= 16;
-	private const BIT_6:int= 32;
-	private const BIT_7:int= 64;
-	private const BIT_8:int= 128;
-	private const BIT_9:int= 256;
-	private const BIT_10:int= 512;
-	private const BIT_11:int= 1024;
-	private const BIT_12:int= 2048;
-	private const BIT_13:int= 4096;
-	private const BIT_14:int= 8192;
-	private const BIT_15:int= 16384;
-	private const BIT_16:int= 32768;
-	private const BIT_17:int= 65536;
-	private const BIT_18:int= 131072;
-	private const BIT_19:int= 262144;
-	private const BIT_20:int= 524288;
-	private const BIT_21:int= 1048576;
-	private const BIT_22:int= 2097152;
-	private const BIT_23:int= 4194304;
-	private const BIT_24:int= 8388608;
-	private const BIT_25:int= 16777216;
-	private const BIT_26:int= 33554432;
-	private const BIT_27:int= 67108864;
-	private const BIT_28:int= 134217728;
-	private const BIT_29:int= 268435456;
-	private const BIT_30:int= 536870912;
-	private const BIT_31:int= 1073741824;
-//	private const BIT_32:uint= 2147483648;
 	//npc messages
 	private const NPC_HEALTH:int= BIT_1;
 	private const NPC_POSITION:int= BIT_2;

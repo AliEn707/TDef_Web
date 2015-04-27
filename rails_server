@@ -7,12 +7,7 @@ RAILS_S_ROOT_DIR=/home/osuser/TDef_Web
 
 function rails() {
   if [ "$1" = "start" ]; then
-     if [ "$2" = "" ]; then
-        RENV="development"
-     else
-        RENV="$2"
-     fi
-     rails server -d -e "$RENV"
+     rails server -d -e "production"
      return 0
   elif [ "$1" = "stop" ]; then
      if [ -f tmp/pids/server.pid ]; then
@@ -20,7 +15,7 @@ function rails() {
 	rm tmp/pids/server.pid
         return 0
      else
-        echo "It seems there is no server running or you are not in a rails project root directory"
+        echo "It seems there is no server running"
         return 1
      fi
   elif [ "$1" = "restart" ]; then
