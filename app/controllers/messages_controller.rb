@@ -2,13 +2,15 @@ class MessagesController < ApplicationController
 	before_action :authenticate_user!
 	def create
 		@message=Message.new(message_params)
+		type=:notice
 		notice=""
 		if (@message.save)
 			notice="message_sent"
 		else
-			notice="error"
+			type=:alert
+			notice="message_error"
 		end
-		redirect_to :back, notice: t(notice)
+		redirect_to :back, type => t(notice)
 	end
 
 	def show

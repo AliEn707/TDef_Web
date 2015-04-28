@@ -24,7 +24,15 @@ class Tdef::MapController < ApplicationController
 	def upload
 		if request.post?
 			m_m=Tdef::Map.find_by(name: request.POST['mapname'])
-			m_m=Tdef::Map.new(name: request.POST['mapname'], user: current_user) if m_m.nil?
+			 if (m_m.nil?) then
+				m_m=Tdef::Map.new(name: request.POST['mapname'], user: current_user)
+			elsif (m_m.completed)
+				i=0
+				while(Tdef::Map.where(name: "#{request.POST['mapname']}_#{i}").to_a!=[]) do
+					i+=1;
+				end
+				m_m=Tdef::Map.new(name: "#{request.POST['mapname']}_#{i}", user: current_user)
+			end
 			m_m.description=request.POST['description'] if !request.POST['description'].nil? 
 			m_m.data=request.POST['completeInfo'] if !request.POST['completeInfo'].nil? 
 			m_m.grafics=request.POST['saveTexturesField'] if !request.POST['saveTexturesField'].nil?
@@ -32,6 +40,7 @@ class Tdef::MapController < ApplicationController
 			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
 			m_m.last_modified=current_user
 			m_m.save
+			notice="map_saved"
 		end
 		if request.get? && request.GET['id'] then
 			m_m=Tdef::Map.find(request.GET['id'])
@@ -43,7 +52,7 @@ class Tdef::MapController < ApplicationController
 #			m_m.write_file if m_m.completed
 #		end
 #		File.open("out.txt","a"){|f| f.write(request.POST['img']);f.puts}
-		redirect_to tdef_map_all_path
+		redirect_to tdef_map_all_path, notice: t(notice)
 	end
 	
 	def show_all
