@@ -97,11 +97,13 @@ TDefEngine.prototype.parseMap = function(map){
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', '/TDef/map/get?name='+map, false);
 		xhr.send();
+		if (xhr.status!=200)
+			console.log(xhr)
 		maps[map]=JSON.parse(xhr.responseText);
 	}
 	if (!maps[map].data){
-		var mp=maps[map].mp.split("\n");
-		var mg=maps[map].mg.split("\n");
+		var mp=maps[map].mp.split("\r\n");
+		var mg=maps[map].mg.split("\r\n");
 		var data={};
 		//mp
 		data.size=parseInt(mp[0]);

@@ -48,13 +48,48 @@ var npc_types={
 				frames: 8,
 				height: 128,
 			},
+			walk:{ //the same as walk_left, need to normal sprite switching, need to change later
+				src:"/imgtest/wl.png",
+				frames: 8,
+				height: 128,
+			},
 			walk_left:{
 				src:"/imgtest/wl.png",
 				frames: 8,
 				height: 128,
 			},
+			walk_up:{
+				src:"/imgtest/wu.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_down:{
+				src:"/imgtest/wd.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_leftup:{
+				src:"/imgtest/wlu.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_leftdown:{
+				src:"/imgtest/wld.png",
+				frames: 8,
+				height: 128,
+			},
 			walk_right:{
 				src:"/imgtest/wr.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_rightup:{
+				src:"/imgtest/wru.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_rightdown:{
+				src:"/imgtest/wrd.png",
 				frames: 8,
 				height: 128,
 			},

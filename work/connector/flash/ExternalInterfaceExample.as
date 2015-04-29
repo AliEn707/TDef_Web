@@ -19,8 +19,8 @@ package {
         private var sendBtn:Sprite;
 	private var isReady:Boolean=false;
 
-	private var mapSock:Socket;
-	private var publicSock:Socket;
+	private var mapSock:Socket = new Socket();
+	private var publicSock:Socket = new Socket();
 	private var dataTimer:Timer = new Timer(160, 0);//40, 0);
 	private var publicTimer:Timer = new Timer(190, 0);//40, 0);
 	
@@ -186,6 +186,7 @@ package {
 		catch (error:Error){
 			return 1;
 		}
+		sock.flush();
 		return 0;
 	}
 	
@@ -552,7 +553,7 @@ package {
 	
 	//time event wrapper for data handler
 	private function mapTimeDataHandler(event:TimerEvent):void {
-//		logJS("got timer data" + event+"\n");
+//		logJS("got timer data" + event+"  bytes"+mapSock.bytesAvailable);
 		if (mapSock.bytesAvailable>0){
 			var pevent:ProgressEvent;
 			mapDataHandler(pevent);
@@ -616,6 +617,7 @@ package {
 	private const NPC_CREATE:int= BIT_3;
 	private const NPC_LEVEL:int= BIT_4;
 	private const NPC_SHIELD:int= BIT_5;
+	private const NPC_STATUS:int= BIT_6;
 	//tower messages
 	private const TOWER_HEALTH:int= BIT_1;
 	private const TOWER_TARGET:int= BIT_2;
@@ -818,6 +820,9 @@ package {
 				}
 				if ((bitMask&NPC_SHIELD)!=0){ //npc health
 					mapDataSeq.push("shield","int");
+				}
+				if ((bitMask&NPC_STATUS)!=0){ 
+					mapDataSeq.push("status","byte");
 				}
 				return;
 			case MSG_TOWER:

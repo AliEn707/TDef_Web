@@ -3,10 +3,12 @@
 var Npc_callbacks={
 	walk_left:{
 	},
+	walk:{ //may be used for walk_left, and _right, if there no them
+	},
 	death_left:{
 		endAnimation:"remove",
 	},
-	death_left:{
+	death_right:{
 		endAnimation:"remove",
 	}
 }
@@ -26,7 +28,7 @@ function Npc(opt){
 	for (var i in textures){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
-		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Npc_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
+		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Npc_callbacks[i] || Npc_callbacks[i.split("_")[0]] || {}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
 	}
 	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
 	this.health_sprite.height=this.health_sprite.height/this.health_sprite.width*this.map.nodesize;
@@ -74,7 +76,11 @@ Npc.prototype.setSpriteByVector= function (v){
 	var ang=this.getAngle(v);
 	var p8=Math.PI/8;
 	//need to correct
-	if (ang>9*p8 || ang<=-5*p8){
+	if (ang>7*p8 || ang<=-7*p8){
+		this.setSpriteAdd("leftdown");
+		return;
+	}
+	if (ang>-7*p8 && ang<=-5*p8){
 		this.setSpriteAdd("left");
 		return;
 	}
@@ -91,7 +97,6 @@ Npc.prototype.setSpriteByVector= function (v){
 		return;
 	}
 	if (ang>p8 && ang<=3*p8){
-		console.log("right")
 		this.setSpriteAdd("right");
 		return;
 	}
@@ -103,9 +108,16 @@ Npc.prototype.setSpriteByVector= function (v){
 		this.setSpriteAdd("down");
 		return;
 	}
-	if (ang>7*p8 && ang<=9*p8){
-		this.setSpriteAdd("leftdown");
-		return;
+}
+
+Npc.prototype.proceedStatus= function (s){
+	var statuses={
+		0: "idle",
+		1: "attack",
+		2: "walk",
+	}
+	if (statuses[s]!=undefined){
+		this.setSprite(statuses[s]);
 	}
 }
 
@@ -127,11 +139,13 @@ Npc.prototype.update= function (obj){
 	this.direction.x=dirx/this.average_time//timestep;
 	this.direction.y=diry/this.average_time//timestep;
 	
-	this.setSpriteByVector(this.direction);
 	
 	if (obj.health!=undefined){
 		this.setHealth(obj.health);
 	}
+	this.proceedStatus(obj.status)
+	this.setSpriteByVector(this.direction);
+	
 	if (obj.shield!=undefined)
 		this.shield=obj.shield;
 	if (obj.level!=undefined)
@@ -165,15 +179,17 @@ Npc.prototype.proceed= function (){
 
 Npc.prototype.setSpriteAdd= function (name){
 	var sprite=this.sprite.split("_");
-	if (sprite.length>1)
-		if (sprite[1]!=name)
-			if (this.sprites[sprite[0]+"_"+name])
-				this.setSprite(sprite[0]+"_"+name);
+	if (sprite[1]!=name)
+		if (this.sprites[sprite[0]+"_"+name])
+			this.setSprite(sprite[0]+"_"+name);
 }
 
 Npc.prototype.setSprite= function (name){
 	this.removeChild(this.sprites[this.sprite]);
 	this.sprite=name;
+	//TODO: check, maybe not need
+	if (!this.sprites[this.sprite].loop)
+		this.sprites[this.sprite].chooseFrame(0);
 	this.sprites[this.sprite].counter=0;
 	this.addChildAt(this.sprites[this.sprite],0);
 }
