@@ -45,6 +45,12 @@ if (Tdef::Locale.all.size==0) then
 	Tdef::Locale.create(name:"jp")
 end
 
+if (Friendship.all.size==0) then
+	Friendship.create(user_id: 1,friend_id: 2)
+	Friendship.create(user_id: 1,friend_id: 3)
+	Friendship.create(user_id: 2,friend_id: 3)
+	Friendship.create(user_id: 3,friend_id: 1)
+end
 
 #u.save
 #u.confirm!

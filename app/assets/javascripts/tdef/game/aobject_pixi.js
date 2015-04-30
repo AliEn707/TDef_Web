@@ -70,7 +70,7 @@ AObject.prototype.nextFrame= function (n){
 	if (this.current_frame==this.frames.length){
 		this.current_frame--;
 		var ended=true;
-		if (this.delays.last_frame){
+		if (this.delays.last_frame>0){
 			if (this._delays.last_frame<this.delays.last_frame){
 				this._delays.last_frame++;
 				ended=false;

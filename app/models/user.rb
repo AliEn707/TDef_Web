@@ -12,7 +12,16 @@ class User < ActiveRecord::Base
 	has_many :locale_datas
 	has_many :maps
 	has_many :modified_maps, class_name: "Tdef::Map" , foreign_key: :last_modified_id
-
+	#friends
+	has_many :friendships
+	has_many :friends_outcome, :through => :friendships, :source => :friend
+	has_many :inverse_friendships, :class_name => "Friendship", :foreign_key => "friend_id"
+	has_many :friends_income, :through => :inverse_friendships, :source => :user
+	
+	def friends
+		User.where(id: Friendship.select(:friend_id).where(user_id: self.id)).where(id: Friendship.select(:user_id).where(friend_id: self.id)).to_a
+	end
+	
 	def create
 		User.create(user_params)
 	end

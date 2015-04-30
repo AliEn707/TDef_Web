@@ -93,6 +93,51 @@ var npc_types={
 				frames: 8,
 				height: 128,
 			},
+			attack:{
+				src:"/imgtest/al.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_left:{
+				src:"/imgtest/al.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_leftup:{
+				src:"/imgtest/alu.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_up:{
+				src:"/imgtest/au.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_rightup:{
+				src:"/imgtest/aru.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_right:{
+				src:"/imgtest/ar.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_rightdown:{
+				src:"/imgtest/ard.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_down:{
+				src:"/imgtest/ad.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_leftdown:{
+				src:"/imgtest/ald.png",
+				frames: 6,
+				height: 128,
+			},
 		}
 	},
 	1:{
@@ -114,19 +159,96 @@ var npc_types={
 				src:"/imgtest/wr.png",
 				frames: 8,
 				height: 128,
-				width: 128,
+			},
+			walk:{ //the same as walk_left, need to normal sprite switching, need to change later
+				src:"/imgtest/wl.png",
+				frames: 8,
+				height: 128,
 			},
 			walk_left:{
 				src:"/imgtest/wl.png",
 				frames: 8,
 				height: 128,
-				loop: true
+			},
+			walk_up:{
+				src:"/imgtest/wu.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_down:{
+				src:"/imgtest/wd.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_leftup:{
+				src:"/imgtest/wlu.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_leftdown:{
+				src:"/imgtest/wld.png",
+				frames: 8,
+				height: 128,
 			},
 			walk_right:{
 				src:"/imgtest/wr.png",
 				frames: 8,
 				height: 128,
-				loop: true,
+			},
+			walk_rightup:{
+				src:"/imgtest/wru.png",
+				frames: 8,
+				height: 128,
+			},
+			walk_rightdown:{
+				src:"/imgtest/wrd.png",
+				frames: 8,
+				height: 128,
+			},
+			attack:{
+				src:"/imgtest/al.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_left:{
+				src:"/imgtest/al.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_leftup:{
+				src:"/imgtest/alu.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_up:{
+				src:"/imgtest/au.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_rightup:{
+				src:"/imgtest/aru.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_right:{
+				src:"/imgtest/ar.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_rightdown:{
+				src:"/imgtest/ard.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_down:{
+				src:"/imgtest/ad.png",
+				frames: 6,
+				height: 128,
+			},
+			attack_leftdown:{
+				src:"/imgtest/ald.png",
+				frames: 6,
+				height: 128,
 			},
 		}
 	}
@@ -222,7 +344,7 @@ var bullet_types={
 				height: 256,
 				width: 64,
 				delays:{
-					last_frame: 0.9,
+					last_frame: 0.2,
 				}
 			},
 		},

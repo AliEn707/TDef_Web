@@ -52,6 +52,7 @@ module ApplicationHelper
 						{'name'=>t(:game),'path'=>tdef_game_path}]
 			end
 				a<<[{'name'=>t(:social)},
+						{'name'=>t(:friends),'path'=>friends_path},
 						{'name'=>t(:messages),'path'=>messages_path}]
 #			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else
@@ -71,4 +72,7 @@ module ApplicationHelper
 		return qrcode_path+"?url="+data;
 	end
 	
+	def cacheTimestamp
+		current_user.email+current_user.updated_at
+	end
 end

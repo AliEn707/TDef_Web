@@ -1,6 +1,9 @@
 //for create eval("new "+obj.objtype+"(obj)")
 
 var Bullet_callbacks={
+	idle:{
+		endAnimation:"remove",
+	},
 }
 
 function Bullet(opt){
@@ -93,7 +96,7 @@ Bullet.prototype.update= function (obj){
 	
 	if (obj.detonate){
 		//TODO add boom sprite
-		this.remove();
+//		this.remove();
 	}
 }
 

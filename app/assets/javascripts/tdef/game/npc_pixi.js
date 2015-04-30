@@ -5,6 +5,9 @@ var Npc_callbacks={
 	},
 	walk:{ //may be used for walk_left, and _right, if there no them
 	},
+	attack:{ //may be used for walk_left, and _right, if there no them
+//		endAnimation:"setWalk",
+	},
 	death_left:{
 		endAnimation:"remove",
 	},
@@ -117,6 +120,7 @@ Npc.prototype.proceedStatus= function (s){
 		2: "walk",
 	}
 	if (statuses[s]!=undefined){
+		console.log("status "+s)
 		this.setSprite(statuses[s]);
 	}
 }
@@ -192,6 +196,11 @@ Npc.prototype.setSprite= function (name){
 		this.sprites[this.sprite].chooseFrame(0);
 	this.sprites[this.sprite].counter=0;
 	this.addChildAt(this.sprites[this.sprite],0);
+}
+
+Npc.prototype.setWalk= function (){
+	this.setSprite("walk");
+	this.setSpriteByVector(this.direction);
 }
 
 Npc.prototype.remove= function (){
