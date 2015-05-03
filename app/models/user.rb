@@ -14,12 +14,23 @@ class User < ActiveRecord::Base
 	has_many :modified_maps, class_name: "Tdef::Map" , foreign_key: :last_modified_id
 	#friends
 	has_many :friendships
-	has_many :friends_outcome, :through => :friendships, :source => :friend
+	has_many :friends_out, :through => :friendships, :source => :friend
 	has_many :inverse_friendships, :class_name => "Friendship", :foreign_key => "friend_id"
-	has_many :friends_income, :through => :inverse_friendships, :source => :user
+	has_many :friends_in, :through => :inverse_friendships, :source => :user
 	
 	def friends
-		User.where(id: Friendship.select(:friend_id).where(user_id: self.id)).where(id: Friendship.select(:user_id).where(friend_id: self.id)).to_a
+#		User.where(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
+		friends_in.joins(:friendships)
+	end
+	
+	#users that sent request for friending
+	def friend_income
+		friends_in.where.not(id: friendships.select(:friend_id))
+	end
+	
+	#users for that was sent request for friending
+	def waiting_outcome
+		friends_out.where.not(id: inverse_friendships.select(:user_id))
 	end
 	
 	def create
