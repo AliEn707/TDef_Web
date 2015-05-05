@@ -51,16 +51,17 @@ TDefWeb::Application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
 
-  # Set to :debug to see everything in the log.
-  config.log_level = :info
+	# Set to :debug to see everything in the log.
+#	config.log_level = :info
+	config.log_level = :fatal
 
-  # Prepend all log lines with the following tags.
-  # config.log_tags = [ :subdomain, :uuid ]
+	# Prepend all log lines with the following tags.
+	# config.log_tags = [ :subdomain, :uuid ]
 
-  # Use a different logger for distributed setups.
-  # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
+	# Use a different logger for distributed setups.
+	# config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
-  # Use a different cache store in production.
+	# Use a different cache store in production.
 	if (!ENV['REDIS_HOST'].nil? || !ENV['REDIS_PORT'].nil?) then
 		host=ENV['REDIS_HOST'] || "localhost"
 		port=ENV['REDIS_PORT'] || 6379

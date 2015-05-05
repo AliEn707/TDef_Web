@@ -1,3 +1,4 @@
+export RAILS_ENV=production
 
 #git reset --hard 
 git pull

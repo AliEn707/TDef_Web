@@ -20,7 +20,10 @@ function rails() {
         return 1
      fi
   elif [ "$1" = "restart" ]; then
-     rails stop && rails start $2
+     rails stop 
+     rails start $2
+ elif [ "$1" = "update" ]; then
+     bash update.sh
   else
      command rails $@
   fi;
