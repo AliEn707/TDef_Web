@@ -120,7 +120,6 @@ Npc.prototype.proceedStatus= function (s){
 		2: "walk",
 	}
 	if (statuses[s]!=undefined){
-		console.log("status "+s)
 		this.setSprite(statuses[s]);
 	}
 }

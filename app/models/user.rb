@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
 	#another way, not very good
 #	has_many :income_messages, :through => :messages, :source =>:msg_dest, :source_type => 'Message', :dependent => :destroy
 	has_many :locale_datas
-	has_many :maps
+	has_many :maps, class_name: "Tdef::Map"
 	has_many :modified_maps, class_name: "Tdef::Map" , foreign_key: :last_modified_id
 	#friends
 	has_many :friendships
@@ -20,17 +20,18 @@ class User < ActiveRecord::Base
 	
 	def friends
 #		User.where(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
-		friends_in.joins(:friendships)
+		friends_in.where(id: friendships.select(:friend_id))
 	end
 	
 	#users that sent request for friending
-	def friend_income
+	def friends_income
 		friends_in.where.not(id: friendships.select(:friend_id))
 	end
 	
 	#users for that was sent request for friending
-	def waiting_outcome
+	def friends_outcome
 		friends_out.where.not(id: inverse_friendships.select(:user_id))
+#		User.where.not(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
 	end
 	
 	def create

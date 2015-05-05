@@ -2,6 +2,9 @@
 
 var Bullet_callbacks={
 	idle:{
+//		endAnimation:"remove",
+	},
+	detonate:{
 		endAnimation:"remove",
 	},
 }
@@ -95,6 +98,7 @@ Bullet.prototype.update= function (obj){
 		this.grid=obj.grid;
 	
 	if (obj.detonate){
+		this.setSprite("detonate")
 		//TODO add boom sprite
 //		this.remove();
 	}

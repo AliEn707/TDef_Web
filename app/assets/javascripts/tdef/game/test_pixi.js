@@ -328,6 +328,12 @@ var bullet_types={
 				height: 256,
 				width:64,
 			},
+			detonate:{
+				src: "/imgtest/bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
 		},
 	},
 	2:{
@@ -347,6 +353,15 @@ var bullet_types={
 					last_frame: 0.2,
 				}
 			},
+			detonate:{
+				src: "/imgtest/solid_bullet.png",
+				frames: 1,
+				height: 256,
+				width: 64,
+				delays:{
+					last_frame: 0.2,
+				}
+			},
 		},
 	},
 	3:{
@@ -356,6 +371,12 @@ var bullet_types={
 		speed: 2,
 		textures:{
 			idle:{
+				src: "/imgtest/bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
+			detonate:{
 				src: "/imgtest/bullet.png",
 				frames: 1,
 				height: 256,
@@ -434,13 +455,13 @@ for(var i=0;i<4;i++)
 for (var i =0;i<size*size;i++)
 	nodes.push(0)
 //	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
-engine.setMap("4")//map must be on server
+engine.setMap("pvz11_11")//map must be on server  //pvz11_11 
 //engine.stage.addChild(bunny)
 data=[
-	{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:24.374,y:29.4},$:0,type:2,owner:1,source:{$:0,x:27.125,y:28.5},$:0},
-	{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,x:27.125,y:28.5},$:0,type:2,owner:2,source:{$:0,x:24.374,y:29.4},$:0},
-	{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,y:24.374,x:29.4},$:0,type:2,owner:1,source:{$:0,y:27.125,x:28.5},$:0},
-	{msg:3,id:90,objtype:"Bullet",create:1,grid:{$:0,y:27.125,x:28.5},$:0,type:2,owner:2,source:{$:0,y:24.374,x:29.4},$:0},
+	{msg:3,id:0,objtype:"Bullet",create:1,grid:{$:0,x:4.374,y:9.4},$:0,type:2,owner:1,source:{$:0,x:7.125,y:8.5},$:0},
+	{msg:3,id:1,objtype:"Bullet",create:1,grid:{$:0,x:7.125,y:8.5},$:0,type:2,owner:2,source:{$:0,x:4.374,y:9.4},$:0},
+	{msg:3,id:2,objtype:"Bullet",create:1,grid:{$:0,y:24.374,x:29.4},$:0,type:2,owner:1,source:{$:0,y:27.125,x:28.5},$:0},
+	{msg:3,id:3,objtype:"Bullet",create:1,grid:{$:0,y:27.125,x:28.5},$:0,type:2,owner:2,source:{$:0,y:24.374,x:29.4},$:0},
 ]
 for (var i=0;i<1;i++){	
 //	engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})

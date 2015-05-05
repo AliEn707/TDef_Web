@@ -2,17 +2,18 @@
 
 RAILS_S_ROOT_DIR=/home/osuser/TDef_Web
 
+RAILS_PID=/tmp/rails_server.pid
 #export RAILS_WEBSERV=thin
 #export MEMSTORE_SIZE=384 
 
 function rails() {
   if [ "$1" = "start" ]; then
-     rails server -d -e "production"
+     rails server -d -e "production" --pid=$RAILS_PID
      return 0
   elif [ "$1" = "stop" ]; then
-     if [ -f tmp/pids/server.pid ]; then
-        kill $2 $(cat tmp/pids/server.pid)
-	rm tmp/pids/server.pid
+     if [ -f $RAILS_PID ]; then
+        kill $2 $(cat $RAILS_PID)
+	rm $RAILS_PID
         return 0
      else
         echo "It seems there is no server running"

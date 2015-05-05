@@ -33,9 +33,10 @@ function publicAuthFail(){
 	//TODO: add some actions
 }
 
+//get room 
+//publicSend("byte,76,byte,99,int,1")
 function publicSend(str) {
 	getConnector().publicSend(str);
-	//for spawn npc must be "byte,"+MSG_SPAWN_NPC+",int,"+num
 }
 
 function proceedPublicMessages(str){
@@ -122,7 +123,7 @@ function proceedMapMessages(str){
 				if (e.map.players[obj.id])
 					e.map.players[obj.id].update(obj);
 			}else{
-				if (!e.map.objects[obj.id]){
+				if (!e.map.objects[obj.id] && obj.create){
 					e.map.objects[obj.id]=eval("new "+obj.objtype+"(obj)");
 					e.stage.addChild(e.map.objects[obj.id]);
 				}

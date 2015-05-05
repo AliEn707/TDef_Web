@@ -1,9 +1,9 @@
-<h2>Friends outcome</h2>
+<h2>Friends</h2>
 <ul>
-  <% for friendship in @user.friendships %>
+  <% for user in @user.friends %>
     <li>
-      <%=h friendship.friend.name %>
-      (<%= link_to "remove", friendship, :method => :delete %>)
+      <%=h user.name %>
+      (<%= link_to "remove", friendship_path(user.id), :method => :delete %>)
     </li>
   <% end %>
 </ul>
@@ -17,9 +17,9 @@
   <% end %>
 </ul>
 
-<h2>Friends</h2>
+<h2>Friends outcome</h2>
 <ul>
-  <% for user in @user.friends %>
+  <% for user in @user.friends_outcome %>
     <li><%=h user.name %></li>
   <% end %>
 </ul>
