@@ -124,7 +124,7 @@
 				</div>
 				<br>Current texture:
 				<div align="center" style = 'border:solid 2px black; height:128px; width:128px;'>
-					<img id = 'currentTexture' src = 'textures/none.png' height = 128 width = 128 onclick='mapEditor_selectTexture()'>
+					<img id = 'currentTexture' src = '<%= image_path("none.png") %>' height = 128 width = 128 onclick='mapEditor_selectTexture()'>
 				</div>
 				<p><input type = "button" onclick="mapEditor_saveTextures()" value="Get textures map info"><br>
 				<textarea form='form' id = "saveTexturesField" name = 'saveTexturesField'></textarea></p>
