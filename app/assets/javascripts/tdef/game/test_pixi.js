@@ -44,9 +44,9 @@ var npc_types={
 		type: 1,
 		textures:{
 			idle:{
-				src:"/imgtest/wr.png",
-				frames: 8,
-				height: 128,
+				src:"/imgtest/tree.jpeg", //to see when it activ
+				frames: 1,
+				height: 204,
 			},
 			walk:{ //the same as walk_left, need to normal sprite switching, need to change later
 				src:"/imgtest/wl.png",
@@ -156,9 +156,9 @@ var npc_types={
 		type: 1,
 		textures:{
 			idle:{
-				src:"/imgtest/wr.png",
-				frames: 8,
-				height: 128,
+				src:"/imgtest/tree.jpeg", //to see when it activ
+				frames: 1,
+				height: 204,
 			},
 			walk:{ //the same as walk_left, need to normal sprite switching, need to change later
 				src:"/imgtest/wl.png",
