@@ -1,3 +1,4 @@
+#!/bin/sh
 export RAILS_ENV=production
 
 #git reset --hard 

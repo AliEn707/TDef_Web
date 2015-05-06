@@ -1,4 +1,4 @@
-module Tdef::ServerHelper
+module Tdef::MapServerHelper
 	def server_columns
 		[t(:host),t(:ctlport),t(:serv_num),t(:start_port)]
 	end

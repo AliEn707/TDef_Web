@@ -19,10 +19,10 @@ TDefWeb::Application.routes.draw do
 	root "test#test"
 	# You can have the root of your site routed with "root"
 	# root 'welcome#index'
-	get "/TDef/servers/shell" => "tdef/server#shell", as: "tdef_shell"
-	get "/TDef/servers/show" => "tdef/server#show", as: "tdef_server_all"
-	post "/TDef/servers/show" => "tdef/server#show"
-	get "/TDef/servers/info/:id" => 'tdef/server#info' , as: "tdef_server_info"
+	get "/TDef/mapservers/shell" => "tdef/map_server#shell", as: "tdef_shell"
+	get "/TDef/mapservers/show" => "tdef/map_server#show", as: "tdef_server_all"
+	post "/TDef/mapservers/show" => "tdef/map_server#show"
+	get "/TDef/mapservers/info/:id" => 'tdef/map_server#info' , as: "tdef_server_info"
 
 	get "/TDef/locales/show_all" => "tdef/locales#show_all" , as: "tdef_locales_all"
 	post "/TDef/locales/show_all" => "tdef/locales#show_all"

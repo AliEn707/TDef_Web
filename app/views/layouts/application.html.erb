@@ -116,19 +116,22 @@
         </div>
       </div><!--/row-->
 	<div id="footer" style="position:fixed; bottom: 0px;">
-	<%url=request.url.split("?")[0]%>
-	<div id="qrdiv" <%='hidden="' if cookies[:qrcode]!='f'%>>
-		<%cache("qrcode"+url) do %>
-			<img src="<%=qrcode(url)%>" />
-		<%end%>
-	</div>
+		<div id="qrdiv" hidden>
+		</div>
 		<p>
 			<button class="btn btn-mini btn-inverse" onclick="toggle_qrdiv()">
-				<arrow class="icon-arrow-<%=cookies[:qrcode]!='f' ? 'up' : 'down'%>"  > </arrow>
+				<arrow class="icon-arrow-up"  > </arrow>
 			</button>	
 			&copy; White Sandwitch Studio <%=Date.current.year%>
-			</p>
+		</p>
 	</div>
     </div> <!-- /container -->
   </body>
+  <%url=request.url.split("?")[0]%>
+  <%cache("qrcode"+url) do %>
+	<script type="text/javascript">
+		qrcode_src="<%=qrcode(url)%>"
+	</script>
+  <%end%>
+
 </html>

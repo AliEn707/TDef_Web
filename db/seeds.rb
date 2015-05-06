@@ -30,8 +30,8 @@ if (Tdef::Map.all.size==0) then
 		image: img)
 end
 
-if (Tdef::Server.all.size==0) then
-	Tdef::Server.create(hostname: "home.wsstudio.tk", port: 32000, rooms: 15, startport: 32001)
+if (Tdef::MapServer.all.size==0) then
+	Tdef::MapServer.create(hostname: "home.wsstudio.tk", port: 32000, rooms: 15, startport: 32001)
 end
 
 if (Tdef::Locale.all.size==0) then

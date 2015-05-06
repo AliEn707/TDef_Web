@@ -1,6 +1,6 @@
-class CreateServers < ActiveRecord::Migration
+class CreateMapServers < ActiveRecord::Migration
   def change
-    create_table :servers do |t|
+    create_table :map_servers do |t|
       t.string :hostname
       t.integer :port
       t.integer :rooms

@@ -1,24 +1,24 @@
-class Tdef::ServerController < ApplicationController
+class Tdef::MapServerController < ApplicationController
 	before_action :authenticate_user!
 	before_action :is_admin?
 	def show
 		if request.get?
-			@servers=Tdef::Server.all
+			@servers=Tdef::MapServer.all
 		end
 		if request.post?
 			if !params['delhostname'].nil? then
 				hostname=params['delhostname']
 				port=params['delport']
 				hostname.each_index do |i_i|
-					d_d=Tdef::Server.find_by(hostname: hostname[i_i], port: port[i_i])
+					d_d=Tdef::MapServer.find_by(hostname: hostname[i_i], port: port[i_i])
 					d_d.delete if !d_d.nil?
 				end
 			end
 			if !params['hostname'].nil? then
 				params['hostname'].each_index do |i_i|
 					if (params['hostname'][i_i]!="" && params['port'][i_i].to_i!=0) then
-						s_s=Tdef::Server.find_by(hostname: params['hostname'][i_i], port: params['port'][i_i].to_i)
-						s_s=Tdef::Server.create(hostname: params['hostname'][i_i], port: params['port'][i_i].to_i) if s_s.nil?
+						s_s=Tdef::MapServer.find_by(hostname: params['hostname'][i_i], port: params['port'][i_i].to_i)
+						s_s=Tdef::MapServer.create(hostname: params['hostname'][i_i], port: params['port'][i_i].to_i) if s_s.nil?
 						s_s.rooms=params['rooms'][i_i].to_i
 						s_s.startport=params['startport'][i_i].to_i
 						s_s.save
