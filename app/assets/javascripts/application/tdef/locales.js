@@ -26,6 +26,7 @@ function locales_change(obj){
 }
 
 function locales_edit(obj){
+	setSubmission();
 	tr=obj.parentNode.parentNode.parentNode
 	size={"key": 10,"value":25}
 	keys=["key","value"]
@@ -70,6 +71,7 @@ function locales_edit(obj){
 }
 
 function locales_remove(obj){
+	setSubmission();
 	tr=obj.parentNode.parentNode.parentNode
 	tds=tr.getElementsByTagName('td')
 	keys=["name[]","key[]","value[]"]
@@ -138,6 +140,7 @@ function locales_restore(obj){
 }
 
 function locales_add(obj){
+	setSubmission();
 	table=document.getElementById("table_"+locales_current)
 	tbody=table.getElementsByTagName("tbody")[0]
 	//row=document.createElement("tr")
@@ -172,6 +175,7 @@ function locales_add(obj){
 }
 
 function locales_new(obj){
+	setSubmission();
 	var tr=obj.parentNode.parentNode.parentNode
 	var tabs=document.getElementById("tabs")
 	var name=document.getElementById("newloc").value
@@ -184,7 +188,6 @@ function locales_new(obj){
 	var li=document.getElementById(name)
 	locales_change(li.children[0])
 }
-
 
 
 

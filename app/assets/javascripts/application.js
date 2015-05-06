@@ -19,3 +19,10 @@
 
 
 
+var submissionSetted=false;
+function setSubmission(){
+	if (!submissionSetted){
+		submissionSetted=true;
+		window.onbeforeunload=function (){return " "};
+	}
+}

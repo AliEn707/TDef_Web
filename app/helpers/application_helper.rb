@@ -45,7 +45,8 @@ module ApplicationHelper
 						{'name'=>t(:locales),'path'=>tdef_locales_all_path},
 						{'name'=>t(:game),'path'=>tdef_game_path},
 						{'name'=>t(:shell),'path'=>tdef_shell_path},
-						{'name'=>t(:flash_test),'path'=>"/ExternalInterfaceExample.html"}
+						{'name'=>t(:flash_test),'path'=>"/ExternalInterfaceExample.html"},
+						{'name'=>t(:audio_test),'path'=>"/audiotest.html"}
 					]
 			else
 				a<<[{'name'=>t(:tdef)},

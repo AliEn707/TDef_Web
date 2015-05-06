@@ -14,6 +14,7 @@ var serversDelPortTag="delport[]"
 var serversDelHostnameTag="delhostname[]"
 
 function servers_edit(obj){
+	setSubmission();
 	tr=obj.parentNode.parentNode.parentNode
 	size={"hostname": 25,"port":8,"rooms":8,"startport":8}
 	keys=["hostname","port","rooms","startport"]
@@ -54,6 +55,7 @@ function servers_edit(obj){
 }
 
 function servers_remove(obj){
+	setSubmission();
 	tr=obj.parentNode.parentNode.parentNode
 	tds=tr.getElementsByTagName('td')
 	keys=["hostname[]","port[]","rooms[]","startport[]"]
@@ -125,6 +127,7 @@ function servers_restore(obj){
 }
 
 function servers_add(obj){
+	setSubmission();
 	table=document.getElementById("table_servers")
 	tbody=table.getElementsByTagName("tbody")[0]
 	//row=document.createElement("tr")
