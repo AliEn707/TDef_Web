@@ -8,7 +8,7 @@ RAILS_PID=/tmp/rails_server.pid
 
 function rails() {
   if [ "$1" = "start" ]; then
-     rails server -d -e "production" --pid=$RAILS_PID
+     bundle exec rails server -d -e "production" --pid=$RAILS_PID
      return 0
   elif [ "$1" = "stop" ]; then
      if [ -f $RAILS_PID ]; then
@@ -25,7 +25,7 @@ function rails() {
  elif [ "$1" = "update" ]; then
      bash update.sh
   else
-     command rails $@
+     bundle exec rails $@
   fi;
 }
 
