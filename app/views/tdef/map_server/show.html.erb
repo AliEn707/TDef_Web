@@ -10,7 +10,7 @@
 			<%= content_tag :th, width: "80px" do -%>
 				<%= content_tag :div, class: "btn-group" do -%>
 						<button class="btn btn-inverse" onclick='servers_add(this)'><%=t(:add)%></button>
-						<button class="btn btn-inverse" form="form"><%= t(:ok)%></button>
+						<button class="btn btn-inverse" form="form" onclick="removeSubmission()"><%= t(:ok)%></button>
 				<%end%>
 			<%end%>
 		<%end%>

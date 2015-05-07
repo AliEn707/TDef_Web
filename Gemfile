@@ -73,7 +73,7 @@ gem 'rails-i18n' , "4.0.3"
 #for creating png
 gem 'chunky_png' , '1.3.3'
 
-gem 'rqrcode'
+gem 'rqrcode', "0.4.2"
 
 #compressor
 #gem "ruby-lzma"
@@ -102,11 +102,11 @@ else
 	elsif (ENV["RAILS_WEBSERV"]=="rainbows") then
 		gem 'rainbows-rails'
 	else
-		gem 'puma', '2.11.1'
+		gem 'puma'
 	end
 	
 	#for resising images
 	#sudo apt-get install libgd2-noxpm-dev
-	gem 'fastimage_resize' , "2.0.3"
+	gem 'fastimage_resize' , :git => 'https://github.com/AliEn707/fastimage_resize.git'
 end
 

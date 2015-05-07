@@ -26,3 +26,7 @@ function setSubmission(){
 		window.onbeforeunload=function (){return " "};
 	}
 }
+
+function removeSubmission(){
+	window.onbeforeunload=undefined;
+}
