@@ -35,21 +35,21 @@ TDefWeb::Application.configure do
     env.cache = ActiveSupport::Cache.lookup_store(:memory_store,{size: 64.megabytes})
   end
 
-  # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
+	# Do not fallback to assets pipeline if a precompiled asset is missed.
+	config.assets.compile = false
 
-  # Generate digests for assets URLs.
-  config.assets.digest = true
+	# Generate digests for assets URLs.
+	config.assets.digest = true
 
-  # Version of your assets, change this if you want to expire all your assets.
-  config.assets.version = '1.1'
+	# Version of your assets, change this if you want to expire all your assets.
+	config.assets.version = '1.1'
 
-  # Specifies the header that your server uses for sending files.
-  # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
-   config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
+	# Specifies the header that your server uses for sending files.
+	# config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
+	config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+	# Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
+	# config.force_ssl = true
 
 	# Set to :debug to see everything in the log.
 #	config.log_level = :info
@@ -72,33 +72,34 @@ TDefWeb::Application.configure do
 		puts "use memory store: #{size} megabytes"
 		config.cache_store = :memory_store, { size: size.to_i.megabytes }
 	end
-  # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  # config.action_controller.asset_host = "http://assets.example.com"
+	# Enable serving of images, stylesheets, and JavaScripts from an asset server.
+	# config.action_controller.asset_host = "http://assets.example.com"
 
-  # Precompile additional assets.
-  # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
-  # config.assets.precompile += %w( search.js )
-  config.assets.precompile += ['*.js', '*.css', '*.css.erb']
+	# Precompile additional assets.
+	# application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
+	# config.assets.precompile += %w( search.js )
+	config.assets.precompile += ['*.js', '*.css', '*.css.erb']
 
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
+	# Ignore bad email addresses and do not raise email delivery errors.
+	# Set this to true and configure the email server for immediate delivery to raise delivery errors.
+	# config.action_mailer.raise_delivery_errors = false
 
-  # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
-  # the I18n.default_locale when a translation can not be found).
-  config.i18n.fallbacks = true
+	# Enable locale fallbacks for I18n (makes lookups for any locale fall back to
+	# the I18n.default_locale when a translation can not be found).
+	config.i18n.fallbacks = true
 
-  # Send deprecation notices to registered listeners.
-  config.active_support.deprecation = :notify
+	# Send deprecation notices to registered listeners.
+	config.active_support.deprecation = :notify
 
-  # Disable automatic flushing of the log to improve performance.
-  # config.autoflush_log = false
+	# Disable automatic flushing of the log to improve performance.
+	# config.autoflush_log = false
 
-   config.assets.debug = false
+	config.assets.debug = false
+	config.static_cache_control = "public, max-age=3600"
 
-  # Use default logging formatter so that PID and timestamp are not suppressed.
+	# Use default logging formatter so that PID and timestamp are not suppressed.
 	config.log_formatter = ::Logger::Formatter.new
-  #mail
+	#mail
 	config.action_mailer.perform_deliveries = true
 	config.action_mailer.raise_delivery_errors = true
 	config.action_mailer.delivery_method = :smtp
@@ -113,4 +114,5 @@ TDefWeb::Application.configure do
 	config.action_mailer.default_options = {from: 'test@wsstudio.tk'}
 #	Rails.application.routes.default_url_options[:host] = 'wsstudio.tk'
 	config.action_mailer.default_url_options = { host: 'wsstudio.tk', port: 3000 }
+
 end

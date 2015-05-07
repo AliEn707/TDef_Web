@@ -23,6 +23,7 @@ module TDefWeb
      #config.i18n.default_locale = :ru
 	
 	config.middleware.use Rack::Deflater
+	config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
 
   end
 end
