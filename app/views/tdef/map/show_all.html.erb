@@ -43,7 +43,7 @@
 					<%else%>
 						<%=link_to '<i class="icon-file"> </i>'.html_safe, tdef_map_edit_path+"?id="+m_m.id.to_s, class:  "btn btn-inverse " %>
 					<%end%>
-					<%=link_to '<i class="icon-remove"> </i>'.html_safe, tdef_map_delete_path(m_m.id), class:  "btn btn-danger "%>
+					<%=link_to '<i class="icon-remove"> </i>'.html_safe, tdef_map_delete_path(m_m.id), class:  "btn btn-danger ", data: { confirm: 'Are you sure?' }%>
 				</div>
 			<%end%>
 		<%end%>

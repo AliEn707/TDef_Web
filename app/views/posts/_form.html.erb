@@ -1,0 +1,14 @@
+<%= javascript_include_tag "html_editor", :cache => true %>
+<%= simple_form_for(@post) do |f| %>
+	<%= f.error_notification %>
+	<div class="form-actions">
+		<%= f.button :submit %>
+	</div>
+	<div class="form-inputs">
+		<%= f.input :title %>
+
+		<%= f.input :description, input_html: { "data-uk-htmleditor"=>"{markdown:true, mode:'split', maxsplitsize:1000, lblPreview: '#{t(:mk_preview)}', lblCodeview: 'Markdown & Html'}" }%>
+	</div>
+
+ 
+<% end %>

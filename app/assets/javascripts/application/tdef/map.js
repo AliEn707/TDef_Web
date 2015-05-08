@@ -301,7 +301,6 @@ function mapEditor_getClickXY(event) { //handle mouse click: get it's position o
 	mapEditor_brush(clickX, clickY)
 }
 
-window.onresize = mapEditor_setHeight
 
 function mapEditor_setHeight(event) { //change some sizes when window size changes
 	var obj = document.getElementById("mainTable")

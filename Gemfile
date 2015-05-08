@@ -54,6 +54,9 @@ end
 #creating simple forms
 gem 'simple_form'
 
+#For MarkDown in posts
+gem 'redcarpet', "3.2.3"
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 

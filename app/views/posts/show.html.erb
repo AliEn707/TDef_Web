@@ -1,0 +1,30 @@
+<h1>
+	<%= link_to 'Back', posts_path %>
+	<%for_admin do%>
+		<%= link_to 'Edit', edit_post_path(@post) %>
+		<%= link_to 'Destroy', @post, method: :delete, data: { confirm: 'Are you sure?' } %>
+	<%end%>
+</h1>
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>
+				<div class="pull-left" style="height:20px;">
+					<h3>
+						<%= @post.title %>
+						</h3>
+				</div>
+			</th>
+		<tr>
+	<thead>
+	<tbody>
+		<tr>
+			<td>
+				<%= markdown(@post.description) %>
+				<div class="pull-right">
+					created by <%= @post.user.name %>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>	

@@ -2,3 +2,7 @@
 <%= title("Test WSStudio")%>
 
 <img src="<%=Image.first.url%>" >
+
+<%= javascript_include_tag "html_editor", :cache => true %>
+
+<textarea data-uk-htmleditor="{markdown:true, mode:'split', maxsplitsize:1000, lblPreview: '#{t(:prewiew)}', lblCodeview: 'Markdown and html'}">...</textarea>

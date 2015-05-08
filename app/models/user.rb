@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
 	has_many :inverse_friendships, :class_name => "Friendship", :foreign_key => "friend_id"
 	has_many :friends_in, :through => :inverse_friendships, :source => :user
 	
+	has_many :news, class_name: "Post"
 	def friends
 #		User.where(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
 		friends_in.where(id: friendships.select(:friend_id))

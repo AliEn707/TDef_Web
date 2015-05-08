@@ -1,4 +1,6 @@
 TDefWeb::Application.routes.draw do
+  resources :posts
+
 	get "friends" => "friendships#show" 
 	post "friendship/:id" => "friendships#create" , as: "friendship" 
 	delete "friendship/:id" => "friendships#destroy" 
@@ -16,8 +18,6 @@ TDefWeb::Application.routes.draw do
 	get "test/test"
 	# The priority is based upon order of creation: first created -> highest priority.
 	# See how all your routes lay out with "rake routes".
-	root "test#test"
-	# You can have the root of your site routed with "root"
 	# root 'welcome#index'
 	get "/TDef/mapservers/shell" => "tdef/map_server#shell", as: "tdef_shell"
 	get "/TDef/mapservers/show" => "tdef/map_server#show", as: "tdef_server_all"
@@ -40,7 +40,10 @@ TDefWeb::Application.routes.draw do
 	get "/TDef/map/get" => "tdef/map#get", as: "tdef_map_get"
 
 	get "/TDef/game" => "tdef/game#game", as: "tdef_game"
-
+	
+	root "posts#index"
+	# You can have the root of your site routed with "root"
+	
 	# Example of regular route:
 	#   get 'products/:id' => 'catalog#view'
 
