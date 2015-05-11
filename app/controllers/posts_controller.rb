@@ -18,11 +18,12 @@ class PostsController < ApplicationController
 	# GET /posts/new
 	def new
 		@post = Post.new(lang: current_user.locale)
+		@langs = $available_locales
 	end
 
 	# GET /posts/1/edit
 	def edit
-		@used_langs=@post.translations.select(:lang).map{|l| l.lang}<<post.lang
+		@used_langs=@post.translations.select(:lang).map{|l| l.lang}<<@post.lang
 		@langs = $available_locales-@used_langs
 	end
 
