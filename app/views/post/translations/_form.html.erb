@@ -6,9 +6,8 @@
 
 	<div class="form-inputs">
 		<%= f.input :post_id, as: :hidden %>
-		<%= f.input :user_id, as: :hidden %>
 		<%= f.input :title %>
-		<%= f.select :lang, @langs.map{|l| [l,l]}, selected: current_user.locale%>
+		<%= f.select :lang, @langs.map{|l| [l,l]}, selected: @post_translation.lang%>
 		<%= f.input :description, input_html: { "data-uk-htmleditor"=>"{markdown:true, mode:'split', maxsplitsize:1000, lblPreview: '#{t(:mk_preview)}', lblCodeview: 'Markdown & Html'}" } %>
 	</div>
 

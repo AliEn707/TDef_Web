@@ -1,9 +1,9 @@
 #!/bin/sh
-export RAILS_ENV=production
+#export RAILS_ENV=production
 
 #git reset --hard 
 git pull
-bundle install --path .bundle
+#bundle install --path .bundle
 bundle update 
 bundle clean 
 bundle exec rake db:migrate db:seed

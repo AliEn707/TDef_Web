@@ -5,7 +5,7 @@
 	</div>
 	<div class="form-inputs">
 		<%= f.input :title %>
-		<%= f.select :lang, $available_locales.map{|l| [l,l]}, selected: current_user.locale%>
+		<%= f.select :lang, @langs.map{|l| [l,l]}, selected: @post.lang%>
 		<%= f.input :description, input_html: { "data-uk-htmleditor"=>"{markdown:true, mode:'split', maxsplitsize:1000, lblPreview: '#{t(:mk_preview)}', lblCodeview: 'Markdown & Html'}" }%>
 	</div>
 

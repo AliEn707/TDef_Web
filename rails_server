@@ -3,6 +3,8 @@
 RAILS_S_ROOT_DIR=/home/osuser/TDef_Web
 
 RAILS_PID=/tmp/rails_server.pid
+
+export RAILS_ENV=production
 #export RAILS_WEBSERV=thin
 #export MEMSTORE_SIZE=384 
 
