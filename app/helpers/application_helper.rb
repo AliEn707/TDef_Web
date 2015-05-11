@@ -68,7 +68,7 @@ module ApplicationHelper
 		end
 		locale=[]
 		locale<<{'name'=>current_locale,'right'=>true}
-		['ru','en'].each do |l_l|
+		$available_locales.each do |l_l|
 			locale<<{'name'=>l_l,'path'=>"/locale?locale="+l_l}
 		end
 		a<<locale

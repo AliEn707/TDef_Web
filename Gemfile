@@ -93,7 +93,7 @@ gem 'RubyInline'
 if RUBY_PLATFORM=~ /mingw/ 
 	#only win
 	
-	gem "thin"
+#	gem "thin" #strange but not work on win, must use webrick
 else
 	#fast webserver
 	if (ENV["RAILS_WEBSERV"]=="thin") then

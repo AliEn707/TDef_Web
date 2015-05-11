@@ -1,0 +1,6 @@
+<%@post=@post_translation%>
+<%if (@post.nil?)%>
+	<%=t(:translation_not_available)%>
+<%else%>
+	<%= render 'post' %>
+<%end%>

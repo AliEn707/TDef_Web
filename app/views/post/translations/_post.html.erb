@@ -1,0 +1,23 @@
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>
+				<div class="pull-left" style="height:20px;">
+					<h3>
+						<%= @post.title %>
+						</h3>
+				</div>
+			</th>
+		<tr>
+	<thead>
+	<tbody>
+		<tr>
+			<td>
+				<%= markdown(@post.description) %>
+				<div class="pull-right">
+					created by <%= @post.user.name%>  on <%=@post.creation_date%>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>

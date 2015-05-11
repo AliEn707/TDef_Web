@@ -1,13 +1,13 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!, except: [:show,:index]
-  before_action :is_admin?
+  before_action :is_admin?, except: [:show,:index]
 
   # GET /posts
   # GET /posts.json
   def index
-	lang=current_user.locale rescue cookies[:locale] || "en"
-	@posts = Post.where(lang: lang)
+	@lang=current_user.locale rescue cookies[:locale] || "en"
+	@posts = Post.order(:id)
   end
 
   # GET /posts/1
@@ -27,7 +27,7 @@ class PostsController < ApplicationController
   # POST /posts
   # POST /posts.json
   def create
-    @post = Post.new(post_params.merge(user: current_user, lang: current_user.locale))
+    @post = Post.new(post_params.merge(user: current_user))
 
     respond_to do |format|
       if @post.save
@@ -72,6 +72,6 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:title, :description, :preview, :user_id)
+      params.require(:post).permit(:title, :lang, :description, :preview, :user_id)
     end
 end

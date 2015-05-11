@@ -4,7 +4,15 @@ class ApplicationController < ActionController::Base
 	protect_from_forgery with: :exception
 	before_action :set_locale
 	before_action :set_timezone
-        def set_locale
+	def not_found
+		raise ActionController::RoutingError.new('Not Found')
+	end
+	
+	def is_admin?
+		redirect_to "/404.html" if current_user.nil? || !current_user.admin
+	end
+	
+	def set_locale
 		locale=I18n.default_locale
 		if !current_user.nil?
 			locale=current_user.locale
@@ -26,15 +34,4 @@ class ApplicationController < ActionController::Base
         def set_timezone
 		Time.zone = current_user.time_zone if !current_user.nil?
 	end
-	
-	def not_found
-		raise ActionController::RoutingError.new('Not Found')
-	end
-	
-	def is_admin?
-		if !current_user.nil?
-			redirect_to "/404.html" if !current_user.admin
-		end
-	end
-	
 end

@@ -1,0 +1,2 @@
+module Post::TranslationsHelper
+end

@@ -1,6 +1,11 @@
 TDefWeb::Application.routes.draw do
-  resources :posts
-
+  namespace :post do
+    resources :translations
+  end
+	resources :posts
+	#for ajax calls
+	get "/post/translation/:id" => "post/translations#post"
+	
 	get "friends" => "friendships#show" 
 	post "friendship/:id" => "friendships#create" , as: "friendship" 
 	delete "friendship/:id" => "friendships#destroy" 

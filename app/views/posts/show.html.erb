@@ -1,7 +1,8 @@
 <h1>
 	<%= link_to 'Back', posts_path %>
 	<%for_admin do%>
-		<%= link_to 'Edit', edit_post_path(@post) %>
+		<%= link_to 'Add translation', new_post_translation_path(post_id: @post.id) %>
+		<%= link_to 'Edit', "#{url_for(@post)}/edit" %>
 		<%= link_to 'Destroy', @post, method: :delete, data: { confirm: 'Are you sure?' } %>
 	<%end%>
 </h1>

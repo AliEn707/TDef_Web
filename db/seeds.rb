@@ -53,8 +53,8 @@ if (Friendship.all.size==0) then
 end
 
 if (Post.all.size==0)
-	Post.create(user: User.first, title: "work started", description: "Work for this site was started at 2014 year. It is a site for online browser game developed by WSStudio.", lang: "en")
-	Post.create(user: User.last, title: "работа начата", description: "Работа по созданию этого проекта была начата в 2014 году. Этот сайт для онлайн браузерной игры разработан WSStudio.", lang: "ru")
+	post=Post.create(user: User.first, title: "work started", description: "Work for this site was started at 2014 year. It is a site for online browser game developed by WSStudio.", lang: "en")
+	Post::Translation.create(post: post, user: User.last, title: "работа начата", description: "Работа по созданию этого проекта была начата в 2014 году. Этот сайт для онлайн браузерной игры разработан WSStudio.", lang: "ru")
 end
 #u.save
 #u.confirm!

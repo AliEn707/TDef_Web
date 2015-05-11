@@ -1,0 +1,16 @@
+<ul class="nav nav-tabs" id="tabs">
+	<%@used_langs.each do |lang|%>
+		<li id='tab_<%="#{lang}_#{@post.id}"%>' <%='class=active' if lang==@post.lang%> >
+			<%=link_to lang,"#",onclick: "Post.choose_lang('#{lang}',#{@post.id})" %> 
+		</li>
+	<%end%>
+</ul>
+<script>
+	Post.current_lang='<%=@post.lang%>';
+</script>
+<div id="translations">
+	<div id="lang_<%="#{@post.lang}_#{@post.id}"%>">
+		<%= render 'post' %>
+	</div>
+</div>
+

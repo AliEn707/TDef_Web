@@ -35,7 +35,7 @@
     <%= favicon_link_tag 'favicon.ico', :rel => 'shortcut icon' %>
   </head>
   <body>
-<%cache(current_user.nil? ? cookies[:locale] : "#{current_user.locale}#{current_user.admin}") do %>
+<%cache(current_user.nil? ? cookies[:locale] : "#{current_user.locale}_#{current_user.admin}") do %>
     <div class="navbar navbar-inverse navbar-fluid-top">
       <div class="navbar-inner">
         <div class="container-fluid">
