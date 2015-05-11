@@ -23,7 +23,7 @@ class PostsController < ApplicationController
 
 	# GET /posts/1/edit
 	def edit
-		@used_langs=@post.translations.select(:lang).map{|l| l.lang}<<@post.lang
+		@used_langs=@post.translations.select(:lang).map{|l| l.lang}
 		@langs = $available_locales-@used_langs
 	end
 
