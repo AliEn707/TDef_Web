@@ -1,14 +1,14 @@
 var Post={
 	choose_lang: function (lang, current_post){
-		if (lang==Post.current_lang)
+		if (lang==Post.current_lang[current_post])
 			return; 
 		var n_n=document.getElementById("lang_"+lang+"_"+current_post);
 		if (n_n){
 			n_n.removeAttribute("hidden");
-			document.getElementById("lang_"+Post.current_lang+"_"+current_post).setAttribute("hidden","");
-			document.getElementById("tab_"+Post.current_lang+"_"+current_post).removeAttribute("class");
+			document.getElementById("lang_"+Post.current_lang[current_post]+"_"+current_post).setAttribute("hidden","");
+			document.getElementById("tab_"+Post.current_lang[current_post]+"_"+current_post).removeAttribute("class");
 			document.getElementById("tab_"+lang+"_"+current_post).setAttribute("class","active");
-			Post.current_lang=lang;
+			Post.current_lang[current_post]=lang;
 		}else{
 			xmlhttp=new XMLHttpRequest();
 			xmlhttp.onreadystatechange=function() {
@@ -31,7 +31,8 @@ var Post={
 			place.appendChild(l_l);
 		}	
 	},
-	init: function(lang){
-		Post.current_lang=lang;
-	}
+	current_lang: {},
+	init: function(lang, post){
+		Post.current_lang[post]=lang;
+	},
 }

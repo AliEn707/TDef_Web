@@ -38,7 +38,7 @@ module ApplicationHelper
 	def menu 
 		a=[]
 		if !current_user.nil?
-			a<<[{'name'=>t(:hello)+' '+current_user.name.to_s,'right'=>true},
+			a<<[{'name'=>t(:hello)+' '+current_user.name.to_s,'right'=>true, 'show'=>true},
 					{'name'=>t(:edit_registration),'path' => edit_user_registration_path},
 					{'name'=>t(:sign_out),'path'=>destroy_user_session_path,:method => :delete}]
 			tdef=[{'name'=>t(:tdef)},
@@ -63,11 +63,11 @@ module ApplicationHelper
 			a<<social
 #			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else
-			a<<[{'name'=>t(:sign_in), 'path'=> new_user_session_path}]
-			a<<[{'name' => t(:sign_up) , 'path' => new_user_registration_path}]			
+			a<<[{'name'=>t(:sign_in), 'path'=> new_user_session_path, 'show'=>true}]
+			a<<[{'name' => t(:sign_up) , 'path' => new_user_registration_path, 'show'=>true}]			
 		end
 		locale=[]
-		locale<<{'name'=>current_locale,'right'=>true}
+		locale<<{'name'=>current_locale,'right'=>true, 'show'=>true}
 		$available_locales.each do |l_l|
 			locale<<{'name'=>l_l,'path'=>"/locale?locale="+l_l}
 		end

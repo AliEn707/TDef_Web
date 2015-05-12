@@ -6,7 +6,7 @@
 	<%end%>
 </ul>
 <script>
-	Post.init('<%=@post.lang%>');
+	Post.init('<%=@post.lang%>',<%=@post.id%>);
 </script>
 <div id="translations">
 	<div id="lang_<%="#{@post.lang}_#{@post.id}"%>">

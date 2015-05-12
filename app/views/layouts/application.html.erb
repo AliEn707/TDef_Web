@@ -39,20 +39,22 @@
     <div class="navbar navbar-inverse navbar-fluid-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/">WSStudio Develop</a>
+		<%if (!current_user.nil?) then %>
+			<a class="btn btn-navbar" href="#offcanvas" data-uk-offcanvas>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+		<%end%>
+          <a class="brand" href="/">WSStudio</a>
           <div class="container-fluid"> <!-- nav-collapse">-->
-		<ul class="nav">
+		<ul class="nav ">
 			<%menu.each do |m|%>
 				<%if m[0]["right"]!=true then%>
 					<%if !m[0]["path"].nil? then%>
-						<li><%= link_to m[0]['name'], m[0]['path']  %></li>
+						<li <%='"class=nav-collapse"' if m[0]['show'].nil?%>><%= link_to m[0]['name'], m[0]['path']  %></li>
 					<%else%>
-						<li class="dropdown">
+						<li class="dropdown <%="nav-collapse" if m[0]['show'].nil?%>">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<%=m[0]['name']%>
 								<b class="caret"></b>
@@ -73,9 +75,9 @@
 			<%menu.each do |m|%>
 				<%if m[0]["right"]==true then%>
 					<%if !m[0]["path"].nil? then%>
-						<li><%= link_to m[0]['name'], m[0]['path']  %></li>
+						<li <%='"class=nav-collapse"' if m[0]['show'].nil?%>><%= link_to m[0]['name'], m[0]['path']  %></li>
 					<%else%>
-						<li class="dropdown">
+						<li class="dropdown <%="nav-collapse" if m[0]['show'].nil?%>">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<%=m[0]['name']%>
 								<b class="caret"></b>
@@ -126,6 +128,72 @@
 		</p>
 	</div>
     </div> <!-- /container -->
+    <!-- end of body -->
+    <div aria-hidden="true" id="offcanvas" class="uk-offcanvas">
+	<div class="uk-offcanvas-bar uk-offcanvas-bar-flip">
+
+	    <ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav="">
+		<%menu.each do |m|%>
+			<%if (m[0]["right"]!=true && m[0]['show'].nil?) then%>
+				<%if !m[0]["path"].nil? then%>
+					<li ><%= link_to m[0]['name'], m[0]['path']  %></li>
+				<%else%>
+					<li aria-expanded="false" class="uk-parent">
+						<a href="#" >
+							<%=m[0]['name']%>
+						</a>
+						<ul class="uk-nav-sub">
+							<%1.step(m.size-1,1) do |i|%>
+								<li>
+									<%= link_to m[i]['name'], m[i]['path'],:method=> m[i][:method]  %>
+								</li>
+							<%end%>
+						</ul>
+					</li>
+				<%end%>
+			<%end%>
+		<%end%>
+		<%menu.each do |m|%>
+				<%if (m[0]["right"]==true && m[0]['show'].nil?) then%>
+					<%if !m[0]["path"].nil? then%>
+						<li ><%= link_to m[0]['name'], m[0]['path']  %></li>
+					<%else%>
+						<li aria-expanded="false" class="uk-parent">
+							<a href="#" >
+								<%=m[0]['name']%>
+							</a>
+							<ul class="uk-nav-sub">
+								<%1.step(m.size-1,1) do |i|%>
+									<li><%= link_to m[i]['name'], m[i]['path'],:method=> m[i][:method]  %></li>
+								<%end%>
+							</ul>
+						</li>
+					<%end%>
+				<%end%>
+			<%end%>
+<!--
+		<li><a href="">Item</a></li>
+		<li class="uk-active"><a href="">Active</a></li>
+
+		<li aria-expanded="false" class="uk-parent">
+		    <a href="#">Parent</a>
+		    <ul class="uk-nav-sub">
+			<li><a href="">Sub item</a></li>
+			<li><a href="">Sub item</a></li>
+		    </ul>
+		</li>
+
+		<li class="uk-nav-header">Header</li>
+		<li class="uk-parent"><a href=""><i class="uk-icon-star"></i> Parent</a></li>
+		<li><a href=""><i class="uk-icon-twitter"></i> Item</a></li>
+		<li class="uk-nav-divider"></li>
+		<li><a href=""><i class="uk-icon-rss"></i> Item</a></li>
+-->
+	    </ul>
+
+	</div>
+    </div>
+    
   </body>
   <%url=request.url.split("?")[0]%>
   <%cache("qrcode"+url) do %>
