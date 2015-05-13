@@ -31,7 +31,23 @@ class ApplicationController < ActionController::Base
 		I18n.locale = locale
 	end
 	
+	private
+	
         def set_timezone
 		Time.zone = current_user.time_zone if !current_user.nil?
+	end
+	
+	def time_zone_from_ip
+		zone="UTC"
+		begin
+			ip_address = request.ip #: "194.67.106.109"  # In development, our IP will be 127.0.0.1 ... not useful
+			geocode = Geocoder.search(ip_address).first
+			zone||=ActiveSupport::TimeZone::MAPPING.key(geocode.data["time_zone"])
+#			Timezone::Zone.new(latlon: [geocode.latitude, geocode.longitude]).active_support_time_zone
+		rescue Exception => e
+#			p "ERROR WITH GEOCODING: #{e.message}"
+			"UTC"
+		end
+		zone
 	end
 end

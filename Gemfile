@@ -87,7 +87,9 @@ gem 'redis-rails'
 
 #for use C code in ruby
 gem 'RubyInline'	
-	
+
+#for getting timezone by user ip
+gem 'geocoder'
 
 	
 if RUBY_PLATFORM=~ /mingw/ 
