@@ -7,7 +7,7 @@
 </style>
 
 
-<script src=<%=tdef_map_textures_path%>></script>
+
 
 <button class="btn btn-large btn-inverse" id="initButton" onclick="mapEditor_loadMap()" style="position:absolute; left:0px; z-index:100;"><%= t(:mapEditor_init)%></button>
 <div>
@@ -145,7 +145,8 @@
 	</table>
 </div>
 
-<script type="text/javascript" language="JavaScript">
+<script src=<%=tdef_map_textures_path%>></script>
+<script>
 window.onload=mapEditor_loadMap
 window.onresize = mapEditor_setHeight
 /*window.onkeypress=mapEditor_handleKey 

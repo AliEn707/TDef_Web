@@ -12,19 +12,22 @@ class Post::TranslationsController < ApplicationController
   # GET /post/translations/1
   # GET /post/translations/1.json
   def show
+	@post=@post_translation
   end
 
   # GET /post/translations/new
   def new
 	@post_translation = Post::Translation.new(post_id:params["post_id"], lang: current_user.locale)
-	post=@post_translation.post#Post.where(id: params["post_id"]).first
-	@used_langs=post.translations.select(:lang).map{|l| l.lang}<<post.lang
+	@post=@post_translation.post#Post.where(id: params["post_id"]).first
+	@used_langs=@post.translations.select(:lang).map{|l| l.lang}<<@post.lang
 	@langs = $available_locales-@used_langs
+	
   end
 
   # GET /post/translations/1/edit
   def edit
-	@used_langs=@post_translation.post.translations.where.not(id: @post_translation.id).select(:lang).map{|l| l.lang}<<@post_translation.post.lang
+	@post=@post_translation.post
+	@used_langs=@post_translation.post.translations.where.not(id: @post_translation.id).select(:lang).map{|l| l.lang}<<@post.lang
 	@langs = $available_locales-@used_langs
   end
 
@@ -69,7 +72,8 @@ class Post::TranslationsController < ApplicationController
   end
   
 	def post
-		@post_translation=Post::Translation.eager_load(:user).where(post_id: params[:id], lang: params["lang"]).first
+#		@post=@post_translation
+		@post=Post::Translation.eager_load(:user).where(post_id: params[:id], lang: params["lang"]).first
 		render layout:false
 	end
 

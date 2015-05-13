@@ -11,6 +11,10 @@
     padding-left: 10px;
 }
 
+.navbar-static-top {
+	margin-bottom: 15px;
+}
+
 body {
 	padding-left: 0px;
 	padding-right: 0px;
@@ -38,4 +42,8 @@ background-image: linear-gradient(to bottom, #969696, #000000);
 background-color: #616161;
 color: #ffffff;
 text-decoration: none;
+}
+
+.message_in {
+    background-color: #fff9cd;
 }

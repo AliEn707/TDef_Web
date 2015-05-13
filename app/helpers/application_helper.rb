@@ -1,4 +1,5 @@
 module ApplicationHelper
+	@body_end=[]
 	def checkbox_onoff(name,label,value='1',checked=false)
 		o= '<div class="slideThree">
 			<input class="hidden" type="checkbox" value="'+value+'" id="'+name+'" name="'+name+(checked==true ? '" checked' : '"')+'/>
@@ -38,7 +39,7 @@ module ApplicationHelper
 	def menu 
 		a=[]
 		if !current_user.nil?
-			a<<[{'name'=>t(:hello)+' '+current_user.name.to_s,'right'=>true, 'show'=>true},
+			a<<[{'name'=>current_user.email.to_s,'right'=>true},
 					{'name'=>t(:edit_registration),'path' => edit_user_registration_path},
 					{'name'=>t(:sign_out),'path'=>destroy_user_session_path,:method => :delete}]
 			tdef=[{'name'=>t(:tdef)},
@@ -64,7 +65,7 @@ module ApplicationHelper
 #			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else
 			a<<[{'name'=>t(:sign_in), 'path'=> new_user_session_path, 'show'=>true}]
-			a<<[{'name' => t(:sign_up) , 'path' => new_user_registration_path, 'show'=>true}]			
+			a<<[{'name' => t(:sign_up) , 'path' => new_user_registration_path}]			
 		end
 		locale=[]
 		locale<<{'name'=>current_locale,'right'=>true, 'show'=>true}
@@ -86,5 +87,14 @@ module ApplicationHelper
 	def markdown(text)
 #		Redcarpet::Render::SmartyPants.render(
 		$markdown.render(text.to_s).html_safe
+	end
+	
+	def body_end(&block)
+		@body_end||=[]
+		if block_given?
+			@body_end<<capture(&block)
+		else
+			@body_end.join.html_safe
+		end
 	end
 end
