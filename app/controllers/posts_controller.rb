@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 	# GET /posts.json
 	def index
 		@lang=current_user.locale rescue cookies[:locale] || "en"
-		@posts = Post.order(:id)
+		@posts = Post.order(:id=>:desc)
 	end
 
 	# GET /posts/1

@@ -1,44 +1,47 @@
 ﻿<h1>News
-<%for_admin do%>
-	<%= link_to 'Add', new_post_path %>
-<%end%>
+	<%for_admin do%>
+		<%= link_to 'Add', new_post_path %>
+	<%end%>
 </h1>
-<% @posts.each do |post_| %>
-	<%post=post_.translation_by_lang(@lang)%>
-	<table class="table table-bordered table-striped">
-		<thead>
-			<tr>
-				<th>
-					<div class="pull-left" style="height:20px;">
-						<h3>
-							<%= link_to post.title,  post %>
-						</h3>
-					</div>
-					<div class="pull-right">
-						<%for_admin do%>
-							<%= link_to 'Add translation', new_post_translation_path(post_id: post_.id) %>
-							<%= link_to 'Edit', "#{url_for(post)}/edit" %>
-							<%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %>
-						<%end%>
-					</div>
-				</th>
-			<tr>
-		<thead>
-		<tbody>
-			<tr>
-				<td>
-					<%= markdown(post.description[0..200]) %>
-					<%if (post.description.size>=200) then%>
-						...<%= link_to t(:show_all),  post%>
-					<%end%>
-					<div class="pull-right">
-						created by <%= post.user.name %> on <%=post.creation_date%>
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>	
-
+<%cache("#{Post.select(:updated_at).order(:updated_at).last.updated_at.to_i}#{cache_lang_admin}") do %>
+	<% @posts.each do |post_| %>
+		<%cache("#{post_.id}#{post_.updated_at}#{cache_lang_admin}") do%>
+			<%post=post_.translation_by_lang(@lang)%>
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>
+							<div class="pull-left" style="height:20px;">
+								<h3>
+									<%= link_to post.title,  post %>
+								</h3>
+							</div>
+							<div class="pull-right">
+								<%for_admin do%>
+									<%= link_to 'Add translation', new_post_translation_path(post_id: post_.id) %>
+									<%= link_to 'Edit', "#{url_for(post)}/edit" %>
+									<%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %>
+								<%end%>
+							</div>
+						</th>
+					<tr>
+				<thead>
+				<tbody>
+					<tr>
+						<td>
+							<%= markdown(post.description[0..200]) %>
+							<%if (post.description.size>=200) then%>
+								...<%= link_to t(:show_all),  post%>
+							<%end%>
+							<div class="pull-right">
+								created by <%= post.user.name %> on <%=post.creation_date%>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>	
+		<% end %>
+	<% end %>
 <% end %>
 
 

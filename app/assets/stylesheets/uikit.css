@@ -329,18 +329,7 @@ pre {
   /* 1 */
   overflow: auto;
 }
-/* Selection pseudo-element 
- ========================================================================== */
-::-moz-selection {
-  background: #3399ff;
-  color: #ffffff;
-  text-shadow: none;
-}
-::selection {
-  background: #3399ff;
-  color: #ffffff;
-  text-shadow: none;
-}
+
 /* HTML5 elements
  ========================================================================== */
 /*
