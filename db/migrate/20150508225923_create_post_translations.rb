@@ -9,5 +9,6 @@ class CreatePostTranslations < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :post_translations, [:lang, :post_id]
   end
 end

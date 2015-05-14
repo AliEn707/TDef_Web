@@ -100,7 +100,7 @@ TDefEngine.prototype.parseMap = function(map){
 		if (xhr.status!=200)
 			console.log(xhr)
 		maps[map]=JSON.parse(xhr.responseText);
-		console.log(xhr.responseText)
+//		console.log(xhr.responseText)
 	}
 	if (!maps[map].data){
 		var mp=maps[map].mp.split("\r\n");

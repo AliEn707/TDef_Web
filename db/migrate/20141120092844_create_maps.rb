@@ -8,5 +8,6 @@ class CreateMaps < ActiveRecord::Migration
 	t.boolean :completed
 	t.timestamps
     end
+  add_index :maps, :name
   end
 end

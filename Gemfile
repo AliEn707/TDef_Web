@@ -33,6 +33,14 @@ gem "sprockets-rails"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
+#for generate js from ruby
+#//= require opal
+#//= require opal_ujs
+#gem 'opal-rails'
+
+#fast json serializer
+gem 'oj' , "2.12.1"
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
@@ -69,6 +77,10 @@ gem "recaptcha"
 
 gem "mail"
 
+#for delayed jobs
+#rails generate delayed_job:active_record
+#gem 'delayed_job_active_record'
+
 gem 'rails-i18n' , "4.0.3"
 
 #gem 'webrick', '1.3.1', group: :development
@@ -84,13 +96,11 @@ gem 'rqrcode', "0.4.2"
 #redis
 gem 'redis-rails'
 
-
 #for use C code in ruby
 gem 'RubyInline'	
 
 #for getting timezone by user ip
 gem 'geocoder'
-
 	
 if RUBY_PLATFORM=~ /mingw/ 
 	#only win

@@ -12,7 +12,7 @@ sudo apt-get upgrade && sudo apt-get install curl htop screen gcc g++ git-core p
 sudo cp rails_server /usr/bin/
 sudo chmod 755 /usr/bin/rails_server
 
-scp osuser@master.wssstudio.tk:/home/osuser/TDef_Web/config/initializers/secret_key.rb config/initializers/
+scp osuser@master.wsstudio.tk:/home/osuser/TDef_Web/config/initializers/secret_key.rb config/initializers/
 
 phoronix-test-suite detailed-system-info
 phoronix-test-suite detailed-system-info > ~/sysinfo.txt
