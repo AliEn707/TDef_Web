@@ -12,7 +12,6 @@ class RegistrationsController < Devise::RegistrationsController
 	end
 	
 	def new
-		@time=time_zone_from_ip
 		super
 	end
 	

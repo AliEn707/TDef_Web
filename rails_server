@@ -7,6 +7,7 @@ RAILS_PID=/tmp/rails_server.pid
 export RAILS_ENV=production
 #export RAILS_WEBSERV=thin
 #export MEMSTORE_SIZE=384 
+#+ 64 mb used for assets caching
 
 function rails() {
   if [ "$1" = "start" ]; then

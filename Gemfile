@@ -13,6 +13,7 @@ gem 'sass-rails', '~> 4.0.0'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
+
 #compressor
 #gem 'htmlcompressor'
 
@@ -99,8 +100,6 @@ gem 'redis-rails'
 #for use C code in ruby
 gem 'RubyInline'	
 
-#for getting timezone by user ip
-gem 'geocoder'
 	
 if RUBY_PLATFORM=~ /mingw/ 
 	#only win

@@ -17,8 +17,8 @@
 
 	<br />
 	<div>	
-		<%= f.label  :time_zone %>
-		<%= f.select(:time_zone, ActiveSupport::TimeZone.all.sort.map{|t| [t.to_s, t.name]}, selected:  @time)%>
+		<%= f.label  :time_zone, "#{t(:time_zone)} (#{t(:place_may_be_not_correct)})".html_safe%>
+		<%= f.time_zone_select(:time_zone)%></div>
 	</div>
 	<br />
 	<div>
@@ -37,3 +37,15 @@
 <% end %>
 
 <%= render "users/shared/links" %>
+
+<script>
+	var d=new Date().toString().match(/([A-Z]+[\+-][0-9]+)/)[1];
+	var date=d.slice(0,d.length-2)+":"+d.slice(d.length-2,d.length);
+	var select=document.getElementById("user_time_zone");
+	var options=select.children;
+	for(var i in options)
+		if (options[i].innerHTML.indexOf(date)>=0){
+			select.selectedIndex=i;
+			break;
+		}
+</script>
