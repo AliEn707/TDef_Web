@@ -1,6 +1,6 @@
 class Tdef::MapController < ApplicationController
 	before_action :authenticate_user!, except: [:get]
-	before_action :is_admin?
+	before_action :is_admin?, except: [:get]
 	def textures
 		textures=[
 			'/textures/map/1', '/textures/map/2', 

@@ -59,3 +59,5 @@ end
 #u.save
 #u.confirm!
 #u.save
+
+puts "Seed completed"

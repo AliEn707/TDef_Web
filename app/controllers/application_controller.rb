@@ -42,10 +42,11 @@ class ApplicationController < ActionController::Base
 		begin
 			ip_address = request.ip #: "194.67.106.109"  # In development, our IP will be 127.0.0.1 ... not useful
 			geocode = Geocoder.search(ip_address).first
+			Rails.logger.error geocode.inspect
 			zone=ActiveSupport::TimeZone::MAPPING.key(geocode.data["time_zone"]) || zone
 #			Timezone::Zone.new(latlon: [geocode.latitude, geocode.longitude]).active_support_time_zone
 		rescue Exception => e
-#			p "ERROR WITH GEOCODING: #{e.message}"
+			 Rails.logger.error "ERROR WITH GEOCODING: #{e.message}"
 			"UTC"
 		end
 		zone
