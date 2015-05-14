@@ -84,6 +84,10 @@ module ApplicationHelper
 		current_user.email+current_user.updated_at
 	end
 	
+	def cache_lang_admin
+		"#{current_user.locale}_#{current_user.admin}" rescue  cookies[:locale]
+	end
+	
 	def markdown(text)
 #		Redcarpet::Render::SmartyPants.render(
 		$markdown.render(text.to_s).html_safe
