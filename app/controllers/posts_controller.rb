@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 	# GET /posts.json
 	def index
 		@lang=current_user.locale rescue cookies[:locale] || "en"
-		@posts = Post.order(:id=>:desc)
+		@posts = Post.order(:created_at=>:desc)
 	end
 
 	# GET /posts/1
@@ -31,29 +31,20 @@ class PostsController < ApplicationController
 	# POST /posts.json
 	def create
 		@post = Post.new(post_params.merge(user: current_user))
-
-		respond_to do |format|
-			if @post.save
-				format.html { redirect_to @post, notice: 'Post was successfully created.' }
-				format.json { render action: 'show', status: :created, location: @post }
-			else
-				format.html { render action: 'new' }
-				format.json { render json: @post.errors, status: :unprocessable_entity }
-			end
+		if @post.save
+			redirect_to posts_path, notice: 'Post was successfully created.'
+		else
+			render action: 'new' 
 		end
 	end
 
 	# PATCH/PUT /posts/1
 	# PATCH/PUT /posts/1.json
 	def update
-		respond_to do |format|
-			if @post.update(post_params)
-				format.html { redirect_to @post, notice: 'Post was successfully updated.' }
-				format.json { head :no_content }
-			else
-				format.html { render action: 'edit' }
-				format.json { render json: @post.errors, status: :unprocessable_entity }
-			end
+		if @post.update(post_params)
+			redirect_to posts_path, notice: 'Post was successfully updated.' 
+		else
+			render action: 'edit' 
 		end
 	end
 

@@ -1,4 +1,11 @@
-﻿<h1>News
+﻿<style>
+	.modal{
+		width: 70%; 
+		left: 15%;
+		margin: 0px;
+	}
+</style>
+<h1>News
 	<%for_admin do%>
 		<%= link_to 'Add', new_post_path %>
 	<%end%>
@@ -68,7 +75,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .modal{width: 850px; left: 35%;}
-</style>

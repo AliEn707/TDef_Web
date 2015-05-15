@@ -35,29 +35,20 @@ class Post::TranslationsController < ApplicationController
   # POST /post/translations.json
   def create
 	@post_translation = Post::Translation.new(post_translation_params.merge(user: current_user))#create can only current_user
-
-	respond_to do |format|
-	  if @post_translation.save
-		format.html { redirect_to @post_translation, notice: 'Translation was successfully created.' }
-		format.json { render action: 'show', status: :created, location: @post_translation_translation }
-	  else
-		format.html { render action: 'new' }
-		format.json { render json: @post_translation.errors, status: :unprocessable_entity }
-	  end
+	if @post_translation.save
+		redirect_to posts_path, notice: 'Translation was successfully created.'
+	else
+		render action: 'new' 
 	end
   end
 
   # PATCH/PUT /post/translations/1
   # PATCH/PUT /post/translations/1.json
   def update
-	respond_to do |format|
-	  if @post_translation.update(post_translation_params)
-		format.html { redirect_to @post_translation, notice: 'Translation was successfully updated.' }
-		format.json { head :no_content }
-	  else
-		format.html { render action: 'edit' }
-		format.json { render json: @post_translation.errors, status: :unprocessable_entity }
-	  end
+	if @post_translation.update(post_translation_params)
+		redirect_to posts_path, notice: 'Translation was successfully updated.' 
+	else
+		render action: 'edit' 
 	end
   end
 

@@ -1,5 +1,4 @@
 <h1>
-	<%= link_to 'Back', posts_path %>
 	<%for_admin do%>
 		<%= link_to 'Add translation', new_post_translation_path(post_id: @post.id) %>
 		<%= link_to 'Edit', "#{url_for(@post)}/edit" %>
@@ -23,7 +22,7 @@
 			<td>
 				<%= markdown(@post.description) %>
 				<div class="pull-right">
-					created by <%= @post.user.name %>
+					created by <%= @post.user.name %> on <%=@post.creation_date%>
 				</div>
 			</td>
 		</tr>

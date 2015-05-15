@@ -1,5 +1,4 @@
 <h1>
-	<%= link_to 'Back', posts_path %>
 	<%for_admin do%>
 		<%= link_to 'Add translation', new_post_translation_path(post_id: @post_translation.post.id) %>
 		<%= link_to 'Edit', "#{url_for(@post_translation)}/edit" %>
