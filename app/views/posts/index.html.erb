@@ -13,7 +13,7 @@
 						<th>
 							<div class="pull-left" style="height:20px;">
 								<h3>
-									<%= link_to post.title,  post %>
+									<%= link_to post.title, post , remote: true%>
 								</h3>
 							</div>
 							<div class="pull-right">
@@ -43,3 +43,28 @@
 		<% end %>
 	<% end %>
 <% end %>
+
+<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+          <span aria-hidden="true">
+            &times;
+          </span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          <div id="modal-rec-title"></div>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div id="modal-rec-body"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" data-dismiss="modal" type="button">
+          <%= t(:Close) %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
