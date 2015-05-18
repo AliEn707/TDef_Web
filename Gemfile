@@ -78,6 +78,9 @@ gem "recaptcha"
 
 gem "mail"
 
+#for sending mails with log
+#gem 'logging-rails', :require => 'logging/rails'
+
 #for delayed jobs
 #rails generate delayed_job:active_record
 #gem 'delayed_job_active_record'
@@ -94,8 +97,10 @@ gem 'rqrcode', "0.4.2"
 #compressor
 #gem "ruby-lzma"
 
-#redis
-gem 'redis-rails'
+if (!ENV['REDIS_HOST'].nil? || !ENV['REDIS_PORT'].nil?)
+	#redis included only if used
+	gem 'redis-rails'
+end
 
 #for use C code in ruby
 gem 'RubyInline'	
