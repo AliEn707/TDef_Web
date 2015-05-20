@@ -26,10 +26,10 @@ TDefWeb::Application.configure do
   config.serve_static_assets = true
 
   # Compress JavaScripts and CSS.
-#  config.assets.js_compressor = :uglifier
+  config.assets.js_compressor = :uglifier
   config.assets.css_compressor = :sass
 #  config.assets.css_compressor = :yui
-  config.assets.js_compressor = :uglify
+#  config.assets.js_compressor = :uglify
 
   config.assets.configure do |env|
     env.cache = ActiveSupport::Cache.lookup_store(:memory_store,{size: 64.megabytes})
@@ -95,7 +95,7 @@ TDefWeb::Application.configure do
 	# config.autoflush_log = false
 
 	config.assets.debug = false
-	config.static_cache_control = "public, max-age=3600"
+	config.static_cache_control = "public, s-maxage=155520, max-age=3600"
 
 	# Use default logging formatter so that PID and timestamp are not suppressed.
 	config.log_formatter = ::Logger::Formatter.new

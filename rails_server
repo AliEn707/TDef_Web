@@ -5,6 +5,9 @@ RAILS_S_ROOT_DIR=/home/osuser/TDef_Web
 RAILS_PID=/tmp/rails_server.pid
 
 export RAILS_ENV=production
+export RUBY_GC_HEAP_FREE_SLOTS=200000
+export RUBY_GC_MALLOC_LIMIT=60000000
+
 #export RAILS_WEBSERV=thin
 #export MEMSTORE_SIZE=384 
 #+ 64 mb used for assets caching
