@@ -1,0 +1,3 @@
+<%cache do%>
+var textures=<%=@textures.map!{|t| "/"+t}.inspect.html_safe%>
+<%end%>

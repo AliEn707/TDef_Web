@@ -51,7 +51,6 @@ module ApplicationHelper
 					{'name'=>t(:messages),'path'=>messages_path}]
 			if (current_user.admin) then
 				tdef+=[
-					{'name'=>t(:shell),'path'=>tdef_shell_path},
 					{'name'=>t(:map_editor),'path'=>tdef_map_edit_path},
 					{'name'=>t(:maps),'path'=>tdef_map_all_path},
 					{'name'=>t(:servers),'path'=>tdef_server_all_path},

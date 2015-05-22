@@ -2,14 +2,16 @@ class Tdef::MapController < ApplicationController
 	before_action :authenticate_user!, except: [:get]
 	before_action :is_admin?, except: [:get]
 	def textures
-		textures=[
-			'/textures/map/1', '/textures/map/2', 
-			'/textures/wall/1','/textures/wall/1_small',
-			'/textures/wall/10','/textures/wall/11', '/textures/wall/mask',
-			'/textures/none',
-			'/imgtest/1','/imgtest/2','/imgtest/11','/imgtest/12','/imgtest/21','/imgtest/22','/imgtest/111','/imgtest/112','/imgtest/121','/imgtest/122'
-			]
-		send_data( ("var textures="+textures.map{|t| t+=".png"}.inspect).html_safe, filename: 'textures.js')
+		@textures=[
+			'textures/map/1', 'textures/map/2', 
+			'textures/wall/1','textures/wall/1_small',
+			'textures/wall/10','textures/wall/11', 'textures/wall/mask',
+			'textures/none',
+			'imgtest/1','imgtest/2','imgtest/11','imgtest/12',
+			'imgtest/21','imgtest/22',
+			'imgtest/111','imgtest/112','imgtest/121','imgtest/122'
+			].map!{|t| t+=".png"}
+		render :formats => :js, layout: false
 	end
 	
 	def edit
