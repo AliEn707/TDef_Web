@@ -37,6 +37,7 @@ class Post::TranslationsController < ApplicationController
 	@post_translation = Post::Translation.new(post_translation_params.merge(user: current_user))#create can only current_user
 	if @post_translation.save
 		@post_translation.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil?
+		Image.where(imageable_id: nil).where(Image.arel_table[:created_at].lt(Time.now-60.minutes)).destroy_all
 		redirect_to posts_path, notice: 'Translation was successfully created.'
 	else
 		render action: 'new' 

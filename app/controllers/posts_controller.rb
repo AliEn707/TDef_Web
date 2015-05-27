@@ -33,6 +33,7 @@ class PostsController < ApplicationController
 		@post = Post.new(post_params.merge(user: current_user))
 		if @post.save
 			@post.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil?
+			Image.where(imageable_id: nil).where(Image.arel_table[:created_at].lt(Time.now-60.minutes)).destroy_all
 			redirect_to posts_path, notice: 'Post was successfully created.'
 		else
 			render action: 'new' 
