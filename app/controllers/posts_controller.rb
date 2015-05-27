@@ -32,6 +32,7 @@ class PostsController < ApplicationController
 	def create
 		@post = Post.new(post_params.merge(user: current_user))
 		if @post.save
+			@post.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil?
 			redirect_to posts_path, notice: 'Post was successfully created.'
 		else
 			render action: 'new' 
@@ -42,6 +43,10 @@ class PostsController < ApplicationController
 	# PATCH/PUT /posts/1.json
 	def update
 		if @post.update(post_params)
+			if !params["img_ids"].nil? then
+				@post.images.where.not(id: params["img_ids"]).destroy_all
+				@post.images=Image.where(id: params["img_ids"]) 
+			end
 			redirect_to posts_path, notice: 'Post was successfully updated.' 
 		else
 			render action: 'edit' 

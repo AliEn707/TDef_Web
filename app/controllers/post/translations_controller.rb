@@ -36,6 +36,7 @@ class Post::TranslationsController < ApplicationController
   def create
 	@post_translation = Post::Translation.new(post_translation_params.merge(user: current_user))#create can only current_user
 	if @post_translation.save
+		@post_translation.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil?
 		redirect_to posts_path, notice: 'Translation was successfully created.'
 	else
 		render action: 'new' 
@@ -46,6 +47,10 @@ class Post::TranslationsController < ApplicationController
   # PATCH/PUT /post/translations/1.json
   def update
 	if @post_translation.update(post_translation_params)
+		if !params["img_ids"].nil? then
+			@post_translation.images.where.not(id: params["img_ids"]).destroy_all
+			@post_translation.images=Image.where(id: params["img_ids"]) 
+		end
 		redirect_to posts_path, notice: 'Translation was successfully updated.' 
 	else
 		render action: 'edit' 

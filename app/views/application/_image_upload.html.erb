@@ -1,0 +1,9 @@
+<%= form_for Image.new, url: upload_image_path, :html => { :multipart => true }, :remote => true do |f| %>
+  <div class="field">
+    <%= f.file_field :file %>
+    <% #add width and height %>
+  </div>
+  <div class="actions">
+    <%= f.submit t(:image_upload)%>
+  </div>
+<% end %>

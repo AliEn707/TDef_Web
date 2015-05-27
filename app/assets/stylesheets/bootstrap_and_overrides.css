@@ -48,3 +48,29 @@ text-decoration: none;
 .message_in {
     background-color: #fff9cd;
 }
+
+.uk-button-core {
+    margin: 0px;
+    border: medium none;
+    overflow: visible;
+    font-family: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    font-size-adjust: inherit;
+    font-stretch: inherit;
+    font-feature-settings: inherit;
+    font-language-override: inherit;
+    font-kerning: inherit;
+    font-synthesis: inherit;
+    font-variant: inherit;
+    text-transform: none;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0px 12px;
+    vertical-align: middle;
+    line-height: 30px;
+    min-height: 30px;
+    font-size: 1rem;
+    text-decoration: none;
+    text-align: center;
+}

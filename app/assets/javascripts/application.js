@@ -12,6 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.remotipart
+//= require zeroclipboard
 //= require twitter/bootstrap
 //= require bootstrap
 //= require_tree ./application

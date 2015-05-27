@@ -1,6 +1,7 @@
 class Post < ActiveRecord::Base
 	belongs_to :user, touch: true
 	has_many :translations, class_name: "Post::Translation"
+	has_many :images, as: :imageable, dependent: :destroy
 	
 	def translation_by_lang(lang)
 		#return if current lang matched

@@ -1,5 +1,28 @@
 <%= javascript_include_tag "html_editor", :cache => true %>
+<%= javascript_include_tag "post_edit", :cache => true %>
+
+<%=render "image_upload"%>
+<input form="new_image" type="hidden" name="image[imageable_id]" value="<%=@post.id%>"></input>
+<input form="new_image" type="hidden" name="image[imageable_type]" value="<%=@post.class.name%>"></input>
+
+<div id="images" overflow="auto">
+	<%@post.images.each do |img|%>
+		<div style="display: inline-block;position:relative;">
+			<img onload="setImgSize(this)" id="img_<%=img.id%>" class="img-polaroid" src="http://<%= request.host_with_port+img.url %>"></img>
+			<input type=hidden id="hide_img_<%=img.id%>"  value="http://<%= request.host_with_port+img.url %>"> </input>
+			<button id="button_<%=img.id%>" data-clipboard-target="hide_img_<%=img.id%>" class="uk-button-core btn-inverse uk-button-large" style="position:absolute;left:0px;bottom:0px;" ><i class="icon-link"> </i></button>
+			<button data="<%=img.id%>" onclick="removePostImg(this)" class="uk-button-core btn-danger uk-button-large" style="position:absolute;right:0px;top:0px;" ><i class="icon-remove"> </i></button>
+			<script>var clip = new ZeroClipboard($("#button_<%=img.id%>"))</script>
+		</div>
+	<%end%>
+</div>
+
 <%= simple_form_for(@post) do |f| %>
+	<div id="ids_div">
+		<%@post.images.each do |img|%>
+			<input id="hide_<%=img.id%>" name="img_ids[]" type="hidden" value="<%=img.id%>"></input>
+		<%end%>
+	</div>
 	<div class="form-actions">
 		<%= f.button :submit %>
 	</div>
@@ -8,6 +31,4 @@
 		<%= f.select :lang, @langs.map{|l| [l,l]}, selected: @post.lang%>
 		<%= f.input :description, input_html: { "data-uk-htmleditor"=>"{markdown:true, mode:'split', maxsplitsize:1000, lblPreview: '#{t(:mk_preview)}', lblCodeview: 'Markdown & Html'}" }%>
 	</div>
-
- 
 <% end %>
