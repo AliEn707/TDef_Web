@@ -10,11 +10,12 @@ export RUBY_GC_MALLOC_LIMIT=60000000
 
 #export RAILS_WEBSERV=thin
 #export MEMSTORE_SIZE=384 
-#+ 64 mb used for assets caching
+#export USE_OJ=true 
+#+ 32 mb used for assets caching
 
 function rails() {
   if [ "$1" = "start" ]; then
-     bundle exec rails server -d -e "production" --pid=$RAILS_PID
+     bundle exec rails server -d --pid=$RAILS_PID
      return 0
   elif [ "$1" = "stop" ]; then
      if [ -f $RAILS_PID ]; then

@@ -1,23 +1,4 @@
 module ApplicationHelper
-	@body_end=[]
-	def checkbox_onoff(name,label,value='1',checked=false)
-		o= '<div class="slideThree">
-			<input class="hidden" type="checkbox" value="'+value+'" id="'+name+'" name="'+name+(checked==true ? '" checked' : '"')+'/>
-			<label for="'+name+'">'+label+'</label>
-		</div>
-		'
-		o.html_safe
-	end
-	
-	def checkbox_slide_small(name,label,value='1',checked=false)
-		o= '<div class="slideOne">
-			<input class="hidden" type="checkbox" value="'+value+'" id="'+name+'" name="'+name+(checked==true ? '" checked' : '"')+'/>
-			<label for="'+name+'">'+label+'</label>
-		</div>
-		'
-		o.html_safe
-	end
-	
 	def title(page_title)
 		content_for(:title) { page_title }
 	end
@@ -99,5 +80,13 @@ module ApplicationHelper
 		else
 			@body_end.join.html_safe
 		end
+	end
+#system info helpers	
+	def system_info
+		Rails.cache.fetch('system-info') {`phoronix-test-suite system-info` || "failed to get system info"}
+	end
+	
+	def uptime
+		Rails.cache.fetch('uptime',expires_in: 1.minutes) {`uptime` || "failed to get load average"}
 	end
 end

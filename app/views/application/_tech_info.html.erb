@@ -1,0 +1,36 @@
+<%for_admin do%>
+	<a style="position:absolute;top:5px;left:0px;height:20px;width:0px" class="btn btn-navbar" href="#offcanvas-tech" data-uk-offcanvas>
+	
+	</a>
+
+	<div aria-hidden="true" id="offcanvas-tech" class="uk-offcanvas">
+		<div class="uk-offcanvas-bar uk-offcanvas-bar-tech">
+			<div>
+				<%= uptime%>
+				<br>
+				<%= system_info%>
+				<br>
+			</div>
+	<!--
+			<ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav="">
+			<li><a href="">Item</a></li>
+			<li class="uk-active"><a href="">Active</a></li>
+
+			<li aria-expanded="false" class="uk-parent">
+					<a href="#">Parent</a>
+					<ul class="uk-nav-sub">
+				<li><a href="">Sub item</a></li>
+				<li><a href="">Sub item</a></li>
+					</ul>
+			</li>
+
+			<li class="uk-nav-header">Header</li>
+			<li class="uk-parent"><a href=""><i class="uk-icon-star"></i> Parent</a></li>
+			<li><a href=""><i class="uk-icon-twitter"></i> Item</a></li>
+			<li class="uk-nav-divider"></li>
+			<li><a href=""><i class="uk-icon-rss"></i> Item</a></li>
+			</ul>
+	-->
+		</div>
+	</div>
+<%end%>

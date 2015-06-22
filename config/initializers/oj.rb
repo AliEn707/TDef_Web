@@ -1,5 +1,9 @@
-ActiveSupport::JSON.engine = :oj
 
+if ENV['USE_OJ'].nil? then
+	puts "oj is disabled"
+else
+	ActiveSupport::JSON.engine = :oj
+end
 # Hack to load json gem first so we can overwrite its to_json.
 begin
   require 'json'

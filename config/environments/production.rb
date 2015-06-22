@@ -32,7 +32,7 @@ TDefWeb::Application.configure do
 #  config.assets.js_compressor = :uglify
 
   config.assets.configure do |env|
-    env.cache = ActiveSupport::Cache.lookup_store(:memory_store,{size: 64.megabytes})
+    env.cache = ActiveSupport::Cache.lookup_store(:memory_store)
   end
 
 	# Do not fallback to assets pipeline if a precompiled asset is missed.

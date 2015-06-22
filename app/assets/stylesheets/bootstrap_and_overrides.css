@@ -4,6 +4,7 @@
   Use Font Awesome icons (default)
   To use Glyphicons sprites instead of Font Awesome, replace with "require twitter-bootstrap-static/sprites"
   =require twitter-bootstrap-static/fontawesome
+  =require uikit
   */
   
 .container-fluid {
@@ -73,4 +74,8 @@ text-decoration: none;
     font-size: 1rem;
     text-decoration: none;
     text-align: center;
+}
+
+.uk-offcanvas-bar-tech {
+	width: 80%;
 }
