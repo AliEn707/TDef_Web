@@ -5,9 +5,20 @@
 
 	<div aria-hidden="true" id="offcanvas-tech" class="uk-offcanvas">
 		<div class="uk-offcanvas-bar uk-offcanvas-bar-tech">
-			<div>
+			<div style="color: #cd9b1d;">
+				<b>
+					<%=t(:hostname)%>:
+				</b>
+				<br>
+				<%=hostname%><br>
+				<b>
+					<%=t(:uptime)%>:<br>
+				</b>
 				<%= uptime%>
 				<br>
+				<b>
+					<%=t(:system_info)%>:<br>
+				</b>
 				<%= system_info%>
 				<br>
 			</div>

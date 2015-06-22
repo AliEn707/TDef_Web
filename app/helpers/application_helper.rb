@@ -83,10 +83,14 @@ module ApplicationHelper
 	end
 #system info helpers	
 	def system_info
-		Rails.cache.fetch('system-info') {`phoronix-test-suite system-info` || "failed to get system info"}
+		Rails.cache.fetch('system-info') {`phoronix-test-suite system-info`.gsub(/(?<word>\w+):\n/,'</ul><li>\k<word>:<ul><li>').gsub(/(?<bold>[- \w]+):/,'<b>\k<bold>:</b>').sub(/([\n].*)*mation/,"<ul style='margin-top: 0;'>").sub("</ul>","").gsub(",","</li><li>").html_safe || "failed to get system info"}
 	end
 	
 	def uptime
-		Rails.cache.fetch('uptime',expires_in: 1.minutes) {`uptime` || "failed to get load average"}
+		Rails.cache.fetch('uptime',expires_in: 1.minutes) {"<span style='margin-left: 15px;'>#{`uptime` || "failed to get load average"}</span>".html_safe}
+	end
+	
+	def hostname
+		Rails.cache.fetch('hostname',expires_in: 1.hours) {"<span style='margin-left: 15px;'>#{`hostname` || "failed to get hostname"}</span>".html_safe}
 	end
 end
