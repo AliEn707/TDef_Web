@@ -1,0 +1,28 @@
+<h1>Listing tdef_type_npcs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Params</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tdef_type_npcs.each do |tdef_type_npc| %>
+    <%tdef_type_npc.params.delete("textures")%>
+      <tr>
+        <td><%= tdef_type_npc.params %></td>
+        <td><%= link_to 'Show', tdef_type_npc %></td>
+        <td><%= link_to 'Edit', edit_tdef_type_npc_path(tdef_type_npc) %></td>
+        <td><%= link_to 'Destroy', tdef_type_npc, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Npc', new_tdef_type_npc_path %>

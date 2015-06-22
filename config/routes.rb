@@ -1,4 +1,10 @@
 TDefWeb::Application.routes.draw do
+  namespace :tdef do
+    namespace :type do
+      resources :npcs
+    end
+  end
+
   namespace :post do
     resources :translations
   end

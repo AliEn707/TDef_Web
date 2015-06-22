@@ -36,6 +36,7 @@ module ApplicationHelper
 					{'name'=>t(:maps),'path'=>tdef_map_all_path},
 					{'name'=>t(:servers),'path'=>tdef_server_all_path},
 					{'name'=>t(:locales),'path'=>tdef_locales_all_path},
+					{'name'=>t(:npc_types),'path'=>tdef_type_npcs_path},
 					{'name'=>t(:flash_test),'path'=>"/ExternalInterfaceExample.html"},
 					{'name'=>t(:audio_test),'path'=>"/audiotest.html"}
 				]

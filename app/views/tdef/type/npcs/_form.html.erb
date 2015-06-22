@@ -1,0 +1,9 @@
+<%= simple_form_for(@tdef_type_npc) do |f| %>
+  <%= f.error_notification %>
+
+  <input type="hidden" name="tdef_type_npc[params[health]]" value="200">
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
