@@ -4,30 +4,33 @@ require 'type_textures_container'
 class Tdef::Type::Npc < ActiveRecord::Base
 	serialize :params, TypeParamsSerializer
 	serialize :textures, TypeTexturesSerializer
-
-	before_save :bsave
 	after_initialize :aload
-
+	before_destroy :clean
+	
+	PARAMS=["health",
+			"speed",
+			"damage",
+			"shield",
+			"see_distanse",
+			"attack_speed",
+			"move_speed",
+			"cost",
+			"receive",
+			"bullet_type"
+			]
+	TEXTURES=["idle","destroy","walk","attack"].inject([]) do |o,k1|
+				o+=["up","leftup","left","leftdown","down","rightdown","right","rightup"].map! do |k2|
+					"#{k1}_#{k2}"
+				end<<k1
+			end
+			
 	private
 	
 	def aload
-		params["textures"]=textures #|| TypeTexturesContainer.new
-=begin
-		if (!textures) then
-			["walk","attack"].each do |k1|
-				params["textures"][k1]||={}
-				["up","leftup","left","leftdown","down","rightdown","right","rightup"].each do |k2|				
-					params["textures"][k1][k2]=nil
-				end
-			end
-			["walk","attack","idle"].each do |k|
-				params["textures"][k]=nil
-			end
-		end
-=end
+		self.textures ||= TypeTexturesContainer.new
 	end
-
-	def bsave
-		self.textures=params["textures"]
+	
+	def clean
+		self.textures.clean!
 	end
 end

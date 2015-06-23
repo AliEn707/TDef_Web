@@ -1,6 +1,10 @@
 <p>
-  <strong>Params:</strong>
-  <%= @tdef_type_npc.params %>
+	<div>
+		<strong><%= t("types.id") %>:</strong> <%= @tdef_type_npc.id %>
+		<% @tdef_type_npc.params.each do |k,p| %>
+			<strong><%=t("types."+k) %>:</strong> <%= p %>
+		<% end %>
+	</div>
 </p>
 
 <%= link_to 'Edit', edit_tdef_type_npc_path(@tdef_type_npc) %> |

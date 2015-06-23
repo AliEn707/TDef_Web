@@ -1,9 +1,38 @@
+
 <%= simple_form_for(@tdef_type_npc) do |f| %>
-  <%= f.error_notification %>
-
-  <input type="hidden" name="tdef_type_npc[params[health]]" value="200">
-
+	<%= f.error_notification %>
+	<div class="form-group">
+		<%= f.simple_fields_for :params do |params_form|%>
+			<%params_not=params-@tdef_type_npc.params.keys%>
+			<% (@tdef_type_npc.params.keys-params_not).each do |k|%>
+				<%=f.label k, t(k)%>
+				<%=params_form.input_field k, value:@tdef_type_npc.params[k]%>
+			<%end%>
+			<% (params_not).each do |k|%>
+				<%=f.label k, t("types."+k)%>
+				<%=params_form.input_field k%>
+			<%end%>
+		<%end%>
+	</div>
+	<% if (@tdef_type_npc.id) then%>
+		<canvas width=300 height=300 id='canvas'></canvas>
+	<%end%>
+	
   <div class="form-actions">
     <%= f.button :submit %>
   </div>
 <% end %>
+
+<script>
+	Types.cnv=document.getElementById('canvas');
+	Types.ctx = Types.cnv.getContext('2d');
+	Types.shift=30;
+	Types.background= Types.canvas_init(Types.shift);
+	Types.speed=0;
+	Types.position={x:0,y:0}
+	Types.direction={x:0,y:0}
+	setInterval(Types.move_map,100/2)
+	document.getElementById("tdef_type_npc_params_speed").setAttribute("onchange","Types.setSpeed(this.value)")
+</script>
+
+<%= javascript_include_tag "types_npc", :cache => true %>

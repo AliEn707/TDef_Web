@@ -11,7 +11,6 @@ class TypeParamsSerializer
 	
 	#value is Hash
 	def self.dump(value)
-		p values
 		out=[]
 		value.each do |k,v|
 			out<<"#{k} #{v}\n" if k!="textures"
