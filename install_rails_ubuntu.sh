@@ -31,3 +31,5 @@ phoronix-test-suite detailed-system-info > ~/sysinfo.txt
 #phoronix-test-suite benchmark ebizzy
 #phoronix-test-suite benchmark stockfish
 
+#sudo hostname ubuntu-alcatel
+#sudo nano /etc/hosts

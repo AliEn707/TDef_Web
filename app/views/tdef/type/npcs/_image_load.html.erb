@@ -1,0 +1,12 @@
+<%= form_for Image.new, url: upload_image_path, :html => { :multipart => true }, :remote => true do |f| %>
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <div class="field">
+    <%= f.file_field :file %>
+    <%= f.hidden_field :imageable_id, value:  @tdef_type_npc.id if @tdef_type_npc.id%>
+    <%= f.hidden_field :imageable_type, value:  @tdef_type_npc.class.name%>
+    <% #add width and height %>
+  </div>
+  <div class="actions">
+    <%= f.submit t(:image_upload)%>
+  </div>
+<% end %>

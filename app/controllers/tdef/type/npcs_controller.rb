@@ -31,7 +31,7 @@ class Tdef::Type::NpcsController < ApplicationController
 
     respond_to do |format|
       if @tdef_type_npc.save
-        format.html { redirect_to @tdef_type_npc, notice: 'Npc was successfully created.' }
+        format.html { redirect_to edit_tdef_type_npc_path(@tdef_type_npc), notice: 'Npc was successfully created.' }
       else
         format.html { render action: 'new' }
       end
@@ -70,6 +70,6 @@ class Tdef::Type::NpcsController < ApplicationController
 	end
     # Never trust parameters from the scary internet, only allow the white list through.
     def tdef_type_npc_params
-      params.require(:tdef_type_npc).permit(:textures=>params[:tdef_type_npc][:textures].try(:keys),:params=>params[:tdef_type_npc][:params].try(:keys))
+      params.require(:tdef_type_npc).permit(:params=>params[:tdef_type_npc][:params].try(:keys))
     end
 end

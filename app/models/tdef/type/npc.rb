@@ -24,6 +24,8 @@ class Tdef::Type::Npc < ActiveRecord::Base
 				end<<k1
 			end
 			
+	TEXTURE_PARAMS=["frames","height","width"]
+	
 	private
 	
 	def aload

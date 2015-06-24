@@ -23,6 +23,7 @@ class TypeTexturesContainer
 	end
 	
 	def attr(a,b,c=nil)
+		return if !@ids[a]
 		if (c)
 			@ids[a][b]=c
 		else

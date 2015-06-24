@@ -23,8 +23,15 @@ Types={}
 
 
 Types.move_map=function (){
+	var style=window.getComputedStyle(Types.cnv)
+	style={width: parseInt(style.width),height: parseInt(style.height)}
 	var length=Math.sqrt(Types.direction.x*Types.direction.x+Types.direction.y*Types.direction.y)
-	var shift=Types.shift*(Types.cnv.height+Types.shift)/Types.background.width;
+	var scale=(style.width)/Types.background.width;
+	var shift=Types.shift*scale;
+	var size={width:Types.background.width*scale,height:Types.background.height*scale}
+	
+	Types.cnv.width=style.width
+	Types.cnv.height=style.height
 //	console.log(Types.position)
 	if (length){
 		Types.position.x+=Types.direction.x*Types.speed*shift/20/length;
@@ -38,10 +45,10 @@ Types.move_map=function (){
 		Types.position.y=0;
 	if (Types.position.y<0)
 		Types.position.y=shift;
-	Types.ctx.drawImage(Types.background,Types.position.x-shift,Types.position.y-shift,Types.cnv.height+shift,Types.cnv.width+shift)
+	Types.ctx.drawImage(Types.background,Types.position.x-shift,Types.position.y-shift,size.height+shift,size.width+shift)
 }
 
 
 Types.setSpeed= function (s){
-	types.speed=s;
+	Types.speed=s;
 }

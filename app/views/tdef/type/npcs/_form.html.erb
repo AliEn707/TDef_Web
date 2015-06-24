@@ -1,38 +1,59 @@
-
-<%= simple_form_for(@tdef_type_npc) do |f| %>
-	<%= f.error_notification %>
-	<div class="form-group">
-		<%= f.simple_fields_for :params do |params_form|%>
-			<%params_not=params-@tdef_type_npc.params.keys%>
-			<% (@tdef_type_npc.params.keys-params_not).each do |k|%>
-				<%=f.label k, t(k)%>
-				<%=params_form.input_field k, value:@tdef_type_npc.params[k]%>
-			<%end%>
-			<% (params_not).each do |k|%>
-				<%=f.label k, t("types."+k)%>
-				<%=params_form.input_field k%>
-			<%end%>
-		<%end%>
-	</div>
-	<% if (@tdef_type_npc.id) then%>
-		<canvas width=300 height=300 id='canvas'></canvas>
-	<%end%>
-	
-  <div class="form-actions">
-    <%= f.button :submit %>
-  </div>
+<%= form_for(@tdef_type_npc) do |f| %>
+	<%@f=f %>
 <% end %>
+	<table>
+		<tr>
+			<td>
+				<div class="uk-grid">
+					<%= @f.fields_for :params do |params_form|%>
+						<%params_not=params-@tdef_type_npc.params.keys%>
+						<% ((@tdef_type_npc.params.keys-params_not)+params_not).each do |k|%>
+							<div class="<%= grid_class(@tdef_type_npc.id) %>">
+								<%=params_form.label k, t("types."+k)%>
+								<%=params_form.text_field k, value: @tdef_type_npc.params[k], form:  @f.options[:html][:id]%>
+							</div>
+						<%end%>
+					<%end%>
+				</div>
+			</td>
+			<% if (@tdef_type_npc.id) then%>
+				<td width="30%" align="center">
+					<canvas class="canvas canvas-middle canvas-large canvas-xlarge canvas-xxlarge" id='canvas'></canvas>
+					<%= render "image_load"%>
+				</td>
+				<td width="30%">
+					<ul class="nav nav-pills">
+						<%textures.each_with_index do |t,i|%>
+							<li <%="class=active" if i==0 %> id="li_<%=i%>">
+								<%=link_to  t("types."+t),"#", onclick: "switch_texture(this)",value:i, type:t%>
+							</li>
+						<%end%>
+					</ul>
+					<div align="center">
+						<%=@f.fields_for :textures do |textures_form|%>
+							<%textures.each_with_index do |t,i|%>
+								<div <%= "hidden" if i!=0%> id="div_<%=i%>">
+									<%=textures_form.fields_for t do |form|%>
+										<%texture_params.each do |tp|%>
+											<%= form.label tp, t("types."+tp)%>
+											<%= form.text_field tp, value: @tdef_type_npc.textures.attr(t,tp) , form:  @f.options[:html][:id]%>
+										<%end%>
+									<%end%>
+								</div>
+							<%end%>							
+						<%end%>
+					</div>
+				</td>
+			<%end%>
+		</tr>
+	</table>
 
-<script>
-	Types.cnv=document.getElementById('canvas');
-	Types.ctx = Types.cnv.getContext('2d');
-	Types.shift=30;
-	Types.background= Types.canvas_init(Types.shift);
-	Types.speed=0;
-	Types.position={x:0,y:0}
-	Types.direction={x:0,y:0}
-	setInterval(Types.move_map,100/2)
-	document.getElementById("tdef_type_npc_params_speed").setAttribute("onchange","Types.setSpeed(this.value)")
-</script>
+<div class="form-actions">
+	<%= button_tag :submit, form: @f.options[:html][:id]%>
+</div>
+
+<style>
+
+</style>
 
 <%= javascript_include_tag "types_npc", :cache => true %>
