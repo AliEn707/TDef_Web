@@ -33,7 +33,7 @@ Types.move_map=function (){
 	var scale=(style.width)/Types.background.width;
 	var shift=Types.shift*scale;
 	var size={width:Types.background.width*scale,height:Types.background.height*scale}
-	var speed=Types.speed//need to set speed multiplier
+	var speed=Types.speed*Types.lines/2//node map containe 4 nodes
 	Types.cnv.width=style.width
 	Types.cnv.height=style.height
 //	console.log(Types.position)

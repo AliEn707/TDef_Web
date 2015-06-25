@@ -1,6 +1,5 @@
 class Tdef::Type::NpcsController < ApplicationController
   before_action :set_tdef_type_npc, only: [:show, :edit, :update, :destroy]
-  before_action :remove_textures, only: [:show, :edit]
   before_action :authenticate_user!
   before_action :is_admin?
 
@@ -75,6 +74,7 @@ class Tdef::Type::NpcsController < ApplicationController
 			@tdef_type_npc.textures.remove(k1)  if @tdef_type_npc.textures[k1]
 		end
 	end
+	#remove textures that is not used
 	Image.where(imageable: @tdef_type_npc).each {|i| i.destroy if (!images.include?(i.id)) }
     end
 
@@ -83,10 +83,7 @@ class Tdef::Type::NpcsController < ApplicationController
       @tdef_type_npc = Tdef::Type::Npc.find(params[:id])
     end
     
-	def remove_textures
-		@tdef_type_npc.params.delete("textures")
-	end
-    # Never trust parameters from the scary internet, only allow the white list through.
+   # Never trust parameters from the scary internet, only allow the white list through.
     def tdef_type_npc_params
       params.require(:tdef_type_npc).permit(:params=>params[:tdef_type_npc][:params].try(:keys))
     end
