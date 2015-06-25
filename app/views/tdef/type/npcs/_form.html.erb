@@ -38,6 +38,13 @@
 											<%= form.label tp, t("types."+tp)%>
 											<%= form.text_field tp, value: @tdef_type_npc.textures.attr(t,tp) , form:  @f.options[:html][:id]%>
 										<%end%>
+										<% if (@tdef_type_npc.textures[t]) then%>
+											<%=form.hidden_field :img, value: @tdef_type_npc.textures[t].id,id: "img_#{i}", form:  @f.options[:html][:id]%>
+											<script>
+												Types.images[<%=i%>]=new Image;
+												Types.images[<%=i%>].src="<%=@tdef_type_npc.textures[t].url%>"
+											</script>
+										<%end%>
 									<%end%>
 								</div>
 							<%end%>							
@@ -52,8 +59,8 @@
 	<%= button_tag :submit, form: @f.options[:html][:id]%>
 </div>
 
-<style>
-
-</style>
+<script>
+var form="<%=@f.options[:html][:id]%>"
+</script>
 
 <%= javascript_include_tag "types_npc", :cache => true %>

@@ -32,6 +32,7 @@ class TypeTexturesContainer
 	end
 	
 	def remove(a)
+		return if !@ids[a]
 		load(a) if !@data[a] 
 		@data[a].destroy
 		clear(a)
@@ -39,10 +40,6 @@ class TypeTexturesContainer
 	
 	def clean!
 		keys.each {|k| delete(k)}
-	end
-	
-	def to_json
-		@ids.to_json
 	end
 	
 	def keys
@@ -53,12 +50,21 @@ class TypeTexturesContainer
 		out=@ids.dup
 		out.each do |k,v| 
 			out[k]["src"]=self[k].url
-			out[k].delete(:img)
+			out[k].delete("img")
 		end
 	end
 	
+	def to_json
+		@ids.to_json
+	end
+	
 	def self.from_json(data)
+		new.from_json(data)
+	end
+	
+	def from_json(data)
 		@ids=JSON.load(data)
+		self
 	end
 	
 	private
@@ -69,6 +75,6 @@ class TypeTexturesContainer
 	end
 	
 	def load(a)
-		@data[a]=Image.where(id:@ids[a][:img]).first if @ids[a]
+		@data[a]=Image.where(id:@ids[a]["img"]).first if @ids[a]
 	end
 end

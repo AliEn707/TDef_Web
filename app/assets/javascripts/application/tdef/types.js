@@ -1,6 +1,10 @@
 Types={}
- Types.canvas_init =function (shift){
-	var lines=15
+Types.fps=20;
+Types.lines=12;	
+Types.images={};
+
+Types.canvas_init =function (shift){
+	var lines=Types.lines
 	cnv=document.createElement('canvas');
 	cnv.height=shift*lines;
 	cnv.width=shift*lines;
@@ -29,13 +33,13 @@ Types.move_map=function (){
 	var scale=(style.width)/Types.background.width;
 	var shift=Types.shift*scale;
 	var size={width:Types.background.width*scale,height:Types.background.height*scale}
-	
+	var speed=Types.speed//need to set speed multiplier
 	Types.cnv.width=style.width
 	Types.cnv.height=style.height
 //	console.log(Types.position)
 	if (length){
-		Types.position.x+=Types.direction.x*Types.speed*shift/20/length;
-		Types.position.y+=Types.direction.y*Types.speed*shift/20/length;
+		Types.position.x+=Types.direction.x*speed*shift/Types.fps/length;
+		Types.position.y+=Types.direction.y*speed*shift/Types.fps/length;
 	}
 	if (Types.position.x<0)
 		Types.position.x=shift;
