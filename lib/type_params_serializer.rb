@@ -4,7 +4,7 @@ class TypeParamsSerializer
 		out={}
 		value.split("\n").each do |l|
 			k,v=l.split(" ") 
-			out[k]=v
+			out[k]=(!v[/[\+\-]?\d+(\.\d+)?/].nil?) ? (v["."].nil? ? v.to_i : v.to_f) : v
 		end if value
 		return out
 	end
@@ -13,7 +13,7 @@ class TypeParamsSerializer
 	def self.dump(value)
 		out=[]
 		value.each do |k,v|
-			out<<"#{k} #{v}\n" if k!="textures"
+			out<<"#{k} #{v}\n" if (k!="textures" && v!="")
 		end
 		return out.join
 	end

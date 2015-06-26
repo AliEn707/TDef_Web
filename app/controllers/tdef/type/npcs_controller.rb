@@ -27,7 +27,7 @@ class Tdef::Type::NpcsController < ApplicationController
   # POST /tdef/type/npcs.json
   def create
 	@tdef_type_npc = Tdef::Type::Npc.new(tdef_type_npc_params)
-	set_textures
+	@tdef_type_npc.set_textures(params[:tdef_type_npc]["textures"])
     respond_to do |format|
       if @tdef_type_npc.save
 		format.html { redirect_to edit_tdef_type_npc_path(@tdef_type_npc), notice: 'Npc was successfully created.' }
@@ -40,7 +40,7 @@ class Tdef::Type::NpcsController < ApplicationController
   # PATCH/PUT /tdef/type/npcs/1
   # PATCH/PUT /tdef/type/npcs/1.json
   def update
-    set_textures
+    @tdef_type_npc.set_textures(params[:tdef_type_npc]["textures"])
     respond_to do |format|
       if @tdef_type_npc.update(tdef_type_npc_params)
         format.html { redirect_to @tdef_type_npc, notice: 'Npc was successfully updated.' }
@@ -59,24 +59,18 @@ class Tdef::Type::NpcsController < ApplicationController
     end
   end
 
-  private
-    def set_textures
-	images=[]
-	params[:tdef_type_npc]["textures"].each do |k1,v1|
-		if (!v1["img"].blank?) then
-			@tdef_type_npc.textures.remove(k1) if (@tdef_type_npc.textures[k1] && @tdef_type_npc.textures[k1].id!=v1["img"].to_i)
-			@tdef_type_npc.textures[k1]=Image.find(v1["img"]) if (!@tdef_type_npc.textures[k1])
-			images<<v1["img"].to_i
-			v1.each do |k2,v2|
-				@tdef_type_npc.textures.attr(k1,k2,v2) if (k2!="img" && !v2.blank?)
-			end
-		else
-			@tdef_type_npc.textures.remove(k1)  if @tdef_type_npc.textures[k1]
+  def types
+	data="var npc_types="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
+		out={}
+		Tdef::Type::Npc.all.each do |t|
+			out[t.id]={"id"=>t.id}.merge(t.params)
+			out[t.id]["textures"]=t.textures.to_hash
 		end
+		out.to_json
 	end
-	#remove textures that is not used
-	Image.where(imageable: @tdef_type_npc).each {|i| i.destroy if (!images.include?(i.id)) }
-    end
+	render :text=> data, layout: false
+  end
+  private
 
     # Use callbacks to share common setup or constraints between actions.
     def set_tdef_type_npc

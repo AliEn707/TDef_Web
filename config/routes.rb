@@ -48,8 +48,11 @@ TDefWeb::Application.routes.draw do
 	get "/TDef/map/textures" => "tdef/map#textures", as: "tdef_map_textures"
 	get "/TDef/map/show_all" => "tdef/map#show_all", as: "tdef_map_all"
 	get "/TDef/map/delete/:id" => "tdef/map#delete", as: "tdef_map_delete"
+	#map rout for ajax load
 	get "/TDef/map/get" => "tdef/map#get", as: "tdef_map_get"
-
+	#types routes for js load
+	get "/TDef/types/npc" => "tdef/type/npcs#types", as: "types_npc"
+	#main game rout
 	get "/TDef/game" => "tdef/game#game", as: "tdef_game"
 	
 	root "posts#index"

@@ -7,7 +7,8 @@ class Tdef::Type::Npc < ActiveRecord::Base
 	after_initialize :aload
 	before_destroy :clean
 	
-	PARAMS=["health",
+	PARAMS=["name",
+			"health",
 			"speed",
 			"damage",
 			"shield",
@@ -25,6 +26,25 @@ class Tdef::Type::Npc < ActiveRecord::Base
 			end
 			
 	TEXTURE_PARAMS=["frames","height","width"]
+
+	def set_textures(t)
+		return if !t
+		images=[]
+		t.each do |k1,v1|
+			if (!v1["img"].blank?) then
+				self.textures.remove(k1) if (self.textures[k1] && self.textures[k1].id!=v1["img"].to_i)
+				self.textures[k1]=Image.find(v1["img"]) if (!self.textures[k1])
+				images<<v1["img"].to_i
+				v1.each do |k2,v2|
+					self.textures.attr(k1,k2,(!v2[/[\+\-]?\d+(\.\d+)?/].nil?) ? (v2["."].nil? ? v2.to_i : v2.to_f) : v2) if (k2!="img" && !v2.blank?)
+				end
+			else
+				self.textures.remove(k1)  if self.textures[k1]
+			end
+		end
+		#remove textures that is not used
+		Image.where(imageable: self).each {|i| i.destroy if (!images.include?(i.id)) }
+	end
 	
 	private
 	

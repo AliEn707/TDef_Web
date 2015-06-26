@@ -1,4 +1,5 @@
 class TypeTexturesContainer
+	attr_accessor :ids
 	def initialize
 		@data={}
 		@ids={}
@@ -24,8 +25,12 @@ class TypeTexturesContainer
 	
 	def attr(a,b,c=nil)
 		return if !@ids[a]
-		if (c)
-			@ids[a][b]=c
+		if (c) then
+			if (c=="") then
+				@ids[a].delete(b)
+			else
+				@ids[a][b]=c
+			end
 		else
 			@ids[a][b]
 		end
@@ -55,6 +60,7 @@ class TypeTexturesContainer
 	end
 	
 	def to_json
+		@ids.each{|k,v| @ids.delete(k) if v.nil?}
 		@ids.to_json
 	end
 	
@@ -63,7 +69,7 @@ class TypeTexturesContainer
 	end
 	
 	def from_json(data)
-		@ids=JSON.load(data)
+		@ids=JSON.load(data) || {}
 		self
 	end
 	

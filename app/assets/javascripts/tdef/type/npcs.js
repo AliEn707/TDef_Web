@@ -54,11 +54,12 @@ var current_texture_name="idle_up";
 
 function switch_texture(obj){
 	var current=obj.getAttribute("value");
-	document.getElementById("div_"+current).removeAttribute("hidden");
-	document.getElementById("li_"+current).setAttribute("class","active");
 	
 	document.getElementById("div_"+current_texture).setAttribute("hidden","");
 	document.getElementById("li_"+current_texture).removeAttribute("class");
+	
+	document.getElementById("div_"+current).removeAttribute("hidden");
+	document.getElementById("li_"+current).setAttribute("class","active");
 	
 	current_texture=current;
 	
