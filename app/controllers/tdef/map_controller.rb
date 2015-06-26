@@ -73,8 +73,8 @@ class Tdef::MapController < ApplicationController
 	end
 	
 	def get
-		data={}
 		out=Rails.cache.fetch('TDef_map_'+params["name"].to_s,expires_in: 10.minutes) do
+			data={}
 			map=Tdef::Map.where(name: params["name"]).first
 			data["mp"]=map.data
 			data["mg"]=map.grafics
