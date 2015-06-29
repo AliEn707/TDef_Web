@@ -1,0 +1,11 @@
+<p>
+	<div>
+		<strong><%= t("types.id") %>:</strong> <%= @tdef_type_tower.id %>
+		<% @tdef_type_tower.params.each do |k,p| %>
+			<strong><%=t("types."+k) %>:</strong> <%= p %>
+		<% end %>
+	</div>
+</p>
+
+<%= link_to 'Edit', edit_tdef_type_tower_path(@tdef_type_tower) %> |
+<%= link_to 'Back', tdef_type_towers_path %>

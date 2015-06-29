@@ -1,0 +1,34 @@
+<h1>Listing tdef_type_towers</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Params</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tdef_type_towers.each do |tdef_type_tower| %>
+      <tr>
+        <td>
+		<div>
+			<strong><%= t("types.id") %>:</strong> <%= tdef_type_tower.id %>
+			<% tdef_type_tower.params.each do |k,p| %>
+				<strong><%= t("types."+k) %>:</strong> <%= p %>
+			<% end %>
+		</div>
+	</td>
+        <td><%= link_to 'Show', tdef_type_tower %></td>
+        <td><%= link_to 'Edit', edit_tdef_type_tower_path(tdef_type_tower) %></td>
+        <td><%= link_to 'Destroy', tdef_type_tower, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New tower', new_tdef_type_tower_path %>

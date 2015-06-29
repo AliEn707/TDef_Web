@@ -1,0 +1,67 @@
+<%= form_for(@tdef_type_tower) do |f| %>
+	<%@f=f %>
+<% end %>
+	<table>
+		<tr>
+			<td>
+				<div class="uk-grid">
+					<%= @f.fields_for :params do |params_form|%>
+						<%params_not=params-@tdef_type_tower.params.keys%>
+						<% ((@tdef_type_tower.params.keys-params_not)+params_not).each do |k|%>
+							<div class="<%= grid_class(@tdef_type_tower.id) %>">
+								<%=params_form.label k, t("types."+k)%>
+								<%=params_form.text_field k, value: @tdef_type_tower.params[k], form:  @f.options[:html][:id]%>
+							</div>
+						<%end%>
+					<%end%>
+				</div>
+			</td>
+			<% if (@tdef_type_tower.id) then%>
+				<td width="30%" align="center">
+					<canvas class="canvas canvas-middle canvas-large canvas-xlarge canvas-xxlarge" id='canvas'></canvas>
+					<div id="image_size"></div>
+					<%= render "image_load"%>
+				</td>
+				<td width="30%">
+					<ul class="nav nav-pills">
+						<%textures.each_with_index do |t,i|%>
+							<li <%="class=active" if i==0 %> id="li_<%=i%>">
+								<%=link_to  t("types."+t),"#", onclick: "switch_texture(this)",value:i, type:t%>
+							</li>
+						<%end%>
+					</ul>
+					<div align="center">
+						<%=@f.fields_for :textures do |textures_form|%>
+							<%textures.each_with_index do |t,i|%>
+								<div <%= "hidden" if i!=0%> id="div_<%=i%>">
+									<%=textures_form.fields_for t do |form|%>
+										<%texture_params.each do |tp|%>
+											<%= form.label tp, t("types."+tp)%>
+											<%= form.text_field tp, value: @tdef_type_tower.textures.attr(t,tp) , form:  @f.options[:html][:id]%>
+										<%end%>
+										<% if (@tdef_type_tower.textures[t]) then%>
+											<%=form.hidden_field :img, value: @tdef_type_tower.textures[t].id,id: "img_#{i}", form:  @f.options[:html][:id]%>
+											<script>
+												Types.images[<%=i%>]=new Image;
+												Types.images[<%=i%>].src="<%=@tdef_type_tower.textures[t].url%>"
+											</script>
+										<%end%>
+									<%end%>
+								</div>
+							<%end%>							
+						<%end%>
+					</div>
+				</td>
+			<%end%>
+		</tr>
+	</table>
+
+<div class="form-actions">
+	<%= button_tag :submit, form: @f.options[:html][:id]%>
+</div>
+
+<script>
+var form="<%=@f.options[:html][:id]%>"
+</script>
+
+<%= javascript_include_tag "types_tower", :cache => true %>

@@ -2,6 +2,7 @@ TDefWeb::Application.routes.draw do
   namespace :tdef do
     namespace :type do
       resources :npcs
+      resources :towers
     end
   end
 
@@ -52,6 +53,7 @@ TDefWeb::Application.routes.draw do
 	get "/TDef/map/get" => "tdef/map#get", as: "tdef_map_get"
 	#types routes for js load
 	get "/TDef/types/npc" => "tdef/type/npcs#types", as: "types_npc"
+	get "/TDef/types/tower" => "tdef/type/towers#types", as: "types_tower"
 	#main game rout
 	get "/TDef/game" => "tdef/game#game", as: "tdef_game"
 	
