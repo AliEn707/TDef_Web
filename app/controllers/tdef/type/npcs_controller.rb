@@ -1,5 +1,5 @@
 class Tdef::Type::NpcsController < ApplicationController
-  before_action :set_tdef_type_npc, only: [:show, :edit, :update, :destroy]
+  before_action :set_tdef_type_npc,  except: [:types]
   before_action :authenticate_user!
   before_action :is_admin?
 

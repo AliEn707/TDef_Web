@@ -55,7 +55,7 @@ end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
-
+#gem 'to_xls-rails'
 
 # Use Capistrano for deployment
 #group :development do
