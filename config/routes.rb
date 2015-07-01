@@ -52,10 +52,12 @@ TDefWeb::Application.routes.draw do
 	#map rout for ajax load
 	get "/TDef/map/get" => "tdef/map#get", as: "tdef_map_get"
 	#types routes for js load
-	get "/TDef/types/npc" => "tdef/type/npcs#types", as: "types_npc"
-	get "/TDef/types/tower" => "tdef/type/towers#types", as: "types_tower"
+	get "/TDef/types/npc" => "tdef/type/npcs#types", as: "tdef_types_npc"
+	get "/TDef/types/tower" => "tdef/type/towers#types", as: "tdef_types_tower"
 	#main game rout
 	get "/TDef/game" => "tdef/game#game", as: "tdef_game"
+	#game access data for js load => /TDef/game_access.js?#{timestamp}
+	get "/TDef/game_access" => "tdef/game#access", as: "tdef_access"
 	
 	root "posts#index"
 	# You can have the root of your site routed with "root"

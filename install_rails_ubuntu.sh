@@ -1,3 +1,4 @@
+set -e #magic
 echo "GRUB_RECORDFAIL_TIMEOUT=2" | sudo tee -a /etc/default/grub && sudo update-grub
 
 sudo rm /var/lib/apt/lists/* -vf 
