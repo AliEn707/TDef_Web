@@ -1,6 +1,6 @@
 class Tdef::Type::TowersController < ApplicationController
-  before_action :set_tdef_type_tower,  except: [:types]
-  before_action :authenticate_user!
+  before_action :set_tdef_type_npc, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!,  except: [:types]
   before_action :is_admin?
 
   # GET /tdef/type/towers
