@@ -34,6 +34,13 @@
 		<%= favicon_link_tag 'favicon.ico', :rel => 'shortcut icon' %>
 	</head>
 	<body>
+	<%for_admin do%>
+	<style>
+		.translation_missing{
+			color: #ff0000;
+		}  
+	</style>
+	<%end%>
 	<%cache(cache_lang_admin) do %>
 		<div class="navbar navbar-inverse navbar-static-top">
 			<div class="navbar-inner">

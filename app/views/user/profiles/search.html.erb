@@ -1,0 +1,15 @@
+<table>
+	<%@user_profiles.each do |user_profile|%>
+		<tr>
+			<td>
+				<%=user_profile.properties.inspect%>
+			</td>			
+			<td>
+				<%=user_profile.birthday%>
+			</td>
+			<td>
+				actions
+			</td>						
+		</tr>
+	<%end%>
+</table>

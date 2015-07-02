@@ -2,17 +2,18 @@ TDefWeb::Application.routes.draw do
 	namespace :user do
 		resources :profiles
 	end
-	
-  namespace :tdef do
-    namespace :type do
-      resources :npcs
-      resources :towers
-    end
-  end
+	get "search" => "user/profiles#find", as: "search"
+	post "search" => "user/profiles#search"
+	namespace :tdef do
+		namespace :type do
+			resources :npcs
+			resources :towers
+		end
+	end
 
-  namespace :post do
-    resources :translations
-  end
+	namespace :post do
+		resources :translations
+	end
 	resources :posts
 	#for ajax calls
 	get "/post/translation/:id" => "post/translations#post"

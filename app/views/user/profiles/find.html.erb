@@ -1,0 +1,22 @@
+<%= form_tag search_path, :method => 'post', :id => "search" do %>
+	<%= text_field_tag :string, nil, onchange: "search()" %>
+<% end %>
+<%= button_tag t("search"), onclick: "search()"%>
+<div id="div_search"></div>
+
+
+<script>
+function search(){
+	var formData = new FormData(document.getElementById("search"));
+	//formData.append("patronym", "??????????");
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", '<%=search_path%>');
+	
+	xhr.onreadystatechange = function() {
+		if (this.readyState != 4) return;
+		document.getElementById("div_search").innerHTML= this.responseText;
+	}
+	xhr.send(formData);
+}
+</script>

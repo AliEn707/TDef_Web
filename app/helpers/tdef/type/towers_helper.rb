@@ -1,13 +1,13 @@
 module Tdef::Type::TowersHelper
-	def textures
+	def type_textures
 		Tdef::Type::Tower::TEXTURES
 	end
 	
-	def texture_params
+	def type_texture_params
 		Tdef::Type::Tower::TEXTURE_PARAMS
 	end
 	
-	def params
+	def type_params
 		Tdef::Type::Tower::PARAMS
 	end
 	

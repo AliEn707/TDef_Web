@@ -28,6 +28,7 @@ module ApplicationHelper
 				]
 			social=[{'name'=>t(:social)},
 					{'name'=>t(:profile),'path'=>user_profile_path(current_user.profile)},
+#					{'name'=>t(:search),'path'=>search_path},
 					{'name'=>t(:friends),'path'=>friends_path},
 					{'name'=>t(:messages),'path'=>messages_path},
 					{'name'=>t(:news),'path'=>posts_path}]
@@ -38,6 +39,7 @@ module ApplicationHelper
 					{'name'=>t(:servers),'path'=>tdef_server_all_path},
 					{'name'=>t(:locales),'path'=>tdef_locales_all_path},
 					{'name'=>t(:npc_types),'path'=>tdef_type_npcs_path},
+					{'name'=>t(:tower_types),'path'=>tdef_type_towers_path},
 					{'name'=>t(:flash_test),'path'=>"/ExternalInterfaceExample.html"},
 					{'name'=>t(:audio_test),'path'=>"/audiotest.html"}
 				]

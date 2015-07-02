@@ -58,9 +58,14 @@ class User::ProfilesController < ApplicationController
 			format.html { redirect_to user_profiles_url }
 		end
 	end
-
+	
+	def find
+		
+	end
+	
 	def search
 		@user_profiles=User::Profile.where(User::Profile.arel_table[:properties].matches("%#{params[:string]}%"))
+		render layout: false
 	end
 	private
 	# Use callbacks to share common setup or constraints between actions.
