@@ -1,4 +1,8 @@
 TDefWeb::Application.routes.draw do
+	namespace :user do
+		resources :profiles
+	end
+	
   namespace :tdef do
     namespace :type do
       resources :npcs

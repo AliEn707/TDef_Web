@@ -1,0 +1,16 @@
+<%= simple_form_for(@user_profile) do |f| %>
+  <div class="form-inputs">
+    <%= f.simple_fields_for :properties do |field| %>
+	<%User::Profile::PROPERTIES.each do |p|%>
+		<%= field.label p, t("profile."+p)%>
+		<%= field.text_field p,  value:@user_profile.properties[p]%>
+	<%end%>
+  <%end%>
+  <%= f.input :birthday%>
+  <%= f.input :user_id ,as: "hidden"%>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

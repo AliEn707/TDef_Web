@@ -19,6 +19,10 @@ class User < ActiveRecord::Base
 	has_many :friends_in, :through => :inverse_friendships, :source => :user
 	
 	has_many :news, class_name: "Post"
+	
+	has_one :profile
+	
+	after_create :add_profile
 	def friends
 #		User.where(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
 		friends_in.where(id: friendships.select(:friend_id))
@@ -35,12 +39,8 @@ class User < ActiveRecord::Base
 #		User.where.not(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
 	end
 	
-	def create
-		User.create(user_params)
-	end
-	
-	def use_params
-		params.require(:user).permit(:email, :password, :password_confirmation, :remember_me,:confirmed_at,:admin)
+	def add_profile
+		self.profile=User::Profile.create(user: self)
 	end
 =begin	
 	 def self.serialize_from_session(key, salt)

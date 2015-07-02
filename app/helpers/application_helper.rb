@@ -27,9 +27,10 @@ module ApplicationHelper
 					{'name'=>t(:game),'path'=>tdef_game_path},
 				]
 			social=[{'name'=>t(:social)},
-					{'name'=>t(:news),'path'=>posts_path},
+					{'name'=>t(:profile),'path'=>user_profile_path(current_user.profile)},
 					{'name'=>t(:friends),'path'=>friends_path},
-					{'name'=>t(:messages),'path'=>messages_path}]
+					{'name'=>t(:messages),'path'=>messages_path},
+					{'name'=>t(:news),'path'=>posts_path}]
 			if (current_user.admin) then
 				tdef+=[
 					{'name'=>t(:map_editor),'path'=>tdef_map_edit_path},

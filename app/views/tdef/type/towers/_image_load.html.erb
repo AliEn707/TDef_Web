@@ -7,6 +7,6 @@
     <% #add width and height %>
   </div>
   <div class="actions">
-    <%= f.submit t(:image_upload)%>
+    <%= f.submit t(:image_upload), onclick: "proceedUploadedFile=Types.proceed_uploaded_texture"%>
   </div>
 <% end %>
