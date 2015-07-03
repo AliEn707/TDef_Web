@@ -20,39 +20,39 @@ module ApplicationHelper
 	def menu 
 		a=[]
 		if !current_user.nil?
-			a<<[{'name'=>current_user.email.to_s,'right'=>true},
-					{'name'=>t(:edit_registration),'path' => edit_user_registration_path},
-					{'name'=>t(:sign_out),'path'=>destroy_user_session_path,:method => :delete}]
-			tdef=[{'name'=>t(:tdef)},
-					{'name'=>t(:game),'path'=>tdef_game_path},
+			a<<[{'name'=>current_user.email.to_s,'right'=>true, 'noprefix'=> true},
+					{'name'=>(:edit_registration),'path' => edit_user_registration_path},
+					{'name'=>(:sign_out),'path'=>destroy_user_session_path,:method => :delete}]
+			tdef=[{'name'=>(:tdef)},
+					{'name'=>(:game),'path'=>tdef_game_path},
 				]
-			social=[{'name'=>t(:social)},
-					{'name'=>t(:profile),'path'=>user_profile_path(current_user.profile)},
-#					{'name'=>t(:search),'path'=>search_path},
-					{'name'=>t(:friends),'path'=>friends_path},
-					{'name'=>t(:messages),'path'=>messages_path},
-					{'name'=>t(:news),'path'=>posts_path}]
+			social=[{'name'=>(:social)},
+					{'name'=>(:profile),'path'=>user_profile_path(current_user.profile)},
+					{'name'=>(:search),'path'=>search_path},
+					{'name'=>(:friends),'path'=>friends_path},
+					{'name'=>(:messages),'path'=>messages_path},
+					{'name'=>(:news),'path'=>posts_path}]
 			if (current_user.admin) then
 				tdef+=[
-					{'name'=>t(:map_editor),'path'=>tdef_map_edit_path},
-					{'name'=>t(:maps),'path'=>tdef_map_all_path},
-					{'name'=>t(:servers),'path'=>tdef_server_all_path},
-					{'name'=>t(:locales),'path'=>tdef_locales_all_path},
-					{'name'=>t(:npc_types),'path'=>tdef_type_npcs_path},
-					{'name'=>t(:tower_types),'path'=>tdef_type_towers_path},
-					{'name'=>t(:flash_test),'path'=>"/ExternalInterfaceExample.html"},
-					{'name'=>t(:audio_test),'path'=>"/audiotest.html"}
+					{'name'=>(:map_editor),'path'=>tdef_map_edit_path},
+					{'name'=>(:maps),'path'=>tdef_map_all_path},
+					{'name'=>(:servers),'path'=>tdef_server_all_path},
+					{'name'=>(:locales),'path'=>tdef_locales_all_path},
+					{'name'=>(:npc_types),'path'=>tdef_type_npcs_path},
+					{'name'=>(:tower_types),'path'=>tdef_type_towers_path},
+					{'name'=>(:flash_test),'path'=>"/ExternalInterfaceExample.html"},
+					{'name'=>(:audio_test),'path'=>"/audiotest.html"}
 				]
 			end
 			a<<tdef
 			a<<social
 #			a<<{'name'=>Dir[Rails.root.join('locales', '*.{rb,yml}').to_s],'path'=>'#'}
 		else
-			a<<[{'name'=>t(:sign_in), 'path'=> new_user_session_path, 'show'=>true}]
-			a<<[{'name' => t(:sign_up) , 'path' => new_user_registration_path}]			
+			a<<[{'name'=>(:sign_in), 'path'=> new_user_session_path, 'show'=>true}]
+			a<<[{'name' => (:sign_up) , 'path' => new_user_registration_path}]			
 		end
 		locale=[]
-		locale<<{'name'=>current_locale,'right'=>true, 'show'=>true}
+		locale<<{'name'=>current_locale,'right'=>true, 'show'=>true, 'noprefix'=> true}
 		$available_locales.each do |l_l|
 			locale<<{'name'=>l_l,'path'=>"/locale?locale="+l_l}
 		end
