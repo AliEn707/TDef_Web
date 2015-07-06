@@ -25,7 +25,7 @@ class Tdef::MapServerController < ApplicationController
 					end
 				end
 			end
-			redirect_to tdef_server_all_path
+			redirect_to tdef_mapserver_all_path
 		end
 	end
 	

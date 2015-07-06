@@ -37,9 +37,9 @@ TDefWeb::Application.routes.draw do
 	# The priority is based upon order of creation: first created -> highest priority.
 	# See how all your routes lay out with "rake routes".
 	# root 'welcome#index'
-	get "/TDef/mapservers/show" => "tdef/map_server#show", as: "tdef_server_all"
+	get "/TDef/mapservers/show" => "tdef/map_server#show", as: "tdef_mapserver_all"
 	post "/TDef/mapservers/show" => "tdef/map_server#show"
-	get "/TDef/mapservers/info/:id" => 'tdef/map_server#info' , as: "tdef_server_info"
+	get "/TDef/mapservers/info/:id" => 'tdef/map_server#info' , as: "tdef_mapserver_info"
 
 	get "/TDef/locales/show_all" => "tdef/locales#show_all" , as: "tdef_locales_all"
 	post "/TDef/locales/show_all" => "tdef/locales#show_all"
