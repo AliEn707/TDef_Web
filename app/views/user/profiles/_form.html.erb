@@ -1,16 +1,24 @@
 <%= simple_form_for(@user_profile) do |f| %>
-  <div class="form-inputs">
-    <%= f.simple_fields_for :properties do |field| %>
-	<%User::Profile::PROPERTIES.each do |p|%>
-		<%= field.label p, t("profile."+p)%>
-		<%= field.text_field p,  value:@user_profile.properties[p]%>
-	<%end%>
-  <%end%>
-  <%= f.input :birthday%>
-  <%= f.input :user_id ,as: "hidden"%>
-  </div>
+	<div class="form-inputs">
+		<%= f.simple_fields_for :properties do |field| %>
+			<div>
+				<%= field.label "name", t("profile.name")%>
+				<%= field.text_field "name",  value:@user_profile.properties["name"]%>
+			</div>
+			<div>
+				<%= field.label "surname", t("profile.surname")%>
+				<%= field.text_field "surname",  value:@user_profile.properties["surname"]%>
+			</div>
+			<div>
+				<%= field.label "birthday", t("profile.birthday")%>
+				<%= field.text_field "birthday",  value: @user_profile.properties["birthday"], "data-uk-datepicker"=> "{format:'DD-MM-YYYY'}"%>
+			</div>
+		<% end %>
+		<%= f.input :user_id, as: "hidden" %>			
+		<%= f.input :image %>
+	</div>
 
-  <div class="form-actions">
-    <%= f.button :submit %>
-  </div>
+	<div class="form-actions">
+		<%= f.button :submit %>
+	</div>
 <% end %>

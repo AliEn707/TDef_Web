@@ -3,5 +3,4 @@ class User::Profile < ActiveRecord::Base
 	has_one :image, as: :imageable, dependent: :destroy
 	serialize :properties
 	
-	PROPERTIES=["name","surname"]
 end
