@@ -1,9 +1,7 @@
 <%= javascript_include_tag "html_editor", :cache => true %>
 <%= javascript_include_tag "post_edit", :cache => true %>
 
-<%=render "image_upload"%>
-<input form="new_image" type="hidden" name="image[imageable_id]" value="<%=@post_translation.id%>"></input>
-<input form="new_image" type="hidden" name="image[imageable_type]" value="<%=@post_translation.class.name%>"></input>
+<%=image_loader(@post_translation)%>
 
 <div id="images" overflow="auto">
 	<%@post_translation.images.each do |img|%>

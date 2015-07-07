@@ -1,4 +1,16 @@
+<%= javascript_include_tag "profile_edit", :cache => true %>
+
+<%=image_loader(@user_profile)%>
+<div id="image_div">
+	<% if (@user_profile.image) then %>
+		<%=image_tag(@user_profile.image.url)%>
+		<script>
+			var current_image_id=<%= @user_profile.image.id%>
+		</script>
+	<% end %>
+</div>
 <%= simple_form_for(@user_profile) do |f| %>
+	<div id="old_images"></div>
 	<div class="form-inputs">
 		<%= f.simple_fields_for :properties do |field| %>
 			<div>
@@ -15,7 +27,6 @@
 			</div>
 		<% end %>
 		<%= f.input :user_id, as: "hidden" %>			
-		<%= f.input :image %>
 	</div>
 
 	<div class="form-actions">

@@ -1,5 +1,5 @@
 function proceedUploadedFile(obj){
-	console.log(obj)
+//	console.log(obj)
 	var div=document.createElement("div")
 	div.setAttribute("style","display: inline-block;position:relative;");
 	var img=new Image();

@@ -43,6 +43,7 @@ class User::ProfilesController < ApplicationController
 	# PATCH/PUT /user/profiles/1
 	# PATCH/PUT /user/profiles/1.json
 	def update
+		Image.where(id: params["old_images"]).destroy_all if params["old_images"]
 		respond_to do |format|
 			if @user_profile.update(user_profile_params)
 				format.html { redirect_to @user_profile, notice: 'Profile was successfully updated.' }
@@ -72,7 +73,7 @@ class User::ProfilesController < ApplicationController
 	
 	private
 	def check_owner!
-		redirect_to "/404.html" if (!current_user.admin && current_user.profile.id!=params[:id])
+		redirect_to "/404.html" if (!current_user.admin && current_user.profile.id!=params[:id].to_i)
 	end
 	
 	def profile_check
