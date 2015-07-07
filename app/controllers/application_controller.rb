@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 	protect_from_forgery with: :exception
 	before_action :set_locale
 	before_action :set_timezone
+	before_action :profile_check
 	def not_found
 		raise ActionController::RoutingError.new('Not Found')
 	end
@@ -33,7 +34,16 @@ class ApplicationController < ActionController::Base
 	
 	private
 	
-        def set_timezone
+        def profile_check
+		if (!current_user.nil? && controller_name!="sessions")
+			profile=current_user.profile
+			if (profile.properties=={}) then
+				redirect_to edit_user_profile_path(profile), notice: t(:profile_not_filled)
+			end 
+		end
+	end
+	
+	def set_timezone
 		Time.zone = current_user.time_zone if !current_user.nil?
 	end
 	

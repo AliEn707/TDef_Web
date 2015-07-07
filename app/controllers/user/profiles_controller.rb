@@ -68,6 +68,11 @@ class User::ProfilesController < ApplicationController
 		render layout: false
 	end
 	private
+	
+	def profile_check
+		super if (action_name!="edit" && action_name!="update")
+	end
+	
 	# Use callbacks to share common setup or constraints between actions.
 	def set_user_profile
 		@user_profile = User::Profile.find(params[:id])
@@ -75,6 +80,10 @@ class User::ProfilesController < ApplicationController
 
 	# Never trust parameters from the scary internet, only allow the white list through.
 	def user_profile_params
-		params.require(:user_profile).permit( :user_id, :properties =>params[:user_profile][:properties].try(:keys))
+		params.require(:user_profile).permit( :user_id ).merge(clean_properties)
+	end
+	
+	def clean_properties
+		{properties: params[:user_profile][:properties].each{|k,v| params[:user_profile][:properties].delete(k) if v.blank?}}
 	end
 end
