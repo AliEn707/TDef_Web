@@ -1,5 +1,7 @@
 class User::ProfilesController < ApplicationController
 	before_action :authenticate_user!
+	before_action :is_admin?, only: [:index, :new, :create, :destroy]
+	before_action :check_owner!, only: [:edit, :update]
 	before_action :set_user_profile, only: [:show, :edit, :update, :destroy]
 
 	#User::Profile.where(User::Profile.arel_table[:properties].matches("%#{string}%"))
@@ -65,9 +67,13 @@ class User::ProfilesController < ApplicationController
 	
 	def search
 		@user_profiles=User::Profile.where(User::Profile.arel_table[:properties].matches("%#{params[:string]}%"))
-		render layout: false
+		render 'index', layout: false
 	end
+	
 	private
+	def check_owner!
+		redirect_to "/404.html" if (!current_user.admin && current_user.profile.id!=params[:id])
+	end
 	
 	def profile_check
 		super if (action_name!="edit" && action_name!="update")
@@ -84,6 +90,6 @@ class User::ProfilesController < ApplicationController
 	end
 	
 	def clean_properties
-		{properties: params[:user_profile][:properties].each{|k,v| params[:user_profile][:properties].delete(k) if v.blank?}}
+		{properties: params[:user_profile][:properties].each{|k,v| params[:user_profile][:properties].delete(k) if (v.blank? || !User::Profile::PROPERTIES.include?(k))}}
 	end
 end

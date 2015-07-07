@@ -2,7 +2,7 @@
 <ul>
   <% for user in @user.friends %>
     <li>
-      <%=h user.name %>
+      <%=h user.email %>
       (<%= link_to "remove", friendship_path(user.id), :method => :delete %>)
     </li>
   <% end %>
@@ -13,14 +13,17 @@
 <h2>Friends income</h2>
 <ul>
   <% for user in @user.friends_income %>
-    <li><%=h user.name %></li>
+    <li>
+	<%=h user.email %>
+	<%= link_to "eccept", friendship_path(id: user.id)%>
+    </li>
   <% end %>
 </ul>
 
 <h2>Friends outcome</h2>
 <ul>
   <% for user in @user.friends_outcome %>
-    <li><%=h user.name %></li>
+    <li><%=h user.email %></li>
   <% end %>
 </ul>
 

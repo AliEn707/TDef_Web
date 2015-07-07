@@ -19,7 +19,7 @@ TDefWeb::Application.routes.draw do
 	get "/post/translation/:id" => "post/translations#post"
 	
 	get "friends" => "friendships#show" 
-	post "friendship/:id" => "friendships#create" , as: "friendship" 
+	get "friendship/:id" => "friendships#create" , as: "friendship" 
 	delete "friendship/:id" => "friendships#destroy" 
 
 	get "messages" => "messages#show", as: "messages" 
