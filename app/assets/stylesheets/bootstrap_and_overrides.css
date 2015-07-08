@@ -46,6 +46,11 @@ color: #ffffff;
 text-decoration: none;
 }
 
+.nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
+    color: #FFF;
+    background-color: #222;
+}
+
 .message_in {
     background-color: #fff9cd;
 }

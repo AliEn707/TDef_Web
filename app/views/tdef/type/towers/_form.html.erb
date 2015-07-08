@@ -6,7 +6,7 @@
 			<td>
 				<div class="uk-grid">
 					<%= @f.fields_for :params do |params_form|%>
-						<%params_not=type_params-@tdef_type_tower.params.keys%>
+						<%params_not=tower_type_params-@tdef_type_tower.params.keys%>
 						<% ((@tdef_type_tower.params.keys-params_not)+params_not).each do |k|%>
 							<div class="<%= grid_class(@tdef_type_tower.id) %>">
 								<%=params_form.label k, t("types."+k)%>
@@ -24,7 +24,7 @@
 				</td>
 				<td width="30%">
 					<ul class="nav nav-pills">
-						<%type_textures.each_with_index do |t,i|%>
+						<%tower_type_textures.each_with_index do |t,i|%>
 							<li <%="class=active" if i==0 %> id="li_<%=i%>">
 								<%=link_to  t("types."+t),"#", onclick: "switch_texture(this)",value:i, type:t%>
 							</li>
@@ -32,10 +32,10 @@
 					</ul>
 					<div align="center">
 						<%=@f.fields_for :textures do |textures_form|%>
-							<%type_textures.each_with_index do |t,i|%>
+							<%tower_type_textures.each_with_index do |t,i|%>
 								<div <%= "hidden" if i!=0%> id="div_<%=i%>">
 									<%=textures_form.fields_for t do |form|%>
-										<%type_texture_params.each do |tp|%>
+										<%tower_type_texture_params.each do |tp|%>
 											<%= form.label tp, t("types."+tp)%>
 											<%= form.text_field tp, value: @tdef_type_tower.textures.attr(t,tp) , form:  @f.options[:html][:id]%>
 										<%end%>

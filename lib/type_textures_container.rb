@@ -17,7 +17,7 @@ class TypeTexturesContainer
 		end
 		@data[a]=b
 		if (defined?(b.id))
-			@ids[a]={img: b.id}
+			@ids[a]={"img"=> b.id}
 		else
 			@ids[a]=b
 		end

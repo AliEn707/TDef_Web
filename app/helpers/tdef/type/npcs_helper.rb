@@ -1,13 +1,13 @@
 module Tdef::Type::NpcsHelper
-	def type_textures
+	def npc_type_textures
 		Tdef::Type::Npc::TEXTURES
 	end
 	
-	def type_texture_params
+	def npc_type_texture_params
 		Tdef::Type::Npc::TEXTURE_PARAMS
 	end
 	
-	def type_params
+	def npc_type_params
 		Tdef::Type::Npc::PARAMS
 	end
 	

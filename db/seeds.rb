@@ -52,7 +52,7 @@ if (Friendship.all.size==0) then
 	Friendship.create(user_id: 3,friend_id: 1)
 end
 
-if (Post.all.size==0)
+if (Post.all.size==0) then
 	post=Post.create(user: User.first, title: "work started", description: "Work for this site was started at 2014 year. It is a site for online browser game developed by WSStudio.", lang: "en")
 	Post::Translation.create(post: post, user: User.last, title: "работа начата", description: "Работа по созданию этого проекта была начата в 2014 году. Этот сайт для онлайн браузерной игры разработан WSStudio.", lang: "ru")
 end
@@ -60,4 +60,62 @@ end
 #u.confirm!
 #u.save
 
+if (Tdef::Type::Npc.all.size==0) then
+	data=""
+	2.times do |i|
+		npc=Tdef::Type::Npc.new(id: i,params: {"health"=> 100, "damage"=> 2, "shield"=> 0, "support"=> 0, "see_distanse"=> 4, "attack_distanse"=> 2, "attack_speed"=> 4, "move_speed"=> 1, "cost"=> 10, "receive"=> 5, "bullet_type"=> 1, "type"=> 1})
+		
+		File.open("public/imgtest/tree.jpeg","rb"){|f| data=f.read}
+		texture=Image.create(data: data, format: "image/png")
+		npc.textures["idle"]=texture
+		npc.textures.attr("idle","frames",1)
+		npc.textures.attr("idle","height",204)
+		
+		n1="walk"
+		File.open("public/imgtest/#{n1[0]}l.png","rb"){|f| data=f.read}
+		texture=Image.create(data: data, format: "image/png")
+		npc.textures[n1]=texture
+		npc.textures.attr(n1,"frames",8)
+		npc.textures.attr(n1,"height",128)
+		
+		["left","right",""].each do |n2|
+			["up","down",""].each do |n3|
+				if (n2!="" || n3!="")
+					name="#{n1}_#{n2}#{n3}"
+					fname="#{n1[0]}#{n2[0]}#{n3[0]}"
+					File.open("public/imgtest/#{fname}.png","rb"){|f| data=f.read}
+					texture=Image.create(data: data, format: "image/png")
+					npc.textures[name]=texture
+					npc.textures.attr(name,"frames",8)
+					npc.textures.attr(name,"height",128)	
+				end
+			end
+		end
+		n1="attack"
+		File.open("public/imgtest/#{n1[0]}l.png","rb"){|f| data=f.read}
+		texture=Image.create(data: data, format: "image/png")
+		npc.textures[n1]=texture
+		npc.textures.attr(n1,"frames",6)
+		npc.textures.attr(n1,"height",128)
+		
+		["left","right",""].each do |n2|
+			["up","down",""].each do |n3|
+				if (n2!="" || n3!="")
+					name="#{n1}_#{n2}#{n3}"
+					fname="#{n1[0]}#{n2[0]}#{n3[0]}"
+					File.open("public/imgtest/#{fname}.png","rb"){|f| data=f.read}
+					texture=Image.create(data: data, format: "image/png")
+					npc.textures[name]=texture
+					npc.textures.attr(name,"frames",6)
+					npc.textures.attr(name,"height",128)	
+				end
+			end
+		end
+		npc.save
+	end
+end
+	
+
+	
+	
 puts "Seed completed"

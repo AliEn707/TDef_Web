@@ -12,7 +12,7 @@
   /* 1 */
   z-index: 1050;
   /* 2 */
-  width: auto;
+  width: 250px;
   /* 3 */
   -webkit-animation: uk-fade 0.2s ease-in-out;
   animation: uk-fade 0.2s ease-in-out;
@@ -118,6 +118,6 @@ a.uk-datepicker-table-muted {
  * Active
  */
 .uk-datepicker-table a.uk-active {
-  background: #00a8e6;
+  background: #222;
   color: #ffffff;
 }
