@@ -32,14 +32,8 @@ function Tower(opt){
 			textures[i]["texture"]=getTextureFrames(textures[i]);
 		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.72},callbacks:{obj:this,actions:Tower_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
 	}
-	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
-	this.health_sprite.height=this.health_sprite.height/this.health_sprite.width*this.map.nodesize;
-	this.health_sprite.width=this.map.nodesize;
-	this.health_sprite.position.y=-s*0.8;
-	this.health_sprite.position.x=-this.health_sprite.width*0.5;
-	this.health_sprite.anchor.x=0;
-	this.health_sprite.anchor.y=1;
-	this.addChild(this.health_sprite);
+	this.setHealthSprite(s);
+	
 	//changeble
 	this.sprite="idle";
 	this.level=opt.level || 0;
@@ -75,6 +69,25 @@ Tower.prototype.proceed= function (){
 	this.sprites[this.sprite].upFrame();
 	this.scale.x=this.map.scale.x;
 	this.scale.y=this.map.scale.x;
+}
+
+Tower.prototype.setHealthSprite= function (s){
+	var that=this;
+	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
+	var func=function (){
+		that.health_sprite.height=that.health_sprite.height/that.health_sprite.width*that.map.nodesize;
+		that.health_sprite.width=that.map.nodesize;
+		that.health_sprite.position.y=-s*0.8;
+		that.health_sprite.position.x=-that.health_sprite.width*0.5;
+	}
+	if (this.health_sprite.texture.baseTexture.hasLoaded)
+		func();
+	else
+		this.health_sprite.texture.addEventListener("update", func);
+	this.health_sprite.anchor.x=0;
+	this.health_sprite.anchor.y=1;
+	this.addChild(this.health_sprite);
+	
 }
 
 Tower.prototype.setSprite= function (name){

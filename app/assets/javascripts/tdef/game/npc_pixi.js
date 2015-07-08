@@ -33,14 +33,8 @@ function Npc(opt){
 			textures[i]["texture"]=getTextureFrames(textures[i]);
 		this.sprites[i]=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Npc_callbacks[i] || Npc_callbacks[i.split("_")[0]] || {}},loop:textures[i].loop,delays:textures[i].delays,width:s,height:s});
 	}
-	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
-	this.health_sprite.height=this.health_sprite.height/this.health_sprite.width*this.map.nodesize;
-	this.health_sprite.width=this.map.nodesize;
-	this.health_sprite.position.y=-s*0.8;
-	this.health_sprite.position.x=-this.health_sprite.width*0.5;
-	this.health_sprite.anchor.x=0;
-	this.health_sprite.anchor.y=1;
-	this.addChild(this.health_sprite);
+	this.setHealthSprite(s);
+	
 	//changeble
 	this.sprite="idle";
 	this.grid={x: opt.grid.x || 0,y: opt.grid.y || 0};
@@ -178,6 +172,25 @@ Npc.prototype.proceed= function (){
 	
 	this.position=this.map.gridToScreen(this.grid.y,this.grid.x);
 	this.depth=this.map.objDepth(this.grid.y,this.grid.x);
+}
+
+Npc.prototype.setHealthSprite= function (s){
+	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
+	//this needs for correct loading 
+	var that=this;
+	var func=function (){
+		that.health_sprite.height=that.health_sprite.height/that.health_sprite.width*that.map.nodesize;
+		that.health_sprite.width=that.map.nodesize;
+		that.health_sprite.position.y=-s*0.8;
+		that.health_sprite.position.x=-that.health_sprite.width*0.5;
+	}
+	if (this.health_sprite.texture.baseTexture.hasLoaded)
+		func();
+	else
+		this.health_sprite.texture.addEventListener("update", func);
+	this.health_sprite.anchor.x=0;
+	this.health_sprite.anchor.y=1;
+	this.addChild(this.health_sprite);
 }
 
 Npc.prototype.setSpriteAdd= function (name){
