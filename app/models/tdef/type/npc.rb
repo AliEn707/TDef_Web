@@ -9,7 +9,6 @@ class Tdef::Type::Npc < ActiveRecord::Base
 	
 	PARAMS=["name",
 			"health",
-			"speed",
 			"damage",
 			"shield",
 			"see_distanse",

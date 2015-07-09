@@ -17,7 +17,7 @@ if (Types.cnv){
 	Types.position={x:0,y:0}
 	Types.direction={x:0,y:0}
 	setInterval(Types.draw_map,1000/Types.fps)
-	Types.speed=document.getElementById(current_type+"_params_speed").value
-	document.getElementById(current_type+"_params_speed").setAttribute("onchange","Types.setSpeed(this.value)")
+	Types.speed=document.getElementById(current_type+"_params_move_speed").value
+	document.getElementById(current_type+"_params_move_speed").setAttribute("onchange","Types.setSpeed(this.value)")
 }
 
