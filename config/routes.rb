@@ -22,7 +22,8 @@ TDefWeb::Application.routes.draw do
 	get "friendship/:id" => "friendships#create" , as: "friendship" 
 	delete "friendship/:id" => "friendships#destroy" 
 
-	get "messages" => "messages#show", as: "messages" 
+	get "messages/:id" => "messages#show", as: "message" 
+	get "messages" => "messages#all", as: "messages" 
 	post "messages" => "messages#create" 
 
 	get "qrcode" =>"qrcode#qrcode", as: "qrcode"
