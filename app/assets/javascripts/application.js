@@ -37,3 +37,10 @@ function removeSubmission(){
 String.prototype.splice = function( idx, rem, s ) {
     return (this.slice(0,idx) + s + this.slice(idx + Math.abs(rem)));
 };
+
+
+function loadScript(src){
+	var s=document.createElement("script");
+	s.src=src;
+	document.body.appendChild(s);
+}

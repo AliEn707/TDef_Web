@@ -1,2 +1,6 @@
 // will used for getting new messages by loading <script>
-var timestamp="something"
+<% if (@messages) then%>
+	var timestamp="<%= @messages[-1].created_at %>"
+<% end %>
+
+console.log(timestamp)

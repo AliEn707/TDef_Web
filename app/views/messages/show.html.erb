@@ -23,4 +23,4 @@ outcome:
 
 <%end%>
 
-<script src="<%= message_path(id: @id, type: @type)%>"></script>
+<script src="<%= message_path(id: @id, type: @type, from: @messages[0].created_at.to_i+1 )%>"></script>
