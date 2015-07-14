@@ -1,7 +1,7 @@
 set -e #magic
 echo "GRUB_RECORDFAIL_TIMEOUT=2" | sudo tee -a /etc/default/grub && sudo update-grub
 
-sudo rm /var/lib/apt/lists/* -vf 
+sudo rm /var/lib/apt/lists/* -vrf 
 sudo apt-get clean 
 sudo apt-get autoremove 
 sudo apt-get update
@@ -25,6 +25,7 @@ bundle install --path .bundle
 sudo cp rails_server /usr/bin/
 sudo chmod 755 /usr/bin/rails_server
 
+cp config/database.yml.example config/database.yml
 scp osuser@master.wsstudio.tk:/home/osuser/TDef_Web/config/initializers/secret_key.rb config/initializers/
 
 phoronix-test-suite detailed-system-info
