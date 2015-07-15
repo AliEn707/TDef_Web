@@ -16,15 +16,15 @@ class Image < ActiveRecord::Base
 		"data:"+self.format+";base64,"+Base64.encode64(self.data)
 	end
 	
-	def raw_resized(x,y=0)
+	def raw_resized(x, y=0, opt={})#TODO: add croping
 		FastImage.resize(StringIO.new(self.raw), x, y).read rescue self.raw
 	end
 	
-	def resize!(x,y=0)
-		self.data=(FastImage.resize(StringIO.new(self.raw), x, y).read rescue self.raw)
+	def resize!(x, y=0, opt={})
+		self.data=self.raw_resized(x,y,opt)
 	end
 	
-	def cut!(sizex,sizey,from=0,to=0)
-		
+	def size
+		FastImage.size(StringIO.new(self.raw))
 	end
 end

@@ -46,6 +46,11 @@ class User::ProfilesController < ApplicationController
 		Image.where(id: params["old_images"]).destroy_all if params["old_images"]
 		respond_to do |format|
 			if @user_profile.update(user_profile_params)
+				image=@user_profile.image
+				if (image && image.size!=[128,128]) then
+					image.resize!(128,128) 
+					image.save
+				end
 				format.html { redirect_to @user_profile, notice: 'Profile was successfully updated.' }
 			else
 				format.html { render action: 'edit' }
