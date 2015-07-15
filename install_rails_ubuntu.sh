@@ -27,7 +27,7 @@ sudo chmod 755 /usr/bin/rails_server
 
 sudo cp rails_updater /etc/init.d/rails_updater
 sudo chmod +x /etc/init.d/rails_updater
-update-rc.d rails_updater defaults
+sudo update-rc.d rails_updater defaults
 
 cp config/database.yml.example config/database.yml
 scp osuser@master.wsstudio.tk:/home/osuser/TDef_Web/config/initializers/secret_key.rb config/initializers/
