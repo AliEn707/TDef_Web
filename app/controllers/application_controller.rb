@@ -5,6 +5,11 @@ class ApplicationController < ActionController::Base
 	before_action :set_locale
 	before_action :set_timezone
 	before_action :profile_check
+	
+	def ping
+		render text: '"OK"', layout: false
+	end
+	
 	def not_found
 		raise ActionController::RoutingError.new('Not Found')
 	end
@@ -12,6 +17,8 @@ class ApplicationController < ActionController::Base
 	def is_admin?
 		redirect_to "/404.html" if current_user.nil? || !current_user.admin
 	end
+	
+	private	
 	
 	def set_locale
 		locale=I18n.default_locale
@@ -32,7 +39,6 @@ class ApplicationController < ActionController::Base
 		I18n.locale = locale
 	end
 	
-	private
 	
         def profile_check
 		if (!current_user.nil? && controller_name!="sessions")

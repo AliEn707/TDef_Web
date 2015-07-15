@@ -65,6 +65,9 @@ TDefWeb::Application.routes.draw do
 	#game access data for js load => /TDef/game_access.js?#{timestamp}
 	get "/TDef/game_access" => "tdef/game#access", as: "tdef_access"
 	
+	#ping request
+	get "/ping" => "application#ping"
+	
 	root "posts#index"
 	# You can have the root of your site routed with "root"
 	
@@ -116,4 +119,5 @@ TDefWeb::Application.routes.draw do
 	#     # (app/controllers/admin/products_controller.rb)
 	#     resources :products
 	#   end
+	
 end
