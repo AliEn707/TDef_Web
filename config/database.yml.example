@@ -19,7 +19,10 @@ test:
   timeout: 5000
 
 production:
-  adapter: sqlite3
-  database: db/production.sqlite3
+  adapter: postgresql
+  host: localhost
+  encoding: unicode
+  database: wss_devel
   pool: 25
-  timeout: 5000
+  username: dbuser
+  password: passwd

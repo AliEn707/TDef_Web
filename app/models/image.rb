@@ -1,6 +1,8 @@
 #require 'lzma'
+require 'binary_serializer'
 class Image < ActiveRecord::Base
 	belongs_to :imageable, polymorphic: true, touch: true
+	serialize :data, BinarySerializer
 	
 	def raw
 		self.data

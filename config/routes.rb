@@ -27,7 +27,7 @@ TDefWeb::Application.routes.draw do
 	post "messages" => "messages#create" 
 
 	get "qrcode" =>"qrcode#qrcode", as: "qrcode"
-	get "image/:id" => 'images#get', as: "get_image"
+	get "image/:id(.:format)" => 'images#get', as: "get_image"
 	post "image/upload" => 'images#upload', as: "upload_image"
 
 	devise_for :users, controllers: { registrations: 'registrations' }

@@ -1,13 +1,19 @@
 class ImagesController < ApplicationController
 	before_action :authenticate_user!, except: [:get]
 	  def get
+		format= params[:format] || "png" 
+		not_found if (format!="png")
 		id = params['id'][/\d+/].to_i
-		image=Rails.cache.fetch('image/'+id.to_s,expires_in: 12.minutes) {Image.find(id)}
+		image=Rails.cache.fetch("image/#{id}",expires_in: 12.minutes){Image.find(id)}
 		#image=Image.find(id)
 		if (stale?(image, public: true)) then
-			data=image.raw
-			format=image.format
-			send_data(data, type: format, filename: "#{id}.png")	
+			data=if (format=="png")
+					image.raw
+				else
+					Rails.cache.fetch("image/#{id}.#{format}",expires_in: 12.minutes){image.raw}# TODO: add convertion to jpg and gif
+				end
+			file_format="image/#{format}"#image.format
+			send_data(data, type: file_format, filename: "#{id}.#{format}")	
 		end
 	end
 	
