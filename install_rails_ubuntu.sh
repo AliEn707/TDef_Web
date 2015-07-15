@@ -25,9 +25,13 @@ bundle install --path .bundle
 sudo cp rails_server /usr/bin/
 sudo chmod 755 /usr/bin/rails_server
 
-sudo cp rails_updater /etc/init.d/rails_updater
-sudo chmod +x /etc/init.d/rails_updater
-sudo update-rc.d rails_updater defaults
+#sudo cp rails_updater /etc/init.d/rails_updater
+#sudo chmod +x /etc/init.d/rails_updater
+#sudo update-rc.d rails_updater defaults
+
+#add 
+#sudo -u osuser rails_server update > /home/osuser/rails_autostart.log 2>/home/osuser/rails_autostart.err
+#to /ect/rc.local
 
 cp config/database.yml.example config/database.yml
 scp osuser@master.wsstudio.tk:/home/osuser/TDef_Web/config/initializers/secret_key.rb config/initializers/
