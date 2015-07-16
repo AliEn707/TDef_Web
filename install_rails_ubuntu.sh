@@ -10,6 +10,7 @@ sudo apt-get install python-software-properties
 sudo add-apt-repository ppa:chris-lea/node.js
 sudo add-apt-repository ppa:git-core/ppa
 echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list
+wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
 sudo apt-get update
 
 sudo apt-get upgrade && sudo apt-get install curl htop screen gcc g++ git-core phoronix-test-suite nodejs libgd2-xpm-dev postgresql-client autossh build-essential sudo libpq-dev

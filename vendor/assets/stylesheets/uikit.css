@@ -181,7 +181,6 @@ figure {
 /*
  * Margins
  */
-p,
 ul,
 ol,
 dl,
@@ -192,7 +191,6 @@ fieldset,
 figure {
   margin: 0 0 15px 0;
 }
-* + p,
 * + ul,
 * + ol,
 * + dl,
