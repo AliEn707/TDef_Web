@@ -14,12 +14,6 @@ class ApplicationController < ActionController::Base
 		raise ActionController::RoutingError.new('Not Found')
 	end
 	
-	def is_admin?
-		redirect_to "/404.html" if current_user.nil? || !current_user.admin
-	end
-	
-	private	
-	
 	def set_locale
 		locale=I18n.default_locale
 		if !current_user.nil?
@@ -39,6 +33,11 @@ class ApplicationController < ActionController::Base
 		I18n.locale = locale
 	end
 	
+	private	
+	
+	def is_admin?
+		redirect_to "/404.html" if current_user.nil? || !current_user.admin
+	end
 	
         def profile_check
 		if (!current_user.nil? && controller_name!="sessions")
