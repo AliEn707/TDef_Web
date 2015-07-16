@@ -7,10 +7,15 @@ class ImagesController < ApplicationController
 		image=Rails.cache.fetch("image/#{id}",expires_in: 12.minutes){Image.find(id)}
 		#image=Image.find(id)
 		if (stale?(image, public: true)) then
-			data=if (format=="png")
+			raw=if (params["size"].nil?) then
 					image.raw
 				else
-					Rails.cache.fetch("image/#{id}.#{format}",expires_in: 12.minutes){image.raw}# TODO: add convertion to jpg and gif
+					image.raw #add resize
+				end
+			data=if (format=="png")
+					raw
+				else
+					Rails.cache.fetch("image/#{id}.#{format}",expires_in: 12.minutes){raw}# TODO: add convertion to jpg and gif
 				end
 			file_format="image/#{format}"#image.format
 			send_data(data, type: file_format, filename: "#{id}.#{format}")	

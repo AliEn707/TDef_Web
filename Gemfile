@@ -32,6 +32,8 @@ gem 'jquery-rails'
 gem 'remotipart', '~> 1.2'
 #copy to clipboard
 gem 'zeroclipboard-rails', "0.1.0"
+#js routes
+gem "js-routes"
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'

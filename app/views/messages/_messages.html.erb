@@ -1,0 +1,5 @@
+<%@messages.each do |m|%>
+	<%= message_tag (m.user_id==current_user.id)? "out" : "in" do -%>
+		"<%=m.data%>" at <%= m.created_at%>
+	<%end%>
+<%end%>

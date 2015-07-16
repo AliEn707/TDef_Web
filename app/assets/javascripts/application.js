@@ -17,6 +17,7 @@
 //= require zeroclipboard
 //= require twitter/bootstrap
 //= require bootstrap
+//= require js-routes
 //= require_tree ./application
 
 

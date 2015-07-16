@@ -1,20 +1,5 @@
-<br>
-income:
-<%@income_messages.each do |m|%>
-	<%= content_tag :div do -%>
-		"<%=m.data%>" from <%=m.user.name%> at <%= m.created_at%>
-	<%end%>
-<%end%>
-<br>
-outcome:
-<br>
-<%@messages.each do |m|%>
-	<%= content_tag :div do -%>
-		"<%=m.data%>" to <%=m.msg_dest.name%> at <%= m.created_at%>
-	<%end%>
-<%end%>
-<br>
-<%=simple_form_for Message.new do |f|%>
+<div id="messages_area"></div>
+<%=simple_form_for Message.new, remote: true do |f|%>
 	<%=f.input_field :user_id, as: :hidden,  value: current_user.id%>
 	<%=f.input_field :msg_dest_type, as: :hidden,  value: @type%>
 	<%=f.input_field :msg_dest_id, as: :hidden,  value: @id%>
@@ -23,4 +8,10 @@ outcome:
 
 <%end%>
 
-<script src="<%= message_path(id: @id, type: @type, from: @messages[0].created_at.to_i+1 )%>"></script>
+<script>
+var id=<%=@id%>
+var type="<%=@type%>"
+var timestamp=1;
+</script>
+
+<%= javascript_include_tag "messages", :cache => true %>

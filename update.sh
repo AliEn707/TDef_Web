@@ -11,6 +11,7 @@ bundle clean
 #fi
 
 #if [[ -n COMPILE_ASSETS ]]; then
+	bundle exec rake tmp:cache:clear
 	bundle exec rake assets:precompile
 #fi
 #add check for error and stop server if 

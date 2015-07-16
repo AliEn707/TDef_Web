@@ -51,9 +51,24 @@ text-decoration: none;
     background-color: #222;
 }
 
-.message_in {
-    background-color: #fff9cd;
+.div-message-in {
+	padding: 9px;
+	text-align: left;
 }
+
+.div-message-out {
+	padding: 9px;
+	text-align: right;
+}
+
+.message-in {
+    background-color: #EEc432;	
+}
+
+.message-out {
+    
+}
+
 
 .uk-button-core {
     margin: 0px;

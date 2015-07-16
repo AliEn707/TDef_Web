@@ -1,6 +1,6 @@
 // will used for getting new messages by loading <script>
-<% if (@messages) then%>
-	var timestamp="<%= @messages[-1].created_at %>"
+<% if (@messages.size!=0) then%>
+	timestamp="<%= @messages[-1].created_at.to_i+1 %>"
+	messages=<%=render("messages").inspect.html_safe%>
+	addMessages();
 <% end %>
-
-console.log(timestamp)

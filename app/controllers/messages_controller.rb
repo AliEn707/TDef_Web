@@ -16,19 +16,9 @@ class MessagesController < ApplicationController
 	def show
 		@id=params["id"]
 		@type=params["type"]
-		@messages=current_user.messages.where(msg_dest_id: @id, msg_dest_type: @type);
-		@income_messages=current_user.income_messages.where(id: @id);
-		if (params["from"])
-			@time=Time.at(params["from"].to_i)
-			arel=Message.arel_table[:created_at]
-			@messages=@messages.where(arel.gt(@time))
-			@income_messages=@income_messages.where(arel.gt(@time))
-		end
-		#mey be need
-#		@messages=@income_messages.union(@messages).order(:created_at)
 		respond_to do |format|
 			format.js do
-				@messages=@income_messages.union(@messages).order(:created_at)
+				messages_for_show
 				render layout: false
 			end
 			format.html
@@ -44,4 +34,19 @@ class MessagesController < ApplicationController
 	def message_params
 		params.require(:message).permit(:data, :user_id, :msg_dest_id, :msg_dest_type)
 	end	 
+	def messages_for_show
+		@id=params["id"]
+		@type=params["type"]
+		@messages=[]
+		if (params["from"])
+			@messages=current_user.messages.where(msg_dest_id: @id, msg_dest_type: @type);
+			@income_messages=current_user.income_messages.where(user_id: @id);
+			@time=Time.at(params["from"].to_i)
+			arel=Message.arel_table[:created_at]
+			@messages=@messages.where(arel.gt(@time))
+			@income_messages=@income_messages.where(arel.gt(@time))
+			@messages=@income_messages.union(@messages).order(:created_at)
+		end
+		#mey be need
+	end
 end

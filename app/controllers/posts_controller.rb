@@ -44,8 +44,8 @@ class PostsController < ApplicationController
 	# PATCH/PUT /posts/1.json
 	def update
 		if @post.update(post_params)
+			@post.images.where.not(id: params["img_ids"]).destroy_all
 			if !params["img_ids"].nil? then
-				@post.images.where.not(id: params["img_ids"]).destroy_all
 				@post.images=Image.where(id: params["img_ids"]) 
 			end
 			redirect_to posts_path, notice: 'Post was successfully updated.' 

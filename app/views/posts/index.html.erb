@@ -20,7 +20,7 @@
 						<th>
 							<div class="pull-left" style="height:20px;">
 								<h3>
-									<%= link_to post.title, post , remote: true%>
+									<%= link_to post.title, post, remote: true%>
 								</h3>
 							</div>
 							<div class="pull-right">
@@ -38,7 +38,7 @@
 						<td>
 							<%= markdown(post.description[0..200]) %>
 							<%if (post.description.size>=200) then%>
-								...<%= link_to t(:show_all),  post%>
+								...<%= link_to t(:show_all),  post, remote: true%>
 							<%end%>
 							<div class="pull-right">
 								created by <%= post.user.name %> on <%=post.creation_date%>
