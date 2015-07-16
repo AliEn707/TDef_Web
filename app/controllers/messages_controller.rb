@@ -34,18 +34,19 @@ class MessagesController < ApplicationController
 	def message_params
 		params.require(:message).permit(:data, :user_id, :msg_dest_id, :msg_dest_type)
 	end	 
+	
 	def messages_for_show
 		@id=params["id"]
 		@type=params["type"]
 		@messages=[]
 		if (params["from"])
-			@messages=current_user.messages.where(msg_dest_id: @id, msg_dest_type: @type);
-			@income_messages=current_user.income_messages.where(user_id: @id);
 			@time=Time.at(params["from"].to_i)
 			arel=Message.arel_table[:created_at]
-			@messages=@messages.where(arel.gt(@time))
-			@income_messages=@income_messages.where(arel.gt(@time))
-			@messages=@income_messages.union(@messages).order(:created_at)
+			@messages=current_user.messages.where(msg_dest_id: @id, msg_dest_type: @type).where(arel.gt(@time))
+			@income_messages=current_user.income_messages.where(user_id: @id).where(arel.gt(@time))
+			
+#			@messages=@income_messages.union(@messages).order(:created_at) #not work((
+			@messages=(@messages.to_a+@income_messages.to_a).uniq.sort_by! { |obj| obj.created_at }
 		end
 		#mey be need
 	end

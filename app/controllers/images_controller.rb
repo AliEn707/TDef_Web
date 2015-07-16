@@ -34,6 +34,13 @@ class ImagesController < ApplicationController
 	
 	private
 	
+        def profile_check
+	end
+	def set_timezone
+	end
+	def set_locale
+	end
+	
 	def image_params
 		data=params["image"]["file"].read
 		format=params["image"]["file"].content_type

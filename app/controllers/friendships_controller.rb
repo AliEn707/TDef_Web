@@ -20,4 +20,13 @@ class FriendshipsController < ApplicationController
 		@friendship.destroy if (@friendship)
 		redirect_to :back, notice: "Removed friendship."
 	end
+	
+	private
+	
+        def profile_check
+	end
+	def set_timezone
+	end
+	def set_locale
+	end
 end

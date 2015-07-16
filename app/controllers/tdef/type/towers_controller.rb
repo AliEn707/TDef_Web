@@ -1,8 +1,8 @@
 class Tdef::Type::TowersController < ApplicationController
   before_action :set_tdef_type_tower, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!,  except: [:types]
-  before_action :is_admin?
-
+  before_action :is_admin?,  except: [:types]
+  
   # GET /tdef/type/towers
   # GET /tdef/type/towers.json
   def index

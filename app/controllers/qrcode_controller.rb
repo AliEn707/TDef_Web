@@ -29,4 +29,13 @@ class QrcodeController < ApplicationController
 		end 
 		return png.to_blob;
 	end
+	
+	private
+	
+        def profile_check
+	end
+	def set_timezone
+	end
+	def set_locale
+	end
 end

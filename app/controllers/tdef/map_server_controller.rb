@@ -1,6 +1,6 @@
 class Tdef::MapServerController < ApplicationController
-	before_action :authenticate_user!
-	before_action :is_admin?
+	before_action :authenticate_user!, except: [:get]
+	before_action :is_admin?, except: [:get]
 	def show
 		if request.get?
 			@servers=Tdef::MapServer.all

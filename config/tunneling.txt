@@ -1,4 +1,4 @@
 
 toonel connection for getting data from remote_host:remote_port by call on localhost:local port
 ssh -f -N -C -L 0.0.0.0:local_port:localhost:remote_port osuser@remote_host
-autossh -m 10000  -f -N -C -L 0.0.0.0:local_port:localhost:remote_port osuser@remote_host
+autossh -M 0  -fNCL 0.0.0.0:local_port:localhost:remote_port osuser@remote_host
