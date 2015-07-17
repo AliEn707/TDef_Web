@@ -3,7 +3,7 @@
 var Messages={};
 	
 Messages.load=function (){
-	var str=Routes.message_path(id)+"?type="+type;
+	var str=route;
 	if (timestamp)
 		str+="&from="+timestamp;
 	loadScript(str);
@@ -25,6 +25,9 @@ Messages.addOld=function (){
 
 Messages.addNew=function (){
 	document.getElementById("messages_area").innerHTML+=messages;
+}
+Messages.clearArea=function (){
+	document.getElementById("message_data").value="";
 }
 
 var addMessages; //alias for functions for loading messages

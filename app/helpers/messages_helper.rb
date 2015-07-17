@@ -5,7 +5,7 @@ module MessagesHelper
 	
 	def message_tag(dir="in")
 		content_tag :div, class: "div-message-#{dir}" do
-			content_tag :span, class: "well well-small message-#{dir}" do
+			content_tag :div, class: "well well-small message-#{dir}" do
 				yield
 			end
 		end

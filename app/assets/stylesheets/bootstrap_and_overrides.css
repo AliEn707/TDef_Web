@@ -52,21 +52,24 @@ text-decoration: none;
 }
 
 .div-message-in {
-	padding: 9px;
+	padding: 0px;
 	text-align: left;
 }
 
 .div-message-out {
-	padding: 9px;
+	padding: 0px;
 	text-align: right;
 }
 
 .message-in {
-    background-color: #EEc432;	
+	display: inline-block;
+    margin-bottom: 4px;
+	background-color: #EEc432;
 }
 
 .message-out {
-    
+	display: inline-block;
+	margin-bottom: 4px;	
 }
 
 

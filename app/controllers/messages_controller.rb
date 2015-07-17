@@ -10,7 +10,7 @@ class MessagesController < ApplicationController
 			type=:alert
 			notice="message_error"
 		end
-		redirect_to :back, type => t(notice)
+		render layout: false
 	end
 
 	def show
