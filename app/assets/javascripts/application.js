@@ -40,8 +40,21 @@ String.prototype.splice = function( idx, rem, s ) {
 };
 
 
-function loadScript(src){
-	var s=document.createElement("script");
-	s.src=src;
-	document.body.appendChild(s);
+//load JavaScript via AJAX on in common way
+function loadScript(src, as_tag){
+	if (as_tag){
+		var s=document.createElement("script");
+		s.src=src;
+		document.body.appendChild(s);
+	}else{
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open('GET', src, true);
+		xmlhttp.setRequestHeader("Accept","*/*");
+		xmlhttp.onreadystatechange=function(){
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+				eval(xmlhttp.responseText);
+			}
+		};
+		xmlhttp.send();
+	}
 }
