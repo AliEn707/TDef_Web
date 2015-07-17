@@ -21,8 +21,10 @@ test:
 production:
   adapter: postgresql
   host: localhost
+  port: 5432
   encoding: unicode
   database: wss_devel
   pool: 25
   username: dbuser
   password: passwd
+  prepared_statements: false
