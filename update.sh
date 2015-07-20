@@ -1,18 +1,22 @@
 #!/bin/bash
 #export RAILS_ENV=production
 
-#git reset --hard 
+echo -e "\n\n"
+hostname
+echo -e "\n\n"
+
+git reset --hard 
 git pull
 #bundle install --path .bundle
 bundle update 
 bundle clean 
-#if [[ -n UPDATE_DB ]]; then
+if [[ -n UPDATE_DB ]]; then
 	bundle exec rake db:migrate db:seed
-#fi
+fi
 
-#if [[ -n COMPILE_ASSETS ]]; then
+if [[ -n COMPILE_ASSETS ]]; then
 	bundle exec rake tmp:cache:clear
 	bundle exec rake assets:precompile
-#fi
+fi
 #add check for error and stop server if 
 rails_server restart

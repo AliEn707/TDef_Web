@@ -47,4 +47,4 @@ phoronix-test-suite detailed-system-info > ~/sysinfo.txt
 #sudo hostname ubuntu-alcatel
 #sudo nano /etc/hosts
 
-echo -e "EscapeChar none\nServerAliveCountMax 2\nServerAliveInterval 5" >> ~/.ssh/config
+echo -e "EscapeChar none\nServerAliveCountMax 5\nServerAliveInterval 5" >> ~/.ssh/config

@@ -17,26 +17,39 @@ export RUBY_GC_MALLOC_LIMIT=60000000
 
 #export UPDATE_DB=true 
 #export COMPILE_ASSETS=true 
-#+ 32 mb used for assets caching
+
+CHILD_NODES=""
+
+function child_nodes(){
+	for i in $CHILD_NODES; do
+		ssh osuser@$i rails_server $1
+	done
+}
 
 function rails() {
   if [ "$1" = "start" ]; then
      bundle exec rails server -d --pid=$RAILS_PID
+     child_nodes start
      return 0
   elif [ "$1" = "stop" ]; then
      if [ -f $RAILS_PID ]; then
         kill $2 $(cat $RAILS_PID)
 	rm $RAILS_PID
-        return 0
+	echo "server stopped"
+#        return 0
      else
         echo "It seems there is no server running"
-        return 1
+#        return 1
      fi
+     child_nodes stop
+     return 0
   elif [ "$1" = "restart" ]; then
      rails stop 
      rails start $2
  elif [ "$1" = "update" ]; then
+     rails stop
      bash update.sh
+     child_nodes update
   else
      bundle exec rails $@
   fi;
