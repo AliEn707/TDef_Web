@@ -1,6 +1,6 @@
 module Tdef::MapHelper
 
 	def map_columns
-		[t(:preview), t(:name), t(:ready), t(:description)]
+		[:preview, :name, :ready, :description].map!{|k| t("tdef.maps.#{k}")}
 	end
 end

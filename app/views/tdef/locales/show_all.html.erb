@@ -44,7 +44,7 @@
 	<% @locales.each do |l_l| %>
 		<%= content_tag :table, class:"table table-striped",id: "table_"+l_l.name, style: "display: "+(l_l!=@locales[0]?"none":"table")+";",valign: "middle" do -%>	
 			<%= content_tag :tbody do -%>
-				<% l_l.locale_datas.each do |d_d| %>
+				<% l_l.locale_datas.order(:created_at => :desc).each do |d_d| %>
 					<%= content_tag :tr do -%>
 						<%= content_tag :td, width: "80px" do -%>
 							<%= content_tag :locale  do -%>

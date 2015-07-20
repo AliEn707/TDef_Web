@@ -2,7 +2,7 @@ class Tdef::LocalesController < ApplicationController
 	before_action :authenticate_user!, except: [:get]
 	before_action :is_admin?, except: [:get]
 	def show_all
-	  @locales=Tdef::Locale.order(:created_at).all
+	  @locales=Tdef::Locale.order(:created_at)
 	end
 	def edit
 		@a=request.POST
@@ -12,7 +12,7 @@ class Tdef::LocalesController < ApplicationController
 				delete=request.POST['delkey']
 				name=request.POST['delname']
 				delete.each_index do |i_i|
-					d_d=Tdef::LocaleData.joins(:locale).where('"locales"."name" = "'+name[i_i].to_s+'"').find_by(key: delete[i_i])
+					d_d=Tdef::LocaleData.joins(:locale).where(Locale.arel_table[:name].eq(name[i_i])).find_by(key: delete[i_i])
 					d_d.delete if !d_d.nil?
 				end
 			end
@@ -38,17 +38,17 @@ class Tdef::LocalesController < ApplicationController
 	end
 	def remove
 		key=:alert
-		value=t(:locale_not_found)
+		value=t("tdef.locales.not_found")
 		if (!params["name"].nil?) then
 			l=Tdef::Locale.where(name: params["name"]).first
 			if (!l.nil?) then
 				l.locale_datas.each{|ld| ld.destroy}
 				l.destroy
 				key=:notice
-				value=t(:locale_deleted)
+				value=t("tdef.locales.deleted")
 			end
 		end
-		redirect_to :back, key=> value
+		redirect_to :back, key => value
 	end
 	
 	def get

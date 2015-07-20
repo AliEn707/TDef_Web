@@ -14,7 +14,7 @@
 	<% @posts.each do |post_| %>
 		<%cache("#{post_.id}#{post_.updated_at}#{cache_lang_admin}") do%>
 			<%post=post_.translation_by_lang(@lang)%>
-			<table class="table table-bordered table-striped">
+			<table class="table table-bordered table-striped post">
 				<thead>
 					<tr>
 						<th>

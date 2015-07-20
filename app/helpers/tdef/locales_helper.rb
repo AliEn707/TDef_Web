@@ -1,5 +1,5 @@
 module Tdef::LocalesHelper
 	def locale_columns
-		[t(:locale),t(:key),t(:value)]
+		[:locale,:tkey,:value].map!{|k| t("tdef.locales.#{k}")}
 	end
 end

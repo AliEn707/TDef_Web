@@ -1,5 +1,5 @@
 module Tdef::MapServerHelper
 	def server_columns
-		[t(:host),t(:ctlport),t(:serv_num),t(:start_port)]
+		[:host,:ctlport,:serv_num,:start_port].map!{|k| t("tdef.map_servers.#{k}")}
 	end
 end
