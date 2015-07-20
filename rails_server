@@ -29,7 +29,6 @@ function child_nodes(){
 function rails() {
   if [ "$1" = "start" ]; then
      bundle exec rails server -d --pid=$RAILS_PID
-     child_nodes start
      return 0
   elif [ "$1" = "stop" ]; then
      if [ -f $RAILS_PID ]; then
