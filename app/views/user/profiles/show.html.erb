@@ -1,14 +1,20 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Properties:</strong>
-  <%= @user_profile.properties.inspect %>
+	<% @user_profile.properties.each do |p,v| %>
+		<div>
+			<strong><%=t(p)%>:</strong>
+			<%= v %>
+		</div>
+	<% end %>
 </p>
 
-<p>
-  <strong>User:</strong>
-  <%= @user_profile.user_id %>
-</p>
+<%for_admin do%>
+	<p>
+		<strong><%=t("email")%>:</strong>
+		<%= @user_profile.user.email %>
+	</p>
+<%end%>
 
 <%= link_to "messages", messages(@user_profile.user) %>
 

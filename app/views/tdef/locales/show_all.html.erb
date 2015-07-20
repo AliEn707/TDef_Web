@@ -1,29 +1,29 @@
 ﻿
 <%= content_tag :div, id: "locales_all" do -%>
-	<%= content_tag :script, type: "text/javascript",language: "JavaScript" do -%>
+	<%= content_tag :script, type: "text/javascript", language: "JavaScript" do -%>
 		locales_current=<%=@locales[0].name.inspect.html_safe %>
 	<%end%>
 	<ul class="nav nav-tabs" id="tabs">
-		<% @locales.size.times do |i| %>
-			<li id='<%= @locales[i].name%>' <%='class=active' if i==0%> >
-				<%=link_to @locales[i].name,"#",onclick: 'locales_change(this)' %> 
+		<% @locales.each_with_index do |l,i| %>
+			<li id='<%= l.name%>' <%='class=active' if i==0%> >
+				<%=link_to l.name,"#",onclick: 'locales_change(this)' %> 
 			</li>
 		<%end%>
 			<%= content_tag :li, class: "pull-right" do -%>
 				<button form="form" class="btn btn-inverse" onclick="removeSubmission()"><%=t(:apply_changes)%></button>
 			<%end%>
 			<li class='pull-right'>
-					<span class="input-append">
-						<input form="remove_form" class="span4" id="newloc" size="5" type="text" name="name">
-						<%= content_tag :div, class: "btn-group" do -%>
-							<button class="btn btn btn-inverse" onclick="locales_new(this)">
-								<b>+</b>
-							</button>
-							<%= content_tag :button, class: "btn btn-danger",onclick: 'locale_remove(this)'  do -%>
-								<b >x</b>
-							<%end%>
+				<span class="input-append">
+					<input form="remove_form" class="span4" id="newloc" size="5" type="text" name="name">
+					<%= content_tag :div, class: "btn-group" do -%>
+						<button class="btn btn btn-inverse" onclick="locales_new(this)">
+							<b>+</b>
+						</button>
+						<%= content_tag :button, class: "btn btn-danger",onclick: 'locale_remove(this)'  do -%>
+							<b >x</b>
 						<%end%>
-					</span>
+					<%end%>
+				</span>
 			</li>
 	</ul>
 
@@ -36,8 +36,8 @@
 					</th>
 				<%end%>
 				<%= content_tag :th, width: "20px" do -%>
-						<button class="btn btn-inverse" onclick='locales_add(this)'><%=t(:add)%></button>
-					<%end%>
+					<button class="btn btn-inverse" onclick='locales_add(this)'><%=t(:add)%></button>
+				<%end%>
 			<%end%>
 		<%end%>
 	<%end%>
