@@ -5,4 +5,5 @@ class User::Profile < ActiveRecord::Base
 	
 	
 	PROPERTIES=["name","surname","birthday"]
+	SHORT_PROPERTIES=["name","surname"]
 end

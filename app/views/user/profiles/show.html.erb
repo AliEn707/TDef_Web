@@ -1,5 +1,9 @@
 <p id="notice"><%= notice %></p>
-
+<% if (@user_profile.image) then %>
+	<p>
+		<%= image_tag @user_profile.image.url %>
+	</p>
+<% end %>
 <p>
 	<% @user_profile.properties.each do |p,v| %>
 		<div>
@@ -11,7 +15,7 @@
 
 <%for_admin do%>
 	<p>
-		<strong><%=t("email")%>:</strong>
+		<strong><%=t("profile.email")%>:</strong>
 		<%= @user_profile.user.email %>
 	</p>
 <%end%>

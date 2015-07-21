@@ -2,8 +2,8 @@
 <table>
   <thead>
     <tr>
-      <th>Properties</th>
-      <th>User</th>
+      <th></th>
+      <th></th>
       <th></th>
       <th></th>
       <th></th>
@@ -13,11 +13,18 @@
   <tbody>
     <% @user_profiles.each do |user_profile| %>
       <tr>
-        <td><%= user_profile.properties %></td>
-        <td><%= user_profile.user_id %></td>
+	<td height="128px"><%= image_tag user_profile.image.url if (user_profile.image)%></td>
+        <td>
+		<% User::Profile::SHORT_PROPERTIES.each do |k| %>
+			<div>
+				<strong><%=t("profile.#{k}")%>:</strong>
+				<%= user_profile.properties[k] %>
+			</div>
+		<% end %>
+	</td>
+        <td><%= link_to "messages", messages(user_profile.user) %></td>
         <td><%= link_to 'Show', user_profile %></td>
         <td><%= link_to 'Add friend', friendship_path(id: user_profile.user_id) %></td>
-        <td><%= link_to 'Destroy', user_profile, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

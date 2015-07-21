@@ -7,7 +7,7 @@
 </style>
 <h1>News
 	<%for_admin do%>
-		<%= link_to 'Add', new_post_path %>
+		<%= link_to t("posts.add"), new_post_path %>
 	<%end%>
 </h1>
 <%cache("#{Post.select(:updated_at).order(:updated_at).last.updated_at.to_i}#{cache_lang_admin}") do %>
@@ -25,9 +25,9 @@
 							</div>
 							<div class="pull-right">
 								<%for_admin do%>
-									<%= link_to 'Add translation', new_post_translation_path(post_id: post_.id) %>
-									<%= link_to 'Edit', "#{url_for(post)}/edit" %>
-									<%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %>
+									<%= link_to t("posts.add_translation"), new_post_translation_path(post_id: post_.id) %>
+									<%= link_to t('posts.edit'), "#{url_for(post)}/edit" %>
+									<%= link_to t('posts.destroy'), post, method: :delete, data: { confirm: 'Are you sure?' } %>
 								<%end%>
 							</div>
 						</th>
