@@ -10,11 +10,11 @@ git pull
 #bundle install --path .bundle
 bundle update 
 bundle clean 
-if [[ -v UPDATE_DB ]]; then
+if [ $UPDATE_DB -eq 1 ]; then
 	bundle exec rake db:migrate db:seed
 fi
 
-if [[ -v COMPILE_ASSETS ]]; then
+if [ $COMPILE_ASSETS -eq 1 ]; then
 	bundle exec rake tmp:cache:clear
 	bundle exec rake assets:precompile
 fi

@@ -15,8 +15,8 @@ export RUBY_GC_MALLOC_LIMIT=60000000
 #export MEMSTORE_SIZE=384 
 #export USE_OJ=true 
 
-#export UPDATE_DB=true 
-#export COMPILE_ASSETS=true 
+export UPDATE_DB=0 
+export COMPILE_ASSETS=0 
 
 CHILD_NODES=""
 
