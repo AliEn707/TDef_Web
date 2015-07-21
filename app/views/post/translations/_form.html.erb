@@ -6,8 +6,8 @@
 <div id="images" overflow="auto">
 	<%@post_translation.images.each do |img|%>
 		<div style="display: inline-block;position:relative;">
-			<img onload="setImgSize(this)" id="img_<%=img.id%>" class="img-polaroid" src="http://<%= request.host_with_port+img.url %>"></img>
-			<input type=hidden id="hide_img_<%=img.id%>"  value="http://<%= request.host_with_port+img.url %>"> </input>
+			<img onload="setImgSize(this)" id="img_<%=img.id%>" class="img-polaroid" src="<%= img.url %>"></img>
+			<input type=hidden id="hide_img_<%=img.id%>"  value="<%= img.url %>"> </input>
 			<button id="button_<%=img.id%>" data-clipboard-target="hide_img_<%=img.id%>" class="uk-button-core btn-inverse uk-button-large" style="position:absolute;left:0px;bottom:0px;" ><i class="icon-link"> </i></button>
 			<button data="<%=img.id%>" onclick="removePostImg(this)" class="uk-button-core btn-danger uk-button-large" style="position:absolute;right:0px;top:0px;" ><i class="icon-remove"> </i></button>
 			<script>var clip = new ZeroClipboard($("#button_<%=img.id%>"))</script>

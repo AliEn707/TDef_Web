@@ -1,2 +1,4 @@
 ﻿ru:
   image_upload: Загрузить
+  image:
+    cant_load: Изображение не загружено

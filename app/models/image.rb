@@ -4,12 +4,18 @@ class Image < ActiveRecord::Base
 	belongs_to :imageable, polymorphic: true, touch: true
 	serialize :data, BinarySerializer
 	
+	FORMATS=["png"]
+	
 	def raw
 		self.data
 	end
 	
 	def url
 		Rails.application.routes.url_helpers.get_image_path("#{self.id}.png")
+	end
+	
+	def full_url
+		"http://#{request.host_with_port}#{Rails.application.routes.url_helpers.get_image_path("#{self.id}.png")}"
 	end
 	
 	def base64
@@ -26,5 +32,13 @@ class Image < ActiveRecord::Base
 	
 	def size
 		FastImage.size(StringIO.new(self.raw))
+	end
+	
+	def type
+		FastImage.type(StringIO.new(self.raw)).to_s
+	end
+	
+	def type?
+		FORMATS.include?(self.type)
 	end
 end

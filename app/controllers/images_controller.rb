@@ -4,7 +4,7 @@ class ImagesController < ApplicationController
 		format= params[:format] || "png" 
 		not_found if (format!="png")
 		id = params['id'][/\d+/].to_i
-		image=Rails.cache.fetch("image/#{id}",expires_in: 12.minutes){Image.find(id)}
+		image=Rails.cache.fetch("image/#{id}",expires_in: 6.hours){Image.find(id)}
 		#image=Image.find(id)
 		if (stale?(image, public: true)) then
 			raw=if (params["size"].nil?) then
@@ -15,7 +15,7 @@ class ImagesController < ApplicationController
 			data=if (format=="png")
 					raw
 				else
-					Rails.cache.fetch("image/#{id}.#{format}",expires_in: 12.minutes){raw}# TODO: add convertion to jpg and gif
+					Rails.cache.fetch("image/#{id}.#{format}",expires_in: 6.hours){raw}# TODO: add convertion to jpg and gif
 				end
 			file_format="image/#{format}"#image.format
 			send_data(data, type: file_format, filename: "#{id}.#{format}")	
@@ -24,10 +24,15 @@ class ImagesController < ApplicationController
 	
 	def upload
 		@image = Image.new(image_params)
+		#TODO: rewrite
+		if (@image.type?) then
+			@image=nil if !(@image.save)
+		else
+			@image=nil 
+		end
+		p @image.inspect
 		respond_to do |format|
-			if @image.save
-				format.js
-			end
+			format.js
 		end
 #		render :formats => :js, layout: false
 	end

@@ -1,2 +1,4 @@
 ﻿en:
   image_upload: Upload
+  image:
+    cant_load: Image not uploaded

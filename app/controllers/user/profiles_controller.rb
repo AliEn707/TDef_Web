@@ -33,6 +33,7 @@ class User::ProfilesController < ApplicationController
 
 		respond_to do |format|
 			if @user_profile.save
+				check_image
 				format.html { redirect_to @user_profile, notice: 'Profile was successfully created.' }
 			else
 				format.html { render action: 'new' }
@@ -46,11 +47,7 @@ class User::ProfilesController < ApplicationController
 		Image.where(id: params["old_images"]).destroy_all if params["old_images"]
 		respond_to do |format|
 			if @user_profile.update(user_profile_params)
-				image=@user_profile.image
-				if (image && image.size!=[128,128]) then
-					image.resize!(128,128) 
-					image.save
-				end
+				check_image
 				format.html { redirect_to @user_profile, notice: 'Profile was successfully updated.' }
 			else
 				format.html { render action: 'edit' }
@@ -77,6 +74,15 @@ class User::ProfilesController < ApplicationController
 	end
 	
 	private
+	
+	def check_image
+		image=@user_profile.image
+		if (image && image.size!=[128,128]) then
+			image.resize!(128,128) 
+			image.save
+		end
+	end
+	
 	def check_owner!
 		redirect_to "/404.html" if (!current_user.admin && current_user.profile.id!=params[:id].to_i)
 	end

@@ -74,7 +74,7 @@ module ApplicationHelper
 	
 	def markdown(text)
 #		Redcarpet::Render::SmartyPants.render(
-		$markdown.render(text.to_s).html_safe
+		$markdown.render(text.to_s).gsub("<script>","").html_safe #some kind of hack need to fix
 	end
 	
 	def body_end(&block)

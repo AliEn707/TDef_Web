@@ -31,8 +31,8 @@ class PostsController < ApplicationController
 	# POST /posts.json
 	def create
 		@post = Post.new(post_params.merge(user: current_user))
-		if @post.save
-			@post.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil?
+		if @post.save then
+			set_images
 			Image.where(imageable_id: nil).where(Image.arel_table[:created_at].lt(Time.now-60.minutes)).destroy_all
 			redirect_to posts_path, notice: 'Post was successfully created.'
 		else
@@ -45,9 +45,7 @@ class PostsController < ApplicationController
 	def update
 		if @post.update(post_params)
 			@post.images.where.not(id: params["img_ids"]).destroy_all
-			if !params["img_ids"].nil? then
-				@post.images=Image.where(id: params["img_ids"]) 
-			end
+			set_images
 			redirect_to posts_path, notice: 'Post was successfully updated.' 
 		else
 			render action: 'edit' 
@@ -65,6 +63,17 @@ class PostsController < ApplicationController
 	end
 
 	private
+	
+		def set_images
+			@post.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil? 
+			@post.images.each do |i| 
+				width,height=i.size
+				if (width>800) then
+					i.resize!(800)
+					i.save
+				end
+			end
+		end
 		# Use callbacks to share common setup or constraints between actions.
 		def set_post
 			@post = Post.find(params[:id])

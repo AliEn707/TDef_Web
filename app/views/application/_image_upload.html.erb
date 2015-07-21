@@ -1,6 +1,6 @@
 <%= form_for Image.new, url: upload_image_path, :html => { :multipart => true }, :remote => true do |f| %>
   <div class="field">
-    <%= f.file_field :file %>
+    <%= f.file_field :file, accept: accepted_image_formats %>
     <%if (@image_owner) then%>
 	<% if (@image_owner.id) then %>
 		<%= f.hidden_field :imageable_id, value: @image_owner.id%>

@@ -44,7 +44,6 @@ function proceedUploadedFile(obj){
 function removePostImg(obj){
 	var id=obj.getAttribute("data")
 	obj.parentNode.parentNode.removeChild(obj.parentNode)
-	console.log(id)
 	obj=document.getElementById("hide_"+id)
 	obj.parentNode.removeChild(obj)
 	

@@ -4,4 +4,8 @@ module ImagesHelper
 		@image_owner=obj
 		render "image_upload"
 	end
+	
+	def accepted_image_formats
+		Image::FORMATS.map{|f| "image/#{f}"}.join(",")
+	end
 end

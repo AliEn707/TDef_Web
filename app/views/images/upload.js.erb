@@ -1,5 +1,6 @@
-try{
-	proceedUploadedFile({url: "http://<%= request.host_with_port+@image.url %>", id:"<%=@image.id%>"});
-}catch(err){
-	console.log(err)
-}
+
+<% if (@image) then%>
+proceedUploadedFile({url: "<%=@image.url %>", id:"<%=@image.id%>"});
+<%else%>
+bootstrapFlash('<%= t("image.cant_load")%>',"alert");
+<%end%>

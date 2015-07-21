@@ -107,8 +107,7 @@
 	<%end%>
 		<div class="container-fluid">
 			<div class="row-fluid">
-<!--          
-				<div class="span3">
+<!--         			<div class="span3">
 					<div class="well sidebar-nav">
 						<ul class="nav nav-list">
 							<li class="nav-header">Sidebar</li>
@@ -120,7 +119,9 @@
 				</div>
 -->   
 				<div >
-					<%= bootstrap_flash %>
+					<div id="bootstrap_flash">
+						<%= bootstrap_flash %>
+					</div>
 					<%= yield %>
 				</div>
 				<%=body_end%>
