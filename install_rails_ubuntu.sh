@@ -48,3 +48,7 @@ phoronix-test-suite detailed-system-info > ~/sysinfo.txt
 #sudo nano /etc/hosts
 
 echo -e "EscapeChar none\nServerAliveCountMax 5\nServerAliveInterval 5" >> ~/.ssh/config
+
+
+#if ping very slow
+#echo "nameserver 8.8.8.8"| sudo tee /etc/resolv.conf

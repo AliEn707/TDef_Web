@@ -4,7 +4,7 @@ class Image < ActiveRecord::Base
 	belongs_to :imageable, polymorphic: true, touch: true
 	serialize :data, BinarySerializer
 	
-	FORMATS=["png"]
+	FORMATS=["png", "jpeg", "gif"]
 	
 	def raw
 		self.data
@@ -23,12 +23,22 @@ class Image < ActiveRecord::Base
 	end
 	
 	def raw_resized(x, y=0, opt={})#TODO: add croping
-		FastImage.resize(StringIO.new(self.raw), x, y).read rescue self.raw
+		FastImage.resize(StringIO.new(self.raw), x, y, opt).read rescue self.raw
 	end
 	
 	def resize!(x, y=0, opt={})
 		self.data=self.raw_resized(x,y,opt)
 	end
+	
+	def convert_to(type)
+		self.resize(0,0,{out_type: type.to_sym})
+	end
+	
+	def convert_to_png!
+		self.resize!(0,0,{out_type: :png})
+	end
+	
+	
 	
 	def size
 		FastImage.size(StringIO.new(self.raw))
