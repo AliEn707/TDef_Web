@@ -39,12 +39,12 @@ class TypeTexturesContainer
 	def remove(a)
 		return if !@ids[a]
 		load(a) if !@data[a] 
-		@data[a].destroy
+		@data[a].destroy if @data[a]
 		clear(a)
 	end
 	
 	def clean!
-		keys.each {|k| delete(k)}
+		@ids.keys.each {|k| @ids.delete(k) if (k)}
 	end
 	
 	def keys

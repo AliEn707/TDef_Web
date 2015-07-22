@@ -1,0 +1,57 @@
+﻿en:
+  tdef:
+    types:
+      id: Id
+      name: Name
+      health: Health
+      damage: Damage
+      shield: Shield
+      support: Support
+      see_distanse: See distanse
+      attack_distanse: Attack distanse
+      attack_speed: Attack speed
+      move_speed: Move speed
+      cost: Cost
+      receive: Receive
+      bullet_type: Bullet type
+      type: Type
+      tex:
+        frames: Frames
+        height: Height
+        width: Width
+        idle: Idle
+        idle_up: Idle Up
+        idle_leftup: Idle Left Up
+        idle_left: Idle Left
+        idle_leftdown: Idle Left Down
+        idle_down: Idle Down
+        idle_rightdown: Idle Right Down
+        idle_right: Idle Right
+        idle_rightup: Idle Right Up
+        walk: Walk
+        walk_up: Walk Up
+        walk_leftup: Walk Left Up
+        walk_left: Walk Left
+        walk_leftdown: Walk Left Down
+        walk_down: Walk Down
+        walk_rightdown: Walk Right Down
+        walk_right: Walk Right
+        walk_rightup: Walk Right Up
+        destroy: Destroy
+        destroy_up: Destroy Up
+        destroy_leftup: Destroy Left Up
+        destroy_left: Destroy Left
+        destroy_leftdown: Destroy Left Down
+        destroy_down: Destroy Down
+        destroy_rightdown: Destroy Right Down
+        destroy_right: Destroy Right
+        destroy_rightup: Destroy Right Up
+        attack: Attack
+        attack_up: Attack Up
+        attack_leftup: Attack Left Up
+        attack_left: Attack Left
+        attack_leftdown: Attack Left Down
+        attack_down: Attack Down
+        attack_rightdown: Attack Right Down
+        attack_right: Attack Right
+        attack_rightup: Attack Right Up

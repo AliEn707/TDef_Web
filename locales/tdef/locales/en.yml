@@ -1,0 +1,7 @@
+en:
+  tdef:
+    locales:
+      locale: Locale
+      key: Key
+      value: Value
+      delete_locale: Do you want to delete next locale?

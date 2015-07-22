@@ -5,14 +5,14 @@
 		margin: 0px;
 	}
 </style>
-<h1>News
+<h1><%= t("news") %>
 	<%for_admin do%>
 		<%= link_to t("posts.add"), new_post_path %>
 	<%end%>
 </h1>
-<%cache("#{Post.select(:updated_at).order(:updated_at).last.updated_at.to_i}#{cache_lang_admin}") do %>
+<%cache("#{Post.select(:updated_at).order(:updated_at).last.updated_at.to_i}_#{cache_lang}") do %>
 	<% @posts.each do |post_| %>
-		<%cache("#{post_.id}#{post_.updated_at}#{cache_lang_admin}") do%>
+		<%cache("#{post_.id}_#{post_.updated_at.to_i}_#{cache_lang}") do%>
 			<%post=post_.translation_by_lang(@lang)%>
 			<table class="table table-bordered table-striped post">
 				<thead>

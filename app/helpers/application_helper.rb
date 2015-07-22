@@ -68,7 +68,7 @@ module ApplicationHelper
 		current_user.email+current_user.updated_at
 	end
 	
-	def cache_lang_admin
+	def cache_lang
 		"#{current_user.locale}_#{current_user.admin}" rescue  cookies[:locale]
 	end
 	

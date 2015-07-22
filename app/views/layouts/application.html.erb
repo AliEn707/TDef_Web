@@ -41,7 +41,7 @@
 		}  
 	</style>
 	<%end%>
-	<%cache(cache_lang_admin) do %>
+	<%cache(cache_lang) do %>
 		<div class="navbar navbar-inverse navbar-static-top">
 			<div class="navbar-inner">
 				<div class="container-fluid">
@@ -58,18 +58,17 @@
 							<%menu.each do |m|%>
 								<%if m[0]["right"]!=true then%>
 									<%if !m[0]["path"].nil? then%>
-										<li <%='class=nav-collapse' if m[0]['show'].nil?%>><%= link_to t(m[0]['name']), m[0]['path']  %></li>
+										<li <%='class=nav-collapse' if m[0]['show'].nil?%>><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
 									<%else%>
-										<%pre=(m[0]['noprefix']) ? "" : "#{m[0]['name']}."%>
 										<li class="dropdown <%="nav-collapse" if m[0]['show'].nil?%>">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-												<%=(m[0]['noprefix']) ? m[0]['name'] : t(m[0]['name'])%>
+												<%=(m[0]['noprefix']) ? m[0]['name'] : t("menu.#{m[0]['name']}")%>
 												<b class="caret"></b>
 											</a>
 											<ul class="dropdown-menu">
 												<%1.step(m.size-1,1) do |i|%>
 													<li>
-														<%= link_to t("#{pre}#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %>
+														<%= link_to t("menu.#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %>
 													</li>
 												<%end%>
 											</ul>
@@ -82,17 +81,16 @@
 							<%menu.each do |m|%>
 								<%if m[0]["right"]==true then%>
 									<%if !m[0]["path"].nil? then%>
-										<li <%='class=nav-collapse' if m[0]['show'].nil?%>><%= link_to t(m[0]['name']), m[0]['path']  %></li>
+										<li <%='class=nav-collapse' if m[0]['show'].nil?%>><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
 									<%else%>
-										<%pre=(m[0]['noprefix']) ? "" : "#{m[0]['name']}."%>
 										<li class="dropdown <%="nav-collapse" if m[0]['show'].nil?%>">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-												<%=(m[0]['noprefix']) ? m[0]['name'] : t(m[0]['name'])%>
+												<%=(m[0]['noprefix']) ? m[0]['name'] : t("menu.#{m[0]['name']}")%>
 												<b class="caret"></b>
 											</a>
 											<ul class="dropdown-menu">
 												<%1.step(m.size-1,1) do |i|%>
-													<li><%= link_to t("#{pre}#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %></li>
+													<li><%= link_to t("menu.#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %></li>
 												<%end%>
 											</ul>
 										</li>
@@ -137,7 +135,7 @@
 				</p>
 			</div>
 		</div> <!-- /container -->
-	<%cache("offcanvas#{cache_lang_admin}") do %>
+	<%cache("offcanvas#{cache_lang}") do %>
 		<%= render "tech_info" %>
 		<div aria-hidden="true" id="offcanvas" class="uk-offcanvas">
 			<div class="uk-offcanvas-bar uk-offcanvas-bar-flip">
@@ -145,17 +143,16 @@
 					<%menu.each do |m|%>
 						<%if (m[0]["right"]!=true && m[0]['show'].nil?) then%>
 							<%if !m[0]["path"].nil? then%>
-								<li ><%= link_to t(m[0]['name']), m[0]['path']  %></li>
+								<li ><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
 							<%else%>
-								<%pre=(m[0]['noprefix']) ? "" : "#{m[0]['name']}."%>
 								<li aria-expanded="false" class="uk-parent">
 									<a href="#" >
-										<%=(m[0]['noprefix']) ? m[0]['name'] : t(m[0]['name'])%>
+										<%=(m[0]['noprefix']) ? m[0]['name'] : t("menu.#{m[0]['name']}")%>
 									</a>
 									<ul class="uk-nav-sub">
 										<%1.step(m.size-1,1) do |i|%>
 											<li>
-												<%= link_to  t("#{pre}#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %>
+												<%= link_to  t("menu.#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %>
 											</li>
 										<%end%>
 									</ul>
@@ -166,16 +163,15 @@
 					<%menu.each do |m|%>
 						<%if (m[0]["right"]==true && m[0]['show'].nil?) then%>
 							<%if !m[0]["path"].nil? then%>
-								<li ><%= link_to t(m[0]['name']), m[0]['path']  %></li>
+								<li ><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
 							<%else%>
-								<%pre=(m[0]['noprefix']) ? "" : "#{m[0]['name']}."%>
 								<li aria-expanded="false" class="uk-parent">
 									<a href="#" >
-										<%=(m[0]['noprefix']) ? m[0]['name'] : t(m[0]['name'])%>
+										<%=(m[0]['noprefix']) ? m[0]['name'] : t("menu.#{m[0]['name']}")%>
 									</a>
 									<ul class="uk-nav-sub">
 										<%1.step(m.size-1,1) do |i|%>
-											<li><%= link_to  t("#{pre}#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %></li>
+											<li><%= link_to  t("menu.#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %></li>
 										<%end%>
 									</ul>
 								</li>

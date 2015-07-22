@@ -1,0 +1,7 @@
+en:
+  tdef:
+    maps:
+      preview: Preview
+      name: Name
+      ready: Ready
+      description: Description

@@ -8,6 +8,7 @@ class PostsController < ApplicationController
 	def index
 		@lang=current_user.locale rescue cookies[:locale] || "en"
 		@posts = Post.order(:created_at=>:desc)
+		@posts = @posts.where(Post.arel_table[:created_at].lt(Time.now-60.minutes)) if (!current_user || !current_user.admin)
 	end
 
 	# GET /posts/1

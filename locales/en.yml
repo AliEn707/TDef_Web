@@ -1,8 +1,30 @@
 ﻿en:
+  menu:
+    tdef: Tdef
+    locales: Locales
+    game: Game
+    map_editor: Map editor
+    maps: Maps
+    map_servers: Map servers
+    npc_types: Npc types
+    tower_types: Tower types
+    social: Social
+    profile: Profile
+    search: Search
+    friends: Friends
+    messages: Messages
+    news: News
+    sign_in: Sign in
+    sign_up: Sign up
+    edit_registration: Edit registration
+    sign_out: Sign out
+    en: En
+    ru: Ru
+  news: News
   hello: Hello
   test: This is only test
-  message_sent: Message sent
   sign_in: Sign in
-  delete_locale: Do you want to delete next locale?
-  locale_not_found: Locale not found
-  locale_deleted: Locale deleted
+  sign_up: Sign up
+  add: Add
+  ok: Ok
+  apply_changes: Apply changes

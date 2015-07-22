@@ -14,7 +14,7 @@ sudo add-apt-repository ppa:git-core/ppa
 #wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt-get update
 
-sudo apt-get upgrade && sudo apt-get install curl htop screen gcc g++ git-core phoronix-test-suite nodejs libgd2-xpm-dev postgresql-client autossh build-essential sudo libpq-dev
+sudo apt-get upgrade && sudo apt-get install curl htop screen gcc g++ git-core phoronix-test-suite nodejs libgd2-xpm-dev postgresql-client autossh build-essential libpq-dev
 
 touch ~/.rvmrc
 echo -e "export rvm_max_time_flag=20\nCFLAGS=\"-march=native -O3 -ffast-math -pipe -fomit-frame-pointer\"\nrvm_configure_env=(CFLAGS=\"-march=native -O3 -ffast-math -pipe -fomit-frame-pointer\")" >> ~/.rvmrc

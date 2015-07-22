@@ -19,4 +19,4 @@ if [ $COMPILE_ASSETS -eq 1 ]; then
 	bundle exec rake assets:precompile
 fi
 #add check for error and stop server if 
-rails_server restart
+rails_server start

@@ -91,7 +91,7 @@ function locale_remove(obj){
 	tr=obj.parentNode.parentNode.parentNode
 	var form=document.getElementById("remove_form")
 	var input=document.getElementById("newloc")
-	var locale=prompt('<%=t(:delete_locale)%>',input.value)
+	var locale=prompt('<%=t("tdef.locales.delete_locale")%>',input.value)
 	if (locale){
 		input.value=locale
 		form.submit()

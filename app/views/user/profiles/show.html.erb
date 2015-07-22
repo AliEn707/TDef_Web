@@ -7,7 +7,7 @@
 <p>
 	<% @user_profile.properties.each do |p,v| %>
 		<div>
-			<strong><%=t(p)%>:</strong>
+			<strong><%=t("user.profile.#{p}")%>:</strong>
 			<%= v %>
 		</div>
 	<% end %>
@@ -15,7 +15,7 @@
 
 <%for_admin do%>
 	<p>
-		<strong><%=t("profile.email")%>:</strong>
+		<strong><%=t("user.profile.email")%>:</strong>
 		<%= @user_profile.user.email %>
 	</p>
 <%end%>
