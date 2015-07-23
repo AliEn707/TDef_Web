@@ -53,14 +53,13 @@ TDefWeb::Application.configure do
 
 	# Set to :debug to see everything in the log.
 #	config.log_level = :info
-	config.log_level = :fatal
 
 	# Prepend all log lines with the following tags.
 	# config.log_tags = [ :subdomain, :uuid ]
 
 	# Use a different logger for distributed setups.
 	# config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
-
+	
 	# Use a different cache store in production.
 	if (!ENV['REDIS_HOST'].nil? || !ENV['REDIS_PORT'].nil?) then
 		host=ENV['REDIS_HOST'] || "localhost"
@@ -107,12 +106,18 @@ TDefWeb::Application.configure do
 		address:              'smtp.yandex.ru',
 		port:                 '587',
 		domain:               'wsstudio.tk',
-		user_name:            'test@wsstudio.tk',
-		password:             'testtest',
+		user_name:            'mail@wsstudio.tk',
+		password:               ENV["RAILS_MAIL_PASSWORD"],
 		authentication:       'login',
 		enable_starttls_auto: true  }
-	config.action_mailer.default_options = {from: 'test@wsstudio.tk'}
+	config.action_mailer.default_options = {from: 'mail@wsstudio.tk'}
 #	Rails.application.routes.default_url_options[:host] = 'wsstudio.tk'
 	config.action_mailer.default_url_options = { host: 'wsstudio.tk', port: 80 }
 
+
+  # Set the logging destination(s)
+  config.log_to = %w[email]
+
+  # Show the logging configuration on STDOUT
+  config.show_log_configuration = false
 end

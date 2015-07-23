@@ -43,4 +43,9 @@ config.action_mailer.default_options = {from: 'test@wsstudio.tk'}
   
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
+  # Set the logging destination(s)
+  config.log_to = %w[stdout file]
+
+  # Show the logging configuration on STDOUT
+  config.show_log_configuration = true
 end

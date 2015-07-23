@@ -87,8 +87,10 @@ gem "recaptcha", require: "recaptcha/rails"
 
 gem "mail"
 
+
 #for sending mails with log
-#gem 'logging-rails', :require => 'logging/rails'
+gem 'logging-rails', :require => 'logging/rails'
+gem 'logging-email', require: 'logging'
 
 #for delayed jobs
 #rails generate delayed_job:active_record
