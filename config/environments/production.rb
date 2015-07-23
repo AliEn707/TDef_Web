@@ -113,6 +113,6 @@ TDefWeb::Application.configure do
 		enable_starttls_auto: true  }
 	config.action_mailer.default_options = {from: 'test@wsstudio.tk'}
 #	Rails.application.routes.default_url_options[:host] = 'wsstudio.tk'
-	config.action_mailer.default_url_options = { host: 'wsstudio.tk', port: 3000 }
+	config.action_mailer.default_url_options = { host: 'wsstudio.tk', port: 80 }
 
 end

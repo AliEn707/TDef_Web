@@ -52,3 +52,7 @@ echo -e "EscapeChar none\nServerAliveCountMax 5\nServerAliveInterval 5" >> ~/.ss
 
 #if ping very slow
 #echo "nameserver 8.8.8.8"| sudo tee /etc/resolv.conf
+
+#for set aouto dis check set
+#FSCKFIX=yes
+#in /etc/default/rcS

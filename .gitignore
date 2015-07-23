@@ -20,5 +20,4 @@
 Gemfile.lock
 /public/assets
 db/schema.rb
-config/initializers/secret_key.rb
 config/database.yml

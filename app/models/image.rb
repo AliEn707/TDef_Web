@@ -38,8 +38,6 @@ class Image < ActiveRecord::Base
 		self.resize!(0,0,{out_type: :png})
 	end
 	
-	
-	
 	def size
 		FastImage.size(StringIO.new(self.raw))
 	end
