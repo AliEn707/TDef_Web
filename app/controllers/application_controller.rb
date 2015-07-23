@@ -15,22 +15,22 @@ class ApplicationController < ActionController::Base
 	end
 	
 	def set_locale
-		locale=I18n.default_locale
+		@locale=I18n.default_locale
 		if !current_user.nil?
-			locale=current_user.locale
+			@locale=current_user.locale
 			if !params[:locale].nil?
 				current_user.locale=params[:locale]
 				current_user.save
 				redirect_to :back
 			end
 		else
-			locale=cookies[:locale] if !cookies[:locale].nil?
+			@locale=cookies[:locale] if !cookies[:locale].nil?
 			if !params[:locale].nil?
 				cookies[:locale]=params[:locale]
 				redirect_to :back
 			end
 		end
-		I18n.locale = locale
+		I18n.locale = @locale
 	end
 	
 	private	
