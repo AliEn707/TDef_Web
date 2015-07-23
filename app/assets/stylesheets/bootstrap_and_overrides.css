@@ -22,6 +22,10 @@ body {
 	padding-right: 0px;
 }
 
+.nav {
+	padding-left: 0px;
+}
+
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-submenu:hover > a, .dropdown-submenu:focus > a { 
 background-color: #333333;
 background-image: linear-gradient(to bottom, #969696, #000000);
