@@ -14,8 +14,12 @@ export RUBY_GC_MALLOC_LIMIT=60000000
 #export RAILS_WEBSERV=thin
 #export MEMSTORE_SIZE=384 
 #export USE_OJ=true 
+
 export RAILS_PEPPER=""
 export RAILS_SECRET=""
+export RECAPCHA_PUBLIC_KEY=""
+export RECAPCHA_PRIVATE_KEY=""
+
 
 export UPDATE_DB=0 
 export COMPILE_ASSETS=0 

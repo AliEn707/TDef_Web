@@ -1,4 +1,5 @@
 ﻿en:
+  recaptcha_error: Recapcha not recognized. Please try again.
   menu:
     tdef: Tdef
     locales: Locales

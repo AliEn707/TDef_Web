@@ -83,7 +83,7 @@ gem 'rack-mini-profiler', group: :development
 gem "twitter-bootstrap-rails"
 
 gem "devise", "3.2.4"
-gem "recaptcha"
+gem "recaptcha", require: "recaptcha/rails"
 
 gem "mail"
 
