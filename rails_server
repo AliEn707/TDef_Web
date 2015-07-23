@@ -19,10 +19,12 @@ export RAILS_PEPPER=""
 export RAILS_SECRET=""
 export RECAPCHA_PUBLIC_KEY=""
 export RECAPCHA_PRIVATE_KEY=""
+export RAILS_LOG_MAIL=""
+export RAILS_MAIL_PASSWORD=""
 
 
 export UPDATE_DB=0 
-export COMPILE_ASSETS=0 
+
 
 CHILD_NODES=""
 
