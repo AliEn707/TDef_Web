@@ -4,3 +4,12 @@
     edit: Edit
     destroy: Destroy
     add_translation: Add translation
+    created: Post created
+    updated: Post updated
+    not_created: Post not created
+    not_updated: Post not updated
+    translations:
+      created: Translation created
+      updated: Translation updated
+      not_created: Translation not created
+      not_updated: Translation not updated

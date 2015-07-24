@@ -5,10 +5,10 @@ class MessagesController < ApplicationController
 		type=:notice
 		notice=""
 		if (@message.save)
-			notice="message_sent"
+			notice=t("messages.sent")
 		else
 			type=:alert
-			notice="message_error"
+			notice=t("messages.not_sent")
 		end
 		render layout: false
 	end

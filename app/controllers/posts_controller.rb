@@ -6,7 +6,6 @@ class PostsController < ApplicationController
 	# GET /posts
 	# GET /posts.json
 	def index
-		@lang=current_user.locale rescue cookies[:locale] || "en"
 		@posts = Post.order(:created_at=>:desc)
 		@posts = @posts.where(Post.arel_table[:created_at].lt(Time.now-60.minutes)) if (!current_user || !current_user.admin)
 	end
@@ -35,9 +34,9 @@ class PostsController < ApplicationController
 		if @post.save then
 			set_images
 			Image.where(imageable_id: nil).where(Image.arel_table[:created_at].lt(Time.now-60.minutes)).destroy_all
-			redirect_to posts_path, notice: 'Post was successfully created.'
+			redirect_to posts_path, notice: t("posts.created")
 		else
-			render action: 'new' 
+			render action: 'new', alert: t("posts.not_created")
 		end
 	end
 
@@ -47,9 +46,9 @@ class PostsController < ApplicationController
 		if @post.update(post_params)
 			@post.images.where.not(id: params["img_ids"]).destroy_all
 			set_images
-			redirect_to posts_path, notice: 'Post was successfully updated.' 
+			redirect_to posts_path, notice: t("posts.updated") 
 		else
-			render action: 'edit' 
+			render action: 'edit' , alert: t("posts.not_updated")
 		end
 	end
 
