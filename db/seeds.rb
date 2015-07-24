@@ -16,6 +16,44 @@ if (User.all.size==0) then
 	u.admin=true
 	u.save
 	p "User seeded"
+	
+else
+	role=false
+	profile=false
+	User.all.each do |u|
+		if (!u.profile) then
+			u.role=User::Profile.create(user: u)
+			profile=true
+		end
+		if (!u.role) then
+			u.role=User::Role.create(user: u)
+			role=true
+		end
+	end
+	p "Profiles added" if profile
+	p "Roles added" if role
+end
+
+if (User::Profile.all.size!=0) then
+	cleaned=false
+	User::Profile.all.each do |p|
+		if (!p.user) then
+			p.destroy
+			cleaned=true
+		end
+	end
+	p "User::Profiles cleaned" if cleaned
+end
+
+if (User::Role.all.size!=0) then
+	cleaned=false
+	User::Role.all.each do |r|
+		if (!r.user) then
+			r.destroy
+			cleaned=true
+		end
+	end
+	p "User::Roles cleaned" if cleaned
 end
 
 if (Tdef::Map.all.size==0) then

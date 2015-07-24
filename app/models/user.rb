@@ -21,8 +21,11 @@ class User < ActiveRecord::Base
 	has_many :news, class_name: "Post"
 	
 	has_one :profile
+	has_one :role
 	
 	after_create :add_profile
+	after_create :add_role
+	
 	def friends
 #		User.where(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
 		friends_in.where(id: friendships.select(:friend_id))
@@ -39,21 +42,18 @@ class User < ActiveRecord::Base
 #		User.where.not(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
 	end
 	
+	#check if user has role
+	def has_role?(role)
+		role.accept.include?(role)
+	end
+	
+	private
+	
 	def add_profile
 		self.profile=User::Profile.create(user: self)
 	end
-=begin	
-	 def self.serialize_from_session(key, salt)
-		single_key = key.is_a?(Array) ? key.first : key
-		User.where(:id => single_key).entries.first
-		p 
+	
+	def add_role
+		self.role=User::Role.create(user: self)
 	end
-=end	
 end
-
-
-=begin
-File.open('C:/Output.txt', 'wt', encoding: 'UTF-16LE') do |f|
-  f.puts register_mark
-end
-=end
