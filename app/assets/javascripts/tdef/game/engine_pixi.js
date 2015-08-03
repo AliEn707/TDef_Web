@@ -1,6 +1,8 @@
 ﻿var locales={};
 var maps={};
 
+var offset=22;
+	
 function TDefEngine(place, opt){
 	opt = opt || {};
 	opt.defines=opt.defines || {};
@@ -9,7 +11,7 @@ function TDefEngine(place, opt){
 	this.webgl=opt.webgl || true;
 	this.frameTime=opt.frameTime || 1000/30;
 	var width=place.offsetWidth || window.innerWidth;
-	var height=window.innerHeight - 10 - (place.offsetTop || 0);
+	var height=window.innerHeight - offset - (place.offsetTop || 0);
 	this.stage = new PIXI.Stage(0x000000);
 	// create a renderer instance
 	this.renderer = opt.webgl ? new PIXI.autoDetectRenderer(width, height)  : new PIXI.CanvasRenderer(width, height);
@@ -67,7 +69,7 @@ TDefEngine.prototype.resize=function (){
 	var that = getEngine();
 	var place=that.place;
 	var width=place.offsetWidth || window.innerWidth;
-	var height=window.innerHeight - 10 - (place.offsetTop || 0);
+	var height=window.innerHeight - offset - (place.offsetTop || 0);
 	
 	that.renderer.resize(width,height);
 	that.map.resize(width,height);
