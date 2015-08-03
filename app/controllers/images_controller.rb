@@ -15,7 +15,7 @@ class ImagesController < ApplicationController
 			not_found if (format!="png")
 			
 			file_format="image/#{format}"#image.format
-			send_data(data, type: file_format, filename: "#{id}.#{format}")	
+			send_data(data, type: file_format, filename: "#{id}.#{format}", disposition:'inline')	
 		end
 	end
 	
