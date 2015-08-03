@@ -4,6 +4,7 @@
 	</p>
 <% end %>
 <p>
+	<strong>Id:</strong><%=@user_profile.user.id%>
 	<% @user_profile.properties.each do |p,v| %>
 		<div>
 			<strong><%=t("user.profile.#{p}")%>:</strong>
