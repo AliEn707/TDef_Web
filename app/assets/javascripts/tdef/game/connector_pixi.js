@@ -22,9 +22,9 @@ function getConnector() {
 ///public network functions
 
 //connect to public
-//publicConnect("localhost","7001","test","12345678901234567890123456789012")
-function publicConnect(host,port, name, pass) {
-	getConnector().publicConnect(host,port,name,pass);
+//publicConnect("localhost","7001","test","123456")
+function publicConnect(host,port, name, token) {
+	getConnector().publicConnect(host,port,name,token);
 }
 
 //callback on public autentification fail

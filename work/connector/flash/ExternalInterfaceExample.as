@@ -217,7 +217,7 @@ package {
 		}
 	}
 	private var user:String;
-	private var pass:String;
+	private var token:int;
 	private var user_id:int=0;
 	
 	private function sendPublic(value:String):int {
@@ -231,7 +231,7 @@ package {
 	        logJS("Try to connect\n");
 		output.appendText(host+" "+port+"\n");
 		user=u;
-		pass=p;
+		token=int(p);
 		publicSock= new Socket();
 		publicSock.endian = Endian.LITTLE_ENDIAN;
 		publicSock.addEventListener(Event.CONNECT, publicConnectHandler); 
@@ -327,7 +327,7 @@ package {
 					id=publicSock.readInt();
 					publicSock.writeInt(user.length);
 					publicSock.writeUTFBytes(user);
-					publicSock.writeUTFBytes(pass);
+					publicSock.writeInt(token);
 					publicSock.flush();
 					publicMsg++;
 					logJS("got "+id);
