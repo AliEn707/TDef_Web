@@ -69,7 +69,7 @@ class User::ProfilesController < ApplicationController
 	end
 	
 	def search
-		string="%#{params[:string].gsub('_','\_').gsub('%','\%')}%"
+		string="%#{params[:string].gsub('_','\_').gsub('%','\%').gsub(/( )+/,"%")}%"
 		@user_profiles=Rails.cache.fetch("search/profile/#{string}",expires_in: 10.minutes){User::Profile.where(User::Profile.arel_table[:properties].matches(string))}
 		render 'index', layout: false
 	end

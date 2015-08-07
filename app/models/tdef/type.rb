@@ -1,5 +1,5 @@
 module Tdef::Type
   def self.table_name_prefix
-    'tdef_type_'
+    Tdef.table_name_prefix+'type_'
   end
 end

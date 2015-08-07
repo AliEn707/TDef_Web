@@ -11,6 +11,6 @@ class CreateMessages < ActiveRecord::Migration
     end
     
     add_index :messages, :user_id
-    add_index :messages, :msg_dest_id
+    add_index :messages, [:msg_dest_id, :msg_dest_type]
   end
 end
