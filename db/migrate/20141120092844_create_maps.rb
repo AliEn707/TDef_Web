@@ -7,6 +7,9 @@ class CreateMaps < ActiveRecord::Migration
 	t.text :description
 	t.integer :players
 	t.boolean :completed
+	
+	t.integer :user_id
+	t.integer :last_modified_id
 	t.timestamps
     end
   add_index :tdef_maps, :name, :unique => true

@@ -18,14 +18,15 @@ class Tdef::LocalesController < ApplicationController
 			end
 			if !request.POST['name'].nil? 
 				request.POST['name'].each_index do |i_i|
+					p request.POST['name']
 					name=request.POST['name'][i_i]
+					h_h[name]=Tdef::Locale.where(name: name).first if h_h[name].nil?
+					h_h[name]=Tdef::Locale.create(name: name) if h_h[name].nil?
 					key=request.POST['key'][i_i]
 					value=request.POST['value'][i_i]
 					if  (key!="" && name!="" && value!="")
-						h_h[name]=Tdef::Locale.find_by(name: name) if h_h[name].nil?
-						h_h[name]=Tdef::Locale.create(name: name) if h_h[name].nil?
 						locale=Tdef::LocaleData.where(key: key, locale_id: h_h[name].id).first
-						locale=Tdef::LocaleData.create(key: key, accepted: true) if locale.nil?
+						locale=Tdef::LocaleData.create(key: key) if locale.nil?
 						locale.value=value;
 						locale.user_id=current_user.id;
 						h_h[name].locale_datas<<locale

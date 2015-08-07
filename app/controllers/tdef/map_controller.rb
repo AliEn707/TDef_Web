@@ -42,7 +42,7 @@ class Tdef::MapController < ApplicationController
 			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
 			m_m.last_modified=current_user
 			m_m.save
-			notice="map_saved"
+			notice="tdef.map_saved"
 		end
 		if request.get? && request.GET['id'] then
 			m_m=Tdef::Map.find(request.GET['id'])
@@ -50,10 +50,6 @@ class Tdef::MapController < ApplicationController
 			m_m.last_modified=current_user
 			m_m.save
 		end
-#		if !m_m.nil?
-#			m_m.write_file if m_m.completed
-#		end
-#		File.open("out.txt","a"){|f| f.write(request.POST['img']);f.puts}
 		redirect_to tdef_map_all_path, notice: t(notice)
 	end
 	

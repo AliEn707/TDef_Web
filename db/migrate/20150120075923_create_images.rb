@@ -4,7 +4,7 @@ class CreateImages < ActiveRecord::Migration
       t.text :data
       t.string :format
       
-      t.intrger :imageable_id
+      t.integer :imageable_id
       t.string :imageable_type
       
       t.timestamps
