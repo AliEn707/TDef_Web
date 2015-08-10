@@ -125,3 +125,21 @@ ButtonContainer.prototype.keyPadAddButton=function (pos,opt){
 ButtonContainer.prototype.keyPadGetButton=function (pos){
 	return this.keypad[pos];
 }
+
+Object.defineProperty(ButtonContainer.prototype, 'height', {
+    get: function() {
+        return  this.getChildAt(0).height;
+    },
+    set: function(value) {
+       this.getChildAt(0).height = value;
+    }
+});
+
+Object.defineProperty(ButtonContainer.prototype, 'width', {
+    get: function() {
+        return  this.getChildAt(0).width;
+    },
+    set: function(value) {
+	this.getChildAt(0).width = value;
+    }
+});

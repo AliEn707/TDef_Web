@@ -411,22 +411,6 @@ var bullet_types={
 }
 
 
-var engine = new TDefEngine(document.getElementById("gameDiv"),
-						{
-							webgl: true, 
-							frameTime:1000/30, 
-							textures:{
-								health: {
-									src:"/imgtest/health.png"
-								}, 
-								tower_set_background:{
-									src:"/imgtest/build.png"
-								},
-								npc_set_background:{
-									src:"/imgtest/build.png"
-								}
-							}
-						});
 // create a texture from an image path
 var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 // create a new Sprite using the texture
@@ -455,7 +439,7 @@ for(var i=0;i<4;i++)
 for (var i =0;i<size*size;i++)
 	nodes.push(0)
 //	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
-engine.setMap("pvz11_11")//map must be on server  //pvz11_11 
+engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
 //engine.stage.addChild(bunny)
 data=[
 	{msg:3,id:0,objtype:"Bullet",create:1,grid:{$:0,x:4.374,y:9.4},$:0,type:2,owner:1,source:{$:0,x:7.125,y:8.5},$:0},
@@ -464,13 +448,14 @@ data=[
 	{msg:3,id:3,objtype:"Bullet",create:1,grid:{$:0,y:27.125,x:28.5},$:0,type:2,owner:2,source:{$:0,y:24.374,x:29.4},$:0},
 ]
 for (var i=0;i<1;i++){	
-//	engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})
+	engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})
 //	engine.map.objects[i]=new Tower({})
 //	engine.map.objects[i]=new Bullet(data[i])
 //	engine.map.objects[i].update({grid:{x:2,y:2},time: 1});
 //	engine.map.objects[i].update({grid:{x:5,y:5},time: 5000});
-//	engine.stage.addChild(engine.map.objects[i])
+	engine.stage.addChild(engine.map.objects[i])
 }
+Loading.init({engine:engine});
 
 //var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
 //var tile=new PIXI.TilingSprite(t,400,100)
@@ -478,10 +463,11 @@ for (var i=0;i<1;i++){
 //engine.stage.addChild(tile)
 
 //var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
-//var t2=getTextureFrames(npc_types[0].textures["idle"]);
+//var t2=getTextureFrames(npc_types[1].textures["idle"]);
 //var t3=[PIXI.Texture.fromImage("/imgtest/build.png")];
 
 //engine.map.objects["button"]=new ButtonContainer({sprite:{textures:t3,opt:{width:400,height:400}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
+//engine.map.objects["button"].addButton({sprite:{textures:t3,opt:{width:200,height:200}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
 //engine.map.objects["button"].keyPadInit({rows: 3, columns: 1, buttonSize: {x:100,y:100}});
-//engine.map.objects["button"].keyPadAddButton(4,{sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+//engine.map.objects["button"].keyPadAddButton(3,{sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 //engine.stage.addChild(engine.map.objects["button"]);

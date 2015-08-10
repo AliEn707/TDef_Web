@@ -24,9 +24,14 @@ function getConnector() {
 //connect to public
 //publicConnect("localhost","7001","test","123456")
 function publicConnect(host,port, name, token) {
+	//TODO: add animation
 	getConnector().publicConnect(host,port,name,token);
 }
-
+//callback on success autorisation
+function publicConnected(){
+	console.log("connected");
+	//TODO: add skip loading, public drawing
+}
 //callback on public autentification fail
 function publicAuthFail(){
 	console.log("public auth fail");
@@ -77,6 +82,7 @@ function mapMoveHero(node){
 //connect to mapserver
 function mapConnect(host,port) {
 	getConnector().mapConnect(host,port);
+	//TODO: add animation on screen
 }
 
 //connect to mapserver
@@ -88,11 +94,20 @@ function mapClose(host,port) {
 function mapConnectionError(val){
 	console.log("can't connect: "+val);
 	//TODO add handler
-//	var engine=getEngine();
-//	engine.map.clean;
+	getEngine().map.clean();
 }
 
-//callback if cant connect
+//callback on connection established
+function mapConnected(){
+	console.log("connected");
+	//TODO: break animation of connection
+}
+//callback on map connection close
+function mapClosed(){
+	console.log("closed");
+	getEngine().map.clean();
+}
+
 
 //callback on map auth
 function mapAuthData(value) {
@@ -172,7 +187,7 @@ function addConnectorSWF(place) {
 	param.setAttribute('value', 'sameDomain')
 	obj.appendChild(param)
 	var embed = document.createElement('embed')
-	embed.setAttribute('src', '/javascripts/tdef/game/connector.swf')
+	embed.setAttribute('src', '<%= asset_url('connector.swf') %>')
 	embed.setAttribute('quality', 'high')
 	embed.setAttribute('bgcolor', '#869ca7')
 	embed.setAttribute('width', '500')

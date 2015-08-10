@@ -1,0 +1,28 @@
+var engine = new TDefEngine(document.getElementById("gameDiv"),
+						{
+							webgl: true, 
+							frameTime:1000/30, 
+							textures:{
+								health: {
+									src:"/imgtest/health.png"
+								}, 
+								tower_set_background:{
+									src:"/imgtest/build.png"
+								},
+								npc_set_background:{
+									src:"/imgtest/build.png"
+								},
+								loading:{
+									src:"<%= asset_url('loading.png') %>",
+									width:128,
+									height:128,
+									frames:8
+								},
+								loading_background:{
+									src:"<%= asset_url('loading_background.png') %>",
+									frames: 1
+								}
+							}
+						});
+						
+//images from assets can be used like this <%= asset_url('image.png') %>

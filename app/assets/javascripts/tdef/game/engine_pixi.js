@@ -72,7 +72,11 @@ TDefEngine.prototype.resize=function (){
 	var height=window.innerHeight - offset - (place.offsetTop || 0);
 	
 	that.renderer.resize(width,height);
-	that.map.resize(width,height);
+	if (that.map)
+		that.map.resize(width,height);
+	for (var i in that.stage.children)
+		if (that.stage.children[i].resize)
+			that.stage.children[i].resize();
 }
 
 TDefEngine.prototype.outerSize= function (size){
@@ -243,13 +247,13 @@ TDefEngine.prototype.keysProcessor=function() {
 }
 
 TDefEngine.prototype.objectsProcessor=function() {
-	var objs=this.map.objects;
-	
+	var objs=this.stage.children;
 	for(var i in objs){
 		if (objs[i].proceed)
 			objs[i].proceed();
 	}
 }
+	
 
 TDefEngine.prototype.closeMap=function() {
 	mapClose();

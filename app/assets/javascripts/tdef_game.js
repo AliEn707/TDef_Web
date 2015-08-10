@@ -24,6 +24,8 @@
 //= require ./tdef/game/bullet_pixi.js
 //= require ./tdef/game/tower_pixi.js
 //= require ./tdef/game/connector_pixi.js
+//= require ./tdef/game/loading.js
+//= require ./tdef/game/init_pixi.js
 //= require ./tdef/game/test_pixi.js
 
 

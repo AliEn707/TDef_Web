@@ -282,6 +282,7 @@ Grid.prototype.clean = function(){
 		this.engine.stage.removeChild(this.objects[i]);
 	}
 	this.engine.stage.removeChild(this);
+	//TODO: add switch to public
 }
 
 

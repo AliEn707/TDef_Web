@@ -108,7 +108,7 @@ package {
 		}
 	}
 	
-      private function checkJavaScriptReady():Boolean {
+        private function checkJavaScriptReady():Boolean {
             var R:Boolean = ExternalInterface.call("isReady");
             return R;
         }
@@ -227,6 +227,12 @@ package {
 		return 0;
 	}
 	
+	private function publicConnected():void {
+		if (isReady) {
+			ExternalInterface.call("publicConnected");
+		}
+	}
+		
 	private function connectPublic(host:String, port:String, u:String, p:String):int {
 	        logJS("Try to connect\n");
 		output.appendText(host+" "+port+"\n");
@@ -292,6 +298,7 @@ package {
 		publicAuthorised=false;
 		publicTimer.removeEventListener(TimerEvent.TIMER, publicTimeDataHandler);
 		publicTimer.stop();
+		publicAuthFail();
 	}
 	
 	//time event wrapper for data handler
@@ -343,6 +350,7 @@ package {
 					logJS("answer: "+id);
 					if (id!=0){
 						publicAuthorised=true;
+						publicConnected();
 						publicOutObj="([";
 					}else{
 						publicSock.close();
@@ -505,6 +513,18 @@ package {
 		mapConnectCloseHandler(event);
 	}
 	
+	private function mapConnected():void {
+		if (isReady) {
+			ExternalInterface.call("mapConnected");
+		}
+	}
+	
+	private function mapClosed():void {
+		if (isReady) {
+			ExternalInterface.call("mapClosed");
+		}
+	}
+	
 	private function connectMap(host:String, port:String):int {
 	        logJS("Try to connect\n");
 		output.appendText(host+" "+port+"\n");
@@ -572,6 +592,7 @@ package {
 	
 	private function mapConnectHandler(event:Event):void {
 		logJS("connected " + event+"\n");
+		mapConnected();
 		//send hello
 		mapSock.writeUTFBytes("FlashHello^_^");
 		mapSock.flush();
@@ -587,6 +608,7 @@ package {
   	private function mapConnectCloseHandler(event:Event):void {
 		logJS("closed" + event+"\n");
 		mapAuthorised=false;
+		mapClosed();
 		dataTimer.removeEventListener(TimerEvent.TIMER, mapTimeDataHandler);
 		dataTimer.stop();
 	}

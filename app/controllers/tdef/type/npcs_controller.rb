@@ -1,7 +1,7 @@
 class Tdef::Type::NpcsController < ApplicationController
   before_action :set_tdef_type_npc, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!,  except: [:types]
-  before_action :is_admin?
+  before_action :is_admin?,  except: [:types]
 
   # GET /tdef/type/npcs
   # GET /tdef/type/npcs.json

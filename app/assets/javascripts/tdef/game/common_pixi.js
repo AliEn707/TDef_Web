@@ -65,18 +65,19 @@ function proceedDragging(data){
 	}
 }
 
+//opt={src:"path", height: int, width: int, frames: int}
 function getTextureFrames(opt){
-	var a=[];
-//	for (var i in opt){
-		var base=new PIXI.BaseTexture.fromImage(opt.src);
-		var height=opt.height || base.height;
+	if (!opt.textures){
+		opt.textures=[];
+		opt.base=new PIXI.BaseTexture.fromImage(opt.src);
+		var height=opt.height || opt.base.height;
 		var width=opt.width || height;
-		var frames=opt.frames || base.width/size;
-//		a[i]=[];
+		var frames=opt.frames || opt.base.width/height || 1;
+		//		a[i]=[];
 		for(var j=0;j<frames;j++){
-			a.push(new PIXI.Texture(base, new PIXI.Rectangle(width*j, 0, width, height)));
+			opt.textures.push(new PIXI.Texture(opt.base, new PIXI.Rectangle(width*j, 0, width, height)));
 		}
-//	}
-	return a;
+	}
+	return opt.textures;
 }
 
