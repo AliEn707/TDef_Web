@@ -14,7 +14,6 @@ function ButtonContainer(opt){
 	this.actions=opt.actions;
 	if (this.actions)
 		this.interactive=true;
-	console.log(this.actions)
 	if (this.actions && this.actions.indexOf("drag")>-1){
 		this.mousedown = this.touchstart = startDragging;
 		this.mouseup = this.mouseupoutside = this.touchend = this.touchendoutside = stopDragging;

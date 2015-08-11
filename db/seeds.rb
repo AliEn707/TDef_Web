@@ -37,16 +37,16 @@ if (Tdef::MapServer.all.size==0) then
 	p "Tdef::MapServer seeded"
 end
 
-if (Tdef::Locale.all.size==0) then
-	locale=Tdef::Locale.create(name:"en")
-	locale.locale_datas<<Tdef::LocaleData.create(key:"#test1",value:"value of test key",user_id: 2)
-	locale.locale_datas<<Tdef::LocaleData.create(key:"#test2",value:"значение тестового ключа",user_id: 2)
-	locale.locale_datas<<Tdef::LocaleData.create(key:"#test3",value:"テストキーの値を",user_id: 2)
-	locale.locale_datas<<Tdef::LocaleData.create(key:"#test_map",value:"Начать test карту",user_id: 2)
-	locale.save
-	Tdef::Locale.create(name:"ru")
-	Tdef::Locale.create(name:"jp")
-	p "Tdef::Locale seeded"
+$available_locales.each do |l|
+	locale=Tdef::Locale.create(name:l) if ((locale=Tdef::Locale.where(name:l).first).nil?)
+	{
+		"#loading" => "Loading..."
+	}.each do |k,v|
+		 if (locale.locale_datas.where(key: k).first.nil?)	then
+			locale.locale_datas<<Tdef::LocaleData.create(key: k,value: v,user_id: 2)
+			p "Tdef::Locale #{l} added #{k}"
+		end
+	end
 end
 
 if (Friendship.all.size==0) then

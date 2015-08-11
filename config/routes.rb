@@ -43,9 +43,7 @@ TDefWeb::Application.routes.draw do
 	get "/TDef/mapservers/info/:id" => 'tdef/map_server#info' , as: "tdef_mapserver_info"
 
 	get "/TDef/locales/show_all" => "tdef/locales#show_all" , as: "tdef_locales_all"
-	post "/TDef/locales/show_all" => "tdef/locales#show_all"
 	post "/TDef/locales/edit" => "tdef/locales#edit", as: "tdef_locales_edit"
-	delete "/TDef/locales/remove" => "tdef/locales#remove", as: "tdef_locales_remove"
 
 	post "/TDef/map/upload" => "tdef/map#upload", as: "tdef_map_upload"
 	get "/TDef/map/upload" => "tdef/map#upload"
@@ -57,6 +55,8 @@ TDefWeb::Application.routes.draw do
 	get "/TDef/map/delete/:id" => "tdef/map#delete", as: "tdef_map_delete"
 	#map rout for ajax load
 	get "/TDef/map/get" => "tdef/map#get", as: "tdef_map_get"
+	#map rout for ajax load
+	get "/TDef/locale" => "tdef/locales#get", as: "tdef_locale_get"
 	#types routes for js load
 	get "/TDef/types/npc" => "tdef/type/npcs#types", as: "tdef_types_npc"
 	get "/TDef/types/tower" => "tdef/type/towers#types", as: "tdef_types_tower"
