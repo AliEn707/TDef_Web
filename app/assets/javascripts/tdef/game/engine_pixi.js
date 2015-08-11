@@ -1,5 +1,4 @@
-﻿var locales={};
-var maps={};
+﻿var maps={};
 
 var offset=22;
 	
@@ -102,7 +101,7 @@ TDefEngine.prototype.weelHandler= function (e){
 TDefEngine.prototype.parseMap = function(map){
 	if (!maps[map]){
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', '/TDef/map/get?name='+map, false);
+		xhr.open('GET', Routes.tdef_map_get_path()+'?name='+map, false);
 		xhr.send();
 		if (xhr.status!=200)
 			console.log(xhr)

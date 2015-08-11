@@ -68,7 +68,7 @@ class Tdef::Type::NpcsController < ApplicationController
 		end
 		out.to_json
 	end
-	render :text=> data, layout: false
+	send_data(data,type: "text/javascript; charset=utf-8", filename: "npc_types.js", disposition:'inline')	
   end
   private
 

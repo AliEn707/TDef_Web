@@ -76,6 +76,6 @@ class Tdef::MapController < ApplicationController
 			data["mg"]=map.grafics
 			data.to_json
 		end
-		render :text=> out, layout: false
+		send_data(out,type: "application/json; charset=utf-8", filename: "#{params["name"]}.json", disposition:'inline')	
 	end
 end
