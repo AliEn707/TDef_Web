@@ -439,7 +439,9 @@ for(var i=0;i<4;i++)
 for (var i =0;i<size*size;i++)
 	nodes.push(0)
 //	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
-engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
+
+//engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
+//engine.loadMap()
 //engine.stage.addChild(bunny)
 data=[
 	{msg:3,id:0,objtype:"Bullet",create:1,grid:{$:0,x:4.374,y:9.4},$:0,type:2,owner:1,source:{$:0,x:7.125,y:8.5},$:0},
@@ -448,14 +450,13 @@ data=[
 	{msg:3,id:3,objtype:"Bullet",create:1,grid:{$:0,y:27.125,x:28.5},$:0,type:2,owner:2,source:{$:0,y:24.374,x:29.4},$:0},
 ]
 for (var i=0;i<1;i++){	
-	engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})
+//	engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})
 //	engine.map.objects[i]=new Tower({})
 //	engine.map.objects[i]=new Bullet(data[i])
 //	engine.map.objects[i].update({grid:{x:2,y:2},time: 1});
 //	engine.map.objects[i].update({grid:{x:5,y:5},time: 5000});
-	engine.stage.addChild(engine.map.objects[i])
+//	engine.stage.addChild(engine.map.objects[i])
 }
-Loading.init({engine:engine});
 
 //var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
 //var tile=new PIXI.TilingSprite(t,400,100)

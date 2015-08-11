@@ -14,7 +14,8 @@ function ButtonContainer(opt){
 	this.actions=opt.actions;
 	if (this.actions)
 		this.interactive=true;
-	if (this.actions){
+	console.log(this.actions)
+	if (this.actions && this.actions.indexOf("drag")>-1){
 		this.mousedown = this.touchstart = startDragging;
 		this.mouseup = this.mouseupoutside = this.touchend = this.touchendoutside = stopDragging;
 		this.mousemove = this.touchmove = proceedDragging;
@@ -140,6 +141,8 @@ Object.defineProperty(ButtonContainer.prototype, 'width', {
         return  this.getChildAt(0).width;
     },
     set: function(value) {
-	this.getChildAt(0).width = value;
+	this.unfocused.width = value;
+	if (this.focused)
+	    this.focused.width = value;
     }
 });

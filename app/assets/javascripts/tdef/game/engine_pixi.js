@@ -16,14 +16,15 @@ function TDefEngine(place, opt){
 	// create a renderer instance
 	this.renderer = opt.webgl ? new PIXI.autoDetectRenderer(width, height)  : new PIXI.CanvasRenderer(width, height);
 	this.renderer.view.oncontextmenu=function (){return false;}
-	// add the renderer view element to the DOM
-	place.appendChild(this.renderer.view);
-	this.place=place;
-	//requestAnimFrame( this.render );
+	//lets load textures
 	this.textures=opt.textures || {};
 	for (var i in this.textures){
 		this.textures[i].texture=new PIXI.BaseTexture.fromImage(this.textures[i].src);
 	}
+	// add the renderer view element to the DOM
+	place.appendChild(this.renderer.view);
+	this.place=place;
+	//requestAnimFrame( this.render );
 	window.engine=this;
 	window.onresize = this.resize;
 	this.keys=[]
@@ -151,7 +152,10 @@ TDefEngine.prototype.parseMap = function(map){
 }
 
 TDefEngine.prototype.setMap= function (m){
-	var opt=this.parseMap(m)
+	this.map_name=m;
+}
+TDefEngine.prototype.loadMap= function (){
+	var opt=this.parseMap(this.map_name)
 	var map=new Grid(opt.size);
 	map.engine=this;
 	this.map=map;

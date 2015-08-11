@@ -81,3 +81,28 @@ function getTextureFrames(opt){
 	return opt.textures;
 }
 
+function fitDimensions(from, to){ //from -screen to - wallpaper
+	var height=from.width/to.width*to.height
+	var width=from.height/to.height*to.width
+	if (width>=from.width){
+		return {width:width,height:from.height};
+	}
+	if (height>=from.height){
+		return {width:from.width,height:height};
+	}
+	return from;
+	
+}
+//when image loading for a long time
+function afterTextureLoad(texture, func){
+	if (texture.baseTexture.hasLoaded)
+		func();
+	else
+		texture.addEventListener("update", func);
+}
+
+function afterSpriteLoad(sprite, func){
+	afterTextureLoad(sprite.texture,func);
+}
+
+

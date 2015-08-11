@@ -184,10 +184,7 @@ Npc.prototype.setHealthSprite= function (s){
 		that.health_sprite.position.y=-s*0.8;
 		that.health_sprite.position.x=-that.health_sprite.width*0.5;
 	}
-	if (this.health_sprite.texture.baseTexture.hasLoaded)
-		func();
-	else
-		this.health_sprite.texture.addEventListener("update", func);
+	afterSpriteLoad(this.health_sprite,func);
 	this.health_sprite.anchor.x=0;
 	this.health_sprite.anchor.y=1;
 	this.addChild(this.health_sprite);

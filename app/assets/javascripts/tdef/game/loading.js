@@ -1,31 +1,46 @@
+//TODO: add text #loading 
 var Loading={
-	init: function (opt){
+	init: function (opt, callback){
 		opt=opt || {}
 		var engine=opt.engine || getEngine();
 		var textures=getTextureFrames(engine.textures.loading_background)
-		var opts={sprite:{textures:textures, opt:{width:engine.renderer.width,height:engine.renderer.height,anchor:{x:0,y:0}},position:{x:0,y:0},actions:[]}};
-		Loading.object=new ButtonContainer(opts);
+		afterTextureLoad(textures[0],function (){
+			var size=fitDimensions({width:engine.renderer.width,height:engine.renderer.height},{width:textures[0].width,height:textures[0].height});
+			var opts={sprite:{textures:textures, opt:{width:size.width,height:size.height,anchor:{x:0.5,y:0.5}}},actions:["drag"]};
+			Loading.object=new ButtonContainer(opts);
+			//next need to stop gragging on other objects (used with actions[drag])
+			Loading.object.mousedown=Loading.object.touchstart=Loading.object.mousemove=Loading.object.touchmove=function () {};
+			Loading.object.position={x:engine.renderer.width/2,y:engine.renderer.height/2}
+			Loading.object.depth=-100;
 			
-		var t=getTextureFrames(engine.textures.loading);
-		opts={sprite:{textures:t, opt:{anchor:{x:0.5,y:0.5}}}};
-		var animation=Loading.object.addButton(opts);
-		animation.position.x=Loading.object.width/2;
-		animation.position.y=Loading.object.height/2;
-		
-		Loading.object.resize= function(){
-			var e=engine;
-			this.width=e.renderer.width;
-			this.height=e.renderer.height;
-			animation.position.x=this.width/2;
-			animation.position.y=this.height/2;
-		}
-		engine.stage.addChild(Loading.object);
+			var t=getTextureFrames(engine.textures.loading);
+			var opts={sprite:{textures:t, opt:{anchor:{x:0.5,y:0.5}}}};
+			var animation=Loading.object.addButton(opts);
+			
+			Loading.object.resize= function(){
+				var e=engine;
+				var size=fitDimensions({width:engine.renderer.width,height:engine.renderer.height},{width:textures[0].width,height:textures[0].height});
+				this.width=size.width;
+				this.height=size.height;
+				this.position.x=engine.renderer.width/2;
+				this.position.y=engine.renderer.height/2;
+			}
+			Loading.hide();
+			engine.stage.addChild(Loading.object);	
+			if (callback)
+				callback();
+		})
 	},
 	show:function (){
-		Loading.object.visible=true
+		if (Loading.object)
+			Loading.object.visible=true
 	},
 	hide:function (){
-		Loading.object.visible=false
+		if (Loading.object)
+			Loading.object.visible=false
+	},
+	setText: function (){
+		//set text on screen
 	}
 }
 
