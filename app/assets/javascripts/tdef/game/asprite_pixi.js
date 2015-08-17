@@ -1,7 +1,30 @@
+/*
+textures 
+[ ]-array of textures
+params
+{
+	//passed for AObject
+opt	current_frame: int;
+opt	loop: boolean;
+opt	countStep: float;
+opt	callbacks: {
+		obj:{ } - object contaning actions for this pbject
+		actions: {
+			endAnimation: string;
+		} - containing names of actions
+	}
+opt	delays: {
+		last_frame: int;
+	}
+	//used here
+opt	width: int;
+opt	height: int;
+opt	anchor: {x: int ,y: int};
+}
 
+*/
 function ASprite(textures,params){
 	AObject.call(this, params);
-	
 	this.setFrames(textures, params);
 	this.addChild(this.frames[this.current_frame]);
 }

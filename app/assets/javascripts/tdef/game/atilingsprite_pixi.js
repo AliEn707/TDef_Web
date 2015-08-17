@@ -27,6 +27,8 @@ ATilingSprite.prototype.setFrames= function (textures, params){
 		this.frames[i]=new PIXI.TilingSprite(textures[i], this.srcWidth, this.srcHeight);
 		if (params.anchor)
 			this.frames[i].anchor=params.anchor;
+		if (params.scale)
+			this.frames[i].scale=params.scale;
 	}
 }
 
