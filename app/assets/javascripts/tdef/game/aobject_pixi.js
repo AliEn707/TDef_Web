@@ -102,3 +102,7 @@ AObject.prototype.getScale= function (){
 AObject.prototype.getAttr= function (attr){
 	return this.frames[this.current_frame][attr];
 }
+
+AObject.prototype.proceed= function (){
+	return this.upFrame();
+}

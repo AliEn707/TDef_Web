@@ -28,7 +28,7 @@ function Grid(size,opt){
 	this.mouseup = this.mouseupoutside = this.touchend = this.touchendoutside = stopDragging;
 	
 	this.mousemove = this.touchmove = proceedDragging;
-	
+	this.mouseweel=this.weelHandler;
 	
 	this.nodes= new PIXI.DisplayObjectContainer();//PIXI.SpriteBatch()
 	this.nodes.rotation=-Math.PI/4;
@@ -55,6 +55,22 @@ function Grid(size,opt){
 
 focusTexturePath="/imgtest/build.png";
 buildableTexturePath="/imgtest/tower_mark.png";
+
+Grid.prototype.weelHandler= function (m){
+	var e=m.originalEvent;
+	var that=this.engine;
+	e = e || window.event;
+	var x=e.clientX || e.layerX;
+	var y= e.clientY || e.layerY;
+	if (e.type=="wheel" || e.type=="mousewheel"){
+		// wheelDelta ?? ???? ??????????? ?????? ?????????? ????????
+		var delta = e.deltaY || e.detail || e.wheelDelta;
+		//change zoom
+		this.zoom(1+that.settings.zoomSpeed*(delta<0 ? -1 : 1)*that.settings.weelInverted, x, y)
+		//add another hendlers
+//		that.map.update()
+	}
+}
 
 Grid.prototype.resize = function(x,y){
 	this.transformCorrection();

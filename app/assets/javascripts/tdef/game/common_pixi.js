@@ -1,3 +1,16 @@
+//add perv stats on screen
+function showStats(place){
+	if (!stats)
+		return;
+	stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+	// align top-left
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.left = (place.x || place.left) + 'px';
+	stats.domElement.style.top = (place.y || place.top) + 'px';
+	
+	document.body.appendChild( stats.domElement );
+}
+
 //objects gragging hack
 var dragObj;
 function incredibleHack(){
@@ -9,10 +22,12 @@ function incredibleHack(){
 }
 
 function startDragging(data) {
+	var f=false;
 	//hack for dragging objects with dragging parents
-	if (!dragObj || dragObj==this.parent)
+	if (!dragObj || dragObj==this.parent){
 		dragObj=this;
-	
+		f=true;
+	}
 	if (this.actions.indexOf("drag")>-1 ){
 		if (!this.mousePressPoint)
 			this.mousePressPoint={};
@@ -30,8 +45,8 @@ function startDragging(data) {
 	var stage=this.stage || getEngine().stage;
 	this.screenPressPoint.x = data.getLocalPosition(stage).x;
 	this.screenPressPoint.y = data.getLocalPosition(stage).y;
-	
-	incredibleHack.call(this.stage);
+	if (f)
+		incredibleHack.call(this.stage);
 }
 
 function stopDragging(data) {
@@ -45,7 +60,7 @@ function stopDragging(data) {
 			screenPressPoint.y = data.getLocalPosition(stage).y;
 			if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
 					Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
-				if (this.pressAction)
+				if (this.pressAction && (dragObj==this) )
 					this.pressAction();
 			}
 		}
@@ -64,6 +79,7 @@ function proceedDragging(data){
 			this.transformCorrection();
 	}
 }
+
 
 //opt={src:"path", height: int, width: int, frames: int}
 function getTextureFrames(opt){

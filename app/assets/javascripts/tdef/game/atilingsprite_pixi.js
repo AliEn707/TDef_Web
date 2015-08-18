@@ -17,7 +17,8 @@ ATilingSprite.prototype.constructor= ATilingSprite
 
 ATilingSprite.prototype.setHeight= function (height){
 	if (height){
-		this.frames[this.current_frame].height=height*this.srcHeight/(this.srcSize*this.engine.map.scale.x);
+		for (var i in this.frames)
+			this.frames[i].height=height*this.srcHeight/(this.srcSize*this.engine.map.scale.x);
 	}
 }
 
@@ -37,3 +38,27 @@ ATilingSprite.prototype.setFrame= function (n,texture){
 	if (this.current_frame==n)
 		this.updateFrame();
 }
+
+Object.defineProperty(ATilingSprite.prototype, 'height', {
+    get: function() {
+	var t=this.frames[this.current_frame];
+	if (t)
+		return  t.height;
+    },
+    set: function(value) {
+	for (var i in this.frames)
+		this.frames[i].height=value;
+    }
+});
+
+Object.defineProperty(ATilingSprite.prototype, 'width', {
+    get: function() {
+	var t=this.frames[this.current_frame];
+	if (t)
+		return  t.width;
+    },
+    set: function(value) {
+	for (var i in this.frames)
+		this.frames[i].width=value;
+    }
+});

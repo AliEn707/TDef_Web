@@ -12,6 +12,10 @@
 </form>
 <div id="gameDiv" style="position:relative;"></div>
 
+
+<%= javascript_include_tag "stats" %>
+<script>var stats = new Stats();</script>
+
 <%= javascript_types_npc %>
 <%= javascript_types_tower %>
 <%= javascript_locales %>
@@ -34,6 +38,8 @@ function sendToJavaScript(value) {
 function sendToActionScript(value) {
 	getConnector().sendToActionScript(value);
 }
+
+
  </script>
 
 

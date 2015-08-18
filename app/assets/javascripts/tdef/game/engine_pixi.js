@@ -22,6 +22,8 @@ function TDefEngine(place, opt){
 	}
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
+	//show statistic info
+	showStats(place.getBoundingClientRect());
 	this.place=place;
 	//requestAnimFrame( this.render );
 	window.engine=this;
@@ -54,6 +56,9 @@ function getEngine(){
 }
 
 TDefEngine.prototype.render= function (){
+	if (stats)
+		stats.begin();
+	
 	var that=getEngine();
 //	requestAnimFrame( that.render );
 	//that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
@@ -63,6 +68,8 @@ TDefEngine.prototype.render= function (){
 	shellSort(that.stage.children, function(a,b){return (a.depth)<(b.depth);})
 	that.renderer.render(that.stage);
 	//bunny.nextFrame()
+	if (stats)
+		stats.end();
 }
 
 TDefEngine.prototype.resize=function (){
@@ -83,20 +90,6 @@ TDefEngine.prototype.outerSize= function (size){
 	return Math.floor((1+(size+1)%2+size)/2)*(Math.floor(size/2)+size%2);
 }
 
-TDefEngine.prototype.weelHandler= function (e){
-	var that=getEngine();
-	e = e || window.event;
-	var x=e.clientX || e.layerX;
-	var y= e.clientY || e.layerY;
-	if (e.type=="wheel" || e.type=="mousewheel"){
-		// wheelDelta не дает возможность узнать количество пикселей
-		var delta = e.deltaY || e.detail || e.wheelDelta;
-		//change zoom
-		that.map.zoom(1+that.settings.zoomSpeed*(delta<0 ? -1 : 1)*that.settings.weelInverted, x, y)
-		//add another hendlers
-//		that.map.update()
-	}
-}
 
 TDefEngine.prototype.parseMap = function(map){
 	if (!maps[map]){
@@ -205,7 +198,6 @@ TDefEngine.prototype.loadMap= function (){
 	this.map.transformCorrection();
 			
 	//setup handlers
-	addWeelHendler(this.renderer.view,this.weelHandler);
 	window.onkeydown=this.keysHadler
 	window.onkeyup=this.keysHadler
 	

@@ -119,7 +119,6 @@ ButtonContainer.prototype.proceed=function (){
 			this.buttons[i].proceed();
 }
 
-
 ButtonContainer.prototype.transformCorrection=function (){
 	if (this.fitParent && this.parent.innerArea){
 		if (this.position.x<this.parent.innerArea.x)
@@ -133,8 +132,39 @@ ButtonContainer.prototype.transformCorrection=function (){
 	}
 }
 
+Object.defineProperty(ButtonContainer.prototype, 'height', {
+    get: function() {
+	var t=this.getChildAt(0)
+	if (t)
+		return  t.height;
+    },
+    set: function(value) {
+	if (this.unfocused)
+		this.unfocused.height = value;
+	if (this.focused)
+	    this.focused.height = value;
+    }
+});
+
+Object.defineProperty(ButtonContainer.prototype, 'width', {
+    get: function() {
+	var t=this.getChildAt(0)
+	if (t)
+		return  t.width;
+    },
+    set: function(value) {
+	if (this.unfocused)
+		this.unfocused.width = value;
+	if (this.focused)
+	    this.focused.width = value;
+    }
+});
+
+//keypad container with rows and cols of buttons
+
 ButtonContainer.prototype.keyPadInit=function (obj){
 	obj=obj || {};
+	this.fitParent=true;
 	this.keypad={};
 	this.rows=obj.rows || 1;
 	this.columns=obj.columns || 1;
@@ -167,30 +197,3 @@ ButtonContainer.prototype.keyPadGetButton=function (pos){
 	return this.keypad[pos];
 }
 
-Object.defineProperty(ButtonContainer.prototype, 'height', {
-    get: function() {
-	var t=this.getChildAt(0)
-	if (t)
-		return  t.height;
-    },
-    set: function(value) {
-	if (this.unfocused)
-		this.unfocused.height = value;
-	if (this.focused)
-	    this.focused.height = value;
-    }
-});
-
-Object.defineProperty(ButtonContainer.prototype, 'width', {
-    get: function() {
-	var t=this.getChildAt(0)
-	if (t)
-		return  t.width;
-    },
-    set: function(value) {
-	if (this.unfocused)
-		this.unfocused.width = value;
-	if (this.focused)
-	    this.focused.width = value;
-    }
-});

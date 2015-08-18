@@ -458,9 +458,9 @@ for (var i=0;i<1;i++){
 //	engine.stage.addChild(engine.map.objects[i])
 }
 
-//var t=PIXI.Texture.fromImage("/imgtest/red.jpeg");
+//var t=getTextureFrames(npc_types[1].textures["idle"])
 //var tile=new PIXI.TilingSprite(t,400,100)
-//var tile=new ATilingSprite([t],{loop:true, width: 400, height:100})
+//var tile=new ATilingSprite(t,{loop:true, width: 400, height:100})
 //engine.stage.addChild(tile)
 
 //var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
