@@ -53,7 +53,7 @@ function Player(opt){
 		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize});
 		for(var i in this.set.npc)
 			if (parseInt(i) || parseInt(i)==0){
-				this.set.npc[i].button=buttons.keyPadAddButton(parseInt(i),{sprite:{textures: t,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnNpc(this.args);}});
+				this.set.npc[i].button=buttons.keyPadAddButton({sprite:{textures: t,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnNpc(this.args);}}, parseInt(i));
 			}
 		this.set.npc.buttons=buttons;
 		engine.map.objects["npc_set"]=buttons;
@@ -66,7 +66,7 @@ function Player(opt){
 		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize});
 		for(var i in this.set.tower)
 			if (parseInt(i) || parseInt(i)==0){
-				this.set.tower[i].button=buttons.keyPadAddButton(parseInt(i),{sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}});
+				this.set.tower[i].button=buttons.keyPadAddButton({sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}},parseInt(i));
 			}
 		this.set.tower.buttons=buttons;
 		engine.map.objects["tower_set"]=buttons;

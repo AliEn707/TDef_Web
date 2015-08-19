@@ -467,8 +467,9 @@ for (var i=0;i<1;i++){
 //var t2=getTextureFrames(npc_types[1].textures["idle"]);
 //var t3=[PIXI.Texture.fromImage("/imgtest/build.png")];
 
-//engine.map.objects["button"]=new ButtonContainer({sprite: {textures: t3,opt: {width:400,height:400}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
-//engine.map.objects["button"].addButton({sprite:{textures:t3,opt:{width:200,height:200}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
-//engine.map.objects["button"].keyPadInit({rows: 3, columns: 1, buttonSize: {x:100,y:100}});
-//engine.map.objects["button"].keyPadAddButton(2,{sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
-//engine.stage.addChild(engine.map.objects["button"]);
+//var button=new ButtonContainer({sprite: {textures: t3,opt: {width:400,height:400}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
+//engine.stage.addChild(button);
+//button.addButton({sprite:{textures:t3,opt:{width:200,height:200}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
+//button.keyPadInit({rows: 3, columns: 1, buttonSize: {x:100,y:100}, scrolling:{type: "vertical", area:{x:0,y:0,width:300,height:200}}});
+//button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+//var a=button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});

@@ -160,21 +160,83 @@ Object.defineProperty(ButtonContainer.prototype, 'width', {
     }
 });
 
-//keypad container with rows and cols of buttons
+//hide part of button, outside from params
+ButtonContainer.prototype.hidePart=function (from,per){
+	if (!this.mask){
+		this.mask=new PIXI.Graphics();
+		this.addChild(this.mask);
+	}
+	if (!this._masking)
+		this._masking={};
+	//hack like caching
+	if (this._masking.from==from && this._masking.per==per)
+		return;
+	if (per<0.01) 
+		per=0.01;
+	var o=this.getChildAt(0)
+	var obj={};
+	var height=this.$height || this.height;
+	var width=this.$width || this.width;
+	if (from=='left'){
+		obj.y=0;
+		obj.height=height;
+		obj.x=0;
+		obj.width=width*per;
+	}
+	if (from=='right'){
+		obj.y=0;
+		obj.height=height;
+		obj.x=width*(1-per);
+		obj.width=width*per;
+	}
+	if (from=='top'){
+		obj.y=0;
+		obj.height=height*(per);
+		obj.x=0;
+		obj.width=width;
+	}
+	if (from=='bottom'){
+		obj.y=height*(1-per);
+		obj.height=height*(per);
+		obj.x=0;
+		obj.width=width;
+	}
+	this.mask.clear();
+	this.mask.beginFill(0x8bc5ff, 0.4);
+	this.mask.drawRect(obj.x,obj.y,obj.width,obj.height);
+	this.mask.endFill();
+	this._masking.from=from; 
+	this._masking.per=per;
+}
 
+//keypad container with rows and cols of buttons
+/*
+{
+	rows: int
+	columns: int
+	buttonSize: {x: int, y: int}
+	buttonDist: int
+opt	scrolling:{
+		type: "vertical" || "horisontal" (may be n first chars) [vertical]
+		area: {x: int, y: int, width: int, height: int}
+	}
+}
+*/
 ButtonContainer.prototype.keyPadInit=function (obj){
 	obj=obj || {};
 	this.fitParent=true;
-	this.keypad={};
+	this.keypad=[];
 	this.rows=obj.rows || 1;
 	this.columns=obj.columns || 1;
 	this.buttonSize=obj.buttonSize || {x: this.unfocused.getAttr("width")/this.columns,y: this.unfocused.getAttr("height")/this.rows};
 	this.buttonDist=obj.buttonDist || 5;
+	this.keyPadScrollerInit(obj.scrolling);
 }
 
-ButtonContainer.prototype.keyPadAddButton=function (pos,opt){
+ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
 	var button = this.addButton(opt);
 	if (this.keypad){
+		pos=pos || this.keypad.length;
 		this.keypad[pos]=button;
 		if (pos> this.rows*this.columns)
 			console.log("Button position "+pos+" out of keypad");
@@ -189,11 +251,93 @@ ButtonContainer.prototype.keyPadAddButton=function (pos,opt){
 		button.$height=this.buttonSize.y;
 		if (button.actions.indexOf("drag")>-1)
 			delete button.actions[button.actions.indexOf("drag")];
+		if (this.scrolling){
+			button.actions.push("drag");
+			button.interactive=true;
+			button.mousemove = button.touchmove = function (data){
+				this.parent.dragging=this.dragging
+				this.parent.mousemove(data);
+				this.parent.dragging=false;
+			};
+			button.mousedown = button.touchstart = startDragging;
+			button.mouseup = button.mouseupoutside = button.touchend = button.touchendoutside = stopDragging;
+			button.beforePressAction=function(data){ this.parent.mousedown(data) }
+		}
 	}
 	return button;
 }
 
 ButtonContainer.prototype.keyPadGetButton=function (pos){
 	return this.keypad[pos];
+}
+
+ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
+	if (!scroll)
+		return;
+	scroll.type=scroll.type || "v"; //default
+	this.scrolling={};
+	this.interactive=true;
+	
+	this.removeChild(this.focused)
+	delete this.focused
+	this.removeChild(this.unfocused)
+	delete this.unfocused
+	
+	this.scrolling.position={}; //for position correction
+	this.scrollingPosition(this.position);
+	if ("vertical".indexOf(scroll.type)==0){
+		this.scrolling.dir="x";
+	}else{
+		this.scrolling.dir="y";
+	}
+	this.afterMoveAction=this.scrollingAction;
+	
+	if (this.parent){
+		this.parent.scrollArea=scroll.area || clone(this.parent.innerArea);
+		if (this.parent.scrollArea){
+			this.parent.scrollArea.x+=this.position.x;
+			this.parent.scrollArea.y+=this.position.y;
+			this.parent.scrollArea.width+=this.position.x;
+			this.parent.scrollArea.height+=this.position.y;
+		}
+	}
+}
+
+ButtonContainer.prototype.scrollingPosition=function (pos){
+	this.scrolling.position.x=pos.x;
+	this.scrolling.position.y=pos.y;			
+}
+
+ButtonContainer.prototype.scrollingAction=function (data){
+	var dir=this.scrolling.dir == 'x' ? 'y' : 'x';
+	this.position[this.scrolling.dir]=this.scrolling.position[this.scrolling.dir];
+	this.scrollingPosition(this.position);
+	var that=this.parent;
+	if (that && that.scrollArea){
+		var size= dir=='x' ? 'width' : 'height';
+		for (var i in this.children){
+			var pos=this.children[i].position[dir]+this.position[dir];
+			if (pos+this.children[i][size]<that.scrollArea[dir] ||
+					pos>that.scrollArea[dir]+that.scrollArea[size])
+				this.children[i].visible=false;
+			else{
+				this.children[i].visible=true;
+				var from='left';
+				var per=1;
+				if (pos<=that.scrollArea[dir] && 
+						pos+this.children[i][size]>=that.scrollArea[dir]){
+					per=1-(that.scrollArea[dir]-pos)/this.children[i][size];
+					from= dir=='x' ? 'left' : 'bottom';
+				}else
+				if (pos<=that.scrollArea[dir]+that.scrollArea[size] &&
+						pos+this.children[i][size]>=that.scrollArea[dir]+that.scrollArea[size]){
+					var per=(that.scrollArea[dir]+that.scrollArea[size]-pos)/this.children[i][size];
+					from= dir=='x' ? 'right' : 'top';
+				}
+				this.children[i].hidePart(from, per);
+			}
+		}
+	}
+
 }
 

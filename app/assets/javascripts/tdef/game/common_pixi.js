@@ -11,6 +11,10 @@ function showStats(place){
 	document.body.appendChild( stats.domElement );
 }
 
+function clone(obj){
+	return JSON.parse(JSON.stringify(obj))
+}
+
 //objects gragging hack
 var dragObj;
 function incredibleHack(){
@@ -28,6 +32,8 @@ function startDragging(data) {
 		dragObj=this;
 		f=true;
 	}
+	if (this.beforePressAction)
+		this.beforePressAction(data);
 	if (this.actions.indexOf("drag")>-1 ){
 		if (!this.mousePressPoint)
 			this.mousePressPoint={};
@@ -47,6 +53,8 @@ function startDragging(data) {
 	this.screenPressPoint.y = data.getLocalPosition(stage).y;
 	if (f)
 		incredibleHack.call(this.stage);
+	if (this.afterPressAction)
+		this.afterPressAction(data);
 }
 
 function stopDragging(data) {
@@ -68,9 +76,10 @@ function stopDragging(data) {
 		dragObj=false;
 }
 
+
 function proceedDragging(data){
-	if (this.moveAction)
-		this.moveAction(data);
+	if (this.beforeMoveAction)
+		this.beforeMoveAction(data);
 	if(this.dragging){
 		var position = data.getLocalPosition(this.parent);
 		this.position.x = position.x - this.mousePressPoint.x;
@@ -78,6 +87,9 @@ function proceedDragging(data){
 		if (this.transformCorrection)
 			this.transformCorrection();
 	}
+	if (this.afterMoveAction)
+		this.afterMoveAction(data);
+
 }
 
 

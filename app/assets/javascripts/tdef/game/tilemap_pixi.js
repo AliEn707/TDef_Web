@@ -117,7 +117,7 @@ Grid.prototype.pressAction=function(){
 	}
 }
 
-Grid.prototype.moveAction=function(data){
+Grid.prototype.beforeMoveAction=function(data){
 	var position=data.getLocalPosition(this.stage);
 	var grid=this.screenToGrid(position.x,position.y);
 	if (!this.inArea(grid))
