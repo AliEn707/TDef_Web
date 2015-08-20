@@ -72,14 +72,14 @@ if (Tdef::Type::Npc.all.size==0) then
 		npc=Tdef::Type::Npc.new(id: i,params: {"health"=> 100, "damage"=> 2, "shield"=> 0, "support"=> 0, "see_distanse"=> 4, "attack_distanse"=> 2, "attack_speed"=> 4, "move_speed"=> 1, "cost"=> 10, "receive"=> 5, "bullet_type"=> 1, "type"=> 1})
 		
 		File.open("public/imgtest/tree.jpeg","rb"){|f| data=f.read}
-		texture=Image.create(data: data, format: "image/png")
+		texture=Image.create(data: data, format: "image/png",imageable_id: npc.id, imageable_type: npc.class.name)
 		npc.textures["idle"]=texture
 		npc.textures.attr("idle","frames",1)
 		npc.textures.attr("idle","height",204)
 		
 		n1="walk"
 		File.open("public/imgtest/#{n1[0]}l.png","rb"){|f| data=f.read}
-		texture=Image.create(data: data, format: "image/png")
+		texture=Image.create(data: data, format: "image/png",imageable_id: npc.id, imageable_type: npc.class.name)
 		npc.textures[n1]=texture
 		npc.textures.attr(n1,"frames",8)
 		npc.textures.attr(n1,"height",128)
@@ -90,7 +90,7 @@ if (Tdef::Type::Npc.all.size==0) then
 					name="#{n1}_#{n2}#{n3}"
 					fname="#{n1[0]}#{n2[0]}#{n3[0]}"
 					File.open("public/imgtest/#{fname}.png","rb"){|f| data=f.read}
-					texture=Image.create(data: data, format: "image/png")
+					texture=Image.create(data: data, format: "image/png",imageable_id: npc.id, imageable_type: npc.class.name)
 					npc.textures[name]=texture
 					npc.textures.attr(name,"frames",8)
 					npc.textures.attr(name,"height",128)	
@@ -99,7 +99,7 @@ if (Tdef::Type::Npc.all.size==0) then
 		end
 		n1="attack"
 		File.open("public/imgtest/#{n1[0]}l.png","rb"){|f| data=f.read}
-		texture=Image.create(data: data, format: "image/png")
+		texture=Image.create(data: data, format: "image/png",imageable_id: npc.id, imageable_type: npc.class.name)
 		npc.textures[n1]=texture
 		npc.textures.attr(n1,"frames",6)
 		npc.textures.attr(n1,"height",128)
@@ -110,7 +110,7 @@ if (Tdef::Type::Npc.all.size==0) then
 					name="#{n1}_#{n2}#{n3}"
 					fname="#{n1[0]}#{n2[0]}#{n3[0]}"
 					File.open("public/imgtest/#{fname}.png","rb"){|f| data=f.read}
-					texture=Image.create(data: data, format: "image/png")
+					texture=Image.create(data: data, format: "image/png",imageable_id: npc.id, imageable_type: npc.class.name)
 					npc.textures[name]=texture
 					npc.textures.attr(name,"frames",6)
 					npc.textures.attr(name,"height",128)	

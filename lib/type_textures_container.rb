@@ -54,7 +54,9 @@ class TypeTexturesContainer
 	def to_hash
 		out=@ids.dup
 		out.each do |k,v| 
-			out[k]["src"]=self[k].url
+			if (self[k]) then 
+				out[k]["src"]=self[k].url
+			end
 			out[k].delete("img")
 		end
 	end

@@ -10,9 +10,9 @@ var Loading={
 			Loading.object=new ButtonContainer(opts);
 			//next need to stop gragging on other objects (used with actions[drag])
 			Loading.object.mousemove=Loading.object.touchmove=false//function () {};
+			Loading.object.mouseweel=function(){};
 			Loading.object.position={x:engine.renderer.width/2,y:engine.renderer.height/2}
 			Loading.object.depth=-100;
-			
 			var t=getTextureFrames(engine.textures.loading);
 			var opts={sprite:{textures:t, opt:{anchor:{x:0.5,y:0.5}}}};
 			var animation=Loading.object.addButton(opts);
@@ -23,7 +23,9 @@ var Loading={
 				this.height=size.height;
 				this.position.x=engine.renderer.width/2;
 				this.position.y=engine.renderer.height/2;
+				this.hitArea={x: -engine.renderer.width/2, y: -engine.renderer.height/2, width: engine.renderer.width, height: engine.renderer.height}
 			}
+			Loading.object.resize();
 			Loading.hide();
 			engine.stage.addChild(Loading.object);	
 			if (callback)

@@ -4135,12 +4135,6 @@ PIXI.InteractionManager = function(stage)
      */
     this.onMouseUp = this.onMouseUp.bind(this);
 
-     /**
-     * @property onMouseWeel
-     * @type Function
-     */
-    this.onMouseWeel = this.onMouseWeel.bind(this);
-
     /**
      * @property onTouchStart
      * @type Function
@@ -4282,7 +4276,7 @@ PIXI.InteractionManager.prototype.setTargetDomElement = function(domElement)
     domElement.addEventListener('mousemove',  this.onMouseMove, true);
     domElement.addEventListener('mousedown',  this.onMouseDown, true);
     domElement.addEventListener('mouseout',   this.onMouseOut, true);
-    
+
     // aint no multi touch just yet!
     domElement.addEventListener('touchstart', this.onTouchStart, true);
     domElement.addEventListener('touchend', this.onTouchEnd, true);
@@ -4291,9 +4285,6 @@ PIXI.InteractionManager.prototype.setTargetDomElement = function(domElement)
     domElement.addEventListener('touchmove', this.onTouchMove, true);
 
     window.addEventListener('mouseup',  this.onMouseUp, true);
-    
-    //not in this file
-    addWeelHendler(domElement,this.onMouseWeel);
 };
 
 /**
@@ -4447,8 +4438,6 @@ PIXI.InteractionManager.prototype.onMouseMove = function(event)
         this.rebuildInteractiveGraph();
     }
 
-    
-    
     this.mouse.originalEvent = event;
 
     // TODO optimize by not check EVERY TIME! maybe half as often? //
@@ -4639,48 +4628,6 @@ PIXI.InteractionManager.prototype.onMouseUp = function(event)
             item[isDown] = false;
         }
     }
-};
-
-/**
- *
- * @method onMouseWeel
- * @param event {Event} The DOM event of a mouse button being released
- * @private
- */
-PIXI.InteractionManager.prototype.onMouseWeel = function(event)
-{
-    if (this.dirty)
-    {
-        this.rebuildInteractiveGraph();
-    }
-    
-    this.mouse.originalEvent = event;
-
-    var length = this.interactiveItems.length;
-//    this.interactionDOMElement.style.cursor = 'inherit';
-
-    for (var i = 0; i < length; i++)
-    {
-        var item = this.interactiveItems[i];
-
-        if (item.mouseweel)
-        {
-            item.__hit = this.hitTest(item, this.mouse);
-		
-            if (item.__hit)
-            {
-                //call the function!
-                if (item.mouseweel)
-                {
-                    item.mouseweel(this.mouse);
-                }
-               
-                // just the one!
-                if (!item.interactiveChildren) break;
-            }
-        }
-    }
-
 };
 
 /**

@@ -440,8 +440,8 @@ for (var i =0;i<size*size;i++)
 	nodes.push(0)
 //	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
 
-//engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
-//engine.loadMap()
+engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
+engine.loadMap()
 //engine.stage.addChild(bunny)
 data=[
 	{msg:3,id:0,objtype:"Bullet",create:1,grid:{$:0,x:4.374,y:9.4},$:0,type:2,owner:1,source:{$:0,x:7.125,y:8.5},$:0},
@@ -463,13 +463,16 @@ for (var i=0;i<1;i++){
 //var tile=new ATilingSprite(t,{loop:true, width: 400, height:100})
 //engine.stage.addChild(tile)
 
-//var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
-//var t2=getTextureFrames(npc_types[1].textures["idle"]);
-//var t3=[PIXI.Texture.fromImage("/imgtest/build.png")];
+var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
+var t2=getTextureFrames(npc_types[1].textures["walk_left"]);
+var t3=[PIXI.Texture.fromImage("/imgtest/build.png")];
 
-//var button=new ButtonContainer({sprite: {textures: t3,opt: {width:400,height:400}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
-//engine.stage.addChild(button);
+var button=new ButtonContainer({sprite: {textures: t3,opt: {width:400,height:400}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
+engine.stage.addChild(button);
 //button.addButton({sprite:{textures:t3,opt:{width:200,height:200}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
-//button.keyPadInit({rows: 3, columns: 1, buttonSize: {x:100,y:100}, scrolling:{type: "vertical", area:{x:0,y:0,width:300,height:200}}});
-//button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
-//var a=button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+button.keyPadInit({rows: 3, columns: 2, buttonSize: {x:100,y:100}, scrolling:{type: "vertical", area:{x:0,y:0,width:300,height:200}}});
+button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+button.keyPadAddButton({sprite:{textures:t2,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+button.keyPadAddButton({sprite:{textures:t3,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+var a=button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});

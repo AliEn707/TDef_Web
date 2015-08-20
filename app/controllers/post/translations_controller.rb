@@ -37,7 +37,7 @@ class Post::TranslationsController < ApplicationController
 	@post_translation = Post::Translation.new(post_translation_params.merge(user: current_user))#create can only current_user
 	if @post_translation.save
 		@post_translation.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil?
-		Image.where(imageable_id: nil).where(Image.arel_table[:created_at].lt(Time.now-60.minutes)).destroy_all
+		Image.where(imageable_id: nil, imageable_type: @post_translation.class.name).where(Image.arel_table[:created_at].lt(Time.now-60.minutes)).destroy_all
 		redirect_to posts_path, notice: t("posts.translations.created") 
 	else
 		render action: 'new' , alert: t("posts.translations.not_created")

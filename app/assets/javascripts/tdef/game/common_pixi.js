@@ -92,6 +92,44 @@ function proceedDragging(data){
 
 }
 
+function realPosition(obj){
+	if (!obj.parent || obj.parent==obj.stage){
+		return {x: obj.position.x, y: obj.position.y, scale: obj.scale.x};
+	}else{
+		var pos=realPosition(obj.parent)
+		return {x: pos.x+obj.position.x, y: pos.y+obj.position.y, scale: pos.scale.x*obj.scale.x}
+	}
+}
+
+//find object under cursor
+var lastObj;
+function findCurObject(obj, pos){
+	if (obj.interactive && obj.visible && obj.mouseweel){
+		var real=realPosition(obj);
+		var area=obj.hitArea || obj.innerArea || {x:0, y:0, width:obj.width, height:obj.height}
+		area=clone(area)
+		area.x=(area.x+real.x);
+		area.y=(area.y+real.y);
+		console.log(area.width,real.scale)
+		area.width*=real.scale;
+		area.height*=real.scale;
+		if (area.x<pos.x && area.y<pos.y && 
+			area.x+area.width>pos.x && area.y+area.height>pos.y){
+				lastObj=obj;
+		}
+	}
+	for (var i in obj.children) {
+		findCurObject(obj.children[i],pos);
+	}
+}
+
+function weelHandler(data){
+	var pos={x: data.layerX || data.clientX, y: data.layerY || data.clientY};
+	lastObj=false;
+	findCurObject(getEngine().stage, pos);
+	if (lastObj)
+		lastObj.mouseweel({originalEvent: data});
+}
 
 //opt={src:"path", height: int, width: int, frames: int}
 function getTextureFrames(opt){

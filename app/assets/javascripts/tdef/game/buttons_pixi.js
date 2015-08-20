@@ -232,7 +232,12 @@ ButtonContainer.prototype.keyPadInit=function (obj){
 	this.buttonDist=obj.buttonDist || 5;
 	this.keyPadScrollerInit(obj.scrolling);
 }
-
+/*
+	vertical/default
+	rows
+cols	123
+	456
+*/
 ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
 	var button = this.addButton(opt);
 	if (this.keypad){
@@ -240,11 +245,7 @@ ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
 		this.keypad[pos]=button;
 		if (pos> this.rows*this.columns)
 			console.log("Button position "+pos+" out of keypad");
-		var position = {
-				y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos/this.columns)*(this.buttonSize.x+this.buttonDist),
-				x: (this.innerArea.x || 0)+this.buttonDist+parseInt((pos%this.columns)/this.rows)*(this.buttonSize.y+this.buttonDist) 
-			};
-		button.position=position;
+		var position;
 		button.fitParent=true;
 		//some kind of hack
 		button.$width=this.buttonSize.x; 
@@ -262,8 +263,24 @@ ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
 			button.mousedown = button.touchstart = startDragging;
 			button.mouseup = button.mouseupoutside = button.touchend = button.touchendoutside = stopDragging;
 			button.beforePressAction=function(data){ this.parent.mousedown(data) }
+			if (this.scrolling.dir=="x"){
+				position={
+					y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos/this.columns)*(this.buttonSize.x+this.buttonDist),
+					x: (this.innerArea.x || 0)+this.buttonDist+parseInt(pos%this.columns)*(this.buttonSize.y+this.buttonDist) 
+				};
+			}else{
+				position={
+					y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos%this.rows)*(this.buttonSize.x+this.buttonDist),
+					x: (this.innerArea.x || 0)+this.buttonDist+parseInt(pos/this.rows)*(this.buttonSize.y+this.buttonDist) 
+				};
+			}
 		}
 	}
+	button.position=position || {
+		y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos/this.columns)*(this.buttonSize.x+this.buttonDist),
+		x: (this.innerArea.x || 0)+this.buttonDist+parseInt(pos%this.columns)*(this.buttonSize.y+this.buttonDist) 
+	};
+	
 	return button;
 }
 
@@ -275,7 +292,14 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 	if (!scroll)
 		return;
 	scroll.type=scroll.type || "v"; //default
-	this.scrolling={};
+	this.scrolling={
+		area: {
+			x: this.buttonDist, 
+			y: this.buttonDist, 
+			width: "vertical".indexOf(scroll.type)==0 ? 0 : this.keypad.length/this.columns*this.buttonSize.x+(this.keypad.length-1)*this.buttonDist,
+			height: "vertical".indexOf(scroll.type)!=0 ? 0 : this.keypad.length/this.rows*this.buttonSize.y+(this.keypad.length-1)*this.buttonDist,
+		}
+	};
 	this.interactive=true;
 	
 	this.removeChild(this.focused)
@@ -327,12 +351,12 @@ ButtonContainer.prototype.scrollingAction=function (data){
 				if (pos<=that.scrollArea[dir] && 
 						pos+this.children[i][size]>=that.scrollArea[dir]){
 					per=1-(that.scrollArea[dir]-pos)/this.children[i][size];
-					from= dir=='x' ? 'left' : 'bottom';
+					from= dir=='x' ? 'right' : 'bottom';
 				}else
 				if (pos<=that.scrollArea[dir]+that.scrollArea[size] &&
 						pos+this.children[i][size]>=that.scrollArea[dir]+that.scrollArea[size]){
 					var per=(that.scrollArea[dir]+that.scrollArea[size]-pos)/this.children[i][size];
-					from= dir=='x' ? 'right' : 'top';
+					from= dir=='x' ? 'left' : 'top';
 				}
 				this.children[i].hidePart(from, per);
 			}

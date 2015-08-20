@@ -49,6 +49,7 @@ function TDefEngine(place, opt){
 			}
 		};
 	this.drawInterval=window.setInterval(this.render,this.frameTime)
+	addWeelHendler(this.renderer.view, weelHandler);
 }
 
 function getEngine(){
@@ -198,9 +199,8 @@ TDefEngine.prototype.loadMap= function (){
 	this.map.transformCorrection();
 			
 	//setup handlers
-	window.onkeydown=this.keysHadler
-	window.onkeyup=this.keysHadler
-	
+	window.onkeydown=this.keysHadler;
+	window.onkeyup=this.keysHadler;
 }
 
 TDefEngine.prototype.keysHadler=function(e) {
