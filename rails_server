@@ -64,4 +64,4 @@ function rails() {
 
 
 cd $RAILS_S_ROOT_DIR
-rails $1 $2
+rails $@

@@ -25,7 +25,6 @@ module TruncateHtmlHelper
     options = args.extract_options!
     length = options[:length] || args[0] || 30
     omission = options[:omission] || args[1] || '&hellip;'
-    
     begin
       parser = REXML::Parsers::PullParser.new(input)
       encoder = HTMLEntities.new(TruncateHtmlHelper.flavor)
