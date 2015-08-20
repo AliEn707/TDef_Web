@@ -36,9 +36,11 @@
 				<tbody>
 					<tr>
 						<td>
-							<%= markdown(post.description[0..200]) %>
+							<div>
+								<%= truncate_html(markdown(post.description),length: 200).html_safe %>
+							</div>
 							<%if (post.description.size>=200) then%>
-								...<%= link_to t(:show_all),  post, remote: true%>
+								<%= link_to t(:show_all),  post, remote: true%>
 							<%end%>
 							<div class="pull-right">
 								created by <%= post.user.name %> on <%=post.creation_date%>

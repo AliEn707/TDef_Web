@@ -75,6 +75,11 @@ gem 'simple_form'
 #For MarkDown in posts
 gem 'redcarpet', "3.2.3"
 
+#for html truncate
+gem "nokogiri"
+gem "htmlentities"
+
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
