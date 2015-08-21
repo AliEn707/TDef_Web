@@ -62,12 +62,17 @@ class Tdef::Type::TowersController < ApplicationController
   def types
 	data="var tower_types="+Rails.cache.fetch('types/tower',expires_in: 30.minutes) do
 		out={}
+		images=[]
 		Tdef::Type::Tower.all.each do |t|
 			out[t.id]={"id"=>t.id}.merge(t.params)
 			out[t.id]["textures"]=t.textures.to_hash
+			out[t.id]["textures"].each do |type, tex|
+				images<<tex["src"]
+			end
 		end
-		out.to_json
+		out.to_json#+images.map!{|i| ";var a=new Image;a.src='#{i}'"}.join #preloading images
 	end
+	expires_in 20.minutes, public: true
 	send_data(data,type: "text/javascript; charset=utf-8", filename: "tower_types.js", disposition:'inline')	
   end
   private

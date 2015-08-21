@@ -134,7 +134,8 @@ function weelHandler(data){
 function getTextureFrames(opt){
 	if (!opt.textures){
 		opt.textures=[];
-		opt.base=new PIXI.BaseTexture.fromImage(opt.src);
+		if (!opt.base)
+			opt.base=new PIXI.BaseTexture.fromImage(opt.src);
 		var height=opt.height || opt.base.height;
 		var width=opt.width || height;
 		var frames=opt.frames || opt.base.width/height || 1;
