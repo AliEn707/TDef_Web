@@ -8,6 +8,23 @@ opt	focused: {
 !		textures: [] - textures for common sprite
 !		opt: {}
 	} || ASprite || ATilingSprite
+opt	text:{
+opt		position: { x: int, y: int }
+opt		anchor: { x: int, y: int }
+		data : string
+opt		style: {
+opt			font: strint - 'bold 20px Arial'
+opt			fill: string - "#000000"
+opt			stroke: string - "#000000"
+opt			strokeThickness: int
+opt			wordWrap: boolean
+opt			wordWrapWidth: int
+opt			dropShadow: boolean
+opt			dropShadowColor: string - '#000000'
+opt			dropShadowAngle: number
+opt			dropShadowDistance: int
+		} PIXI text style
+	}
 opt	actions: [] - may containes "press" "drag"
 opt	hitArea: {x: int, y: int, width: int, height: int}
 opt	innerArea: {x: int, y: int, width: int, height: int} - must be exeist if no sprite attr
@@ -81,6 +98,15 @@ function ButtonContainer(opt){
 		this.innerArea=opt.innerArea || {x:0,y:0,width:this.unfocused.getAttr("width"),height:this.unfocused.getAttr("height")};
 	this.fitParent=opt.fitParent;
 	this.innerArea=this.innerArea || {};
+		
+	if (opt.text){
+		this.text=new PIXI.Text(opt.text.data,opt.text.style)
+		if (opt.text.position)
+			this.text.position=opt.text.position;
+		if (opt.text.anchor)
+			this.text.anchor=opt.text.anchor;
+		this.addChild(this.text);
+	}
 }
 
 ButtonContainer.prototype= new PIXI.DisplayObjectContainer();
