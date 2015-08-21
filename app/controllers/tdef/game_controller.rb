@@ -7,4 +7,8 @@ class Tdef::GameController < ApplicationController
 		token=rand(2147483647*2)-2147483647#rand in max int
 		send_data "function access(){return {token:#{token},name:'#{current_user.email}'};}" , filename:"access.js"
 	end
+	
+	def init
+		render :formats=>[:js]
+	end
 end

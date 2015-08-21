@@ -29,9 +29,10 @@ function TDefEngine(place, opt){
 	window.engine=this;
 	window.onresize = this.resize;
 	this.keys=[]
-	this.settings=opt.settings || {
+	this.settings=opt.settings || { //defaults
 			moveSpeed: 4.1, 
 			zoomSpeed: 0.02,
+			scrollSpeed: 16,
 			xInverted:1, 
 			yInverted:-1, 
 			weelInverted: -1,

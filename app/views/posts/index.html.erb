@@ -37,7 +37,7 @@
 					<tr>
 						<td>
 							<div>
-								<%= truncate_html(p(markdown(post.description)), length: 200, omission: "...").html_safe %>
+								<%= truncate_html(markdown(post.description), length: 200, omission: "...").html_safe %>
 							</div>
 							<div class="pull-right">
 								created by <%= post.user.name %> on <%=post.creation_date%>

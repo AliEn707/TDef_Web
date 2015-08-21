@@ -1,32 +1,4 @@
 
-/***
-for storing delays
-Migration:
-
-$ rails g migration add_location_data_to_users location_data:text
-
-should create:
-
-class Migration0001
-  def change
-    add_column :users, :location_data, :text
-  end
-end
-
-Your Class Would Look Like:
-
-class User < ActiveRecord::Base
-  serialize :location_data
-end
-
-Available Actions:
-
-b = User.new
-b.location_data = [1,2,{foot: 3, bart: "noodles"}]
-b.save
-
-***/
-
 var npc_types1={
 	0:{
 		id: 0,
@@ -440,8 +412,8 @@ for (var i =0;i<size*size;i++)
 	nodes.push(0)
 //	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
 
-engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
-engine.loadMap()
+//engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
+//engine.loadMap()
 //engine.stage.addChild(bunny)
 data=[
 	{msg:3,id:0,objtype:"Bullet",create:1,grid:{$:0,x:4.374,y:9.4},$:0,type:2,owner:1,source:{$:0,x:7.125,y:8.5},$:0},
@@ -463,16 +435,31 @@ for (var i=0;i<1;i++){
 //var tile=new ATilingSprite(t,{loop:true, width: 400, height:100})
 //engine.stage.addChild(tile)
 
+/*
 var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
 var t2=getTextureFrames(npc_types[1].textures["walk_left"]);
-var t3=[PIXI.Texture.fromImage("/imgtest/build.png")];
+var t3=[PIXI.Texture.fromImage("/imgtest/green.jpg")];
+var t4=[PIXI.Texture.fromImage("/imgtest/build.png")];
 
-var button=new ButtonContainer({sprite: {textures: t3,opt: {width:400,height:400}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
-engine.stage.addChild(button);
+var container=new ButtonContainer({focused:{textures:t2},position:{x:100,y:100}});
+container.addButton({sprite: {textures: t4,opt: {width:20,height:20}},position:{x:0,y:0}});
+container.addButton({sprite: {textures: t4,opt: {width:20,height:20}},position:{x:215+20,y:0}});
+container.addButton({sprite: {textures: t4,opt: {width:20,height:20}},position:{x:0,y:215+20}});
+container.addButton({sprite: {textures: t4,opt: {width:20,height:20}},position:{x:215+20,y:215+20}});
+container.addButton({sprite: {textures: t4,opt: {width:215,height:20}},position:{x:20,y:0}});
+container.addButton({sprite: {textures: t4,opt: {width:215,height:20}},position:{x:20,y:215+20}});
+container.addButton({sprite: {textures: t4,opt: {width: 20, height: 215}},position:{x:0,y:20}});
+container.addButton({sprite: {textures: t4,opt: {width: 20, height: 215}},position:{x:215+20,y:20}});
+var button=container.addButton({position:{x:20,y:20},actions:["press","drag"]});
+engine.stage.addChild(container);
 //button.addButton({sprite:{textures:t3,opt:{width:200,height:200}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
-button.keyPadInit({rows: 3, columns: 2, buttonSize: {x:100,y:100}, scrolling:{type: "vertical", area:{x:0,y:0,width:300,height:200}}});
+button.keyPadInit({rows: 3, columns: 2, buttonSize: {x:100,y:100}, scrolling:{type: "vertical", area:{x:0,y:0,width: 215,height: 215}}});
 button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 button.keyPadAddButton({sprite:{textures:t2,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 button.keyPadAddButton({sprite:{textures:t3,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+button.keyPadAddButton({sprite:{textures:t3,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+button.keyPadAddButton({sprite:{textures:t3,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 var a=button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+
+*/

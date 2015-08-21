@@ -62,6 +62,7 @@ TDefWeb::Application.routes.draw do
 	get "/TDef/types/tower" => "tdef/type/towers#types", as: "tdef_types_tower"
 	#main game rout
 	get "/TDef/game" => "tdef/game#game", as: "tdef_game"
+	get "/TDef/game/init" => "tdef/game#init", as: "tdef_init"
 	#game access data for js load => /TDef/game_access.js?#{timestamp}
 	get "/TDef/game_access" => "tdef/game#access", as: "tdef_access"
 	

@@ -29,6 +29,7 @@ function ButtonContainer(opt){
 			this.unfocused=opt.sprite;
 		this.addChild(this.unfocused);
 	}
+	this.engine=getEngine();
 	this.buttons=[];
 	if (opt.hitArea)
 		this.hitArea=new PIXI.Rectangle(opt.hitArea.x,opt.hitArea.y,opt.hitArea.width,opt.hitArea.height);
@@ -79,6 +80,7 @@ function ButtonContainer(opt){
 	if (this.unfocused)
 		this.innerArea=opt.innerArea || {x:0,y:0,width:this.unfocused.getAttr("width"),height:this.unfocused.getAttr("height")};
 	this.fitParent=opt.fitParent;
+	this.innerArea=this.innerArea || {};
 }
 
 ButtonContainer.prototype= new PIXI.DisplayObjectContainer();
@@ -233,7 +235,6 @@ ButtonContainer.prototype.keyPadInit=function (obj){
 	this.keyPadScrollerInit(obj.scrolling);
 }
 /*
-	vertical/default
 	rows
 cols	123
 	456
@@ -245,7 +246,10 @@ ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
 		this.keypad[pos]=button;
 		if (pos> this.rows*this.columns)
 			console.log("Button position "+pos+" out of keypad");
-		var position;
+		button.position={
+			y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos/this.columns)*(this.buttonSize.x+this.buttonDist),
+			x: (this.innerArea.x || 0)+this.buttonDist+parseInt(pos%this.columns)*(this.buttonSize.y+this.buttonDist) 
+		};
 		button.fitParent=true;
 		//some kind of hack
 		button.$width=this.buttonSize.x; 
@@ -255,31 +259,24 @@ ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
 		if (this.scrolling){
 			button.actions.push("drag");
 			button.interactive=true;
+			button.mask=this.scrolling.mask;
 			button.mousemove = button.touchmove = function (data){
 				this.parent.dragging=this.dragging
 				this.parent.mousemove(data);
 				this.parent.dragging=false;
 			};
+			var that=this;
+			button.mouseweel = this.scrollingWeel;
 			button.mousedown = button.touchstart = startDragging;
 			button.mouseup = button.mouseupoutside = button.touchend = button.touchendoutside = stopDragging;
 			button.beforePressAction=function(data){ this.parent.mousedown(data) }
-			if (this.scrolling.dir=="x"){
-				position={
-					y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos/this.columns)*(this.buttonSize.x+this.buttonDist),
-					x: (this.innerArea.x || 0)+this.buttonDist+parseInt(pos%this.columns)*(this.buttonSize.y+this.buttonDist) 
-				};
-			}else{
-				position={
-					y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos%this.rows)*(this.buttonSize.x+this.buttonDist),
-					x: (this.innerArea.x || 0)+this.buttonDist+parseInt(pos/this.rows)*(this.buttonSize.y+this.buttonDist) 
-				};
-			}
+			//set area of all buttons
+			if (this.scrolling.area.width<button.position.x)
+				this.scrolling.area.width=button.position.x;
+			if (this.scrolling.area.height<button.position.y)
+				this.scrolling.area.height=button.position.y;
 		}
 	}
-	button.position=position || {
-		y: (this.innerArea.y || 0)+this.buttonDist+parseInt(pos/this.columns)*(this.buttonSize.x+this.buttonDist),
-		x: (this.innerArea.x || 0)+this.buttonDist+parseInt(pos%this.columns)*(this.buttonSize.y+this.buttonDist) 
-	};
 	
 	return button;
 }
@@ -294,10 +291,10 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 	scroll.type=scroll.type || "v"; //default
 	this.scrolling={
 		area: {
-			x: this.buttonDist, 
-			y: this.buttonDist, 
-			width: "vertical".indexOf(scroll.type)==0 ? 0 : this.keypad.length/this.columns*this.buttonSize.x+(this.keypad.length-1)*this.buttonDist,
-			height: "vertical".indexOf(scroll.type)!=0 ? 0 : this.keypad.length/this.rows*this.buttonSize.y+(this.keypad.length-1)*this.buttonDist,
+			x: this.buttonDist+this.buttonSize.x, 
+			y: this.buttonDist+this.buttonSize.y, 
+			width: this.buttonDist,
+			height: this.buttonDist,
 		}
 	};
 	this.interactive=true;
@@ -307,7 +304,7 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 	this.removeChild(this.unfocused)
 	delete this.unfocused
 	
-	this.scrolling.position={}; //for position correction
+	this.scrolling.position={}; //for position correction on non scroll axis
 	this.scrollingPosition(this.position);
 	if ("vertical".indexOf(scroll.type)==0){
 		this.scrolling.dir="x";
@@ -317,12 +314,21 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 	this.afterMoveAction=this.scrollingAction;
 	
 	if (this.parent){
-		this.parent.scrollArea=scroll.area || clone(this.parent.innerArea);
-		if (this.parent.scrollArea){
-			this.parent.scrollArea.x+=this.position.x;
-			this.parent.scrollArea.y+=this.position.y;
-			this.parent.scrollArea.width+=this.position.x;
-			this.parent.scrollArea.height+=this.position.y;
+		this.parent.scroller={};
+		this.parent.scroller.area=scroll.area || clone(this.parent.innerArea);
+		if (this.parent.scroller.area){
+			this.parent.scroller.area.x+=this.position.x;
+			this.parent.scroller.area.y+=this.position.y;
+			this.scrolling.mask=new PIXI.Graphics();
+			this.parent.addChild(this.scrolling.mask); //don't foget to remove
+			this.scrolling.mask.isMask=true;
+			this.scrolling.mask.clear();
+			this.scrolling.mask.beginFill(0x8bc5ff, 0.4);
+			this.scrolling.mask.drawRect(this.parent.scroller.area.x,
+									this.parent.scroller.area.y,
+									this.parent.scroller.area.width,
+									this.parent.scroller.area.height);
+			this.scrolling.mask.endFill();
 		}
 	}
 }
@@ -332,36 +338,34 @@ ButtonContainer.prototype.scrollingPosition=function (pos){
 	this.scrolling.position.y=pos.y;			
 }
 
+//aftermove for crolling container
 ButtonContainer.prototype.scrollingAction=function (data){
-	var dir=this.scrolling.dir == 'x' ? 'y' : 'x';
 	this.position[this.scrolling.dir]=this.scrolling.position[this.scrolling.dir];
 	this.scrollingPosition(this.position);
+	this.scrollingCorrection()
+}
+ButtonContainer.prototype.scrollingCorrection=function (data){
+	var dir=this.scrolling.dir == 'x' ? 'y' : 'x';
+	var size=this.scrolling.dir == 'x' ? 'height' : 'width';
 	var that=this.parent;
-	if (that && that.scrollArea){
-		var size= dir=='x' ? 'width' : 'height';
-		for (var i in this.children){
-			var pos=this.children[i].position[dir]+this.position[dir];
-			if (pos+this.children[i][size]<that.scrollArea[dir] ||
-					pos>that.scrollArea[dir]+that.scrollArea[size])
-				this.children[i].visible=false;
-			else{
-				this.children[i].visible=true;
-				var from='left';
-				var per=1;
-				if (pos<=that.scrollArea[dir] && 
-						pos+this.children[i][size]>=that.scrollArea[dir]){
-					per=1-(that.scrollArea[dir]-pos)/this.children[i][size];
-					from= dir=='x' ? 'right' : 'bottom';
-				}else
-				if (pos<=that.scrollArea[dir]+that.scrollArea[size] &&
-						pos+this.children[i][size]>=that.scrollArea[dir]+that.scrollArea[size]){
-					var per=(that.scrollArea[dir]+that.scrollArea[size]-pos)/this.children[i][size];
-					from= dir=='x' ? 'left' : 'top';
-				}
-				this.children[i].hidePart(from, per);
-			}
-		}
+	var shift;
+	//bottom check
+	if ((shift=(this.position[dir]+(this.scrolling.area[dir]-that.scroller.area[dir])-that.scroller.area[size]))>0)
+		this.position[dir]-=shift;//TODO: add kinetics restore
+	//top check
+	if ((shift=(that.scroller.area[dir]-(this.position[dir]+(this.scrolling.area[size]))))>0)
+		this.position[dir]+=shift;
+}
+//action for button from crolling container
+ButtonContainer.prototype.scrollingWeel=function (m){
+	var e=m.originalEvent;
+	var engine=this.engine;
+	var that=this.parent
+	e = e || window.event;
+	if (e.type=="wheel" || e.type=="mousewheel"){
+		var delta = e.deltaY || e.detail || e.wheelDelta;
+		that.position[({x:'y',y:'x'})[that.scrolling.dir]]+=engine.settings.scrollSpeed*(delta>0 ? -1 : 1)*engine.settings.weelInverted;
 	}
-
+	this.parent.scrollingCorrection();
 }
 

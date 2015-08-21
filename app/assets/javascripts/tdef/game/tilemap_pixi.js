@@ -68,7 +68,6 @@ Grid.prototype.weelHandler= function (m){
 		//change zoom
 		this.zoom(1+that.settings.zoomSpeed*(delta<0 ? -1 : 1)*that.settings.weelInverted, x, y)
 		//add another hendlers
-//		that.map.update()
 	}
 }
 

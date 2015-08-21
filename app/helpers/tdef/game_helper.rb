@@ -11,7 +11,11 @@ module Tdef::GameHelper
 		"<script src='#{tdef_locale_get_path}'></script>".html_safe
 	end
 
-	def javascript_types_access
+	def javascript_game_access
 		"<script src='#{tdef_access_path}'></script>".html_safe
+	end
+	
+	def javascript_game_init
+		"<script src='#{tdef_init_path}'></script>".html_safe
 	end
 end

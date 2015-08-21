@@ -94,10 +94,10 @@ function proceedDragging(data){
 
 function realPosition(obj){
 	if (!obj.parent || obj.parent==obj.stage){
-		return {x: obj.position.x, y: obj.position.y, scale: obj.scale.x};
+		return {x: obj.position.x, y: obj.position.y, scale: obj.scale.x || 1};
 	}else{
 		var pos=realPosition(obj.parent)
-		return {x: pos.x+obj.position.x, y: pos.y+obj.position.y, scale: pos.scale.x*obj.scale.x}
+		return {x: pos.x+obj.position.x, y: pos.y+obj.position.y, scale: pos.scale*obj.scale.x}
 	}
 }
 
@@ -110,7 +110,6 @@ function findCurObject(obj, pos){
 		area=clone(area)
 		area.x=(area.x+real.x);
 		area.y=(area.y+real.y);
-		console.log(area.width,real.scale)
 		area.width*=real.scale;
 		area.height*=real.scale;
 		if (area.x<pos.x && area.y<pos.y && 
