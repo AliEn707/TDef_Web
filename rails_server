@@ -53,6 +53,14 @@ function rails() {
   elif [ "$1" = "restart" ]; then
      rails stop 
      rails start $2
+  elif [ "$1" = "check" ]; then
+      if [ -f $RAILS_PID ]; then
+        RESULT=$(ps -A|grep $(cat $RAILS_PID)|head -1)
+        if [ -z "$RESULT" ]; then
+	  rails restart
+	fi
+      fi
+      return 0
  elif [ "$1" = "update" ]; then
      rails stop
      bash update.sh
