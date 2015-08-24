@@ -26,6 +26,7 @@
 //= require ./tdef/game/tower_pixi.js
 //= require ./tdef/game/connector_pixi.js
 //= require ./tdef/game/loading.js
+//= require ./tdef/game/public.js
 
 
 

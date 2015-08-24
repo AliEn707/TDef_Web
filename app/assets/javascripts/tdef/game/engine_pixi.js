@@ -57,6 +57,7 @@ function getEngine(){
 	return window.engine;
 }
 
+
 TDefEngine.prototype.render= function (){
 	if (stats)
 		stats.begin();
@@ -85,7 +86,7 @@ TDefEngine.prototype.resize=function (){
 		that.map.resize(width,height);
 	for (var i in that.stage.children)
 		if (that.stage.children[i].resize)
-			that.stage.children[i].resize();
+			that.stage.children[i].resize(width,height);
 }
 
 TDefEngine.prototype.outerSize= function (size){

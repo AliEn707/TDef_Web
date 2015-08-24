@@ -9,7 +9,11 @@ opt	focused: {
 !		opt: {}
 	} || ASprite || ATilingSprite
 opt	text:{
-opt		position: { x: int, y: int }
+opt		position: { 
+			x: int, 
+			y: int, 
+			float: [] - may contains 'x', 'y'
+		}
 opt		anchor: { x: int, y: int }
 		data : string
 opt		style: {
@@ -25,6 +29,7 @@ opt			dropShadowAngle: number
 opt			dropShadowDistance: int
 		} PIXI text style
 	}
+opt	float: [] - may contains 'x', 'y'
 opt	actions: [] - may containes "press" "drag"
 opt	hitArea: {x: int, y: int, width: int, height: int}
 opt	innerArea: {x: int, y: int, width: int, height: int} - must be exeist if no sprite attr
@@ -46,13 +51,31 @@ function ButtonContainer(opt){
 			this.unfocused=opt.sprite;
 		this.addChild(this.unfocused);
 	}
-	this.engine=getEngine();
+	this.engine=opt.engine || getEngine();
 	this.buttons=[];
 	if (opt.hitArea)
 		this.hitArea=new PIXI.Rectangle(opt.hitArea.x,opt.hitArea.y,opt.hitArea.width,opt.hitArea.height);
 	if (opt.position){
 		this.position.x=opt.position.x;
 		this.position.y=opt.position.y;
+		if (opt.position.float){	
+			f={}
+			if (opt.float.indexOf('x')>-1)
+				f.x=this.position.x/this.engine.renderer.width;
+			if (opt.float.indexOf('y')>-1)
+				f.y=this.position.y/this.engine.renderer.height;	
+			if (f.x || f.y)
+				this.position.float=f;
+		}
+	}
+	if (opt.float){
+		f={}
+		if (opt.float.indexOf('x')>-1)
+			f.x=this.width/this.engine.renderer.width;
+		if (opt.float.indexOf('y')>-1)
+			f.y=this.height/this.engine.renderer.height;
+		if (f.x || f.y)
+			this.float=f;
 	}
 	this.args=opt.args;
 	this.actions=opt.actions;
@@ -124,23 +147,66 @@ ButtonContainer.prototype.setWidthHeight=function (){
 		if (this.getChildAt(0).hasLoaded()){
 			this.width=this.$width;
 			delete this.$width;
+			if (this.float)
+				this.float.x=this.width/this.engine.renderer.width;
 		}
 	}
 	if (this.$height){
 		if (this.getChildAt(0).hasLoaded()){
 			this.height=this.$height;
 			delete this.$height;
+			if (this.float)
+				this.float.y=this.height/this.engine.renderer.height;
 		}
 	}
+}
+
+ButtonContainer.prototype.resize=function (width,height){
+	if (this.float){
+		if (this.float.x)
+			this.width=width*this.float.x;
+		if (this.float.y)
+			this.height=height*this.float.y;
+	}	
+	if (this.position.float){
+		if (this.position.float.x)
+			this.position.x=width*this.position.float.x;
+		if (this.position.float.y)
+			this.position.y=height*this.position.float.y;
+	}
+	if (this.parent.scroller && this.parent.scroller.area && this.parent.scroller.area.float){
+		if (this.parent.scroller.area.float.width)
+			this.parent.scroller.area.width=width*this.parent.scroller.area.float.width;
+		if (this.parent.scroller.area.float.height)
+			this.parent.scroller.area.height=height*this.parent.scroller.area.float.height;
+		if (this.parent.scroller.area.float.x)
+			this.parent.scroller.area.x=width*this.parent.scroller.area.float.x;
+		if (this.parent.scroller.area.float.y)
+			this.parent.scroller.area.y=height*this.parent.scroller.area.float.y;
+		if (this.scrolling){
+			this.scrolling.mask.clear();
+			this.scrolling.mask.beginFill(0x8bc5ff, 0.4);
+			this.scrolling.mask.drawRect(this.parent.scroller.area.x,
+									this.parent.scroller.area.y,
+									this.parent.scroller.area.width,
+									this.parent.scroller.area.height);
+			this.scrolling.mask.endFill();
+		}
+	}
+	for (var i in this.children)
+		if (this.children[i].resize)
+			this.children[i].resize(width,height);
 }
 
 ButtonContainer.prototype.proceed=function (){
 	//check size of button
 	this.setWidthHeight();
 	//change frame for background
-	var t=this.getChildAt(0);
-	if (t && t.upFrame)
-		t.upFrame();
+	if (this.unfocused){
+		var t=this.getChildAt(0);
+		if (t && t.upFrame)
+			t.upFrame();
+	}
 	//and for all buttons
 	for(var i in this.buttons)
 		if (this.buttons[i].proceed)
@@ -347,7 +413,7 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 			this.parent.scroller.area.y+=this.position.y;
 			this.scrolling.mask=new PIXI.Graphics();
 			this.parent.addChild(this.scrolling.mask); //don't foget to remove
-			this.scrolling.mask.isMask=true;
+			//this.scrolling.mask.isMask=true;
 			this.scrolling.mask.clear();
 			this.scrolling.mask.beginFill(0x8bc5ff, 0.4);
 			this.scrolling.mask.drawRect(this.parent.scroller.area.x,
@@ -355,6 +421,21 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 									this.parent.scroller.area.width,
 									this.parent.scroller.area.height);
 			this.scrolling.mask.endFill();
+			f={}
+			if (this.float){
+				if (this.float.x)
+					f.width= this.parent.scroller.area.width/this.engine.renderer.width;
+				if (this.float.y)
+					f.height= this.parent.scroller.area.height/this.engine.renderer.height
+			}
+			if (this.position.float){
+				if (this.position.float.x)
+					f.x= this.parent.scroller.area.x/this.engine.renderer.width;
+				if (this.position.float.y)
+					f.y= this.parent.scroller.area.y/this.engine.renderer.height;
+			}
+			if (f.x || f.y || f.width || f.height)
+				this.parent.scroller.area.float=f;
 		}
 	}
 }

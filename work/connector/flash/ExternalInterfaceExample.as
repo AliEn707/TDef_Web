@@ -471,6 +471,7 @@ package {
 //				publicDataSeq.push("rooms","int");
 //				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
 				publicDataSeq.push("map","string");
+				publicDataSeq.push("name","string");
 //				}
 				return;
 			case MESSAGE_PLAYER_CHANGE:
