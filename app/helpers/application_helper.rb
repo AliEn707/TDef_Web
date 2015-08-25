@@ -52,7 +52,7 @@ module ApplicationHelper
 			a<<[{'name' => (:sign_up) , 'path' => new_user_registration_path}]			
 		end
 		locale=[]
-		locale<<{'name'=>current_locale,'right'=>true, 'show'=>true, 'noprefix'=> true}
+		locale<<{'name'=>current_locale,'right'=>true, 'noprefix'=> true}
 		$available_locales.each do |l_l|
 			locale<<{'name'=>l_l,'path'=>"/locale?locale="+l_l}
 		end
@@ -87,19 +87,19 @@ module ApplicationHelper
 	end
 #system info helpers	
 	def system_info
-		Rails.cache.fetch("system-info_#{`hostname`}") {"#{`phoronix-test-suite system-info`.gsub(/(?<word>\w+):\n/,'</ul><li>\k<word>:<ul><li>').gsub(/(?<bold>[- \w]+:)/,'<b>\k<bold></b>').sub(/([\n].*)*mation/,"<ul style='margin-top:0;margin-bottom:0;'>").sub("</ul>","").gsub(",","</li><li>")}</li></ul></ul>".html_safe rescue "failed to get system info"}
+		Rails.cache.fetch("system-info_#{$hostname}",expires_in: 15.days) {"#{`phoronix-test-suite system-info`.gsub(/(?<word>\w+):\n/,'</ul><li>\k<word>:<ul><li>').gsub(/(?<bold>[- \w]+:)/,'<b>\k<bold></b>').sub(/([\n].*)*mation/,"<ul style='margin-top:0;margin-bottom:0;'>").sub("</ul>","").gsub(",","</li><li>")}</li></ul></ul>".html_safe rescue "failed to get system info"}
 	end
 	
 	def uptime
-		Rails.cache.fetch("uptime_#{`hostname`}",expires_in: 1.minutes) {"<span style='margin-left: 15px;'>#{`uptime` rescue "failed to get load average"}</span>".html_safe}
+		Rails.cache.fetch("uptime_#{$hostname}",expires_in: 1.minutes) {"<span style='margin-left: 15px;'>#{`uptime` rescue "failed to get load average"}</span>".html_safe}
 	end
 	
 	def hostname
-		Rails.cache.fetch("hostname_#{`hostname`}",expires_in: 1.hours) {"<span style='margin-left: 15px;'>#{`hostname` rescue "failed to get hostname"}</span>".html_safe}
+		Rails.cache.fetch("hostname_#{$hostname}") {"<span style='margin-left: 15px;'>#{`hostname` rescue "failed to get hostname"}</span>".html_safe}
 	end
 	
 	def ifconfig
 		style='margin-top:0;margin-bottom:0;'
-		Rails.cache.fetch("ifconfig_#{`hostname`}",expires_in: 5.minutes) {"<ul style=#{style}>#{`ifconfig`.split("\n\n").map!{|m| "#{m.gsub(/(?<w1>\w+) (?<w2>([abpR].|en|MU|BR))/,'\k<w1>_\k<w2>').gsub(/ (?<b>[MGKTP]?B)\)/,'\k<b>)').sub("HWaddr " ,"HWaddr:").sub(" TX_by","\nTX_by").gsub(": ",":").sub(" Link","\nLink").split("\n").map!{|l| "#{l.split(" ").map!{|w|  "<li>#{w.sub(":",": ").sub(/\A(?<bold>[- \w]+:?)/,'<b>\k<bold></b>')}</li>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>" if (m["inet addr"] && !m["lo"])}.compact.join }</ul>".html_safe rescue "failed to get network info"} #"<span style='margin-left: 15px;'>"
+		Rails.cache.fetch("ifconfig_#{$hostname}",expires_in: 5.minutes) {"<ul style=#{style}>#{`ifconfig`.split("\n\n").map!{|m| "#{m.gsub(/(?<w1>\w+) (?<w2>([abpR].|en|MU|BR))/,'\k<w1>_\k<w2>').gsub(/ (?<b>[MGKTP]?B)\)/,'\k<b>)').sub("HWaddr " ,"HWaddr:").sub(" TX_by","\nTX_by").gsub(": ",":").sub(" Link","\nLink").split("\n").map!{|l| "#{l.split(" ").map!{|w|  "<li>#{w.sub(":",": ").sub(/\A(?<bold>[- \w]+:?)/,'<b>\k<bold></b>')}</li>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>" if (m["inet addr"] && !m["lo"])}.compact.join }</ul>".html_safe rescue "failed to get network info"} #"<span style='margin-left: 15px;'>"
 	end
 end

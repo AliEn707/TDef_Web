@@ -435,7 +435,7 @@ for (var i=0;i<1;i++){
 //var tile=new ATilingSprite(t,{loop:true, width: 400, height:100})
 //engine.stage.addChild(tile)
 
-/**/
+/*
 var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
 var t2=getTextureFrames(npc_types[1].textures["walk_left"]);
 var t3=[PIXI.Texture.fromImage("/imgtest/green.jpg")];

@@ -57,9 +57,13 @@ function rails() {
       if [ -f $RAILS_PID ]; then
         RESULT=$(ps -A|grep $(cat $RAILS_PID)|head -1)
         if [ -z "$RESULT" ]; then
-	  rails restart
-	fi
+	  rm $RAILS_PID
+          rails start
+          echo "restarting"
+          return 1
+        fi
       fi
+      echo "all Ok"
       return 0
  elif [ "$1" = "update" ]; then
      rails stop

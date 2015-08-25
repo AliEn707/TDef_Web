@@ -65,7 +65,7 @@ TDefWeb::Application.configure do
 		host=ENV['REDIS_HOST'] || "localhost"
 		port=ENV['REDIS_PORT'] || 6379
 		puts "using redis store on #{host}:#{port}"
-		config.cache_store = :redis_store, { :host => host, :port => port.to_i , :db => 0}#, :expires_in => 90.minutes }
+		config.cache_store = :redis_store, { :host => host, :port => port.to_i , :db => 0, :expires_in => 8.hours }
 	else
 		size=ENV['MEMSTORE_SIZE'] || 256
 		puts "use memory store: #{size} megabytes"
