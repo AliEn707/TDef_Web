@@ -24,6 +24,7 @@ opt	anchor: {x: int ,y: int};
 
 */
 function ASprite(textures,params){
+	params=params || {}
 	AObject.call(this, params);
 	this.setFrames(textures, params);
 	this.addChild(this.frames[this.current_frame]);

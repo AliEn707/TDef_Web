@@ -12,7 +12,10 @@ opt	text:{
 opt		position: { 
 			x: int, 
 			y: int, 
-			float: [] - may contains 'x', 'y'
+opt			float: {
+opt				x: [] - 'left' 'right' or may be empty for float
+opt				y: [] - 'top' 'bottom' or may be empty for float
+			} - may contains 'x', 'y'
 		}
 opt		anchor: { x: int, y: int }
 		data : string
@@ -29,7 +32,10 @@ opt			dropShadowAngle: number
 opt			dropShadowDistance: int
 		} PIXI text style
 	}
-opt	float: [] - may contains 'x', 'y'
+opt	float: {
+opt		x: string - 'fixed' or 'float'
+opt		y: string - 'fixed' or 'float'
+	} - may contains 'x', 'y'
 opt	actions: [] - may containes "press" "drag"
 opt	hitArea: {x: int, y: int, width: int, height: int}
 opt	innerArea: {x: int, y: int, width: int, height: int} - must be exeist if no sprite attr
@@ -60,20 +66,28 @@ function ButtonContainer(opt){
 		this.position.y=opt.position.y;
 		if (opt.position.float){	
 			f={}
-			if (opt.float.indexOf('x')>-1)
-				f.x=this.position.x/this.engine.renderer.width;
-			if (opt.float.indexOf('y')>-1)
-				f.y=this.position.y/this.engine.renderer.height;	
+			if (opt.position.float.x=='fixed')
+				f.x={fixed: this.engine.renderer.width - this.position.x || 1};
+			else if (opt.position.float.x=='float')
+				f.x={float: this.position.x/this.engine.renderer.width};					
+			if (opt.position.float.y=='fixed')
+				f.y={fixed: this.engine.renderer.height - this.position.y || 1};	
+			else if (opt.position.float.y=='float')
+				f.y={float: this.position.y/this.engine.renderer.height};	
 			if (f.x || f.y)
 				this.position.float=f;
 		}
 	}
 	if (opt.float){
 		f={}
-		if (opt.float.indexOf('x')>-1)
-			f.x=this.width/this.engine.renderer.width;
-		if (opt.float.indexOf('y')>-1)
-			f.y=this.height/this.engine.renderer.height;
+		if (opt.float.x=='fixed')
+			f.x={fixed: this.engine.renderer.width-this.width || 1};
+		else if (opt.float.x=='float')
+			f.x={float: this.width/this.engine.renderer.width};
+		if (opt.float.y=='fixed')
+			f.y={fixed: this.engine.renderer.height-this.height || 1};
+		else if (opt.float.y=='float')
+			f.y={float: this.height/this.engine.renderer.height};
 		if (f.x || f.y)
 			this.float=f;
 	}
@@ -164,25 +178,49 @@ ButtonContainer.prototype.setWidthHeight=function (){
 ButtonContainer.prototype.resize=function (width,height){
 	if (this.float){
 		if (this.float.x)
-			this.width=width*this.float.x;
+			if (this.float.x.float)
+				this.width=width*this.float.x.float;
+			else if (this.float.x.fixed)
+				this.width=width-this.float.x.fixed;
 		if (this.float.y)
-			this.height=height*this.float.y;
+			if (this.float.y.float)
+				this.height=height*this.float.y.float;
+			else if (this.float.y.fixed)
+				this.height=height-this.float.y.fixed;
 	}	
 	if (this.position.float){
 		if (this.position.float.x)
-			this.position.x=width*this.position.float.x;
+			if (this.position.float.x.float)
+				this.position.x=width*this.position.float.x.float;
+			else if (this.position.float.x.fixed)
+				this.position.x=width-this.position.float.x.fixed;
 		if (this.position.float.y)
-			this.position.y=height*this.position.float.y;
+			if (this.position.float.y.float)
+				this.position.y=height*this.position.float.y.float;
+			else if (this.position.float.y.fixed)
+				this.position.y=height-this.position.float.y.fixed;
 	}
 	if (this.parent.scroller && this.parent.scroller.area && this.parent.scroller.area.float){
 		if (this.parent.scroller.area.float.width)
-			this.parent.scroller.area.width=width*this.parent.scroller.area.float.width;
+			if (this.parent.scroller.area.float.width.float)
+				this.parent.scroller.area.width=width*this.parent.scroller.area.float.width.float;
+			else if (this.parent.scroller.area.float.width.fixed)
+				this.parent.scroller.area.width=width*this.parent.scroller.area.float.width.fixed;				
 		if (this.parent.scroller.area.float.height)
-			this.parent.scroller.area.height=height*this.parent.scroller.area.float.height;
+			if (this.parent.scroller.area.float.height.float)
+				this.parent.scroller.area.height=height*this.parent.scroller.area.float.height.float;
+			else if (this.parent.scroller.area.float.height.fixed)
+				this.parent.scroller.area.height=height*this.parent.scroller.area.float.height.fixed;
 		if (this.parent.scroller.area.float.x)
-			this.parent.scroller.area.x=width*this.parent.scroller.area.float.x;
+			if (this.parent.scroller.area.float.x.float)
+				this.parent.scroller.area.x=width*this.parent.scroller.area.float.x.float;
+			else if (this.parent.scroller.area.float.x.fixed)
+				this.parent.scroller.area.x=width*this.parent.scroller.area.float.x.fixed;
 		if (this.parent.scroller.area.float.y)
-			this.parent.scroller.area.y=height*this.parent.scroller.area.float.y;
+			if (this.parent.scroller.area.float.y.float)
+				this.parent.scroller.area.y=height*this.parent.scroller.area.float.y.float;
+			else if (this.parent.scroller.area.float.y.fixed)
+				this.parent.scroller.area.y=height*this.parent.scroller.area.float.y.fixed;
 		if (this.scrolling){
 			this.scrolling.mask.clear();
 			this.scrolling.mask.beginFill(0x8bc5ff, 0.4);
@@ -423,16 +461,24 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 			this.scrolling.mask.endFill();
 			f={}
 			if (this.float){
-				if (this.float.x)
+				if (this.float.x.float)
 					f.width= this.parent.scroller.area.width/this.engine.renderer.width;
-				if (this.float.y)
-					f.height= this.parent.scroller.area.height/this.engine.renderer.height
+				else
+					f.width= this.engine.renderer.width-this.parent.scroller.area.width || 1;
+				if (this.float.y.float)
+					f.height= this.parent.scroller.area.height/this.engine.renderer.height;
+				else
+					f.height= this.engine.renderer.height-this.parent.scroller.area.height || 1;
 			}
 			if (this.position.float){
-				if (this.position.float.x)
+				if (this.position.float.x.float)
 					f.x= this.parent.scroller.area.x/this.engine.renderer.width;
-				if (this.position.float.y)
+				else
+					f.x= this.engine.renderer.width-this.parent.scroller.area.x || 1;
+				if (this.position.float.y.float)
 					f.y= this.parent.scroller.area.y/this.engine.renderer.height;
+				else
+					f.y= this.engine.renderer.height-this.parent.scroller.area.y || 1;
 			}
 			if (f.x || f.y || f.width || f.height)
 				this.parent.scroller.area.float=f;

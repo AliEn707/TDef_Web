@@ -44,8 +44,10 @@ function publicSend(str) {
 	getConnector().publicSend(str);
 }
 
+//event ([{msg:2,objtype:"Event",id:1,map:"pvz11_11",name:"#event",time:25444},])
 function proceedPublicMessages(str){
-	console.log(str)
+	var arr=eval(str)
+	console.log(arr)
 }
 
 ///map network funtions
