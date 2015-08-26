@@ -10,6 +10,8 @@ function ATilingSprite(textures,params){
 	
 	this.setFrames(textures, params);
 	
+	this.width=this.srcWidth;
+	this.height=this.srcHeight;
 	this.addChild(this.frames[this.current_frame]);
 //	this.updateFrame();
 	
@@ -49,7 +51,7 @@ Object.defineProperty(ATilingSprite.prototype, 'height', {
     },
     set: function(value) {
 	for (var i in this.frames)
-		this.frames[i].height=value;
+		this.frames[i].height=value/this.frames[i].scale.y;
     }
 });
 
@@ -61,41 +63,43 @@ Object.defineProperty(ATilingSprite.prototype, 'width', {
     },
     set: function(value) {
 	for (var i in this.frames)
-		this.frames[i].width=value;
+		this.frames[i].width=value/this.frames[i].scale.x;
     }
 });
+
+Object.defineProperty(ATilingSprite.prototype, 'realWidth', {
+    get: function() {
+	var t=this.frames[this.current_frame];
+	if (t)
+		return  t.width*t.scale.x;
+    },
+    set: function(value) {
+   }
+});
+
+Object.defineProperty(ATilingSprite.prototype, 'realHeight', {
+    get: function() {
+	var t=this.frames[this.current_frame];
+	if (t)
+		return  t.height*t.scale.y;
+    },
+    set: function(value) {
+    }
+});
+
 /*
 Object.defineProperty(ATilingSprite.prototype, 'scale', {
     get: function() {
-		return  this.scale;
+	var t=this.frames[this.current_frame];
+	if (t)
+		return  t.scale;
     },
     set: function(value) {
-	var scale=this.scale || {x:1,y:1};
-	this.scale=value;
-	this.width=this.width*value.x/scale.x;
-	this.height=this.width*value.x/scale.x;
-	var that=this;
-	Object.defineProperty(this.scale, 'x', {
-	    get: function() {
-		return that.cale.x;
-	    },
-	    set: function(value) {
-		var x=that.scale.x;
-		that.scale.x=value.x;    
-		that.width=that.width*value.x/x;
-	    }
-	});
-	Object.defineProperty(this.scale, 'y', {
-	    get: function() {
-		return that.cale.y;
-	    },
-	    set: function(value) {
-		var y=that.scale.y;
-		that.scale.y=value.y;    
-		that.height=that.height*value.y/y;
-	    }
-	});
-
+	for (var i in this.frames){
+		this.frames[i].scale.x=value.x;
+		this.frames[i].scale.y=value.y;
+	}
     }
 });
+
 */

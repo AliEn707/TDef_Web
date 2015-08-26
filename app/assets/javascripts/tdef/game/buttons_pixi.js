@@ -67,11 +67,11 @@ function ButtonContainer(opt){
 		if (opt.position.float){	
 			f={}
 			if (opt.position.float.x=='fixed')
-				f.x={fixed: this.engine.renderer.width - this.position.x || 1};
+				f.x={fixed: (this.engine.renderer.width - this.position.x) || 1};
 			else if (opt.position.float.x=='float')
 				f.x={float: this.position.x/this.engine.renderer.width};					
 			if (opt.position.float.y=='fixed')
-				f.y={fixed: this.engine.renderer.height - this.position.y || 1};	
+				f.y={fixed: (this.engine.renderer.height - this.position.y) || 1};	
 			else if (opt.position.float.y=='float')
 				f.y={float: this.position.y/this.engine.renderer.height};	
 			if (f.x || f.y)
@@ -81,13 +81,13 @@ function ButtonContainer(opt){
 	if (opt.float){
 		f={}
 		if (opt.float.x=='fixed')
-			f.x={fixed: this.engine.renderer.width-this.width || 1};
+			f.x={fixed: this.engine.renderer.width-(this.realWidth || this.width) || 1};
 		else if (opt.float.x=='float')
-			f.x={float: this.width/this.engine.renderer.width};
+			f.x={float: (this.realWidth || this.width)/this.engine.renderer.width};
 		if (opt.float.y=='fixed')
-			f.y={fixed: this.engine.renderer.height-this.height || 1};
+			f.y={fixed: this.engine.renderer.height-(this.realHeight || this.height) || 1};
 		else if (opt.float.y=='float')
-			f.y={float: this.height/this.engine.renderer.height};
+			f.y={float: (this.realHeight || this.height)/this.engine.renderer.height};
 		if (f.x || f.y)
 			this.float=f;
 	}
@@ -205,22 +205,22 @@ ButtonContainer.prototype.resize=function (width,height){
 			if (this.parent.scroller.area.float.width.float)
 				this.parent.scroller.area.width=width*this.parent.scroller.area.float.width.float;
 			else if (this.parent.scroller.area.float.width.fixed)
-				this.parent.scroller.area.width=width*this.parent.scroller.area.float.width.fixed;				
+				this.parent.scroller.area.width=width-this.parent.scroller.area.float.width.fixed;				
 		if (this.parent.scroller.area.float.height)
 			if (this.parent.scroller.area.float.height.float)
 				this.parent.scroller.area.height=height*this.parent.scroller.area.float.height.float;
 			else if (this.parent.scroller.area.float.height.fixed)
-				this.parent.scroller.area.height=height*this.parent.scroller.area.float.height.fixed;
+				this.parent.scroller.area.height=height-this.parent.scroller.area.float.height.fixed;
 		if (this.parent.scroller.area.float.x)
 			if (this.parent.scroller.area.float.x.float)
 				this.parent.scroller.area.x=width*this.parent.scroller.area.float.x.float;
 			else if (this.parent.scroller.area.float.x.fixed)
-				this.parent.scroller.area.x=width*this.parent.scroller.area.float.x.fixed;
+				this.parent.scroller.area.x=width-this.parent.scroller.area.float.x.fixed;
 		if (this.parent.scroller.area.float.y)
 			if (this.parent.scroller.area.float.y.float)
 				this.parent.scroller.area.y=height*this.parent.scroller.area.float.y.float;
 			else if (this.parent.scroller.area.float.y.fixed)
-				this.parent.scroller.area.y=height*this.parent.scroller.area.float.y.fixed;
+				this.parent.scroller.area.y=height-this.parent.scroller.area.float.y.fixed;
 		if (this.scrolling){
 			this.scrolling.mask.clear();
 			this.scrolling.mask.beginFill(0x8bc5ff, 0.4);
@@ -266,6 +266,8 @@ ButtonContainer.prototype.transformCorrection=function (){
 
 Object.defineProperty(ButtonContainer.prototype, 'height', {
     get: function() {
+	if (this.children.lenght==0)
+	    return;
 	var t=this.getChildAt(0)
 	if (t)
 		return  t.height;
@@ -280,6 +282,8 @@ Object.defineProperty(ButtonContainer.prototype, 'height', {
 
 Object.defineProperty(ButtonContainer.prototype, 'width', {
     get: function() {
+	if (this.children.lenght==0)
+	    return;
 	var t=this.getChildAt(0)
 	if (t)
 		return  t.width;
@@ -291,6 +295,33 @@ Object.defineProperty(ButtonContainer.prototype, 'width', {
 	    this.focused.width = value;
     }
 });
+
+Object.defineProperty(ButtonContainer.prototype, 'realWidth', {
+    get: function() {
+	if (this.children.lenght==0)
+	    return;
+	var t=this.getChildAt(0)
+	if (t)
+		return  t.realWidth;
+    },
+    set: function(value) {
+	
+    }
+});
+
+Object.defineProperty(ButtonContainer.prototype, 'realHeight', {
+    get: function() {
+	if (this.children.lenght==0)
+	    return;
+	var t=this.getChildAt(0)
+	if (t)
+		return  t.realHeight;
+    },
+    set: function(value) {
+	    
+    }
+});
+
 
 //hide part of button, outside from params
 ButtonContainer.prototype.hidePart=function (from,per){
@@ -442,7 +473,6 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 		this.scrolling.dir="y";
 	}
 	this.afterMoveAction=this.scrollingAction;
-	
 	if (this.parent){
 		this.parent.scroller={};
 		this.parent.scroller.area=scroll.area || clone(this.parent.innerArea);
@@ -451,7 +481,7 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 			this.parent.scroller.area.y+=this.position.y;
 			this.scrolling.mask=new PIXI.Graphics();
 			this.parent.addChild(this.scrolling.mask); //don't foget to remove
-			//this.scrolling.mask.isMask=true;
+			this.scrolling.mask.isMask=true;
 			this.scrolling.mask.clear();
 			this.scrolling.mask.beginFill(0x8bc5ff, 0.4);
 			this.scrolling.mask.drawRect(this.parent.scroller.area.x,
@@ -461,24 +491,26 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 			this.scrolling.mask.endFill();
 			f={}
 			if (this.float){
-				if (this.float.x.float)
-					f.width= this.parent.scroller.area.width/this.engine.renderer.width;
-				else
-					f.width= this.engine.renderer.width-this.parent.scroller.area.width || 1;
-				if (this.float.y.float)
-					f.height= this.parent.scroller.area.height/this.engine.renderer.height;
-				else
-					f.height= this.engine.renderer.height-this.parent.scroller.area.height || 1;
+				if (this.float.x)
+					if (this.float.x.float)
+						f.width= {float: this.parent.scroller.area.width/this.engine.renderer.width};
+					else
+						f.width= {fixed: this.engine.renderer.width-this.parent.scroller.area.width || 1};
+				if (this.float.y)
+					if (this.float.y.float)
+						f.height= {float: this.parent.scroller.area.height/this.engine.renderer.height};
+					else
+						f.height= {fixed: this.engine.renderer.height-this.parent.scroller.area.height || 1};
 			}
 			if (this.position.float){
 				if (this.position.float.x.float)
-					f.x= this.parent.scroller.area.x/this.engine.renderer.width;
-				else
-					f.x= this.engine.renderer.width-this.parent.scroller.area.x || 1;
+					f.x= {float: this.parent.scroller.area.x/this.engine.renderer.width};
+				else 
+					f.x= {fixed: this.engine.renderer.width-this.parent.scroller.area.x || 1};
 				if (this.position.float.y.float)
-					f.y= this.parent.scroller.area.y/this.engine.renderer.height;
+					f.y= {float: this.parent.scroller.area.y/this.engine.renderer.height};
 				else
-					f.y= this.engine.renderer.height-this.parent.scroller.area.y || 1;
+					f.y= {fixed: this.engine.renderer.height-this.parent.scroller.area.y || 1};
 			}
 			if (f.x || f.y || f.width || f.height)
 				this.parent.scroller.area.float=f;
