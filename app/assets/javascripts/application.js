@@ -58,3 +58,11 @@ function loadScript(src, as_tag){
 		xmlhttp.send();
 	}
 }
+
+function afterWindowLoad(f){
+	if (window.addEventListener)
+		window.addEventListener("load", f, false);
+	else if (window.attachEvent)
+		window.attachEvent("onload", f);
+	else window.onload = f;
+}

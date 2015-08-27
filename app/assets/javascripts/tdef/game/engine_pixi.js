@@ -2,7 +2,7 @@
 
 var offset=22;
 	
-function TDefEngine(place, opt){
+function TDefEngine(place, opt, callback){
 	opt = opt || {};
 	opt.defines=opt.defines || {};
 		
@@ -18,7 +18,7 @@ function TDefEngine(place, opt){
 	//lets load textures
 	this.textures=opt.textures || {};
 	for (var i in this.textures){
-		this.textures[i].texture=new PIXI.BaseTexture.fromImage(this.textures[i].src);
+		this.textures[i].base=new PIXI.BaseTexture.fromImage(this.textures[i].src);
 	}
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
@@ -51,6 +51,8 @@ function TDefEngine(place, opt){
 		};
 	this.drawInterval=window.setInterval(this.render,this.frameTime)
 	addWeelHendler(this.renderer.view, weelHandler);
+	if(callback)
+		callback();
 }
 
 function getEngine(){

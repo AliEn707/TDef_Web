@@ -33,7 +33,7 @@ ATilingSprite.prototype.setFrames= function (textures, params){
 		if (params.anchor)
 			this.frames[i].anchor=params.anchor;
 		if (params.scale)
-			this.frames[i].scale=params.scale;
+			this.frames[i].tileScale=params.scale;
 	}
 }
 
@@ -51,7 +51,7 @@ Object.defineProperty(ATilingSprite.prototype, 'height', {
     },
     set: function(value) {
 	for (var i in this.frames)
-		this.frames[i].height=value/this.frames[i].scale.y;
+		this.frames[i].height=value///this.frames[i].scale.y;
     }
 });
 
@@ -63,27 +63,18 @@ Object.defineProperty(ATilingSprite.prototype, 'width', {
     },
     set: function(value) {
 	for (var i in this.frames)
-		this.frames[i].width=value/this.frames[i].scale.x;
+		this.frames[i].width=value///this.frames[i].scale.x;
     }
 });
 
-Object.defineProperty(ATilingSprite.prototype, 'realWidth', {
-    get: function() {
-	var t=this.frames[this.current_frame];
-	if (t)
-		return  t.width*t.scale.x;
-    },
-    set: function(value) {
-   }
-});
 
-Object.defineProperty(ATilingSprite.prototype, 'realHeight', {
+Object.defineProperty(ATilingSprite.prototype, 'alpha', {
     get: function() {
-	var t=this.frames[this.current_frame];
-	if (t)
-		return  t.height*t.scale.y;
+	return this.frames[0].alpha
     },
     set: function(value) {
+	for (var i in this.frames)
+	    this.frames[i].alpha=value*0.5;
     }
 });
 

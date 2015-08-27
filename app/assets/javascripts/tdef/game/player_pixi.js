@@ -46,27 +46,28 @@ function Player(opt){
 	var tw=[new PIXI.Texture.fromImage("/imgtest/green.jpg")]
 	
 	if (engine.map.players.id==this.id){
+		console.log("ok")
 		var buttonSize={x:50,y:50}
-		var cont=[new PIXI.Texture(engine.textures.npc_set_background.texture)];
+		var cont=[new PIXI.Texture(engine.textures.npc_set_background.base)];
 		var size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}
 		var buttons=new ButtonContainer({sprite:{textures:cont,opt:size},position:{x:100,y:100},actions:["drag"]});
-		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize});
+		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.npc)
 			if (parseInt(i) || parseInt(i)==0){
-				this.set.npc[i].button=buttons.keyPadAddButton({sprite:{textures: t,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnNpc(this.args);}}, parseInt(i));
+				this.set.npc[i].button=buttons.keyPadAddButton({sprite:{textures: t,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnNpc(this.args);}});
 			}
 		this.set.npc.buttons=buttons;
 		engine.map.objects["npc_set"]=buttons;
 		engine.stage.addChild(buttons);
 		
-		cont=[new PIXI.Texture(engine.textures.tower_set_background.texture)];
+		cont=[new PIXI.Texture(engine.textures.tower_set_background.base)];
 		buttonSize={x:50,y:50}
 		size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}
 		buttons=new ButtonContainer({sprite:{textures:cont,opt:size},position:{x:100,y:200},actions:["drag"]});
-		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize});
+		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.tower)
 			if (parseInt(i) || parseInt(i)==0){
-				this.set.tower[i].button=buttons.keyPadAddButton({sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}},parseInt(i));
+				this.set.tower[i].button=buttons.keyPadAddButton({sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}});
 			}
 		this.set.tower.buttons=buttons;
 		engine.map.objects["tower_set"]=buttons;

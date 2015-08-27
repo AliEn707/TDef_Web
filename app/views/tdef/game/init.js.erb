@@ -1,4 +1,5 @@
-var engine = new TDefEngine(document.getElementById("gameDiv"),
+try{
+	var engine = new TDefEngine(document.getElementById("gameDiv"),
 						{
 							webgl: true, 
 							frameTime:1000/30, 
@@ -24,6 +25,14 @@ var engine = new TDefEngine(document.getElementById("gameDiv"),
 								},
 								events_list_backgroung:{
 									src:"<%= asset_url('events_background.png') %>",
+									frames: 1
+								},
+								events_list_button:{
+									src:"<%= asset_url('events_border_r.png') %>",
+									frames: 1
+								},
+								events_list_button_focused:{
+									src:"<%= asset_url('events_border_l.png') %>",
 									frames: 1
 								},
 								events_list_lu:{
@@ -62,6 +71,16 @@ var engine = new TDefEngine(document.getElementById("gameDiv"),
 						});
 
 //load Loading here, becouse it loads very long 
-Loading.init({engine:engine}, Loading.show);
-	
+afterWindowLoad(function (){// loads only like this need to check why
+	Loading.init({engine: engine}, function (){
+		Loading.show();
+		engine.public=new Public();
+		if (test)
+			test();
+	});
+})
 //images from assets can be used like this <%= asset_url('image.png') %>
+
+}catch(e){
+	console.log(e);
+}
