@@ -412,8 +412,8 @@ function test(){
 		nodes.push(0)
 	//	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
 
-//	engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
-//	engine.loadMap()
+	engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
+	engine.loadMap()
 	//engine.stage.addChild(bunny)
 	data=[
 		{msg:3,id:0,objtype:"Bullet",create:1,grid:{$:0,x:4.374,y:9.4},$:0,type:2,owner:1,source:{$:0,x:7.125,y:8.5},$:0},

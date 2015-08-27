@@ -101,15 +101,15 @@ function ButtonContainer(opt){
 	}
 	this.args=opt.args;
 	this.actions=opt.actions;
-	if (this.actions)
-		this.interactive=true;
 	if (this.actions){
+		this.interactive=true;
 		this.mousedown = this.touchstart = startDragging;
 		this.mouseup = this.mouseupoutside = this.touchend = this.touchendoutside = stopDragging;
 		if (this.actions.indexOf("drag")>-1)
 			this.mousemove = this.touchmove = proceedDragging;
-		if (this.actions.indexOf("press")>-1)
+		if (this.actions.indexOf("press")>-1){
 			this.pressAction=opt.pressAction;
+		}
 	}
 	if (opt.overAction)
 		this.overAction=opt.overAction;

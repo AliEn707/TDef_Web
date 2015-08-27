@@ -132,6 +132,8 @@ function proceedMapMessages(str){
 	var arr=eval(str);
 	delete str;
 	var e=getEngine();
+//	try{
+		
 	for(var i in arr){
 		var obj=arr[i];
 		if (obj.objtype){
@@ -155,6 +157,8 @@ function proceedMapMessages(str){
 		}
 		//console.log(str)
 	}
+	
+//	}catch(e){console.log(e)}
 }
 
 //callback on connector initialising

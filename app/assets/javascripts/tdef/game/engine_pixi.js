@@ -155,6 +155,8 @@ TDefEngine.prototype.loadMap= function (){
 	var opt=this.parseMap(this.map_name)
 	var map=new Grid(opt.size);
 	map.engine=this;
+	if (this.map)
+		this.map.clean();
 	this.map=map;
 	this.stage.addChild(map);
 	

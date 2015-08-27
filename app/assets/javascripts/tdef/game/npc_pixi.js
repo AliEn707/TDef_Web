@@ -60,7 +60,7 @@ Npc.prototype.setHealth= function (health){
 	var obj=this.health/type_health;
 	if (obj>1)
 		obj=1;
-	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.texture.width*obj,height:this.engine.textures.health.texture.height});
+	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.base.width*obj,height:this.engine.textures.health.base.height});
 	this.health_sprite.tint=healthColor(obj);
 }
 

@@ -18,8 +18,8 @@ function clone(obj){
 
 function healthColor(p){
 	var a={
-		red:255*(1-p),
-		green:255*p,
+		red: parseInt(255*(1-p)),
+		green: parseInt(255*p),
 		blue:0
 	}
 	for (var i in a)
@@ -82,7 +82,7 @@ function stopDragging(data) {
 			screenPressPoint.y = data.getLocalPosition(stage).y;
 			if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
 					Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
-				if (this.pressAction && (dragObj==this) )
+				if (this.pressAction) //may be need smth to do
 					this.pressAction();
 			}
 		}
