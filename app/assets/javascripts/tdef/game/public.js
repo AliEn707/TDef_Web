@@ -1,4 +1,5 @@
 function Public(engine){
+	PIXI.DisplayObjectContainer.call(this);
 	this.engine=engine || getEngine();
 	this.place={};
 	this.events={}
@@ -10,6 +11,18 @@ function Public(engine){
 		border: {width: 30, height: 30},
 		button: {width: 280, height: 50}
 	});
+	this.depth=-1;
+	this.engine.stage.addChild(this);
+}
+
+Public.prototype= new PIXI.DisplayObjectContainer();
+AObject.prototype.constructor= Public;
+
+Public.prototype.toggle= function () {
+	if (this.visible)
+		this.visible=false;
+	else
+		this.visible=true;
 }
 
 Public.prototype.switchTo= function (where) {
@@ -46,7 +59,7 @@ Public.prototype.eventsInit= function (opt) {
 	this.events.container=container;
 	this.events.container.visible=false;
 	container.depth=-1;
-	engine.stage.addChild(container);
+	this.addChild(container);
 	
 	textures=getTextureFrames(engine.textures.events_list_u);
 	afterTextureLoad(textures[0], function (){

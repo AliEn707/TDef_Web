@@ -173,11 +173,26 @@ function fitDimensions(from, to){ //from -screen to - wallpaper
 	
 }
 //when image loading for a long time
-function afterTextureLoad(texture, func){
-	if (texture.baseTexture.hasLoaded)
+function afterBaseTextureLoad(baseTexture, func){
+	function atEnd(){
+		baseTexture.removeAllListeners();
 		func();
-	else
-		texture.addEventListener("update", func);
+	}
+	if (baseTexture.hasLoaded)
+		func();
+	else{
+		baseTexture.on("loaded", atEnd);
+		baseTexture.on("error", function(){
+			var e=getEngine().textures.error;
+			if (e)
+				baseTexture.updateSourceImage(e.src);
+			atEnd();
+		});
+	}
+}
+
+function afterTextureLoad(texture, func){
+	afterBaseTextureLoad(texture.baseTexture,func);
 }
 
 function afterSpriteLoad(sprite, func){

@@ -46,7 +46,6 @@ function Player(opt){
 	var tw=[new PIXI.Texture.fromImage("/imgtest/green.jpg")]
 	
 	if (engine.map.players.id==this.id){
-		console.log("ok")
 		var buttonSize={x:50,y:50}
 		var cont=[new PIXI.Texture(engine.textures.npc_set_background.base)];
 		var size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}

@@ -1,85 +1,88 @@
 try{
-	var engine = new TDefEngine(document.getElementById("gameDiv"),
-						{
-							webgl: true, 
-							frameTime:1000/30, 
-							textures:{
-								health: {
-									src:"<%= asset_url('health.png') %>"
-								}, 
-								tower_set_background:{
-									src:"/imgtest/build.png"
-								},
-								npc_set_background:{
-									src:"/imgtest/build.png"
-								},
-								loading:{
-									src:"<%= asset_url('loading.png') %>",
-									width:128,
-									height:128,
-									frames:8
-								},
-								loading_background:{
-									src:"<%= asset_url('loading_background.png') %>",
-									frames: 1
-								},
-								events_list_backgroung:{
-									src:"<%= asset_url('events_background.png') %>",
-									frames: 1
-								},
-								events_list_button:{
-									src:"<%= asset_url('events_border_r.png') %>",
-									frames: 1
-								},
-								events_list_button_focused:{
-									src:"<%= asset_url('events_border_l.png') %>",
-									frames: 1
-								},
-								events_list_lu:{
-									src:"<%= asset_url('events_corner_lu.png') %>",
-									frames: 1
-								},
-								events_list_ld:{
-									src:"<%= asset_url('events_corner_ld.png') %>",
-									frames: 1
-								},
-								events_list_ru:{
-									src:"<%= asset_url('events_corner_ru.png') %>",
-									frames: 1
-								},
-								events_list_rd:{
-									src:"<%= asset_url('events_corner_rd.png') %>",
-									frames: 1
-								},
-								events_list_r:{
-									src:"<%= asset_url('events_border_r.png') %>",
-									frames: 1
-								},
-								events_list_d:{
-									src:"<%= asset_url('events_border_d.png') %>",
-									frames: 1
-								},
-								events_list_l:{
-									src:"<%= asset_url('events_border_l.png') %>",
-									frames: 1
-								},
-								events_list_u:{
-									src:"<%= asset_url('events_border_u.png') %>",
-									frames: 1
-								}
-							}
-						});
-
-//load Loading here, becouse it loads very long 
-afterWindowLoad(function (){// loads only like this need to check why
-	Loading.init({engine: engine}, function (){
-		Loading.show();
-		engine.public=new Public();
-		if (test)
-			test();
-	});
-})
-//images from assets can be used like this <%= asset_url('image.png') %>
+	var engine = new TDefEngine(
+		document.getElementById("gameDiv"),
+		{
+			webgl: true, 
+			frameTime:1000/30, 
+			textures:{
+				error:{
+					src:"<%= asset_url('error.png') %>",
+					frames: 1
+				},
+				health: {
+					src:"<%= asset_url('health.png') %>"
+				}, 
+				tower_set_background:{
+					src:"/imgtest/build.png"
+				},
+				npc_set_background:{
+					src:"/imgtest/build.png"
+				},
+				loading:{
+					src:"<%= asset_url('loading.png') %>",
+					width:128,
+					height:128,
+					frames:8
+				},
+				loading_background:{
+					src:"<%= asset_url('loading_background.png') %>",
+					frames: 1
+				},
+				events_list_backgroung:{
+					src:"<%= asset_url('events_background.png') %>",
+					frames: 1
+				},
+				events_list_button:{
+					src:"<%= asset_url('events_border_r.png') %>",
+					frames: 1
+				},
+				events_list_button_focused:{
+					src:"<%= asset_url('events_border_l.png') %>",
+					frames: 1
+				},
+				events_list_lu:{
+					src:"<%= asset_url('events_corner_lu.png') %>",
+					frames: 1
+				},
+				events_list_ld:{
+					src:"<%= asset_url('events_corner_ld.png') %>",
+					frames: 1
+				},
+				events_list_ru:{
+					src:"<%= asset_url('events_corner_ru.png') %>",
+					frames: 1
+				},
+				events_list_rd:{
+					src:"<%= asset_url('events_corner_rd.png') %>",
+					frames: 1
+				},
+				events_list_r:{
+					src:"<%= asset_url('events_border_r.png') %>",
+					frames: 1
+				},
+				events_list_d:{
+					src:"<%= asset_url('events_border_d.png') %>",
+					frames: 1
+				},
+				events_list_l:{
+					src:"<%= asset_url('events_border_l.png') %>",
+					frames: 1
+				},
+				events_list_u:{
+					src:"<%= asset_url('events_border_u.png') %>",
+					frames: 1
+				}
+			}
+		}, 
+		function(){
+			Loading.init({engine: engine}, function (){
+				Loading.show();
+				engine.public=new Public();
+				if (test)
+					test();
+			});
+		}
+	);
 
 }catch(e){
 	console.log(e);
