@@ -465,7 +465,7 @@ package {
 		//here must be list of getting obj params 
 		switch (publicMsg){
 			case MESSAGE_EVENT_CHANGE:
-				publicOutObj+=",objtype:\"Event\"";
+				publicOutObj+=",objtype:\"Event\",action:\"change\"";
 				publicOutObj+=",id:"+bitMask;
 //				publicDataSeq.push("id","int");
 //				publicDataSeq.push("rooms","int");

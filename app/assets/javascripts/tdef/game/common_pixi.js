@@ -12,7 +12,21 @@ function showStats(place){
 }
 
 function clone(obj){
-	return JSON.parse(JSON.stringify(obj))
+	if (obj)
+		return JSON.parse(JSON.stringify(obj))
+}
+
+function healthColor(p){
+	var a={
+		red: parseInt(255*(1-p)),
+		green: parseInt(255*p),
+		blue:0
+	}
+	for (var i in a)
+		if((a[i]=a[i].toString(16)).length<2){
+			a[i]='0'+a[i];
+		}
+	return parseInt(a.red+a.green+a.blue,16);
 }
 
 //objects gragging hack
@@ -68,7 +82,7 @@ function stopDragging(data) {
 			screenPressPoint.y = data.getLocalPosition(stage).y;
 			if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
 					Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
-				if (this.pressAction && (dragObj==this) )
+				if (this.pressAction) //may be need smth to do
 					this.pressAction();
 			}
 		}
@@ -106,8 +120,7 @@ var lastObj;
 function findCurObject(obj, pos){
 	if (obj.interactive && obj.visible && obj.mouseweel){
 		var real=realPosition(obj);
-		var area=obj.hitArea || obj.innerArea || {x:0, y:0, width:obj.width, height:obj.height}
-		area=clone(area)
+		var area=clone(obj.hitArea || obj.innerArea) || {x:0, y:0, width:obj.width, height:obj.height};
 		area.x=(area.x+real.x);
 		area.y=(area.y+real.y);
 		area.width*=real.scale;
@@ -160,15 +173,35 @@ function fitDimensions(from, to){ //from -screen to - wallpaper
 	
 }
 //when image loading for a long time
-function afterTextureLoad(texture, func){
-	if (texture.baseTexture.hasLoaded)
+function afterBaseTextureLoad(baseTexture, func){
+	function atEnd(){
+		baseTexture.removeAllListeners();
 		func();
-	else
-		texture.addEventListener("update", func);
+	}
+	if (baseTexture.hasLoaded)
+		func();
+	else{
+		baseTexture.on("loaded", atEnd);
+		baseTexture.on("error", function(){
+			var e=getEngine().textures.error;
+			if (e)
+				baseTexture.updateSourceImage(e.src);
+			atEnd();
+		});
+	}
+}
+
+function afterTextureLoad(texture, func){
+	afterBaseTextureLoad(texture.baseTexture,func);
 }
 
 function afterSpriteLoad(sprite, func){
 	afterTextureLoad(sprite.texture,func);
 }
+
+function afterASpriteLoad(sprite, func){
+	afterTextureLoad(sprite.frames[sprite.current_frame].texture,func);
+}
+
 
 

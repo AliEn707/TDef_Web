@@ -2,7 +2,7 @@
 
 var offset=22;
 	
-function TDefEngine(place, opt){
+function TDefEngine(place, opt, callback){
 	opt = opt || {};
 	opt.defines=opt.defines || {};
 		
@@ -15,11 +15,8 @@ function TDefEngine(place, opt){
 	// create a renderer instance
 	this.renderer = opt.webgl ? new PIXI.autoDetectRenderer(width, height)  : new PIXI.CanvasRenderer(width, height);
 	this.renderer.view.oncontextmenu=function (){return false;}
-	//lets load textures
+	
 	this.textures=opt.textures || {};
-	for (var i in this.textures){
-		this.textures[i].texture=new PIXI.BaseTexture.fromImage(this.textures[i].src);
-	}
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
 	//show statistic info
@@ -51,6 +48,20 @@ function TDefEngine(place, opt){
 		};
 	this.drawInterval=window.setInterval(this.render,this.frameTime)
 	addWeelHendler(this.renderer.view, weelHandler);
+	
+	//lets load textures
+	var loader={all:0,loaded:0};
+	for (var i in this.textures){
+		loader.all+=1;
+		this.textures[i].base=new PIXI.BaseTexture.fromImage(this.textures[i].src);
+		afterBaseTextureLoad(this.textures[i].base, function (){
+			loader.loaded+=1;
+			if (loader.loaded==loader.all)
+				if (callback)
+					callback();
+		});
+	}
+	
 }
 
 function getEngine(){
@@ -153,6 +164,8 @@ TDefEngine.prototype.loadMap= function (){
 	var opt=this.parseMap(this.map_name)
 	var map=new Grid(opt.size);
 	map.engine=this;
+	if (this.map)
+		this.map.clean();
 	this.map=map;
 	this.stage.addChild(map);
 	

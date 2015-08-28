@@ -60,7 +60,8 @@ Npc.prototype.setHealth= function (health){
 	var obj=this.health/type_health;
 	if (obj>1)
 		obj=1;
-	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.texture.width*obj,height:this.engine.textures.health.texture.height});
+	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.base.width*obj,height:this.engine.textures.health.base.height});
+	this.health_sprite.tint=healthColor(obj);
 }
 
 Npc.prototype.getAngle= function (v){
@@ -175,18 +176,17 @@ Npc.prototype.proceed= function (){
 }
 
 Npc.prototype.setHealthSprite= function (s){
-	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
+	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.base));
 	//this needs for correct loading 
 	var that=this;
-	var func=function (){
+	afterSpriteLoad(this.health_sprite,function (){
 		that.health_sprite.height=that.health_sprite.height/that.health_sprite.width*that.map.nodesize;
 		that.health_sprite.width=that.map.nodesize;
 		that.health_sprite.position.y=-s*0.8;
 		that.health_sprite.position.x=-that.health_sprite.width*0.5;
-	}
-	afterSpriteLoad(this.health_sprite,func);
-	this.health_sprite.anchor.x=0;
-	this.health_sprite.anchor.y=1;
+	});
+	this.health_sprite.anchor={x:0,y:1};
+	this.health_sprite.tint=healthColor(1);
 	this.addChild(this.health_sprite);
 }
 

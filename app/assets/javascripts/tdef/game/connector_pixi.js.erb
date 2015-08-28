@@ -124,7 +124,7 @@ function mapAuthData(value) {
 	var engine=getEngine();
 	engine.map.players.total=obj.players;
 	engine.map.players.id=obj.id;
-	
+	console.log("player id"+obj.id)
 }
 
 //callback on got objects data
@@ -132,6 +132,8 @@ function proceedMapMessages(str){
 	var arr=eval(str);
 	delete str;
 	var e=getEngine();
+//	try{
+		
 	for(var i in arr){
 		var obj=arr[i];
 		if (obj.objtype){
@@ -155,6 +157,8 @@ function proceedMapMessages(str){
 		}
 		//console.log(str)
 	}
+	
+//	}catch(e){console.log(e)}
 }
 
 //callback on connector initialising

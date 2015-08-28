@@ -1,12 +1,38 @@
 function Public(engine){
+	PIXI.DisplayObjectContainer.call(this);
 	this.engine=engine || getEngine();
+	this.place={};
 	this.events={}
 	this.players={}
-	this.eventsInit({position:{x:0,y:0},width: 300, height:this.engine.renderer.height, border:{width: 30, height: 30},button:{width: 200, height: 50}});
+	this.eventsInit({
+		position: {x:0,y:0},
+		width: 350, 
+		height: this.engine.renderer.height, 
+		border: {width: 30, height: 30},
+		button: {width: 280, height: 50}
+	});
+	this.depth=-1;
+	this.engine.stage.addChild(this);
+}
+
+Public.prototype= new PIXI.DisplayObjectContainer();
+AObject.prototype.constructor= Public;
+
+Public.prototype.toggle= function () {
+	if (this.visible)
+		this.visible=false;
+	else
+		this.visible=true;
 }
 
 Public.prototype.switchTo= function (where) {
-	
+	switch (where){
+		case 'events':
+			this.events.container.visible=true;
+			break;
+	}
+	this.place.prev=this.place.current;
+	this.place.current=where; 
 }
 /*
 {
@@ -31,8 +57,9 @@ Public.prototype.eventsInit= function (opt) {
 	var textures;
 	var container=new ButtonContainer({position:{x:0,y:0}});
 	this.events.container=container;
+	this.events.container.visible=false;
 	container.depth=-1;
-	engine.stage.addChild(container);
+	this.addChild(container);
 	
 	textures=getTextureFrames(engine.textures.events_list_u);
 	afterTextureLoad(textures[0], function (){
@@ -61,8 +88,14 @@ Public.prototype.eventsInit= function (opt) {
 	container.addButton({sprite: new ASprite(getTextureFrames(engine.textures.events_list_rd), {width: opt.border.width, height: opt.border.height}),position:{x:opt.position.x+opt.width-opt.border.width,y:opt.position.y+opt.height-opt.border.height, float: {y:'fixed'}}});
 	
 	var border=(opt.width-opt.border.width*2-opt.button.width)/2;
-	this.events.buttons = container.addButton({sprite: {textures: textures}, position:{x:opt.border.width+border,y:opt.border.height},float:{y:'fixed'},actions:["press","drag"]});
-	this.events.buttons.keyPadInit({rows: 300, columns: 1, buttonSize: {x:opt.button.width,y:opt.button.height}, scrolling:{type: "vertical", area:{x:0,y:0,width: opt.width-opt.border.width*2-border*2,height: opt.height-opt.border.height*2}}});
+	this.events.buttons = container.addButton({
+		sprite: {textures: textures}, 
+		position:{x:opt.border.width+border,y:opt.border.height},
+		hitArea:{x:-(opt.width-opt.border.width*2-border*2),y:-(opt.height-opt.border.height*2),width: 2*(opt.width-opt.border.width*2-border*2),height: 2*(opt.height-opt.border.height*2)}, 
+		float:{y:'fixed'},
+		actions:["press","drag"]
+	});
+	this.events.buttons.keyPadInit({rows: 300, columns: 1, buttonSize: {x:opt.button.width,y:opt.button.height}, buttonDist: {x:0,y:5}, scrolling:{type: "vertical", area:{x:0,y:0,width: opt.width-opt.border.width*2-border*2,height: opt.height-opt.border.height*2}}});
 	
 /*
 	var button=container.addButton({position:{x:20,y:20},actions:["press","drag"]});
@@ -79,7 +112,32 @@ Public.prototype.eventsInit= function (opt) {
 }
 
 Public.prototype.eventsAdd= function (event) {
-	
+	if (!this.events.all)
+		this.events.all={};
+	var focused;
+	if (engine.textures.events_list_button_focused)
+		focused=new ASprite(getTextureFrames(engine.textures.events_list_button_focused));	
+	//TODO: check style
+	this.events.all[event.id]=this.events.buttons.keyPadAddButton({
+		sprite: new ASprite(getTextureFrames(engine.textures.events_list_button)), 
+		focused: focused,
+		text:{
+			data:locales[event.name], 
+			position:{x:this.events.buttons.buttonSize.x/2,y:this.events.buttons.buttonSize.y/2},
+			anchor:{x:0.5,y:0.45},
+			style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}
+		}
+	}); 
+	this.events.all[event.id]=event;
+	//TODO: add actions
 }
 
+Public.prototype.eventsRemove= function (event) {
+	this.events.buttons.keyPadRemoveButton(this.events.all[event.id]);
+	delete this.events.all[event.id];
+}
+
+//action on press button
+Public.prototype.eventsButtonAction= function (event) {
+}
 
