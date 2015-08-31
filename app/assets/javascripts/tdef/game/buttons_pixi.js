@@ -163,7 +163,7 @@ ButtonContainer.prototype.addButton=function (opt){
 
 ButtonContainer.prototype.setWidthHeight=function (){
 	if (this.$width){
-		if (this.getChildAt(0).hasLoaded()){
+		if (!this.unfocused || (this.unfocused && this.unfocused.hasLoaded())){
 			this.width=this.$width;
 			if (this.float && this.float.x){ //need to check
 				if (this.float.x.float)
@@ -175,7 +175,7 @@ ButtonContainer.prototype.setWidthHeight=function (){
 		}
 	}
 	if (this.$height){
-		if (this.getChildAt(0).hasLoaded()){
+		if (!this.unfocused || (this.unfocused && this.unfocused.hasLoaded())){
 			this.height=this.$height;
 			if (this.float&& this.float.y){
 				if (this.float.y.float)
@@ -252,17 +252,19 @@ ButtonContainer.prototype.resize=function (width,height){
 ButtonContainer.prototype.proceed=function (){
 	//check size of button
 	this.setWidthHeight();
-	//change frame for background
+/*	//change frame for background
 	if (this.unfocused){
 		if (this.unfocused.alpha==1)
 			this.unfocused.upFrame();
 		else	if (this.focused && this.focused.alpha==1)
 			this.focused.upFrame();
 	}
+*/
 	//and for all buttons
-	for(var i in this.buttons)
-		if (this.buttons[i].proceed)
-			this.buttons[i].proceed();
+	for(var i in this.children){
+		if (this.children[i].proceed)
+			this.children[i].proceed();
+	}
 }
 
 ButtonContainer.prototype.transformCorrection=function (){
@@ -420,8 +422,8 @@ ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
 		button.position= this.keyPadButtonPosition(pos);
 		button.fitParent=true;
 		//some kind of hack
-		button.$width=this.buttonSize.x; 
-		button.$height=this.buttonSize.y;
+		button.width=button.$width=this.buttonSize.x; 
+		button.height=button.$height=this.buttonSize.y;
 		button.actions=button.actions || [];
 		if (button.actions.indexOf("drag")>-1)
 			delete button.actions[button.actions.indexOf("drag")];
@@ -483,6 +485,17 @@ ButtonContainer.prototype.keyPadRemoveButtonByIndex=function (pos){
 		var position=this.keyPadButtonPosition(i);
 		this.keypad[i].position.y=position.y; 
 		this.keypad[i].position.x=position.x; 
+	}
+	//TODO: check
+	if (this.scrolling.area.width>this.keypad[this.keypad.length-1].x){
+		this.scrolling.area.width=this.keypad[this.keypad.length-1].x;
+		if (this.hitArea)
+			this.hitArea.width-=this.buttonSize.x+this.buttonDist.x;
+	}
+	if (this.scrolling.area.height>this.keypad[this.keypad.length-1].y){
+		this.scrolling.area.height=this.keypad[this.keypad.length-1].y;
+		if (this.hitArea)
+			this.hitArea.height-=this.buttonSize.y+this.buttonDist.y;
 	}
 }
 

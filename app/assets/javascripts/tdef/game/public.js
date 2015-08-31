@@ -1,7 +1,7 @@
 function Public(engine){
 	PIXI.DisplayObjectContainer.call(this);
 	this.engine=engine || getEngine();
-	this.place={};
+	this.place={}; //info about current and prev places
 	this.events={}
 	this.players={}
 	this.eventsInit({
@@ -16,8 +16,14 @@ function Public(engine){
 }
 
 Public.prototype= new PIXI.DisplayObjectContainer();
-AObject.prototype.constructor= Public;
+Public.prototype.constructor= Public;
 
+Public.prototype.proceed= function () {
+	for (var i in this.children)
+		if (this.children[i].proceed)
+			this.children[i].proceed();
+}
+	
 Public.prototype.toggle= function () {
 	if (this.visible)
 		this.visible=false;
@@ -57,7 +63,7 @@ Public.prototype.eventsInit= function (opt) {
 	var textures;
 	var container=new ButtonContainer({position:{x:0,y:0}});
 	this.events.container=container;
-	this.events.container.visible=false;
+//	this.events.container.visible=false;
 	container.depth=-1;
 	this.addChild(container);
 	
@@ -126,9 +132,11 @@ Public.prototype.eventsAdd= function (event) {
 			position:{x:this.events.buttons.buttonSize.x/2,y:this.events.buttons.buttonSize.y/2},
 			anchor:{x:0.5,y:0.45},
 			style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}
-		}
+		},
+		actions: ['press'],
+		pressAction: this.eventsButtonAction
 	}); 
-	this.events.all[event.id]=event;
+	this.events.all[event.id].event=event;
 	//TODO: add actions
 }
 
@@ -139,5 +147,6 @@ Public.prototype.eventsRemove= function (event) {
 
 //action on press button
 Public.prototype.eventsButtonAction= function (event) {
+	console.log(this.event);
 }
 
