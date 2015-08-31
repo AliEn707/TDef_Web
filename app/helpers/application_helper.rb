@@ -19,7 +19,7 @@ module ApplicationHelper
 	
 	def menu 
 		a=[]
-		if !current_user.nil?
+		if (!current_user.nil?) then
 			a<<[{'name'=>current_user.email.to_s,'right'=>true, 'noprefix'=> true},
 					{'name'=>(:edit_registration),'path' => edit_user_registration_path},
 					{'name'=>(:sign_out),'path'=>destroy_user_session_path,:method => :delete}]
@@ -52,7 +52,7 @@ module ApplicationHelper
 			a<<[{'name' => (:sign_up) , 'path' => new_user_registration_path}]			
 		end
 		locale=[]
-		locale<<{'name'=>current_locale,'right'=>true, 'noprefix'=> true}
+		locale<<{'name'=> current_locale,'right'=>true, 'noprefix'=> true, 'show' => current_user.nil?}
 		$available_locales.each do |l_l|
 			locale<<{'name'=>l_l,'path'=>"/locale?locale="+l_l}
 		end
