@@ -47,6 +47,17 @@ function publicSend(str) {
 //event ([{msg:2,objtype:"Event",id:1,map:"pvz11_11",name:"#event",time:25444},])
 function proceedPublicMessages(str){
 	var arr=eval(str)
+	var engine=getEngine();
+	for (var i in arr){
+		switch (arr[i].objtype){
+			case 'Event': //we got event message
+				if (arr[i].action=='change') //add event
+					engine.public.eventsAdd(event)
+				else
+					1;
+				break;
+		}
+	}
 	console.log(arr)
 }
 

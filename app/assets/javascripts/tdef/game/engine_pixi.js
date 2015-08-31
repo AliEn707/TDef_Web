@@ -5,7 +5,7 @@ var offset=22;
 function TDefEngine(place, opt, callback){
 	opt = opt || {};
 	opt.defines=opt.defines || {};
-		
+	
 	place=place || document.body;
 	this.webgl=opt.webgl || true;
 	this.frameTime=opt.frameTime || 1000/30;
@@ -23,7 +23,7 @@ function TDefEngine(place, opt, callback){
 	showStats(place.getBoundingClientRect());
 	this.place=place;
 	//requestAnimFrame( this.render );
-	window.engine=this;
+	setEngine(this);
 	window.onresize = this.resize;
 	this.keys=[]
 	this.settings=opt.settings || { //defaults
@@ -51,21 +51,19 @@ function TDefEngine(place, opt, callback){
 	
 	//lets load textures
 	var loader={all:0,loaded:0};
+	for (var i in this.textures)
+		loader.all++;
 	for (var i in this.textures){
-		loader.all+=1;
 		this.textures[i].base=new PIXI.BaseTexture.fromImage(this.textures[i].src);
 		afterBaseTextureLoad(this.textures[i].base, function (){
-			loader.loaded+=1;
-			if (loader.loaded==loader.all)
+			loader.loaded++;
+			if (loader.loaded==loader.all){
 				if (callback)
 					callback();
+			}
 		});
 	}
 	
-}
-
-function getEngine(){
-	return window.engine;
 }
 
 

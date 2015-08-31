@@ -382,7 +382,7 @@ var bullet_types={
 	}
 }
 
-function test(){
+function test(engine){
 	// create a texture from an image path
 	var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 	// create a new Sprite using the texture
@@ -464,9 +464,10 @@ function test(){
 	var a=button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 
 	/**/
-	/*
 	
-	
+/*	
+//	engine.public.toggle();
+	engine.public.switchTo("events");
 	engine.public.eventsAdd({id:1,name:"#test1"})
 	engine.public.eventsAdd({id:2,name:"#test2"})
 	engine.public.eventsAdd({id:3,name:"#test3"})

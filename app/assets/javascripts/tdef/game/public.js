@@ -1,7 +1,7 @@
 function Public(engine){
 	PIXI.DisplayObjectContainer.call(this);
 	this.engine=engine || getEngine();
-	this.place={};
+	this.place={}; //info about current and prev places
 	this.events={}
 	this.players={}
 	this.eventsInit({
@@ -16,8 +16,20 @@ function Public(engine){
 }
 
 Public.prototype= new PIXI.DisplayObjectContainer();
-AObject.prototype.constructor= Public;
+Public.prototype.constructor= Public;
 
+Public.prototype.proceed= function () {
+	for (var i in this.children)
+		if (this.children[i].proceed)
+			this.children[i].proceed();
+}
+	
+Public.prototype.resize= function (w,h) {
+	for (var i in this.children)
+		if (this.children[i].resize)
+			this.children[i].resize(w,h);
+}
+	
 Public.prototype.toggle= function () {
 	if (this.visible)
 		this.visible=false;
@@ -96,39 +108,33 @@ Public.prototype.eventsInit= function (opt) {
 		actions:["press","drag"]
 	});
 	this.events.buttons.keyPadInit({rows: 300, columns: 1, buttonSize: {x:opt.button.width,y:opt.button.height}, buttonDist: {x:0,y:5}, scrolling:{type: "vertical", area:{x:0,y:0,width: opt.width-opt.border.width*2-border*2,height: opt.height-opt.border.height*2}}});
-	
-/*
-	var button=container.addButton({position:{x:20,y:20},actions:["press","drag"]});
-	//button.addButton({sprite:{textures:t3,opt:{width:200,height:200}},focused:{textures:t2},position:{x:100,y:100},actions:["press","drag"]});
-	button.keyPadInit({rows: 3, columns: 2, buttonSize: {x:100,y:100}, scrolling:{type: "vertical", area:{x:0,y:0,width: 215,height: 215}}});
-	button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
-	button.keyPadAddButton({sprite:{textures:t2,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
-	button.keyPadAddButton({sprite:{textures:t3,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
-	button.keyPadAddButton({sprite:{textures:t3,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
-	button.keyPadAddButton({sprite:{textures:t3,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
-	button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
-	var a=button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});	
-*/
 }
 
 Public.prototype.eventsAdd= function (event) {
+	var text=locales[event.name] || event.name;
 	if (!this.events.all)
 		this.events.all={};
-	var focused;
-	if (engine.textures.events_list_button_focused)
-		focused=new ASprite(getTextureFrames(engine.textures.events_list_button_focused));	
-	//TODO: check style
-	this.events.all[event.id]=this.events.buttons.keyPadAddButton({
-		sprite: new ASprite(getTextureFrames(engine.textures.events_list_button)), 
-		focused: focused,
-		text:{
-			data:locales[event.name], 
-			position:{x:this.events.buttons.buttonSize.x/2,y:this.events.buttons.buttonSize.y/2},
-			anchor:{x:0.5,y:0.45},
-			style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}
-		}
-	}); 
-	this.events.all[event.id]=event;
+	if (!this.events.all[event.id]){
+		var focused;
+		if (this.engine.textures.events_list_button_focused)
+			focused=new ASprite(getTextureFrames(this.engine.textures.events_list_button_focused));	
+		//TODO: check style
+		this.events.all[event.id]=this.events.buttons.keyPadAddButton({
+			sprite: new ASprite(getTextureFrames(this.engine.textures.events_list_button)), 
+			focused: focused,
+			text:{
+				data: text, 
+				position:{x:this.events.buttons.buttonSize.x/2,y:this.events.buttons.buttonSize.y/2},
+				anchor:{x:0.5,y:0.45},
+				style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}
+			},
+			actions: ['press'],
+			pressAction: this.eventsButtonAction
+		}); 
+	} else {
+		this.events.all[event.id].text.setText(text);
+	}
+	this.events.all[event.id].event=event;
 	//TODO: add actions
 }
 
@@ -139,5 +145,6 @@ Public.prototype.eventsRemove= function (event) {
 
 //action on press button
 Public.prototype.eventsButtonAction= function (event) {
+	console.log(this.event);
 }
 
