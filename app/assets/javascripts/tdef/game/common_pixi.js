@@ -11,6 +11,17 @@ function showStats(place){
 	document.body.appendChild( stats.domElement );
 }
 
+var getEngine=function (){
+	return;
+}
+
+var setEngine=function (e){
+	var engine=e;
+	getEngine=function (){
+		return engine;
+	}
+}
+
 function clone(obj){
 	if (obj)
 		return JSON.parse(JSON.stringify(obj))

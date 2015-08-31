@@ -382,7 +382,7 @@ var bullet_types={
 	}
 }
 
-function test(){
+function test(engine){
 	// create a texture from an image path
 	var texture = new PIXI.BaseTexture.fromImage("/imgtest/coin.png");
 	// create a new Sprite using the texture
