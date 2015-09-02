@@ -393,9 +393,10 @@ package {
 							}
 						}
 						publicMsg=publicSock.readByte();
-						publicDataSeq.push("bitmask");
-						publicOutObj+="{msg:"+publicMsg;
-					
+						if (publicMsg!=0){
+							publicDataSeq.push("bitmask");
+							publicOutObj+="{msg:"+publicMsg;
+						}
 						break;
 					
 					case "bitmask": //need to get bitmask
@@ -409,6 +410,7 @@ package {
 						break;
 						
 					default:
+						logJS(publicOutObj);
 						logJS("get "+publicDataSeq[1]);
 						switch (publicDataSeq[1]){
 							case "{":
@@ -475,7 +477,7 @@ package {
 //				}
 				return;
 			case MESSAGE_PLAYER_CHANGE:
-				logJS("MESSAGE_PLAYER_CHANGE");
+//				logJS("MESSAGE_PLAYER_CHANGE");
 				publicOutObj+=",objtype:\"Player\"";
 				publicDataSeq.push("id","int");
 				if ((bitMask&BM_PLAYER_ROOM)!=0){
@@ -487,7 +489,7 @@ package {
 				}
 				return;
 			case MESSAGE_GAME_START:
-				publicOutObj+=",objtype:\"Player\"";
+				publicOutObj+=",objtype:\"Room\",action:\"ready\"";
 				publicOutObj+=",event_id:"+bitMask;
 				publicDataSeq.push("host","string");
 				publicDataSeq.push("port","int");
