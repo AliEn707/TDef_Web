@@ -51,6 +51,7 @@ function Grid(size,opt){
 
 //	this.transformCorrection()
 	this.players={};
+	this.depth=200000000; //TODO: chenge stupid way
 }
 
 focusTexturePath="/imgtest/build.png";
