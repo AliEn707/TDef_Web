@@ -15,6 +15,10 @@ var getEngine=function (){
 	return;
 }
 
+var getFPS=function (){
+	return 1/getEngine().frameTime;
+}
+
 var setEngine=function (e){
 	var engine=e;
 	getEngine=function (){
@@ -141,9 +145,10 @@ function findCurObject(obj, pos){
 				lastObj=obj;
 		}
 	}
-	for (var i in obj.children) {
-		findCurObject(obj.children[i],pos);
-	}
+	if (obj.visible)//TODO: check
+		for (var i in obj.children) {
+			findCurObject(obj.children[i],pos);
+		}
 }
 
 function weelHandler(data){

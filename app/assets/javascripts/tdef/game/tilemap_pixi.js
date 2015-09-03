@@ -22,7 +22,7 @@ function Grid(size,opt){
 	this.position.x=0;
 	this.position.y=0;
 	this.dragging = false;
-	this.hitArea= new PIXI.Rectangle(0,-this.size*this.nodesize*0.705,this.size*this.nodesize*1.41,this.size*this.nodesize*1.41)
+	this.hitArea= new PIXI.Rectangle(0,-this.size*this.nodesize*1.41*2,this.size*this.nodesize*1.41,this.size*this.nodesize*1.41*4)//TODO: check maybe too big
 	
 	this.mousedown = this.touchstart = startDragging;
 	this.mouseup = this.mouseupoutside = this.touchend = this.touchendoutside = stopDragging;
@@ -51,6 +51,7 @@ function Grid(size,opt){
 
 //	this.transformCorrection()
 	this.players={};
+	this.depth=200000000; //TODO: chenge stupid way
 }
 
 focusTexturePath="/imgtest/build.png";

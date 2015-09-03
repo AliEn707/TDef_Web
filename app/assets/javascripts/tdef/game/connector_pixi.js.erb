@@ -30,6 +30,8 @@ function publicConnect(host,port, name, token) {
 //callback on success autorisation
 function publicConnected(){
 	console.log("connected");
+	getEngine().public.toggle();
+	getEngine().public.switchTo('events');
 	Loading.hide();
 }
 //callback on public autentification fail
@@ -44,21 +46,32 @@ function publicSend(str) {
 	getConnector().publicSend(str);
 }
 
-//event ([{msg:2,objtype:"Event",id:1,map:"pvz11_11",name:"#event",time:25444},])
+//room start {msg:1,objtype:"Player",id:368322860,room:{$:0,type:1,id:616333680},$:0,time:24688}
+//event {msg:2,objtype:"Event",id:1,map:"pvz11_11",name:"#event",time:25444}
 function proceedPublicMessages(str){
 	var arr=eval(str)
+	console.log(str)
 	var engine=getEngine();
 	for (var i in arr){
 		switch (arr[i].objtype){
 			case 'Event': //we got event message
 				if (arr[i].action=='change') //add event
-					engine.public.eventsAdd(event)
+					engine.public.eventsAdd(arr[i])
 				else
 					1;
 				break;
+			case 'Player':
+				console.log(arr[i])
+				break;
+			case 'Room':
+				if (arr[i].action=='ready'){
+						mapConnect(arr[i].host,arr[i].port);
+						engine.setMap(engine.public.events.all[arr[i].event_id].map);
+						engine.loadMap();
+					}
+				break;
 		}
 	}
-	console.log(arr)
 }
 
 ///map network funtions
@@ -95,6 +108,7 @@ function mapMoveHero(node){
 //connect to mapserver
 function mapConnect(host,port) {
 	Loading.show();
+	getEngine().public.toggle();
 	getConnector().mapConnect(host,port);
 	//TODO: add animation on screen
 }
@@ -182,12 +196,9 @@ function connectorReady(){
 
 //adding Flash connector to page
 function addConnectorSWF(place) {
-	var width=500
 	var obj = document.createElement('object')
 	obj.setAttribute('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000')
 	obj.setAttribute('id', 'connector')
-	obj.setAttribute('width', width)
-	obj.setAttribute('height', '375')
 	obj.setAttribute('codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab')
 	var param = document.createElement('param')
 	param.setAttribute('name', 'movie')
@@ -199,7 +210,7 @@ function addConnectorSWF(place) {
 	obj.appendChild(param)
 	param = document.createElement('param')
 	param.setAttribute('name', 'bgcolor')
-	param.setAttribute('value', '#869ca7')
+	param.setAttribute('value', '#ffffff')
 	obj.appendChild(param)	
 	param = document.createElement('param')
 	param.setAttribute('name', 'allowScriptAccess')
@@ -208,7 +219,7 @@ function addConnectorSWF(place) {
 	var embed = document.createElement('embed')
 	embed.setAttribute('src', '<%= asset_url('connector.swf') %>')
 	embed.setAttribute('quality', 'high')
-	embed.setAttribute('bgcolor', '#869ca7')
+	embed.setAttribute('bgcolor', '#ffffff')
 	embed.setAttribute('width', '500')
 	embed.setAttribute('height', '375')
 	embed.setAttribute('name', 'connector')
@@ -222,15 +233,17 @@ function addConnectorSWF(place) {
 	
 	obj.style.zIndex=0
 	obj.style.position="absolute"
-	obj.style.left=0//-width
-	obj.style.top="0"
+	obj.style.left="0px"//-width
+	obj.style.top="0px"
 //	obj.setAttribute("hidden","")
 	
 	place=place || document.body
 	place.appendChild(obj)
 	
-	hideConnector=function (obj){
-		obj.parentNode.style.left=-obj.width+"px";
+	hideConnector=function (o){
+		o.width=3;
+		o.height=2;
+		//o.parentNode.style.left=-o.width+"px";
 	}
 }
 

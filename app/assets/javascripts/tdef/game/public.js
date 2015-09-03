@@ -12,6 +12,7 @@ function Public(engine){
 		button: {width: 280, height: 50}
 	});
 	this.depth=-1;
+	this.toggle();
 	this.engine.stage.addChild(this);
 }
 
