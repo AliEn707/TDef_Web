@@ -412,6 +412,7 @@ function test(engine){
 		nodes.push(0)
 	//	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
 
+//	engine.setMap('4')
 //	engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
 //	engine.loadMap()
 	//engine.stage.addChild(bunny)
