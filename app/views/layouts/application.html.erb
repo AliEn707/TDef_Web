@@ -58,9 +58,9 @@
 							<%menu.each do |m|%>
 								<%if m[0]["right"]!=true then%>
 									<%if !m[0]["path"].nil? then%>
-										<li <%='class=nav-collapse' if m[0]['show'].nil?%>><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
+										<li <%='class=nav-collapse' if !m[0]['show']%>><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
 									<%else%>
-										<li class="dropdown <%="nav-collapse" if m[0]['show'].nil?%>">
+										<li class="dropdown <%="nav-collapse" if !m[0]['show']%>">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 												<%=(m[0]['noprefix']) ? m[0]['name'] : t("menu.#{m[0]['name']}")%>
 												<b class="caret"></b>
@@ -81,9 +81,9 @@
 							<%menu.each do |m|%>
 								<%if m[0]["right"]==true then%>
 									<%if !m[0]["path"].nil? then%>
-										<li <%='class=nav-collapse' if m[0]['show'].nil?%>><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
+										<li <%='class=nav-collapse' if !m[0]['show']%>><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
 									<%else%>
-										<li class="dropdown <%="nav-collapse" if m[0]['show'].nil?%>">
+										<li class="dropdown <%="nav-collapse" if !m[0]['show']%>">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 												<%=(m[0]['noprefix']) ? m[0]['name'] : t("menu.#{m[0]['name']}")%>
 												<b class="caret"></b>
@@ -141,7 +141,7 @@
 			<div class="uk-offcanvas-bar uk-offcanvas-bar-flip">
 				<ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav="">
 					<%menu.each do |m|%>
-						<%if (m[0]["right"]!=true && m[0]['show'].nil?) then%>
+						<%if (m[0]["right"]!=true && !m[0]['show']) then%>
 							<%if !m[0]["path"].nil? then%>
 								<li ><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
 							<%else%>
@@ -161,7 +161,7 @@
 						<%end%>
 					<%end%>
 					<%menu.each do |m|%>
-						<%if (m[0]["right"]==true && m[0]['show'].nil?) then%>
+						<%if (m[0]["right"]==true && !m[0]['show']) then%>
 							<%if !m[0]["path"].nil? then%>
 								<li ><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
 							<%else%>
