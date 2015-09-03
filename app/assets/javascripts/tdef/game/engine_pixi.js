@@ -77,7 +77,7 @@ TDefEngine.prototype.render= function (){
 	that.keysProcessor();
 	that.objectsProcessor();
 	
-	shellSort(that.stage.children, function(a,b){return (a.depth)<(b.depth);})
+	that.stage.children.sort(function(a,b){return (a.depth)<(b.depth);})
 	that.renderer.render(that.stage);
 	//bunny.nextFrame()
 	if (stats)

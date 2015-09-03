@@ -284,6 +284,6 @@ took from https://mgechev.github.io
  
 //TODO: check which is best
 //save dafault sort as sortDefault
-Array.prototype.sortDefault=Array.prototype.sort;
+defaultSort=Array.prototype.sort;
 //replace basic sort by shellsort
 Array.prototype.sort=function(cmp){return shellSort(this,cmp);}
