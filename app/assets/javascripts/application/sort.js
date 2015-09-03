@@ -95,3 +95,8 @@
 
 
 }(typeof exports === 'undefined' ? window : exports));
+
+//save dafault sort as sortDefault
+Array.prototype.sortDefault=Array.prototype.sort;
+//replace basic sort by shellsort
+Array.prototype.sort=function(cmp){return shellSort(this,cmp);}
