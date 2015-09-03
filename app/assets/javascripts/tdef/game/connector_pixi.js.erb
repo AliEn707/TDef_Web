@@ -196,12 +196,9 @@ function connectorReady(){
 
 //adding Flash connector to page
 function addConnectorSWF(place) {
-	var width=500
 	var obj = document.createElement('object')
 	obj.setAttribute('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000')
 	obj.setAttribute('id', 'connector')
-	obj.setAttribute('width', width)
-	obj.setAttribute('height', '375')
 	obj.setAttribute('codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab')
 	var param = document.createElement('param')
 	param.setAttribute('name', 'movie')
@@ -213,7 +210,7 @@ function addConnectorSWF(place) {
 	obj.appendChild(param)
 	param = document.createElement('param')
 	param.setAttribute('name', 'bgcolor')
-	param.setAttribute('value', '#869ca7')
+	param.setAttribute('value', '#ffffff')
 	obj.appendChild(param)	
 	param = document.createElement('param')
 	param.setAttribute('name', 'allowScriptAccess')
@@ -222,7 +219,7 @@ function addConnectorSWF(place) {
 	var embed = document.createElement('embed')
 	embed.setAttribute('src', '<%= asset_url('connector.swf') %>')
 	embed.setAttribute('quality', 'high')
-	embed.setAttribute('bgcolor', '#869ca7')
+	embed.setAttribute('bgcolor', '#ffffff')
 	embed.setAttribute('width', '500')
 	embed.setAttribute('height', '375')
 	embed.setAttribute('name', 'connector')
@@ -236,15 +233,17 @@ function addConnectorSWF(place) {
 	
 	obj.style.zIndex=0
 	obj.style.position="absolute"
-	obj.style.left=0//-width
-	obj.style.top="0"
+	obj.style.left="0px"//-width
+	obj.style.top="0px"
 //	obj.setAttribute("hidden","")
 	
 	place=place || document.body
 	place.appendChild(obj)
 	
-	hideConnector=function (obj){
-		obj.parentNode.style.left=-obj.width+"px";
+	hideConnector=function (o){
+		o.width=3;
+		o.height=2;
+		//o.parentNode.style.left=-o.width+"px";
 	}
 }
 
