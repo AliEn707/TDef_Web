@@ -6,8 +6,8 @@ function showStats(place){
 	// align top-left
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.left = (place.x || place.left) + 'px';
-	stats.domElement.style.top = (place.y || place.top) + 'px';
-	
+	stats.domElement.style.top = ((place.y+place.height) || place.bottom) - 50 + 'px';	
+
 	document.body.appendChild( stats.domElement );
 }
 

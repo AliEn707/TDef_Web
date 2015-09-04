@@ -467,7 +467,7 @@ function test(engine){
 	/**/
 	
 /*	
-//	engine.public.toggle();
+	engine.public.toggle();
 	engine.public.switchTo("events");
 	engine.public.eventsAdd({id:1,name:"#test1"})
 	engine.public.eventsAdd({id:2,name:"#test2"})

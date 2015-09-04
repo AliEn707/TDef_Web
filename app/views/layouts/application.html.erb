@@ -124,7 +124,7 @@
 				</div>
 				<%=body_end%>
 			</div><!--/row-->
-			<div id="footer" style="position:fixed; bottom: 0px;">
+			<div id="footer" style="position:fixed; bottom: 0px;z-index: 1;">
 				<div id="qrdiv" hidden>
 				</div>
 				<p>
@@ -136,71 +136,7 @@
 			</div>
 		</div> <!-- /container -->
 	<%= render "tech_info" %>
-	<%cache("offcanvas#{cache_lang}") do %>
-		<div aria-hidden="true" id="offcanvas" class="uk-offcanvas">
-			<div class="uk-offcanvas-bar uk-offcanvas-bar-flip">
-				<ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav="">
-					<%menu.each do |m|%>
-						<%if (m[0]["right"]!=true && !m[0]['show']) then%>
-							<%if !m[0]["path"].nil? then%>
-								<li ><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
-							<%else%>
-								<li aria-expanded="false" class="uk-parent">
-									<a href="#" >
-										<%=(m[0]['noprefix']) ? m[0]['name'] : t("menu.#{m[0]['name']}")%>
-									</a>
-									<ul class="uk-nav-sub">
-										<%1.step(m.size-1,1) do |i|%>
-											<li>
-												<%= link_to  t("menu.#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %>
-											</li>
-										<%end%>
-									</ul>
-								</li>
-							<%end%>
-						<%end%>
-					<%end%>
-					<%menu.each do |m|%>
-						<%if (m[0]["right"]==true && !m[0]['show']) then%>
-							<%if !m[0]["path"].nil? then%>
-								<li ><%= link_to t("menu.#{m[0]['name']}"), m[0]['path']  %></li>
-							<%else%>
-								<li aria-expanded="false" class="uk-parent">
-									<a href="#" >
-										<%=(m[0]['noprefix']) ? m[0]['name'] : t("menu.#{m[0]['name']}")%>
-									</a>
-									<ul class="uk-nav-sub">
-										<%1.step(m.size-1,1) do |i|%>
-											<li><%= link_to  t("menu.#{m[i]['name']}"), m[i]['path'],:method=> m[i][:method]  %></li>
-										<%end%>
-									</ul>
-								</li>
-							<%end%>
-						<%end%>
-					<%end%>
-			<!--
-				<li><a href="">Item</a></li>
-				<li class="uk-active"><a href="">Active</a></li>
-
-				<li aria-expanded="false" class="uk-parent">
-						<a href="#">Parent</a>
-						<ul class="uk-nav-sub">
-					<li><a href="">Sub item</a></li>
-					<li><a href="">Sub item</a></li>
-						</ul>
-				</li>
-
-				<li class="uk-nav-header">Header</li>
-				<li class="uk-parent"><a href=""><i class="uk-icon-star"></i> Parent</a></li>
-				<li><a href=""><i class="uk-icon-twitter"></i> Item</a></li>
-				<li class="uk-nav-divider"></li>
-				<li><a href=""><i class="uk-icon-rss"></i> Item</a></li>
-			-->
-				</ul>
-			</div>
-		</div>
-		<br>
-	<%end%>
+	<%= render "offcanvas" %>
 	</body>
 	<%url=request.url.split("?")[0]%>
 	<%cache("qrcode"+url) do %>
