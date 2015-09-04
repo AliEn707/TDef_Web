@@ -40,7 +40,8 @@ end
 $available_locales.each do |l|
 	locale=Tdef::Locale.create(name:l) if ((locale=Tdef::Locale.where(name:l).first).nil?)
 	{
-		"#loading" => "Loading..."
+		"#loading" => "Loading...",
+		"#events_menu_button" => "events"
 	}.each do |k,v|
 		 if (locale.locale_datas.where(key: k).first.nil?)	then
 			locale.locale_datas<<Tdef::LocaleData.create(key: k,value: v,user_id: 2)

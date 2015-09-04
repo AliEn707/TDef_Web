@@ -19,7 +19,7 @@ var Loading={
 					textures:t, 
 					opt:{anchor:{x:0.5,y:1}}},
 					text:{
-						data: locales["#loading"], 
+						data: locales["#loading"] || "#loading", 
 						position: {x: 0, y: 0}, 
 						anchor:{x:0.5,y:0}, 
 						style: {
