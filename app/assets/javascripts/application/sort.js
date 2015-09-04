@@ -286,4 +286,10 @@ took from https://mgechev.github.io
 //save dafault sort as sortDefault
 defaultSort=Array.prototype.sort;
 //replace basic sort by shellsort
-Array.prototype.sort=function(cmp){return shellSort(this,cmp);}
+Array.prototype.sort=function(cmp){
+	if (this.lenght>500)
+		return mergeSort(this,cmp);
+	if (this.lenght>100)
+		return heapSort(this,cmp);
+	return shellSort(this,cmp);
+}
