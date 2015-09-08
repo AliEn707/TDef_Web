@@ -11,7 +11,6 @@ function Public(engine){
 		button: menuButton,
 		screen: this.engine.renderer
 	});
-	
 	this.eventsInit({
 		position: {x:0,y: menuButton.height},
 		width: 350, 
@@ -20,7 +19,8 @@ function Public(engine){
 		button: {width: 280, height: 50}
 	});
 	this.depth=-1;
-	this.toggle();
+	this.hide();
+	this.switchTo(this.objects[0]);
 	this.engine.stage.addChild(this);
 }
 
@@ -38,20 +38,18 @@ Public.prototype.resize= function (w,h) {
 		if (this.children[i].resize)
 			this.children[i].resize(w,h);
 }
-	
-Public.prototype.toggle= function () {
-	if (this.visible)
-		this.visible=false;
-	else
-		this.visible=true;
+
+Public.prototype.hide= function () {
+	this.visible=false;
+}
+
+Public.prototype.show= function () {
+	this.visible=true;
 }
 
 Public.prototype.switchTo= function (where) {
-	switch (where){
-		case 'events':
-			this.events.container.visible=true;
-			break;
-	}
+	for (var i in this.objects)
+		this[this.objects[i]].container.visible= (this.objects[i]==where)? true : false;
 	this.place.prev=this.place.current;
 	this.place.current=where; 
 }
@@ -354,6 +352,7 @@ Public.prototype.eventsRemove= function (event) {
 
 //action on press button
 Public.prototype.eventsButtonAction= function (event) {
-	console.log(this.event);
+//	console.log(this.event);
+	publicGetRoom(this.event); //TODO: check
 }
 

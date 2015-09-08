@@ -25,20 +25,14 @@ class Tdef::MapController < ApplicationController
 	
 	def upload
 		if request.post?
-			m_m=Tdef::Map.find_by(name: request.POST['mapname'])
-			 if (m_m.nil?) then
-				m_m=Tdef::Map.new(name: request.POST['mapname'], user: current_user)
-			elsif (m_m.completed)
-				i=0
-				while(Tdef::Map.where(name: "#{request.POST['mapname']}_#{i}").to_a!=[]) do
-					i+=1;
-				end
-				m_m=Tdef::Map.new(name: "#{request.POST['mapname']}_#{i}", user: current_user)
-			end
+			m_m=Tdef::Map.find_by(name: request.POST['mapname']) || Tdef::Map.new(name: request.POST['mapname'], user: current_user)
 			m_m.description=request.POST['description'] if !request.POST['description'].nil? 
 			m_m.data=request.POST['completeInfo'] if !request.POST['completeInfo'].nil? 
 			m_m.grafics=request.POST['saveTexturesField'] if !request.POST['saveTexturesField'].nil?
-			m_m.image=Image.create(format: request.POST['img'][/[\w ]*\/[\w]*/],data: Base64.decode64(request.POST['img'].sub(/data:[\w \/]*;base64,/,""))) if !request.POST['img'].nil?
+			if (!request.POST['img'].nil?) then
+				m_m.image.delete if (!m_m.image.nil?)
+				m_m.image=Image.create(format: request.POST['img'][/[\w ]*\/[\w]*/],data: Base64.decode64(request.POST['img'].sub(/data:[\w \/]*;base64,/,""))) 
+			end
 			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
 			m_m.last_modified=current_user
 			m_m.save
@@ -58,18 +52,13 @@ class Tdef::MapController < ApplicationController
 		@maps=Tdef::Map.all
 	end
 	
-	def complete
-		#write all complete maps to disk
-		redirect_to tdef_map_all_path
-	end
-	
 	def delete
 		Tdef::Map.find(params[:id]).destroy
 		redirect_to :back
 	end
 	
 	def get
-		out=Rails.cache.fetch('TDef_map_'+params["name"].to_s,expires_in: 10.minutes) do
+		out=Rails.cache.fetch('TDef_map_'+params["name"].to_s,expires_in: 15.minutes) do
 			data={}
 			map=Tdef::Map.where(name: params["name"]).first
 			data["mp"]=map.data
