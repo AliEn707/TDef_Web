@@ -30,7 +30,7 @@ function publicConnect(host,port, name, token) {
 //callback on success autorisation
 function publicConnected(){
 	console.log("connected");
-	getEngine().public.toggle();
+	getEngine().public.show();
 	getEngine().public.switchTo('events');
 	Loading.hide();
 }
@@ -40,10 +40,13 @@ function publicAuthFail(){
 	//TODO: add some actions
 }
 
-//get room 
-//publicSend("byte,76,byte,99,int,1")
 function publicSend(str) {
 	getConnector().publicSend(str);
+}
+
+//get room 
+function publicGetRoom(e) {
+	publicSend("byte,76,byte,99,int,"+e.id);
 }
 
 //room start {msg:1,objtype:"Player",id:368322860,room:{$:0,type:1,id:616333680},$:0,time:24688}
@@ -66,7 +69,7 @@ function proceedPublicMessages(str){
 			case 'Room':
 				if (arr[i].action=='ready'){
 						mapConnect(arr[i].host,arr[i].port);
-						engine.setMap(engine.public.events.all[arr[i].event_id].map);
+						engine.setMap(engine.public.events.all[arr[i].event_id].event.map);
 						engine.loadMap();
 					}
 				break;
@@ -108,7 +111,7 @@ function mapMoveHero(node){
 //connect to mapserver
 function mapConnect(host,port) {
 	Loading.show();
-	getEngine().public.toggle();
+	getEngine().public.hide();
 	getConnector().mapConnect(host,port);
 	//TODO: add animation on screen
 }
@@ -116,13 +119,15 @@ function mapConnect(host,port) {
 //connect to mapserver
 function mapClose(host,port) {
 	getConnector().mapClose();
+	getEngine().public.show();
 }
 
 //callback if cant connect
 function mapConnectionError(val){
 	console.log("can't connect: "+val);
 	//TODO add handler
-	getEngine().map.clean();
+	//TODO: add message
+	mapClosed();
 }
 
 //callback on connection established
@@ -135,6 +140,7 @@ function mapConnected(){
 function mapClosed(){
 	console.log("closed");
 	getEngine().map.clean();
+	getEngine().public.show();
 }
 
 
