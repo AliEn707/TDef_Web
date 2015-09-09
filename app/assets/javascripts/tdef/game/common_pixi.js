@@ -220,4 +220,9 @@ function afterASpriteLoad(sprite, func){
 }
 
 
+Object.defineProperty(String.prototype, 'translate', {
+    get: function() {
+	return  locales[this] || this;
+    }
+});
 

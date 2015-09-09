@@ -41,7 +41,11 @@ $available_locales.each do |l|
 	locale=Tdef::Locale.create(name:l) if ((locale=Tdef::Locale.where(name:l).first).nil?)
 	{
 		"#loading" => "Loading...",
-		"#events_menu_button" => "events"
+		"#events_menu_button" => "events",
+		"#public_auth_fail" => "Authentication error.",
+		"#mapserver_connecting" => "Connecting to map server...",
+		"#public_connecting" => "Connecting to public server...",
+		"#public_connect_fail" => "Can't connect to public server."
 	}.each do |k,v|
 		 if (locale.locale_datas.where(key: k).first.nil?)	then
 			locale.locale_datas<<Tdef::LocaleData.create(key: k,value: v,user_id: 2)

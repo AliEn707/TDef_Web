@@ -24,12 +24,19 @@ function getConnector() {
 //connect to public
 //publicConnect("localhost","7001","test","123456")
 function publicConnect(host,port, name, token) {
-	Loading.show();
+	Loading.show("#public_connecting");
 	getConnector().publicConnect(host,port,name,token);
+}
+
+//
+function publicConnectionError(value) {
+	Loading.message="#public_connect_fail";
+	console.log(value);
 }
 //callback on success autorisation
 function publicConnected(){
 	console.log("connected");
+	Loading.message="";
 	getEngine().public.show();
 	getEngine().public.switchTo('events');
 	Loading.hide();
@@ -37,6 +44,7 @@ function publicConnected(){
 //callback on public autentification fail
 function publicAuthFail(){
 	console.log("public auth fail");
+	Loading.message="#public_auth_fail";
 	//TODO: add some actions
 }
 
@@ -110,7 +118,7 @@ function mapMoveHero(node){
 
 //connect to mapserver
 function mapConnect(host,port) {
-	Loading.show();
+	Loading.show("#mapserver_connecting");
 	getEngine().public.hide();
 	getConnector().mapConnect(host,port);
 	//TODO: add animation on screen
@@ -135,6 +143,7 @@ function mapConnected(){
 	console.log("connected");
 	//TODO: break animation of connection
 	Loading.hide();
+	Loading.message="";
 }
 //callback on map connection close
 function mapClosed(){
