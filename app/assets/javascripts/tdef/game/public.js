@@ -116,7 +116,7 @@ Public.prototype.menuInit= function (opt) {
 				var place=this;
 				var obj=this.objects[i];
 				var name='#'+obj+'_menu_button';
-				var text=locales[name] || name;
+				var text=name;
 				var button='menu_button';
 				var focused;
 				if (engine.textures[button+'_'+obj])
@@ -318,7 +318,6 @@ Public.prototype.eventsInit= function (opt) {
 }
 
 Public.prototype.eventsAdd= function (event) {
-	var text=locales[event.name] || event.name;
 	if (!this.events.all)
 		this.events.all={};
 	if (!this.events.all[event.id]){
@@ -330,7 +329,7 @@ Public.prototype.eventsAdd= function (event) {
 			sprite: new ASprite(getTextureFrames(this.engine.textures.events_list_button)), 
 			focused: focused,
 			text:{
-				data: text, 
+				data: event.name, 
 				position:{x:this.events.buttons.buttonSize.x/2,y:this.events.buttons.buttonSize.y/2},
 				anchor:{x:0.5,y:0.45},
 				style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}

@@ -545,7 +545,6 @@ package {
 		try {
 			mapSock.connect(host, int(port));
 //			mapSock.connect("smtp.yandex.ru", 25);
-			logJS("Socket connected: " + mapSock.connected);
 		}
 		catch (error:Error) {
 			logJS("An Error occurred: " + error.message + "\n");
@@ -595,7 +594,6 @@ package {
 	
 	private function mapConnectHandler(event:Event):void {
 		logJS("connected " + event+"\n");
-		mapConnected();
 		//send hello
 		mapSock.writeUTFBytes("FlashHello^_^");
 		mapSock.flush();
@@ -807,9 +805,10 @@ package {
 					logJS("latency "+latency);
 					mapObj+=",latency:"+latency;
 					mapAuthorised=true;
-					currMsg=0;
+					mapConnected();
 					//send to Javascript
 					ExternalInterface.call("mapAuthData", mapObj+"})");
+					currMsg=0;
 					mapObj="([";
 				}
 				catch(error:Error){

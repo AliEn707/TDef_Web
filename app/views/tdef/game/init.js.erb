@@ -88,7 +88,7 @@ try{
 				Loading.init({engine: engine}, function (){
 					Loading.show();
 					engine.public=new Public();
-//					publicConnect("<%=request.host%>",7001,"<%=current_user.email%>","<%=1234%>");
+					publicConnect("<%=request.host%>",7001,"<%=current_user.email%>","<%=rand(2147483647)%>");
 					if (test)
 						test(engine);
 				});

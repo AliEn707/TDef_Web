@@ -12,10 +12,6 @@ opt	text:{
 opt		position: { 
 			x: int, 
 			y: int, 
-opt			float: {
-opt				x: [] - 'left' 'right' or may be empty for float
-opt				y: [] - 'top' 'bottom' or may be empty for float
-			} - may contains 'x', 'y'
 		}
 opt		anchor: { x: int, y: int }
 		data : string
@@ -35,12 +31,19 @@ opt			dropShadowDistance: int
 opt	float: {
 opt		x: string - 'fixed' or 'float'
 opt		y: string - 'fixed' or 'float'
-	} - may contains 'x', 'y'
+	} 
 opt	actions: [] - may containes "press" "drag"
 opt	hitArea: {x: int, y: int, width: int, height: int}
 opt	innerArea: {x: int, y: int, width: int, height: int} - must be exeist if no sprite attr
 opt	fitParent: boolean
-opt	position: {x: int, y: int}
+opt	position: {
+	x: int, 
+	y: int,
+opt	float: {
+opt		x: string - 'fixed' or 'float'
+opt		y: string - 'fixed' or 'float'
+	} 
+}
 opt	pressAction: func
 opt	overAction: func
 opt	outerAction: func
@@ -123,7 +126,7 @@ function ButtonContainer(opt){
 	this.innerArea=this.innerArea || {};
 		
 	if (opt.text){
-		this.text=new PIXI.Text(opt.text.data,opt.text.style)
+		this.text=new PIXI.Text(opt.text.data.translate,opt.text.style)
 		if (opt.text.position)
 			this.text.position=opt.text.position;
 		if (opt.text.anchor)
