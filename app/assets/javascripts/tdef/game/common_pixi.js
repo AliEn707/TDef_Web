@@ -4,11 +4,15 @@ function showStats(place){
 		return;
 	stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
 	// align top-left
+	placeStats(place)
+
+	document.body.appendChild( stats.domElement );
+}
+
+function placeStats(place){
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.left = (place.x || place.left) + 'px';
 	stats.domElement.style.top = ((place.y+place.height) || place.bottom) - 50 + 'px';	
-
-	document.body.appendChild( stats.domElement );
 }
 
 var getEngine=function (){
