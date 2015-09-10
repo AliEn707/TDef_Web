@@ -1,7 +1,5 @@
 try{
-	var tmp=connectorReady;
-	function connectorReady(){
-		tmp();
+	function afterConnectorReady(){
 		publicConnect("<%=request.host%>",7001,"<%=current_user.email%>","<%=rand(2147483647)%>");
 	}	
 	afterWindowLoad(function init(){

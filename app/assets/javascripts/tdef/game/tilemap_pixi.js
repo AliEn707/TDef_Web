@@ -44,9 +44,6 @@ function Grid(size,opt){
 	this.buildable.rotation=-Math.PI/4;
 	this.addChild(this.buildable);
 	
-	this.objs= new PIXI.SpriteBatch();//PIXI.DisplayObjectContainer
-	this.addChild(this.objs);
-	
 	this.objects={};//contains npc,towers,bullets
 
 //	this.transformCorrection()
@@ -222,7 +219,7 @@ Grid.prototype.getBuildableTexture = function(path, opt){
 
 Grid.prototype.setBuildableNode = function(id, terrain, opt){
 	opt=opt || {};
-	var node=new PIXI.Sprite(terrain)
+	var node=new PIXI.Sprite(terrain)//TODO: change to ASptrite
 	var pos=this.getPosition(id)
 	
 	node.height=this.nodesize
@@ -239,7 +236,7 @@ Grid.prototype.setBuildableNode = function(id, terrain, opt){
 //set texture for node in map
 Grid.prototype.setNode = function(id, terrain, opt){
 	opt=opt || {};
-	var node=new PIXI.Sprite(terrain)
+	var node=new PIXI.Sprite(terrain) //TODO: change to ASptrite
 	var pos=this.getPosition(id)
 	
 	node.height=this.nodesize
@@ -254,7 +251,7 @@ Grid.prototype.setNode = function(id, terrain, opt){
 
 //set texture for nodes out of map
 Grid.prototype.setOuterNode = function(pos, id, terrain, x, y){
-	var node=new PIXI.Sprite(terrain)
+	var node=new PIXI.Sprite(terrain)//TODO: change to ASptrite
 	
 	node.height=this.nodesize
 	node.width=this.nodesize
@@ -271,7 +268,7 @@ Grid.prototype.getNode = function(id){
 	return this.getChildAt(0).getChildAt(id);
 }
 
-Grid.prototype.setWall = function(wall){
+Grid.prototype.setWall = function(wall,i){
 	var w=new Wall(wall);
 	var wc=new PIXI.DisplayObjectContainer();
 	wc.position=this.position;
@@ -282,14 +279,36 @@ Grid.prototype.setWall = function(wall){
 	
 	wc.addChild(wcc);
 	wc.depth=this.objDepth(w.position.x/this.nodesize+0.5,w.position.y/this.nodesize+0.5)+0.02;
-	var i=0;
-	while (this.objects["wall"+i]) i++; //bad but is
+	if (!i){
+		i=0
+		while (this.objects["wall"+i]) i++; //bad but is
+	}
 	this.objects["wall"+i]=wc;
 	this.engine.stage.addChild(wc);
 }
 
-Grid.prototype.setWallComplete = function(wall){
+Grid.prototype.setObject = function(obj,i){
+	var o=new PIXI.Sprite(obj.tex);//TODO: change to ASptrite
+	var pos={x: parseInt(obj.pos.x)+0.5, y: parseInt(obj.pos.y)+0.5};
+	o.height=this.nodesize*2*1.42;
+	o.width=this.nodesize*1.42;
+	o.position=this.gridToScreen(pos.y,pos.x);
+	o.position.y*=2;
+	o.anchor.x=0.5;
+	o.anchor.y=1;
+	o.id=i;
+	var c=new PIXI.DisplayObjectContainer();
+	c.position=this.position;
+	c.scale=this.scale;
 	
+	c.addChild(o);
+	c.depth=this.objDepth(pos.y, pos.x)+0.03;
+	if (!i){
+		i=0;
+		while (this.objects["obj"+i]) i++; //bad but is
+	}
+	this.objects["obj"+i]=c;
+	this.engine.stage.addChild(c);
 }
 
 //clean objects from stage

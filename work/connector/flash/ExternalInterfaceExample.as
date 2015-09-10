@@ -386,7 +386,7 @@ package {
 						if (publicOutObj.length>2){//send object to javasctript
 						        var time:int=flash.utils.getTimer();
 						        publicOutObj+=",time:"+time+"},";
-						        if (time-publicMsgTime>90){
+						        if (time-publicMsgTime>70){
 								proceedPublicMessagesJS(publicOutObj+"])");
 								publicOutObj="([";
 								publicMsgTime=time;
@@ -695,7 +695,7 @@ package {
 						if (mapObj.length>2){//send object to javasctript
 						        var time:int=flash.utils.getTimer();
 						        mapObj+=",time:"+time+"},";
-						        if (time-msgTime>90){
+						        if (time-msgTime>80){
 								proceedMapMessagesJS(mapObj+"])");
 								mapObj="([";
 								msgTime=time;
