@@ -1,4 +1,9 @@
 try{
+	var tmp=connectorReady;
+	function connectorReady(){
+		tmp();
+		publicConnect("<%=request.host%>",7001,"<%=current_user.email%>","<%=rand(2147483647)%>");
+	}	
 	afterWindowLoad(function init(){
 		var engine = new TDefEngine(
 			document.getElementById("gameDiv"),
@@ -88,9 +93,9 @@ try{
 				Loading.init({engine: engine}, function (){
 					Loading.show();
 					engine.public=new Public();
-					publicConnect("<%=request.host%>",7001,"<%=current_user.email%>","<%=rand(2147483647)%>");
 					if (test)
 						test(engine);
+					addConnectorSWF();
 				});
 			}
 		);

@@ -33,7 +33,7 @@ class Tdef::MapController < ApplicationController
 				m_m.image.delete if (!m_m.image.nil?)
 				m_m.image=Image.create(format: request.POST['img'][/[\w ]*\/[\w]*/],data: Base64.decode64(request.POST['img'].sub(/data:[\w \/]*;base64,/,""))) 
 			end
-			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
+			m_m.completed=true if (!request.POST['complete'].nil?) 
 			m_m.last_modified=current_user
 			m_m.save
 			notice="tdef.map_saved"
