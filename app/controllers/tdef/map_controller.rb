@@ -10,7 +10,7 @@ class Tdef::MapController < ApplicationController
 			'imgtest/1','imgtest/2','imgtest/11','imgtest/12',
 			'imgtest/21','imgtest/22',
 			'imgtest/111','imgtest/112','imgtest/121','imgtest/122'
-			].map!{|t| t+=".png"}
+			].map!{|t| "/#{t}.png"} << ActionController::Base.helpers.asset_path('tree.png')
 		render :formats => :js, layout: false
 	end
 	
