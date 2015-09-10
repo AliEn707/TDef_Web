@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ClientUpdateTest < ActiveSupport::TestCase
+class Tdef::LocaleDataTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

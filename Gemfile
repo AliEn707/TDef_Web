@@ -145,3 +145,5 @@ else
 	gem 'fastimage_resize' , :git => 'https://github.com/AliEn707/fastimage_resize.git'
 end
 
+#creating dump of the base as seed.rb file
+gem 'seed_dump'
