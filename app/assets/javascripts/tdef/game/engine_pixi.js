@@ -148,8 +148,17 @@ TDefEngine.prototype.parseMap = function(map){
 		data.walls=[];
 		for (;mg[i]!="" && i<mg.length;i++){
 			var t=mg[i].split(" ");
-			
-			data.walls.push({pos: parseInt(t[0]), type: t[1], tex: data.textures[t[2]]});
+			if (t.length==3)
+				data.walls.push({pos: parseInt(t[0]), type: t[1], tex: data.textures[t[2]]});
+			else 
+				break;
+		}
+		i++;
+		//TODO: add map objects
+		data.objects=[]
+		for (;mg[i]!="" && i<mg.length;i++){
+			var t=mg[i].split(" ");
+			data.objects.push({pos: {x: t[0],y: t[1]}, tex: data.textures[t[2]]})
 		}
 		maps[map].data=data;
 	}
@@ -204,8 +213,11 @@ TDefEngine.prototype.loadMap= function (){
 			k++;
 		}
 	for (var i=0;i<opt.walls.length;i++){
-		map.setWall(opt.walls[i]);
+		map.setWall(opt.walls[i],i);
 //		map.setWall({tex:new PIXI.Texture.fromImage("/textures/wall/1.png"),type:"y"});
+	}
+	for (var i=0 in opt.objects){
+		map.setObject(opt.objects[i],i);
 	}
 	
 	

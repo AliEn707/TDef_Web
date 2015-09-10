@@ -205,6 +205,8 @@ function proceedMapMessages(str){
 function connectorReady(){
 	console.log("Connector ready");
 	hideConnector(getConnector());
+	if (afterConnectorReady)
+		afterConnectorReady();
 }
 
 ///functions for adding connectors

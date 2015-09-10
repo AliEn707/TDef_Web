@@ -10,7 +10,7 @@ class Tdef::MapController < ApplicationController
 			'imgtest/1','imgtest/2','imgtest/11','imgtest/12',
 			'imgtest/21','imgtest/22',
 			'imgtest/111','imgtest/112','imgtest/121','imgtest/122'
-			].map!{|t| t+=".png"}
+			].map!{|t| "/#{t}.png"} << ActionController::Base.helpers.asset_path('tree.png')
 		render :formats => :js, layout: false
 	end
 	
@@ -33,7 +33,7 @@ class Tdef::MapController < ApplicationController
 				m_m.image.delete if (!m_m.image.nil?)
 				m_m.image=Image.create(format: request.POST['img'][/[\w ]*\/[\w]*/],data: Base64.decode64(request.POST['img'].sub(/data:[\w \/]*;base64,/,""))) 
 			end
-			m_m.completed=((!request.POST['complete'].nil?)? true : false) 
+			m_m.completed=true if (!request.POST['complete'].nil?) 
 			m_m.last_modified=current_user
 			m_m.save
 			notice="tdef.map_saved"
