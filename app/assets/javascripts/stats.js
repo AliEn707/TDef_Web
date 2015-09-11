@@ -53,11 +53,11 @@ var Stats = function () {
 		var text = createElement( 'div', id + 'Text', 'font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px;color:' + fg );
 		text.innerHTML = id.toUpperCase();
 		div.appendChild( text );
-
-		var graph = createElement( 'div', id + 'Graph', 'width:74px;height:30px;background:' + fg );
+		var width=94
+		var graph = createElement( 'div', id + 'Graph', 'width:'+width+'px;height:30px;background:' + fg );
 		div.appendChild( graph );
 
-		for ( var i = 0; i < 74; i ++ ) {
+		for ( var i = 0; i < width; i ++ ) {
 
 			graph.appendChild( createElement( 'span', '', 'width:1px;height:30px;float:left;opacity:0.9;background:' + bg ) );
 
@@ -90,7 +90,7 @@ var Stats = function () {
 
 	//
 
-	var container = createElement( 'div', 'stats', 'width:80px;opacity:0.9;cursor:pointer' );
+	var container = createElement( 'div', 'stats', 'width:100px;opacity:0.9;cursor:pointer' );
 	container.addEventListener( 'mousedown', function ( event ) {
 
 		event.preventDefault();
@@ -154,11 +154,11 @@ var Stats = function () {
 
 			var time = now();
 
-			ms = time - startTime;
+			ms = Math.round((time - startTime)*100)/100;
 			msMin = Math.min( msMin, ms );
 			msMax = Math.max( msMax, ms );
 
-			msText.textContent = ( ms | 0 ) + ' MS (' + ( msMin | 0 ) + '-' + ( msMax | 0 ) + ')';
+			msText.textContent = ms + ' MS (' + msMin  + '-' + msMax  + ')';
 			updateGraph( msGraph, ms / 200 );
 
 			frames ++;

@@ -19,8 +19,6 @@ function TDefEngine(place, opt, callback){
 	this.textures=opt.textures || {};
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
-	//show statistic info
-	showStats(place.getBoundingClientRect());
 	this.place=place;
 	//requestAnimFrame( this.render );
 	setEngine(this);
@@ -46,7 +44,6 @@ function TDefEngine(place, opt, callback){
 				}
 			}
 		};
-	this.drawInterval=window.setInterval(this.render,this.frameTime)
 	addWeelHendler(this.renderer.view, weelHandler);
 	
 	//lets load textures
@@ -64,6 +61,7 @@ function TDefEngine(place, opt, callback){
 		});
 	}
 	
+	this.drawInterval=window.setInterval(this.render,this.frameTime);
 }
 
 
@@ -80,8 +78,10 @@ TDefEngine.prototype.render= function (){
 	that.stage.children.sort(function(a,b){return (a.depth)<(b.depth);})
 	that.renderer.render(that.stage);
 	//bunny.nextFrame()
-	if (stats)
+	if (stats){
+		statsUpdate(that);
 		stats.end();
+	}
 }
 
 TDefEngine.prototype.resize=function (){

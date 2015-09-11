@@ -5,7 +5,7 @@ try{
 	afterWindowLoad(function init(){
 		var engine = new TDefEngine(
 			document.getElementById("gameDiv"),
-			{
+			{	
 				webgl: true, 
 				frameTime:1000/30, 
 				textures:{
@@ -21,6 +21,10 @@ try{
 					},
 					npc_set_background:{
 						src:"/imgtest/build.png"
+					},
+					stats:{
+						src:"<%= asset_url('events_border_u.png') %>",
+						frames: 1
 					},
 					loading:{
 						src:"<%= asset_url('loading.png') %>",
@@ -93,6 +97,9 @@ try{
 					engine.public=new Public();
 					if (test)
 						test(engine);
+					//show statistic info
+					if (<%= "true" %>)
+						statsShow(engine);
 					addConnectorSWF();
 				});
 			}

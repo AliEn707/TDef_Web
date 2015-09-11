@@ -1,3 +1,4 @@
+/*
 //add perv stats on screen
 function showStats(place){
 	if (!stats)
@@ -14,13 +15,15 @@ function placeStats(place){
 	stats.domElement.style.left = (place.x || place.left) + 'px';
 	stats.domElement.style.top = ((place.y+place.height) || place.bottom) - 50 + 'px';	
 }
+*/
+
 
 var getEngine=function (){
 	return;
 }
 
 var getFPS=function (){
-	return 1/getEngine().frameTime;
+	return 1/getEngine().frameTime; //statsFps()
 }
 
 var setEngine=function (e){
