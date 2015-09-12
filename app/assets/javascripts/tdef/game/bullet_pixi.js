@@ -80,7 +80,7 @@ Bullet.prototype.update= function (obj){
 	var l=Math.sqrt(dirx*dirx+diry*diry);
 	var timestep=1;
 	if (this.time!=0){
-		timestep+=((obj.time-this.time)*getFPS());
+		timestep+=((obj.time-this.time)*getFPSms());
 	
 		if (!this.average_time)
 			this.average_time=timestep;

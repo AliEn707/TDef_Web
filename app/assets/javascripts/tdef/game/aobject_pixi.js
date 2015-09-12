@@ -2,18 +2,16 @@
 function AObject(params){
 	params=params || {}
 	
-//	PIXI.TilingSprite.call(this, texture[0], params.width, params.height);
 	PIXI.DisplayObjectContainer.call(this);
 	this.current_frame=params.current_frame || 0;
 	this.loop = params.loop || true;
 	this.count=params.count || 1;
-	this.countStep=params.countStep; //0.2;
+//	this.countStep=params.countStep; //0.2;
 	this.counter=0;
 	this.callbacks=params.callbacks || {obj:{}}
 	this.callbacks.actions= this.callbacks.actions || {}
 	this.engine=getEngine() || {frameTime:1000/30};
-	this.countStep=this.countStep || 13*this.engine.frameTime/1000;//0.2;
-	
+
 	this.delays={};
 	this._delays={};
 	for(var i in (params.delays || {})){
@@ -24,8 +22,18 @@ function AObject(params){
 //	this.updateFrame();
 	
 }
+
 AObject.prototype=new PIXI.DisplayObjectContainer();//new PIXI.TilingSprite()
 AObject.prototype.constructor= AObject
+
+Object.defineProperty(AObject.prototype, 'countStep', {
+    get: function() {
+	return  13*getFrameTime()/1000;
+    },
+    set: function(value) {
+    }
+});
+
 
 AObject.prototype.getTexture= function (i){
 	if (i)

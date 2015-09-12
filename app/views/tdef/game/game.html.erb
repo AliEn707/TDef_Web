@@ -13,8 +13,7 @@
 <div id="gameDiv" style="position:relative;"></div>
 
 
-<%= javascript_include_tag "stats" %>
-<script>var stats = new Stats();</script>
+
 
 <%= javascript_types_npc %>
 <%= javascript_types_tower %>
@@ -24,6 +23,8 @@
 <%= javascript_include_tag "tdef_game" %>
 
 <%= javascript_include_tag "test_pixi" %>
+
+<script>var stats = new Stats();</script>
 
 <%= javascript_game_init %>
 

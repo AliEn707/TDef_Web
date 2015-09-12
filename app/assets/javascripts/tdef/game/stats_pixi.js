@@ -1,9 +1,9 @@
 function statsFps(){
-	return parseInt(stats.domElement.children.fps.children.fpsText.innerHTML) | 0;
+	return stats.fps;
 }
 
 function statsMs(){
-	return parseFloat(stats.domElement.children.ms.children.msText.innerHTML);
+	return stats.ms;
 }
 
 function statsShow(engine){
@@ -45,5 +45,33 @@ function statsShow(engine){
 
 function statsUpdate(engine){
 	if (engine.stats)
-		engine.stats.text.setText("fps: "+statsFps()+", ms: "+statsMs());
+		engine.stats.text.setText("fps: "+parseInt(statsFps())+", ms: "+parseInt(statsMs()*100)/100);
+}
+
+function Stats(){
+	this.frames=0;
+	this.prev = this.now();
+}
+
+Stats.prototype.now=( self.performance && self.performance.now ) ? self.performance.now.bind( performance ) : Date.now;
+Stats.prototype.constructor=Stats;
+
+Stats.prototype.setMode = function (){};
+Stats.prototype.begin = function (){
+	this.time=this.now();
+}
+
+Stats.prototype.update = function (){
+	this.time=this.end();
+}
+
+Stats.prototype.end = function (){
+	var time=this.now();
+	this.ms = time - this.time;
+	this.frames++;
+	if ( time > this.prev + 1000 ) {
+		this.fps =( this.frames * 1000 ) / ( time - this.prev);
+		this.prev = time;
+		this.frames = 0;
+	}
 }

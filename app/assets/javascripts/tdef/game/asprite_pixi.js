@@ -6,7 +6,6 @@ params
 	//passed for AObject
 opt	current_frame: int;
 opt	loop: boolean;
-opt	countStep: float;
 opt	callbacks: {
 		obj:{ } - object contaning actions for this pbject
 		actions: {

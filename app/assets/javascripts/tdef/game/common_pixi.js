@@ -22,8 +22,12 @@ var getEngine=function (){
 	return;
 }
 
-var getFPS=function (){
-	return 1/getEngine().frameTime; //statsFps()
+var getFPSms=function (){
+	return 1/getEngine().frameTime; //statsFps()/1000
+}
+
+var getFrameTime=function (){
+	return 1000/statsFps();
 }
 
 var setEngine=function (e){

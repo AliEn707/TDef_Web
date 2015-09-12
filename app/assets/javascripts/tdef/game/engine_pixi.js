@@ -91,7 +91,6 @@ TDefEngine.prototype.resize=function (){
 	var height=window.innerHeight - offset - (place.offsetTop || 0);
 	
 	that.renderer.resize(width,height);
-	placeStats(that.renderer.view.getBoundingClientRect());
 	if (that.map)
 		that.map.resize(width,height);
 	for (var i in that.stage.children)
