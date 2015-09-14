@@ -203,7 +203,6 @@ Npc.prototype.setSprite= function (name){
 	//TODO: check, maybe not need
 	if (!this.sprites[this.sprite].loop)
 		this.sprites[this.sprite].chooseFrame(0);
-	this.sprites[this.sprite].counter=0;
 	this.addChildAt(this.sprites[this.sprite],0);
 }
 
