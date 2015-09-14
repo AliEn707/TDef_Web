@@ -180,7 +180,7 @@ function proceedMapMessages(str){
 			if (obj.objtype=="Player"){
 				//player
 				if (!e.map.players[obj.id])
-					e.map.players[obj.id]=eval("new "+obj.objtype+"(obj)");
+					e.map.players[obj.id]=eval("new Map"+obj.objtype+"(obj)");
 				if (e.map.players[obj.id])
 					e.map.players[obj.id].update(obj);
 			}else{
