@@ -8,11 +8,12 @@ function Grid(size,opt){
 	PIXI.SpriteBatch.call(this);
 	this.interactive = true;
 	this.actions=["drag","press"];
-	if (!this.engine)
-		this.engine=getEngine();
-		
-	this.width=getEngine().renderer.view.width
-	this.height=getEngine().renderer.view.height
+	this.engine=getEngine();
+	
+	this.border=opt.border || {top: 0, bottom: 90, left: 90, right: 0};	
+	
+	this.width=this.engine.renderer.view.width
+	this.height=this.engine.renderer.view.height
 	this.size = size;
 	this.fullsize = size*size;
 	this.nodesize=50;
@@ -48,11 +49,69 @@ function Grid(size,opt){
 
 //	this.transformCorrection()
 	this.players={};
-	this.depth=200000000; //TODO: chenge stupid way
+	this.depth=200000000; //TODO: change stupid way
+	//set borders
+	this.window=new ButtonContainer({
+		sprite:{
+			textures: getTextureFrames(this.engine.textures.black),
+			opt:{
+				width: this.border.left+0.01,
+				height: this.engine.renderer.view.height
+			}
+		},
+		float:{y:"fixed"}
+	});//left
+	this.window.addButton({
+		sprite:{
+			textures: getTextureFrames(this.engine.textures.black),
+			opt:{
+				width: this.engine.renderer.view.width-this.border.left,
+				height: this.border.top+0.01
+			}
+		},
+		position: {
+			x: this.border.left,
+			y: 0
+		},
+		float:{x:"fixed"}
+	});//top
+	this.window.addButton({
+		sprite:{
+			textures: getTextureFrames(this.engine.textures.black),
+			opt:{
+				width: this.engine.renderer.view.width-this.border.left,
+				height: this.border.bottom+0.01
+			}
+		},
+		position: {
+			x: this.border.left,
+			y: this.engine.renderer.view.height-this.border.bottom,
+			float:{y:"fixed"}
+		},
+		float:{x:"fixed"}
+	});//bottom
+	this.window.addButton({
+		sprite:{
+			textures: getTextureFrames(this.engine.textures.black),
+			opt:{
+				width: this.border.right+0.01,
+				height: this.engine.renderer.view.height-this.border.bottom-this.border.top
+			}
+		},
+		position: {
+			x: this.engine.renderer.view.width-this.border.right,
+			y: this.border.top,
+			float:{x:"fixed"}
+		},
+		float:{y:"fixed"}
+	});//right
+	this.window.depth=-0.1;
+	this.engine.stage.addChild(this.window);
 }
 
 focusTexturePath="/imgtest/build.png";
 buildableTexturePath="/imgtest/tower_mark.png";
+
 
 Grid.prototype.weelHandler= function (m){
 	var e=m.originalEvent;
@@ -69,8 +128,11 @@ Grid.prototype.weelHandler= function (m){
 	}
 }
 
-Grid.prototype.resize = function(x,y){
+Grid.prototype.resize = function(width, height){
 	this.transformCorrection();
+	for (var i in this.children)
+		if (this.children[i].resize)
+			this.children[i].resize(width,height)
 }
 
 Grid.prototype.translate = function(x,y){
@@ -125,8 +187,8 @@ Grid.prototype.beforeMoveAction=function(data){
 }
 
 Grid.prototype.transformCorrection=function(){
-	var width=getEngine().renderer.view.width;
-	var height=getEngine().renderer.view.height;
+	var width=getEngine().renderer.view.width-this.border.left-this.border.right;
+	var height=getEngine().renderer.view.height-this.border.top-this.border.bottom;
 	
 	var l=this.gridToScreen(0,0).x;
 	var d=this.gridToScreen(this.size,0).y;
@@ -148,19 +210,18 @@ Grid.prototype.transformCorrection=function(){
 	d=this.gridToScreen(this.size,0).y;
 	u=this.gridToScreen(0,this.size).y;
 	r=this.gridToScreen(this.size,this.size).x;
-	if (l>0){
-		this.position.x-=l;
+	if (l>this.border.left){
+		this.position.x-=l-this.border.left;
 	}
-	if (r<width){
-		this.position.x-=r-(width);
+	if (r<this.border.left+width){
+		this.position.x-=r-(this.border.left+width);
 	}
-	if (u<height){
-		this.position.y-=u-(height);
+	if (u<this.border.top+height){
+		this.position.y-=u-(this.border.top+height);
 	}
-	if (d>0){
-		this.position.y-=d;
+	if (d>this.border.top){
+		this.position.y-=d-this.border.top;
 	}
-	
 }
 
 Grid.prototype.objDepth=function (x, y){
@@ -316,6 +377,7 @@ Grid.prototype.clean = function(){
 	for(var i in this.objects){
 		this.engine.stage.removeChild(this.objects[i]);
 	}
+	this.engine.stage.removeChild(this.window);
 	this.engine.stage.removeChild(this);
 	//TODO: add switch to public
 }

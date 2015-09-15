@@ -61,16 +61,16 @@ function TDefEngine(place, opt, callback){
 		});
 	}
 	
-	this.drawInterval=window.setInterval(this.render,this.frameTime);
+	window.setTimeout(this.render,this.frameTime);
 }
 
 
 TDefEngine.prototype.render= function (){
+	var that=getEngine();
+	window.setTimeout(that.render,that.frameTime);
 	if (stats)
 		stats.begin();
 	
-	var that=getEngine();
-//	requestAnimFrame( that.render );
 	//that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	that.keysProcessor();
 	that.objectsProcessor();
