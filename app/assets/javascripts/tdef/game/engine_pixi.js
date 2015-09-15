@@ -178,13 +178,13 @@ TDefEngine.prototype.loadMap= function (){
 	
 	var fullsize=opt.size*opt.size;
 	var size=map.size;
-	map.setFocus(map.getFocusTexture(focusTexturePath));
-	var buildableTexture=map.getBuildableTexture(buildableTexturePath);
+	map.setFocus();
+	var buildableTextures=getTextureFrames(this.textures.map_build_node);
 	for(var i=0;i<fullsize;i++){
 		map.setNode(i,opt.textures[opt.nodes[i]]);
 	//	console.log(opt.buildable,opt.buildable[i])
 		if (opt.buildable[i]=="1")
-			map.setBuildableNode(i,buildableTexture);
+			map.setBuildableNode(i,buildableTextures,{tint:this.textures.map_build_node.tint});
 		
 	}
 	var k = 0, i, j;

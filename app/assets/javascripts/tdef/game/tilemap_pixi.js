@@ -257,38 +257,30 @@ Grid.prototype.getPosition = function(id){
 	return {x: parseInt(id%this.size) * this.nodesize, y: parseInt(id/this.size) * this.nodesize}
 }
 
-//used to get texture for setFocus
-Grid.prototype.getFocusTexture = function(path, opt){
-	return new PIXI.Texture.fromImage(path);
-}
 
-Grid.prototype.setFocus = function(texture, opt){
+Grid.prototype.setFocus = function(){
 	this.focusedNodeContainer=new PIXI.DisplayObjectContainer();
 	this.focusedNodeContainer.rotation=-Math.PI/4;
-	this.focusedNode=new PIXI.Sprite(texture);
-	this.focusedNode.height=this.nodesize
-	this.focusedNode.width=this.nodesize
-	
+	this.focusedNode=new ASprite(
+		getTextureFrames(this.engine.textures.map_focused_node),
+		{width: this.nodesize, height: this.nodesize, tint:this.engine.textures.map_focused_node.tint}
+	);
 	this.focusedNodeContainer.addChild(this.focusedNode);
 	this.addChild(this.focusedNodeContainer);
 }
 
-//uset to get texture for setBuildableNode
-Grid.prototype.getBuildableTexture = function(path, opt){
-	return new PIXI.Texture.fromImage(path);
-}
 
-Grid.prototype.setBuildableNode = function(id, terrain, opt){
+Grid.prototype.setBuildableNode = function(id, textures, opt){
 	opt=opt || {};
-	var node=new PIXI.Sprite(terrain)//TODO: change to ASptrite
+	opt.height= this.nodesize;
+	opt.width= this.nodesize;
+	opt.anchor={x:0,y:1};
+	var node=new ASprite(textures, opt);
 	var pos=this.getPosition(id)
 	
-	node.height=this.nodesize
-	node.width=this.nodesize
 	node.position.x=pos.x
 	node.position.y=pos.y
 	node.rotation=Math.PI/2;
-	node.anchor.y=1;
 	node.id=id
 	
 	this.buildable.addChild(node);
