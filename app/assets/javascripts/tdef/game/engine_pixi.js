@@ -31,7 +31,6 @@ function TDefEngine(place, opt, callback){
 			xInverted:1, 
 			yInverted:-1, 
 			weelInverted: -1,
-			mouseMove: true,
 			clickAreaSize:4,
 			defines:{
 				keys:{
