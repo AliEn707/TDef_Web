@@ -27,7 +27,7 @@ var getFPSms=function (){
 }
 
 var getFrameTime=function (){
-	return 1000/statsFps();
+	return 1/getFPSms();
 }
 
 var setEngine=function (e){
@@ -237,3 +237,15 @@ Object.defineProperty(String.prototype, 'translate', {
     }
 });
 
+/*
+window.requestAnimFrame = (function(){
+	return  window.requestAnimationFrame       || 
+		window.webkitRequestAnimationFrame || 
+		window.mozRequestAnimationFrame    || 
+		window.oRequestAnimationFrame      || 
+		window.msRequestAnimationFrame     || 
+		function(callback, element){
+			return window.setTimeout(callback, 1000 / 60);
+		};
+})();
+*/

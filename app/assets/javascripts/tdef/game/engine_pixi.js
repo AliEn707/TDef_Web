@@ -44,7 +44,7 @@ function TDefEngine(place, opt, callback){
 			}
 		};
 	addWeelHendler(this.renderer.view, weelHandler);
-	
+		
 	//lets load textures
 	var loader={all:0,loaded:0};
 	for (var i in this.textures)
@@ -60,6 +60,8 @@ function TDefEngine(place, opt, callback){
 		});
 	}
 	
+	this.setWindowHandlers();
+
 	window.setTimeout(this.render,this.frameTime);
 }
 
@@ -272,10 +274,27 @@ TDefEngine.prototype.objectsProcessor=function() {
 			objs[i].proceed();
 	}
 }
-	
 
 TDefEngine.prototype.closeMap=function() {
 	mapClose();
 	this.map.clean;
 	
 }
+
+TDefEngine.prototype.setWindowHandlers=function() {
+	function onBlur() {
+		console.log("hiden")
+	};
+	function onFocus(){
+		console.log("showen")
+	};
+
+	if (/*@cc_on!@*/false) { // check for Internet Explorer
+		document.onfocusin = onFocus;
+		document.onfocusout = onBlur;
+	} else {
+		window.onfocus = onFocus;
+		window.onblur = onBlur;
+	}
+}
+
