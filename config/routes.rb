@@ -1,4 +1,14 @@
 TDefWeb::Application.routes.draw do
+  namespace :forum do
+    resources :topics
+  end
+
+  namespace :forum do
+    resources :threads
+  end
+
+  resources :forums
+
 	namespace :user do
 		resources :profiles
 	end

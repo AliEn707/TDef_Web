@@ -1,0 +1,37 @@
+<h1>Listing forum_topics</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>User</th>
+      <th>Closed</th>
+      <th>Topicable</th>
+      <th>Topicable type</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @forum_topics.each do |forum_topic| %>
+      <tr>
+        <td><%= forum_topic.name %></td>
+        <td><%= forum_topic.description %></td>
+        <td><%= forum_topic.user_id %></td>
+        <td><%= forum_topic.closed %></td>
+        <td><%= forum_topic.topicable_id %></td>
+        <td><%= forum_topic.topicable_type %></td>
+        <td><%= link_to 'Show', forum_topic %></td>
+        <td><%= link_to 'Edit', edit_forum_topic_path(forum_topic) %></td>
+        <td><%= link_to 'Destroy', forum_topic, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Topic', new_forum_topic_path %>

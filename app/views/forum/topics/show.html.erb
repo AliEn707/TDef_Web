@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @forum_topic.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @forum_topic.description %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @forum_topic.user_id %>
+</p>
+
+<p>
+  <strong>Closed:</strong>
+  <%= @forum_topic.closed %>
+</p>
+
+<p>
+  <strong>Topicable:</strong>
+  <%= @forum_topic.topicable_id %>
+</p>
+
+<p>
+  <strong>Topicable type:</strong>
+  <%= @forum_topic.topicable_type %>
+</p>
+
+<%= link_to 'Edit', edit_forum_topic_path(@forum_topic) %> |
+<%= link_to 'Back', forum_topics_path %>
