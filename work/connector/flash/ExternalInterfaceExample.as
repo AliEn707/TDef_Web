@@ -637,6 +637,13 @@ package {
        private const TOWER_SET_SIZE:int=9;
 	
 	//messaging with map server
+	//msg to server
+	private const MSG_SPAWN_TOWER:int= 1;
+	private const MSG_SPAWN_NPC:int= 2;
+	private const MSG_DROP_TOWER:int= 3;
+	private const MSG_MOVE_HERO:int= 4;
+	private const MSG_SET_TARGET:int= 5;
+	
 	//msg to client
 	private const MSG_TEST:int= 0;
 	private const MSG_NPC:int= 1;
@@ -646,13 +653,6 @@ package {
 	private const MSG_INFO:int= 5;
 	//additional messages to client
 	private const MSG_INFO_WAITING_TIME:int= 1;
-	
-	//msg to server
-	private const MSG_SPAWN_TOWER:int= 1;
-	private const MSG_SPAWN_NPC:int= 2;
-	private const MSG_DROP_TOWER:int= 3;
-	private const MSG_MOVE_HERO:int= 4;
-	private const MSG_SET_TARGET:int= 5;
 	//npc messages
 	private const NPC_HEALTH:int= BIT_1;
 	private const NPC_POSITION:int= BIT_2;
@@ -667,18 +667,18 @@ package {
 	private const TOWER_LEVEL:int= BIT_4;
 	private const TOWER_SHIELD:int= BIT_5;
 	//bullet messages
-	private const BULLET_POSITION:int=  BIT_1;
-	private const BULLET_DETONATE:int=  BIT_2;
-	private const BULLET_CREATE:int=  BIT_3;
+	private const BULLET_POSITION:int= BIT_1;
+	private const BULLET_DETONATE:int= BIT_2;
+	private const BULLET_CREATE:int= BIT_3;
 	//player constants
-	private const PLAYER_BASE:int=   BIT_1;
-	private const PLAYER_MONEY:int=   BIT_2;
-	private const PLAYER_CREATE:int=   BIT_3;
-	private const PLAYER_LEVEL:int=   BIT_4;
-	private const PLAYER_HERO:int=   BIT_5;
-	private const PLAYER_HERO_COUNTER:int=   BIT_6;
-	private const PLAYER_TARGET:int=   BIT_7;
-	private const PLAYER_FAIL:int=   BIT_8;
+	private const PLAYER_BASE:int= BIT_1;
+	private const PLAYER_MONEY:int= BIT_2;
+	private const PLAYER_CREATE:int= BIT_3;
+	private const PLAYER_LEVEL:int= BIT_4;
+	private const PLAYER_HERO:int= BIT_5;
+	private const PLAYER_HERO_COUNTER:int= BIT_6;
+	private const PLAYER_TARGET:int= BIT_7;
+	private const PLAYER_FAIL:int= BIT_8;
 	
 	private var mapDataSeq:Array = new Array();
 	private var mapObj:String="";
@@ -897,12 +897,12 @@ package {
 			case MSG_BULLET:
 				mapObj+=",objtype:\"Bullet\"";
 				mapDataSeq.push("id","int");
-			//	if ((bitMask&BULLET_POSITION)!=0){
-				mapDataSeq.push("grid","{");
-				mapDataSeq.push("x","float");
-				mapDataSeq.push("y","float");
-				mapDataSeq.push("$","}");
-			//	}
+				if ((bitMask&BULLET_POSITION)!=0){
+					mapDataSeq.push("grid","{");
+					mapDataSeq.push("x","float");
+					mapDataSeq.push("y","float");
+					mapDataSeq.push("$","}");
+				}
 				if ((bitMask&BULLET_CREATE)!=0){ 
 					mapObj+=",create:1";
 					mapDataSeq.push("type","int");
@@ -939,7 +939,6 @@ package {
 					mapDataSeq.push("$","}");
 					mapDataSeq.push("group","int");
 					mapDataSeq.push("_hero_counter","int");
-					mapDataSeq.push("base","int");
 					
 					mapDataSeq.push("base_type","{");//fix
 					mapDataSeq.push("health","int");//fix
