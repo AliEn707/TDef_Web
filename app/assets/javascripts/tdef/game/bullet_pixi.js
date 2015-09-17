@@ -17,14 +17,14 @@ function Bullet(opt){
 	//static
 	this.id=opt.id || 0
 	this.type=opt.type || 1;
-	var textures=bullet_types[this.type].textures;
+	var textures=this.getType().textures;
 	this.sprites={};
 	for (var i in textures){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
 		var s=this.map.nodesize*0.3*(opt.scale || 1);
 		sprite=new ASprite(textures[i]["texture"],{anchor:{x:0.5,y:0.5},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays,width: s/4,height: s});
-		if (bullet_types[this.type].solid){
+		if (this.getType().solid){
 			this.sprites[i]=new ATilingSprite(textures[i]["texture"],{anchor:{x:0.5,y:1},callbacks:{obj:this,actions:Bullet_callbacks[i]||{}},loop:textures[i].loop,delays:textures[i].delays, width:textures[i].width, height:textures[i].height, size:s});
 			this.sprites[i].scale=sprite.getScale();
 		}else{
@@ -53,6 +53,10 @@ function Bullet(opt){
 Bullet.prototype= new PIXI.DisplayObjectContainer();
 Bullet.prototype.constructor= Bullet;
 
+
+Bullet.prototype.getType= function (){
+	return bullet_types[this.type];
+}
 
 Bullet.prototype.getLength= function (source,position){
 	var v={x:position.x-source.x,y:position.y-source.y};
@@ -95,7 +99,7 @@ Bullet.prototype.update= function (obj){
 	this.setRotation(obj);
 	
 	this.time=obj.time;
-	if (bullet_types[this.type].solid)
+	if (this.getType().solid)
 		this.grid=obj.grid;
 	
 	if (obj.detonate){
@@ -106,12 +110,12 @@ Bullet.prototype.update= function (obj){
 }
 
 Bullet.prototype.proceed= function (){
-	if (bullet_types[this.type].solid){
+	if (this.getType().solid){
 		this.position=this.map.gridToScreen(this.source.y, this.source.x);
 		this.setHeight(this.getLength(this.position,this.map.gridToScreen(this.grid.y, this.grid.x)));
 	}else{		
-		this.grid.x+=this.direction.x//*bullet_types[this.type].move_speed*6/100;
-		this.grid.y+=this.direction.y//*bullet_types[this.type].move_speed*6/100;
+		this.grid.x+=this.direction.x//*this.getType().move_speed*6/100;
+		this.grid.y+=this.direction.y//*this.getType().move_speed*6/100;
 		this.position=this.map.gridToScreen(this.grid.y, this.grid.x);
 	}
 		this.position.y-=0.3*this.map.nodesize*this.map.scale.x;

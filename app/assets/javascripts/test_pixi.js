@@ -226,7 +226,7 @@ var npc_types1={
 	}
 }
 
-var tower_types={
+TDef.types.tower={
 	0:{
 		id: 0,
 		health: 200,
@@ -286,7 +286,7 @@ var tower_types={
 	},
 }
 
-var bullet_types={
+TDef.types.bullet={
 	1:{
 		id: 1,
 		move_type: 2,
@@ -413,8 +413,8 @@ function test(engine){
 	//	a.setFrame(0,new PIXI.Texture(atlas, new PIXI.Rectangle(0, 0, 100, 100)))
 
 //	engine.setMap('4')
-//	engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
-//	engine.loadMap()
+	engine.setMap('pvz11_11')//map must be on server  //pvz11_11 
+	engine.loadMap()
 	//engine.stage.addChild(bunny)
 	data=[
 		{msg:3,id:0,objtype:"Bullet",create:1,grid:{$:0,x:4.374,y:9.4},$:0,type:2,owner:1,source:{$:0,x:7.125,y:8.5},$:0},
@@ -423,12 +423,12 @@ function test(engine){
 		{msg:3,id:3,objtype:"Bullet",create:1,grid:{$:0,y:27.125,x:28.5},$:0,type:2,owner:2,source:{$:0,y:24.374,x:29.4},$:0},
 	]
 	for (var i=0;i<1;i++){	
-//		engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})
+		engine.map.objects[i]=new Npc({type:1,grid:{x:2.6/*Math.random()*size*/,y:1/*Math.random()*size*/}})
 	//	engine.map.objects[i]=new Tower({})
 	//	engine.map.objects[i]=new Bullet(data[i])
 	//	engine.map.objects[i].update({grid:{x:2,y:2},time: 1});
 	//	engine.map.objects[i].update({grid:{x:5,y:5},time: 5000});
-//		engine.stage.addChild(engine.map.objects[i])
+		engine.stage.addChild(engine.map.objects[i])
 	}
 
 	//var t=getTextureFrames(npc_types[1].textures["idle"])
@@ -438,7 +438,7 @@ function test(engine){
 
 
 	var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
-	var t2=getTextureFrames(npc_types[1].textures["walk_left"]);
+	var t2=getTextureFrames(TDef.types.npc[1].textures["walk_left"]);
 	var t3=[PIXI.Texture.fromImage("/imgtest/green.jpg")];
 	var t4=[PIXI.Texture.fromImage("/imgtest/build.png")];
 
@@ -476,6 +476,6 @@ function test(engine){
 
 	/**/
 
-//	Loading.hide();
+	Loading.hide();
 
 }

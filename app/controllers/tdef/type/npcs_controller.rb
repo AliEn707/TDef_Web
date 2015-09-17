@@ -60,7 +60,7 @@ class Tdef::Type::NpcsController < ApplicationController
   end
 
   def types
-	data="var npc_types="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
+	data="TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.npc="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
 		out={}
 		images=[]
 		Tdef::Type::Npc.all.each do |t|

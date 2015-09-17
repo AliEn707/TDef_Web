@@ -25,7 +25,7 @@ function Npc(opt){
 	this.id=opt.id || 0
 	this.type=opt.type != undefined ? opt.type : 1;
 	this.owner=opt.owner || 0;
-	var textures=npc_types[this.type].textures;
+	var textures=this.getType().textures;
 	this.sprites={};
 	var s=this.map.nodesize*0.79*(opt.scale || 1);
 	for (var i in textures){
@@ -54,9 +54,13 @@ function Npc(opt){
 Npc.prototype= new PIXI.DisplayObjectContainer();
 Npc.prototype.constructor= Npc;
 
+Npc.prototype.getType= function (){
+	return ((this.type>0) ? TDef.types.npc[this.type] : this.engine.map.players[this.owner].type.hero);
+}
+
 Npc.prototype.setHealth= function (health){
 	this.health=health;
-	var type_health=this.type>0 ? npc_types[this.type].health : this.engine.map.players[this.owner].type.hero.health;
+	var type_health=this.getType().health;
 	var obj=this.health/type_health;
 	if (obj>1)
 		obj=1;
@@ -163,8 +167,8 @@ Npc.prototype.update= function (obj){
 
 Npc.prototype.proceed= function (){
 	//TODO: add interpolation
-	this.grid.x+=this.direction.x//*npc_types[this.type].move_speed*6/100;
-	this.grid.y+=this.direction.y//*npc_types[this.type].move_speed*6/100;
+	this.grid.x+=this.direction.x//*this.getType().move_speed*6/100;
+	this.grid.y+=this.direction.y//*this.getType().move_speed*6/100;
 	
 	//proseed sprite
 	this.sprites[this.sprite].upFrame();

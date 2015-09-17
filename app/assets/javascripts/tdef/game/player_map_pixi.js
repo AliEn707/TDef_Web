@@ -29,12 +29,18 @@ function MapPlayer(opt){
 	this.set={}
 	this.set.tower=opt.tower_set;
 	this.set.npc=opt.npc_set;
-	this.id=opt.pid;
+	this.id=opt.pid; //real id from base
 	this.group=opt.group;
 	this.full_hero_counter=opt["_hero_counter"];
 	this.hero_counter=opt.hero_counter;
 	this.type.hero=opt.hero_type;
+	for (var i in TDef.types.npc[0])
+		if (!this.type.hero[i])
+			this.type.hero[i]=TDef.types.npc[0][i];//change to real properties
 	this.type.base=opt.base_type;
+	for (var i in TDef.types.tower[0])
+		if (!this.type.base[i])
+			this.type.base[i]=TDef.types.tower[0][i];//change to real properties
 	this.base=opt.base;
 	this.hero=opt.hero;
 	this.targeting=opt.targeting;
