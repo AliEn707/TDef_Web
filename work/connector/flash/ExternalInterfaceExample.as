@@ -108,7 +108,7 @@ package {
 		}
 	}
 	
-      private function checkJavaScriptReady():Boolean {
+        private function checkJavaScriptReady():Boolean {
             var R:Boolean = ExternalInterface.call("isReady");
             return R;
         }
@@ -217,7 +217,7 @@ package {
 		}
 	}
 	private var user:String;
-	private var pass:String;
+	private var token:int;
 	private var user_id:int=0;
 	
 	private function sendPublic(value:String):int {
@@ -227,11 +227,17 @@ package {
 		return 0;
 	}
 	
+	private function publicConnected():void {
+		if (isReady) {
+			ExternalInterface.call("publicConnected");
+		}
+	}
+		
 	private function connectPublic(host:String, port:String, u:String, p:String):int {
 	        logJS("Try to connect\n");
 		output.appendText(host+" "+port+"\n");
 		user=u;
-		pass=p;
+		token=int(p);
 		publicSock= new Socket();
 		publicSock.endian = Endian.LITTLE_ENDIAN;
 		publicSock.addEventListener(Event.CONNECT, publicConnectHandler); 
@@ -292,6 +298,7 @@ package {
 		publicAuthorised=false;
 		publicTimer.removeEventListener(TimerEvent.TIMER, publicTimeDataHandler);
 		publicTimer.stop();
+		publicAuthFail();
 	}
 	
 	//time event wrapper for data handler
@@ -327,7 +334,7 @@ package {
 					id=publicSock.readInt();
 					publicSock.writeInt(user.length);
 					publicSock.writeUTFBytes(user);
-					publicSock.writeUTFBytes(pass);
+					publicSock.writeInt(token);
 					publicSock.flush();
 					publicMsg++;
 					logJS("got "+id);
@@ -343,6 +350,7 @@ package {
 					logJS("answer: "+id);
 					if (id!=0){
 						publicAuthorised=true;
+						publicConnected();
 						publicOutObj="([";
 					}else{
 						publicSock.close();
@@ -378,16 +386,17 @@ package {
 						if (publicOutObj.length>2){//send object to javasctript
 						        var time:int=flash.utils.getTimer();
 						        publicOutObj+=",time:"+time+"},";
-						        if (time-publicMsgTime>90){
+						        if (time-publicMsgTime>70){
 								proceedPublicMessagesJS(publicOutObj+"])");
 								publicOutObj="([";
 								publicMsgTime=time;
 							}
 						}
 						publicMsg=publicSock.readByte();
-						publicDataSeq.push("bitmask");
-						publicOutObj+="{msg:"+publicMsg;
-					
+						if (publicMsg!=0){
+							publicDataSeq.push("bitmask");
+							publicOutObj+="{msg:"+publicMsg;
+						}
 						break;
 					
 					case "bitmask": //need to get bitmask
@@ -401,6 +410,7 @@ package {
 						break;
 						
 					default:
+						logJS(publicOutObj);
 						logJS("get "+publicDataSeq[1]);
 						switch (publicDataSeq[1]){
 							case "{":
@@ -457,16 +467,17 @@ package {
 		//here must be list of getting obj params 
 		switch (publicMsg){
 			case MESSAGE_EVENT_CHANGE:
-				publicOutObj+=",objtype:\"Event\"";
+				publicOutObj+=",objtype:\"Event\",action:\"change\"";
 				publicOutObj+=",id:"+bitMask;
 //				publicDataSeq.push("id","int");
 //				publicDataSeq.push("rooms","int");
 //				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
 				publicDataSeq.push("map","string");
+				publicDataSeq.push("name","string");
 //				}
 				return;
 			case MESSAGE_PLAYER_CHANGE:
-				logJS("MESSAGE_PLAYER_CHANGE");
+//				logJS("MESSAGE_PLAYER_CHANGE");
 				publicOutObj+=",objtype:\"Player\"";
 				publicDataSeq.push("id","int");
 				if ((bitMask&BM_PLAYER_ROOM)!=0){
@@ -478,7 +489,7 @@ package {
 				}
 				return;
 			case MESSAGE_GAME_START:
-				publicOutObj+=",objtype:\"Player\"";
+				publicOutObj+=",objtype:\"Room\",action:\"ready\"";
 				publicOutObj+=",event_id:"+bitMask;
 				publicDataSeq.push("host","string");
 				publicDataSeq.push("port","int");
@@ -505,6 +516,18 @@ package {
 		mapConnectCloseHandler(event);
 	}
 	
+	private function mapConnected():void {
+		if (isReady) {
+			ExternalInterface.call("mapConnected");
+		}
+	}
+	
+	private function mapClosed():void {
+		if (isReady) {
+			ExternalInterface.call("mapClosed");
+		}
+	}
+	
 	private function connectMap(host:String, port:String):int {
 	        logJS("Try to connect\n");
 		output.appendText(host+" "+port+"\n");
@@ -522,7 +545,6 @@ package {
 		try {
 			mapSock.connect(host, int(port));
 //			mapSock.connect("smtp.yandex.ru", 25);
-			logJS("Socket connected: " + mapSock.connected);
 		}
 		catch (error:Error) {
 			logJS("An Error occurred: " + error.message + "\n");
@@ -587,6 +609,7 @@ package {
   	private function mapConnectCloseHandler(event:Event):void {
 		logJS("closed" + event+"\n");
 		mapAuthorised=false;
+		mapClosed();
 		dataTimer.removeEventListener(TimerEvent.TIMER, mapTimeDataHandler);
 		dataTimer.stop();
 	}
@@ -672,7 +695,7 @@ package {
 						if (mapObj.length>2){//send object to javasctript
 						        var time:int=flash.utils.getTimer();
 						        mapObj+=",time:"+time+"},";
-						        if (time-msgTime>90){
+						        if (time-msgTime>80){
 								proceedMapMessagesJS(mapObj+"])");
 								mapObj="([";
 								msgTime=time;
@@ -782,9 +805,10 @@ package {
 					logJS("latency "+latency);
 					mapObj+=",latency:"+latency;
 					mapAuthorised=true;
-					currMsg=0;
+					mapConnected();
 					//send to Javascript
 					ExternalInterface.call("mapAuthData", mapObj+"})");
+					currMsg=0;
 					mapObj="([";
 				}
 				catch(error:Error){

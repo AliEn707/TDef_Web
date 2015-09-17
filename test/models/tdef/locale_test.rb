@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TempClientFileTest < ActiveSupport::TestCase
+class Tdef::LocaleTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

@@ -102,3 +102,28 @@ AObject.prototype.getScale= function (){
 AObject.prototype.getAttr= function (attr){
 	return this.frames[this.current_frame][attr];
 }
+
+AObject.prototype.proceed= function (){
+	return this.upFrame();
+}
+
+Object.defineProperty(AObject.prototype, 'alpha', {
+    get: function() {
+	return this.frames[0].alpha
+    },
+    set: function(value) {
+	for (var i in this.frames)
+	    this.frames[i].alpha=value;
+    }
+});
+
+Object.defineProperty(AObject.prototype, 'tint', {
+    get: function() {
+	return this.frames[0].tint
+    },
+    set: function(value) {
+	for (var i in this.frames)
+	    this.frames[i].tint=value;
+    }
+});
+

@@ -2,5 +2,5 @@
 
 @set PATH=%root%\devel\flex_sdk_4.6\bin;%PATH%
 
-mxmlc ExternalInterfaceExample.as -static-link-runtime-shared-libraries -o ../../../public/javascripts/tdef/game/connector.swf
+mxmlc ExternalInterfaceExample.as -static-link-runtime-shared-libraries -o ../../../app/assets/other/connector.swf
 pause

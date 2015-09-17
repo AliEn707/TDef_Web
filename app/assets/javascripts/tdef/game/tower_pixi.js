@@ -53,7 +53,8 @@ Tower.prototype.setHealth= function (health){
 	var obj=this.health/type_health;
 	if (obj>1)
 		obj=1;
-	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.texture.width*obj,height:this.engine.textures.health.texture.height});
+	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.base.width*obj,height:this.engine.textures.health.base.height});
+	this.health_sprite.tint=healthColor(obj);
 }
 Tower.prototype.update= function (obj){
 	if (obj.health!=undefined)
@@ -73,7 +74,7 @@ Tower.prototype.proceed= function (){
 
 Tower.prototype.setHealthSprite= function (s){
 	var that=this;
-	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.texture));
+	this.health_sprite=new PIXI.Sprite(new PIXI.Texture(this.engine.textures.health.base));
 	var func=function (){
 		that.health_sprite.height=that.health_sprite.height/that.health_sprite.width*that.map.nodesize;
 		that.health_sprite.width=that.map.nodesize;
@@ -86,8 +87,8 @@ Tower.prototype.setHealthSprite= function (s){
 		this.health_sprite.texture.addEventListener("update", func);
 	this.health_sprite.anchor.x=0;
 	this.health_sprite.anchor.y=1;
+	this.health_sprite.tint=healthColor(1);
 	this.addChild(this.health_sprite);
-	
 }
 
 Tower.prototype.setSprite= function (name){

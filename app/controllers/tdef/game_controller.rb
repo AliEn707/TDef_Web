@@ -1,8 +1,14 @@
 class Tdef::GameController < ApplicationController
-  def game
-  end
+	before_action :authenticate_user!
+	def game
+	end
   
 	def access
-		send_data "function access(){return {token:'smth',id:#{Time.now.to_i}};}" , filename:"access.js"
+		token=rand(2147483647*2)-2147483647#rand in max int
+		send_data "function access(){return {token:#{token},name:'#{current_user.email}'};}" , filename:"access.js"
+	end
+	
+	def init
+		render :formats=>[:js]
 	end
 end
