@@ -6,7 +6,6 @@ params
 	//passed for AObject
 opt	current_frame: int;
 opt	loop: boolean;
-opt	countStep: float;
 opt	callbacks: {
 		obj:{ } - object contaning actions for this pbject
 		actions: {
@@ -36,14 +35,12 @@ ASprite.prototype.setHeight= function (height){ }
 
 ASprite.prototype.setFrames= function (textures, params){
 	this.frames=[];
+	var keys=["width","height","anchor","tint"]
 	for (var i in textures){
 		this.frames[i]=new PIXI.Sprite(textures[i]);
-		if (params.width)
-			this.frames[i].width=params.width;
-		if (params.height)
-			this.frames[i].height=params.height;
-		if (params.anchor)
-			this.frames[i].anchor=params.anchor;
+		for (var j in keys)
+			if (params[keys[j]])
+				this.frames[i][keys[j]]=params[keys[j]];
 	}
 }
 

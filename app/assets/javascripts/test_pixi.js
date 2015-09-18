@@ -226,7 +226,7 @@ var npc_types1={
 	}
 }
 
-var tower_types={
+TDef.types.tower={
 	0:{
 		id: 0,
 		health: 200,
@@ -286,7 +286,7 @@ var tower_types={
 	},
 }
 
-var bullet_types={
+TDef.types.bullet={
 	1:{
 		id: 1,
 		move_type: 2,
@@ -438,7 +438,7 @@ function test(engine){
 
 
 	var t1=[PIXI.Texture.fromImage("/imgtest/tree.jpeg")];
-	var t2=getTextureFrames(npc_types[1].textures["walk_left"]);
+	var t2=getTextureFrames(TDef.types.npc[1].textures["walk_left"]);
 	var t3=[PIXI.Texture.fromImage("/imgtest/green.jpg")];
 	var t4=[PIXI.Texture.fromImage("/imgtest/build.png")];
 

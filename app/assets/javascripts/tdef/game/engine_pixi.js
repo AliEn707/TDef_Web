@@ -19,8 +19,6 @@ function TDefEngine(place, opt, callback){
 	this.textures=opt.textures || {};
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
-	//show statistic info
-	showStats(place.getBoundingClientRect());
 	this.place=place;
 	//requestAnimFrame( this.render );
 	setEngine(this);
@@ -33,7 +31,6 @@ function TDefEngine(place, opt, callback){
 			xInverted:1, 
 			yInverted:-1, 
 			weelInverted: -1,
-			mouseMove: true,
 			clickAreaSize:4,
 			defines:{
 				keys:{
@@ -46,9 +43,8 @@ function TDefEngine(place, opt, callback){
 				}
 			}
 		};
-	this.drawInterval=window.setInterval(this.render,this.frameTime)
 	addWeelHendler(this.renderer.view, weelHandler);
-	
+		
 	//lets load textures
 	var loader={all:0,loaded:0};
 	for (var i in this.textures)
@@ -64,15 +60,18 @@ function TDefEngine(place, opt, callback){
 		});
 	}
 	
+	this.setWindowHandlers();
+
+	window.setTimeout(this.render,this.frameTime);
 }
 
 
 TDefEngine.prototype.render= function (){
+	var that=getEngine();
+	window.setTimeout(that.render,that.frameTime);
 	if (stats)
 		stats.begin();
 	
-	var that=getEngine();
-//	requestAnimFrame( that.render );
 	//that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	that.keysProcessor();
 	that.objectsProcessor();
@@ -80,8 +79,10 @@ TDefEngine.prototype.render= function (){
 	that.stage.children.sort(function(a,b){return (a.depth)<(b.depth);})
 	that.renderer.render(that.stage);
 	//bunny.nextFrame()
-	if (stats)
+	if (stats){
+		statsUpdate(that);
 		stats.end();
+	}
 }
 
 TDefEngine.prototype.resize=function (){
@@ -91,7 +92,6 @@ TDefEngine.prototype.resize=function (){
 	var height=window.innerHeight - offset - (place.offsetTop || 0);
 	
 	that.renderer.resize(width,height);
-	placeStats(that.renderer.view.getBoundingClientRect());
 	if (that.map)
 		that.map.resize(width,height);
 	for (var i in that.stage.children)
@@ -179,13 +179,13 @@ TDefEngine.prototype.loadMap= function (){
 	
 	var fullsize=opt.size*opt.size;
 	var size=map.size;
-	map.setFocus(map.getFocusTexture(focusTexturePath));
-	var buildableTexture=map.getBuildableTexture(buildableTexturePath);
+	map.setFocus();
+	var buildableTextures=getTextureFrames(this.textures.map_build_node);
 	for(var i=0;i<fullsize;i++){
 		map.setNode(i,opt.textures[opt.nodes[i]]);
 	//	console.log(opt.buildable,opt.buildable[i])
 		if (opt.buildable[i]=="1")
-			map.setBuildableNode(i,buildableTexture);
+			map.setBuildableNode(i,buildableTextures,{tint:this.textures.map_build_node.tint});
 		
 	}
 	var k = 0, i, j;
@@ -274,10 +274,27 @@ TDefEngine.prototype.objectsProcessor=function() {
 			objs[i].proceed();
 	}
 }
-	
 
 TDefEngine.prototype.closeMap=function() {
 	mapClose();
 	this.map.clean;
 	
 }
+
+TDefEngine.prototype.setWindowHandlers=function() {
+	function onBlur() {
+		console.log("hiden")
+	};
+	function onFocus(){
+		console.log("showen")
+	};
+
+	if (/*@cc_on!@*/false) { // check for Internet Explorer
+		document.onfocusin = onFocus;
+		document.onfocusout = onBlur;
+	} else {
+		window.onfocus = onFocus;
+		window.onblur = onBlur;
+	}
+}
+

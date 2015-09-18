@@ -18,6 +18,9 @@ function Public(engine){
 		border: {width: 30, height: 30},
 		button: {width: 280, height: 50}
 	});
+	this.eventInit({
+		position: {x:0,y: menuButton.height}
+	});
 	this.depth=-1;
 	this.hide();
 	this.switchTo(this.objects[0]);
@@ -352,6 +355,28 @@ Public.prototype.eventsRemove= function (event) {
 //action on press button
 Public.prototype.eventsButtonAction= function (event) {
 //	console.log(this.event);
+	getEngine().public.eventChoose(this);
 	publicGetRoom(this.event); //TODO: check
+}
+
+//event info screen
+Public.prototype.eventInit= function (opt) {
+	var engine=this.engine || getEngine();
+	var textures;
+	var container=new ButtonContainer({position:{x:opt.position.x,y:opt.position.y}});
+	this.event={};
+	this.event.container=container;
+	this.event.container.visible=false;
+	this.addChild(container);
+}
+
+Public.prototype.eventChoose= function (event) {
+	this.event.current=this;
+	//add set params of event
+}
+
+Public.prototype.eventButtonAction= function (event) {
+//	console.log(this.event);
+	publicGetRoom(getEngine().public.event.current.event); //TODO: check
 }
 

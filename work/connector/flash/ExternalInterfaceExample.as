@@ -23,6 +23,7 @@ package {
 	private var publicSock:Socket = new Socket();
 	private var dataTimer:Timer = new Timer(160, 0);//40, 0);
 	private var publicTimer:Timer = new Timer(190, 0);//40, 0);
+	private var date:Date = new Date();
 	
         public function ExternalInterfaceExample() {
 		Security.allowDomain("*");
@@ -176,10 +177,12 @@ package {
 					case "float":
 						sock.writeFloat(Number(arr.shift()));
 						break;
+					case "double":
+						sock.writeDouble(Number(arr.shift()));
+						break;
 					case "string":
 						sock.writeUTF(arr.shift());
 						break;
-					
 				}
 			}
 		}
@@ -209,7 +212,7 @@ package {
 	private var publicAuthorised:Boolean=false;
 	private var publicMsg:int;
 	private var publicDataSeq:Array = new Array();
-	private var publicOutObj:String = "";
+	private var publicOutObj:String = "({";
 	
 	private function publicConnectError(value:String):void {
 		if (isReady) {
@@ -227,9 +230,9 @@ package {
 		return 0;
 	}
 	
-	private function publicConnected():void {
+	private function publicConnected(s:String):void {
 		if (isReady) {
-			ExternalInterface.call("publicConnected");
+			ExternalInterface.call("publicConnected",s);
 		}
 	}
 		
@@ -327,6 +330,7 @@ package {
 	
 	private function publicAuth():void {
 		var id:int;
+		var timestamp:Number;
 		var loop:Boolean=true;
 		switch (publicMsg){
 			case 0:
@@ -347,17 +351,28 @@ package {
 				try{
 					id=publicSock.readInt();
 					publicMsg++;
-					logJS("answer: "+id);
-					if (id!=0){
-						publicAuthorised=true;
-						publicConnected();
-						publicOutObj="([";
-					}else{
+					logJS("id: "+id);
+					publicOutObj+="id: "+id+",";
+					if (id==0){
 						publicSock.close();
 						publicAuthFail();
 						var event:Event;
 						publicConnectCloseHandler(event);//clear handlers
 					}
+				}
+				catch(error:Error){
+//					logJS("players error"+error+"\n");
+				}
+				break;
+			case 2:
+				try{
+					timestamp=publicSock.readDouble();
+					publicMsg++;
+					logJS("time: "+timestamp);
+					publicOutObj+="time:"+timestamp+",";
+					publicAuthorised=true;
+					publicConnected(publicOutObj+"})");
+					publicOutObj="([";
 				}
 				catch(error:Error){
 //					logJS("players error"+error+"\n");
@@ -400,7 +415,7 @@ package {
 						break;
 					
 					case "bitmask": //need to get bitmask
-						logJS("get bitmask");
+//						logJS("get bitmask");
 
 						var bitMask:int;
 						bitMask=publicSock.readInt();
@@ -410,8 +425,8 @@ package {
 						break;
 						
 					default:
-						logJS(publicOutObj);
-						logJS("get "+publicDataSeq[1]);
+//						logJS(publicOutObj);
+//						logJS("get "+publicDataSeq[1]);
 						switch (publicDataSeq[1]){
 							case "{":
 								str="{$:0";
@@ -440,6 +455,10 @@ package {
 								data=publicSock.readFloat();
 								str=data+""
 								break;
+							case "double":
+								data=publicSock.readDouble();
+								str=data+""
+								break;
 							case "string": //we have short: sizeof string than string  in socket
 								str="\""+publicSock.readUTF()+"\"";
 //								publicDataSeq.splice(2,1);
@@ -448,7 +467,7 @@ package {
 						publicOutObj+=","+publicDataSeq[0]+":"+str;
 						publicDataSeq.shift();
 						publicDataSeq.shift();
-	//						publicDataSeq.splice(0,2);
+//						publicDataSeq.splice(0,2);
 						
 						break;
 						
@@ -618,6 +637,13 @@ package {
        private const TOWER_SET_SIZE:int=9;
 	
 	//messaging with map server
+	//msg to server
+	private const MSG_SPAWN_TOWER:int= 1;
+	private const MSG_SPAWN_NPC:int= 2;
+	private const MSG_DROP_TOWER:int= 3;
+	private const MSG_MOVE_HERO:int= 4;
+	private const MSG_SET_TARGET:int= 5;
+	
 	//msg to client
 	private const MSG_TEST:int= 0;
 	private const MSG_NPC:int= 1;
@@ -627,13 +653,6 @@ package {
 	private const MSG_INFO:int= 5;
 	//additional messages to client
 	private const MSG_INFO_WAITING_TIME:int= 1;
-	
-	//msg to server
-	private const MSG_SPAWN_TOWER:int= 1;
-	private const MSG_SPAWN_NPC:int= 2;
-	private const MSG_DROP_TOWER:int= 3;
-	private const MSG_MOVE_HERO:int= 4;
-	private const MSG_SET_TARGET:int= 5;
 	//npc messages
 	private const NPC_HEALTH:int= BIT_1;
 	private const NPC_POSITION:int= BIT_2;
@@ -648,18 +667,18 @@ package {
 	private const TOWER_LEVEL:int= BIT_4;
 	private const TOWER_SHIELD:int= BIT_5;
 	//bullet messages
-	private const BULLET_POSITION:int=  BIT_1;
-	private const BULLET_DETONATE:int=  BIT_2;
-	private const BULLET_CREATE:int=  BIT_3;
+	private const BULLET_POSITION:int= BIT_1;
+	private const BULLET_DETONATE:int= BIT_2;
+	private const BULLET_CREATE:int= BIT_3;
 	//player constants
-	private const PLAYER_BASE:int=   BIT_1;
-	private const PLAYER_MONEY:int=   BIT_2;
-	private const PLAYER_CREATE:int=   BIT_3;
-	private const PLAYER_LEVEL:int=   BIT_4;
-	private const PLAYER_HERO:int=   BIT_5;
-	private const PLAYER_HERO_COUNTER:int=   BIT_6;
-	private const PLAYER_TARGET:int=   BIT_7;
-	private const PLAYER_FAIL:int=   BIT_8;
+	private const PLAYER_BASE:int= BIT_1;
+	private const PLAYER_MONEY:int= BIT_2;
+	private const PLAYER_CREATE:int= BIT_3;
+	private const PLAYER_LEVEL:int= BIT_4;
+	private const PLAYER_HERO:int= BIT_5;
+	private const PLAYER_HERO_COUNTER:int= BIT_6;
+	private const PLAYER_TARGET:int= BIT_7;
+	private const PLAYER_FAIL:int= BIT_8;
 	
 	private var mapDataSeq:Array = new Array();
 	private var mapObj:String="";
@@ -743,6 +762,10 @@ package {
 								break;						
 							case "float":
 								data=mapSock.readFloat();
+								str=data+""
+								break;
+							case "double":
+								data=mapSock.readDouble();
 								str=data+""
 								break;
 //							case "string": //we have third argument string size
@@ -874,12 +897,12 @@ package {
 			case MSG_BULLET:
 				mapObj+=",objtype:\"Bullet\"";
 				mapDataSeq.push("id","int");
-			//	if ((bitMask&BULLET_POSITION)!=0){
-				mapDataSeq.push("grid","{");
-				mapDataSeq.push("x","float");
-				mapDataSeq.push("y","float");
-				mapDataSeq.push("$","}");
-			//	}
+				if ((bitMask&BULLET_POSITION)!=0){
+					mapDataSeq.push("grid","{");
+					mapDataSeq.push("x","float");
+					mapDataSeq.push("y","float");
+					mapDataSeq.push("$","}");
+				}
 				if ((bitMask&BULLET_CREATE)!=0){ 
 					mapObj+=",create:1";
 					mapDataSeq.push("type","int");
@@ -916,7 +939,6 @@ package {
 					mapDataSeq.push("$","}");
 					mapDataSeq.push("group","int");
 					mapDataSeq.push("_hero_counter","int");
-					mapDataSeq.push("base","int");
 					
 					mapDataSeq.push("base_type","{");//fix
 					mapDataSeq.push("health","int");//fix

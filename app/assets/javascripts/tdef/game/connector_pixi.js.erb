@@ -34,8 +34,11 @@ function publicConnectionError(value) {
 	console.log(value);
 }
 //callback on success autorisation
-function publicConnected(){
-	console.log("connected");
+function publicConnected(s){
+	console.log("connected: "+s);
+	var obj=eval(s);
+	obj.diff=obj.time-((Date.now()/1000) | 0);//server-local
+	console.log("differ server/local time "+obj.diff+" sec");
 	Loading.message="";
 	getEngine().public.show();
 	getEngine().public.switchTo('events');
@@ -180,7 +183,7 @@ function proceedMapMessages(str){
 			if (obj.objtype=="Player"){
 				//player
 				if (!e.map.players[obj.id])
-					e.map.players[obj.id]=eval("new "+obj.objtype+"(obj)");
+					e.map.players[obj.id]=eval("new Map"+obj.objtype+"(obj)");
 				if (e.map.players[obj.id])
 					e.map.players[obj.id].update(obj);
 			}else{
