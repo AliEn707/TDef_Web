@@ -56,31 +56,21 @@ class PostsController < ApplicationController
 	# DELETE /posts/1.json
 	def destroy
 		@post.destroy
-		respond_to do |format|
-			format.html { redirect_to posts_url }
-			format.json { head :no_content }
-		end
+		redirect_to posts_url
 	end
 
 	private
 	
-		def set_images
-			@post.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil? 
-			@post.images.each do |i| 
-				width,height=i.size
-				if (width>800) then
-					i.resize!(800)
-					i.save
-				end
-			end
-		end
-		# Use callbacks to share common setup or constraints between actions.
-		def set_post
-			@post = Post.find(params[:id])
-		end
+	def set_images
+		@post.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil? 
+	end
+	# Use callbacks to share common setup or constraints between actions.
+	def set_post
+		@post = Post.find(params[:id])
+	end
 
-		# Never trust parameters from the scary internet, only allow the white list through.
-		def post_params
-			params.require(:post).permit(:title, :lang, :description, :preview, :user_id)
-		end
+	# Never trust parameters from the scary internet, only allow the white list through.
+	def post_params
+		params.require(:post).permit(:title, :lang, :description, :preview, :user_id)
+	end
 end
