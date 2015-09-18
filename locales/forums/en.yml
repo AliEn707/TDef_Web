@@ -1,0 +1,11 @@
+﻿en:
+  forums:
+    add: Add
+    edit: Edit
+    destroy: Destroy
+    add_translation: Add translation
+    created: Forum created
+    updated: Forum updated
+    removed: Forum removed
+    not_created: Forum not created
+    not_updated: Forum not updated

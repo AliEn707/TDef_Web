@@ -25,40 +25,28 @@ class ForumsController < ApplicationController
   # POST /forums.json
   def create
     @forum = Forum.new(forum_params)
-
-    respond_to do |format|
-      if @forum.save
-        format.html { redirect_to @forum, notice: 'Forum was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @forum }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @forum.errors, status: :unprocessable_entity }
-      end
+    if @forum.save
+      redirect_to @forum, notice: t("forums.created")
+    else
+      render action: 'new', alert: t("forums.not_created")
     end
   end
 
   # PATCH/PUT /forums/1
   # PATCH/PUT /forums/1.json
   def update
-    respond_to do |format|
-      if @forum.update(forum_params)
-        format.html { redirect_to @forum, notice: 'Forum was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @forum.errors, status: :unprocessable_entity }
-      end
-    end
+    if @forum.update(forum_params)
+    redirect_to @forum, notice: t("forums.updated") 
+    else
+      render action: 'edit', alert: t("forums.not_updated")
+   end
   end
 
   # DELETE /forums/1
   # DELETE /forums/1.json
   def destroy
     @forum.destroy
-    respond_to do |format|
-      format.html { redirect_to forums_url }
-      format.json { head :no_content }
-    end
+    redirect_to forums_url, notice: t("forums.removed") 
   end
 
   private
