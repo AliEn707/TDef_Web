@@ -1,7 +1,7 @@
 ﻿en:
   recaptcha_error: Recapcha not recognized. Please try again.
   menu:
-    tdef: Tdef
+    tdef: TDef
     locales: Locales
     game: Game
     map_editor: Map editor
