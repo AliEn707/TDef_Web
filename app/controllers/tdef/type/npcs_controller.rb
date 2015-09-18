@@ -84,6 +84,6 @@ class Tdef::Type::NpcsController < ApplicationController
     
    # Never trust parameters from the scary internet, only allow the white list through.
     def tdef_type_npc_params
-      params.require(:tdef_type_npc).permit(:params=>params[:tdef_type_npc][:params].try(:keys))
+      params.require(:tdef_type_npc).permit(:params=>Tdef::Type::Npc::PARAMS.keys)
     end
 end
