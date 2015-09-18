@@ -24,11 +24,11 @@ class ImagesController < ApplicationController
 		#TODO: rewrite
 		if (@image.type?) then
 			@image.convert_to_png! if (@image.type!="png")
-			@image=nil if !(@image.save)
+			set_dimentions
+			@image=nil  if (!@image.save)
 		else
 			@image=nil 
 		end
-		p @image.inspect
 		respond_to do |format|
 			format.js
 		end
@@ -47,7 +47,35 @@ class ImagesController < ApplicationController
 	def image_params
 		data=params["image"]["file"].read
 		format=params["image"]["file"].content_type
-		#TODO add convertion if not "image/png"
 		return params.require(:image).permit(:imageable_id, :imageable_type).merge({data: data, format: format})
+	end
+	
+	def set_dimentions
+		begin
+			dimentions=@image.imageable_type.constantize::IMAGE_DIMENTIONS 
+			need=[dimentions[:width] || 0, dimentions[:height] || 0]
+			return if (need==[0,0])
+			size=@image.size
+			case dimentions[:method]
+				when 'max'
+					if (size[0]>need[0] || size[1]>need[1]) then
+						scale=1
+						scale=need[0]/size[0] if (need[0]!=0)
+						scale=need[1]/size[1] if (need[1]!=0 && scale>need[1]/size[1])
+						@image.resize!(size[0]*scale,size[1]*scale) if (scale!=1) #TODO: rewrite
+					end
+				when 'set'
+					@image.resize!(need[0],need[1]) if (need!=size)
+				when 'fit'
+					scale=1
+					scale=need[0]/size[0] if (need[0]/size[0]!=0)
+					scale=need[1]/size[1] if (need[1]/size[1]!=0 && scale>need[1]/size[1])
+					@image.resize!(size[0]*scale,size[1]*scale) if (scale!=1) #TODO: rewrite
+			else
+				nil # we don't know what to do
+			end
+		rescue 
+			nil
+		end
 	end
 end
