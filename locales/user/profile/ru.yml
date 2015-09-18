@@ -1,0 +1,9 @@
+﻿ru:
+  user:
+    profile:
+      property_not_filled: не заполнено %{property}
+      email: Email
+      NAME: Имя
+      SURNAME: Фамилия
+      BDAY: Дата рождения
+      NICK: Ник
