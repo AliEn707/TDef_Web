@@ -35,8 +35,8 @@ class Post::TranslationsController < ApplicationController
   # POST /post/translations.json
   def create
 	@post_translation = Post::Translation.new(post_translation_params.merge(user: current_user))#create can only current_user
-	if @post_translation.save
-		@post_translation.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil?
+	if @post_translation.save then
+		set_images
 		Image.where(imageable_id: nil, imageable_type: @post_translation.class.name).where(Image.arel_table[:created_at].lt(Time.now-60.minutes)).destroy_all
 		redirect_to posts_path, notice: t("posts.translations.created") 
 	else
@@ -48,10 +48,8 @@ class Post::TranslationsController < ApplicationController
   # PATCH/PUT /post/translations/1.json
   def update
 	if @post_translation.update(post_translation_params)
-		if !params["img_ids"].nil? then
-			@post_translation.images.where.not(id: params["img_ids"]).destroy_all
-			@post_translation.images=Image.where(id: params["img_ids"]) 
-		end
+		@post_translation.images.where.not(id: params["img_ids"]).destroy_all
+		set_images
 		redirect_to posts_path, notice: t("posts.translations.updated") 
 	else
 		render action: 'edit', alert: t("posts.translations.not_updated") 
@@ -62,10 +60,7 @@ class Post::TranslationsController < ApplicationController
   # DELETE /post/translations/1.json
   def destroy
 	@post_translation.destroy
-	respond_to do |format|
-	  format.html { redirect_to post_translations_url }
-	  format.json { head :no_content }
-	end
+	redirect_to post_translations_url
   end
   
 	def post
@@ -75,6 +70,9 @@ class Post::TranslationsController < ApplicationController
 	end
 
   private
+	def set_images
+		@post_translation.images=Image.where(id: params["img_ids"]) if !params["img_ids"].nil?
+	end
 	# Use callbacks to share common setup or constraints between actions.
 	def set_post_translation
 	  @post_translation = Post::Translation.where(id: params[:id]).first

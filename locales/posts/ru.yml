@@ -1,4 +1,15 @@
 ﻿ru:
   posts:
     add: Добавить
+    edit: Редактировать
+    destroy: Удалить
     add_translation: Добавить перевод
+    created: Новость создана
+    updated: Новость обновлена
+    not_created: Не удалось создать новость
+    not_updated: Не удалось обновить новость
+    translations:
+      created: Перевод создан
+      updated: Перевод обновлен
+      not_created: Не удалось создать перевод
+      not_updated: Не удалось обновить перевод

@@ -1,7 +1,7 @@
 class User::Profile < ActiveRecord::Base
 	belongs_to :user, touch: true
 	has_one :image, as: :imageable, dependent: :destroy
-	serialize :properties, JSON
+	serialize :properties, Oj
 	
 	
 	PROPERTIES=["NAME","SURNAME","BDAY","OTHER","EMAIL","PHONE","CONTRY","CITY","URL","NICK"]

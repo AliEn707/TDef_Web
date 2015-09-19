@@ -1,0 +1,7 @@
+﻿ru:
+  tdef:
+    map_servers:
+      host: Хост
+      ctlport: Порт управления
+      serv_num: Макс серверов
+      start_port: Начальный порт

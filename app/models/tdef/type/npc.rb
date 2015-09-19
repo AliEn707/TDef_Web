@@ -7,17 +7,18 @@ class Tdef::Type::Npc < ActiveRecord::Base
 	after_initialize :aload
 	before_destroy :clean
 	
-	PARAMS=["name",
-			"health",
-			"damage",
-			"shield",
-			"see_distanse",
-			"attack_speed",
-			"move_speed",
-			"cost",
-			"receive",
-			"bullet_type"
-			]
+	PARAMS={"name" => "text_field",
+			"health" => "text_field",
+			"damage" => "text_field",
+			"shield" => "text_field",
+			"see_distanse" => "text_field",
+			"attack_speed" => "text_field",
+			"move_speed" => "text_field",
+			"cost" => "text_field",
+			"receive" => "text_field",
+			"bullet_type" => "text_field",
+			"support" => "check_box"
+		}
 	TEXTURES=["idle","destroy","walk","attack"].inject([]) do |o,k1|
 				o+=["up","leftup","left","leftdown","down","rightdown","right","rightup"].map! do |k2|
 					"#{k1}_#{k2}"

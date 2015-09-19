@@ -34,6 +34,8 @@ ATilingSprite.prototype.setFrames= function (textures, params){
 			this.frames[i].anchor=params.anchor;
 		if (params.scale)
 			this.frames[i].tileScale=params.scale;
+		if (params.tint)
+			this.frames[i].tint=params.tint;
 	}
 }
 

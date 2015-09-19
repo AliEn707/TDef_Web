@@ -5,12 +5,16 @@ try{
 	afterWindowLoad(function init(){
 		var engine = new TDefEngine(
 			document.getElementById("gameDiv"),
-			{
+			{	
 				webgl: true, 
 				frameTime:1000/30, 
 				textures:{
 					error:{
 						src:"<%= asset_url('error.png') %>",
+						frames: 1
+					},
+					black:{
+						src:"<%= asset_url('black.png') %>",
 						frames: 1
 					},
 					health: {
@@ -21,6 +25,10 @@ try{
 					},
 					npc_set_background:{
 						src:"/imgtest/build.png"
+					},
+					stats:{
+						src:"<%= asset_url('events_border_u.png') %>",
+						frames: 1
 					},
 					loading:{
 						src:"<%= asset_url('loading.png') %>",
@@ -83,6 +91,16 @@ try{
 					events_list_u:{
 						src:"<%= asset_url('events_border_u.png') %>",
 						frames: 1
+					},
+					map_focused_node:{
+						src:"<%= asset_url('map_focused_node.png') %>",
+						frames: 1,
+						tint: 0x00ff00
+					},
+					map_build_node:{
+						src:"<%= asset_url('map_build_node.png') %>",
+						frames: 1,
+						tint: 0x00ff00
 					}
 				}
 			}, 
@@ -93,6 +111,9 @@ try{
 					engine.public=new Public();
 					if (test)
 						test(engine);
+					//show statistic info
+					if (<%= "true" %>)
+						statsShow(engine);
 					addConnectorSWF();
 				});
 			}

@@ -28,25 +28,21 @@ class Tdef::Type::NpcsController < ApplicationController
   def create
 	@tdef_type_npc = Tdef::Type::Npc.new(tdef_type_npc_params)
 	@tdef_type_npc.set_textures(params[:tdef_type_npc]["textures"])
-    respond_to do |format|
-      if @tdef_type_npc.save
-		format.html { redirect_to edit_tdef_type_npc_path(@tdef_type_npc), notice: 'Npc was successfully created.' }
-      else
-        format.html { render action: 'new' }
-      end
-    end
+	if @tdef_type_npc.save
+		redirect_to edit_tdef_type_npc_path(@tdef_type_npc), notice: 'Npc was successfully created.'
+	else
+		render action: 'new'
+	end
   end
 
   # PATCH/PUT /tdef/type/npcs/1
   # PATCH/PUT /tdef/type/npcs/1.json
   def update
     @tdef_type_npc.set_textures(params[:tdef_type_npc]["textures"])
-    respond_to do |format|
-      if @tdef_type_npc.update(tdef_type_npc_params)
-        format.html { redirect_to @tdef_type_npc, notice: 'Npc was successfully updated.' }
-      else
-        format.html { render action: 'edit' }
-      end
+    if @tdef_type_npc.update(tdef_type_npc_params)
+      redirect_to @tdef_type_npc, notice: 'Npc was successfully updated.'
+    else
+      render action: 'edit'
     end
   end
 
@@ -54,13 +50,11 @@ class Tdef::Type::NpcsController < ApplicationController
   # DELETE /tdef/type/npcs/1.json
   def destroy
     @tdef_type_npc.destroy
-    respond_to do |format|
-      format.html { redirect_to tdef_type_npcs_url }
-    end
+    redirect_to tdef_type_npcs_url
   end
 
   def types
-	data="var npc_types="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
+	data="TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.npc="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
 		out={}
 		images=[]
 		Tdef::Type::Npc.all.each do |t|
@@ -84,6 +78,6 @@ class Tdef::Type::NpcsController < ApplicationController
     
    # Never trust parameters from the scary internet, only allow the white list through.
     def tdef_type_npc_params
-      params.require(:tdef_type_npc).permit(:params=>params[:tdef_type_npc][:params].try(:keys))
+      params.require(:tdef_type_npc).permit(:params=>Tdef::Type::Npc::PARAMS.keys)
     end
 end

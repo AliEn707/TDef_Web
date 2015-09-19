@@ -23,18 +23,24 @@ some temp data
 ([{msg:1,id:4,objtype:"Npc",grid:{$:0,x:27.5,y:28.5},$:0,time:21738},{msg:2,id:3,objtype:"Tower",time:21738},{msg:4,id:1,objtype:"Player",time:21799},])
 ([{msg:1,id:4,objtype:"Npc",grid:{$:0,x:27.5,y:28.5},$:0,time:21809},{msg:2,id:3,objtype:"Tower",time:21809},{msg:4,id:1,objtype:"Player",time:21870},])
 */
-function Player(opt){
+function MapPlayer(opt){
 	opt=opt || {};
 	this.type={}
 	this.set={}
 	this.set.tower=opt.tower_set;
 	this.set.npc=opt.npc_set;
-	this.id=opt.pid;
+	this.id=opt.pid; //real id from base
 	this.group=opt.group;
 	this.full_hero_counter=opt["_hero_counter"];
 	this.hero_counter=opt.hero_counter;
 	this.type.hero=opt.hero_type;
+	for (var i in TDef.types.npc[0])
+		if (!this.type.hero[i])
+			this.type.hero[i]=TDef.types.npc[0][i];//change to real properties
 	this.type.base=opt.base_type;
+	for (var i in TDef.types.tower[0])
+		if (!this.type.base[i])
+			this.type.base[i]=TDef.types.tower[0][i];//change to real properties
 	this.base=opt.base;
 	this.hero=opt.hero;
 	this.targeting=opt.targeting;
@@ -47,10 +53,20 @@ function Player(opt){
 	
 	if (engine.map.players.id==this.id){
 		var buttonSize={x:50,y:50}
-		var cont=[new PIXI.Texture(engine.textures.npc_set_background.base)];
-		var size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}
-		var buttons=new ButtonContainer({sprite:{textures:cont,opt:size},position:{x:100,y:100},actions:["drag"]});
-		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
+		var cont=getTextureFrames(engine.textures.npc_set_background);
+		var size={width:buttonSize.x+2*5, height:buttonSize.y*9+10*5}
+		var buttons=new ButtonContainer({
+			sprite:{
+				textures:cont,
+				opt:size
+			},
+			position:{
+				x:0,
+				y:engine.renderer.height/2-(buttonSize.y*9+10*5)/2,
+			},
+			actions:["drag"]
+		});
+		buttons.keyPadInit({rows: 9, columns: 1, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.npc)
 			if (parseInt(i) || parseInt(i)==0){
 				this.set.npc[i].button=buttons.keyPadAddButton({sprite:{textures: t,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnNpc(this.args);}});
@@ -59,11 +75,21 @@ function Player(opt){
 		engine.map.objects["npc_set"]=buttons;
 		engine.stage.addChild(buttons);
 		
-		cont=[new PIXI.Texture(engine.textures.tower_set_background.base)];
+		cont=getTextureFrames(engine.textures.tower_set_background);
 		buttonSize={x:50,y:50}
-		size={width:buttonSize.x*9+10*5,height:buttonSize.y+2*5}
-		buttons=new ButtonContainer({sprite:{textures:cont,opt:size},position:{x:100,y:200},actions:["drag"]});
-		buttons.keyPadInit({rows: 1, columns: 9, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
+		size={width:buttonSize.x+2*5,height:buttonSize.y*9+10*5}
+		buttons=new ButtonContainer({
+			sprite:{
+				textures:cont,
+				opt:size
+			},
+			position:{
+				x:100,
+				y:200
+			},
+			actions:["drag"]
+		});
+		buttons.keyPadInit({rows: 9, columns: 1, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.tower)
 			if (parseInt(i) || parseInt(i)==0){
 				this.set.tower[i].button=buttons.keyPadAddButton({sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}});
@@ -75,10 +101,10 @@ function Player(opt){
 	
 }
 
-Player.prototype.constructor= Player;
+MapPlayer.prototype.constructor= MapPlayer;
 
 
-Player.prototype.update= function (opt){
+MapPlayer.prototype.update= function (opt){
 	if (opt.base!=undefined)
 		this.base=opt.base;
 	if (opt.hero!=undefined)
@@ -87,12 +113,12 @@ Player.prototype.update= function (opt){
 	this.targeting=opt.targeting;
 }
 
-Player.prototype.proceed= function (){
+MapPlayer.prototype.proceed= function (){
 
 }
 
 
-Player.prototype.remove= function (){
+MapPlayer.prototype.remove= function (){
 	
 }
 

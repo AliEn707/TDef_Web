@@ -1,0 +1,18 @@
+
+.types_params {
+	height: 100px;
+	vertical-align:middle;
+}
+
+.types_params > label {
+	height: 50px;
+}
+
+.types_params > input[type="text"] {
+	width: 50px;
+}
+
+.types_params > input[type="checkbox"] {
+	width: 50px;
+	vertical-align:middle;
+}

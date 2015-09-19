@@ -1,0 +1,57 @@
+﻿ru:
+  tdef:
+    types:
+      id: Id
+      name: Имя
+      health: Здоровье
+      damage: Атака
+      shield: Щит
+      support: Поддержка
+      see_distanse: Радиус взгляда
+      attack_distanse: Радиус Атаки
+      attack_speed: Скорость атаки
+      move_speed: Скорость движения
+      cost: Стоимость спавна
+      receive: Получение после смерти
+      bullet_type: Тип снарядов
+      type: Тип
+      tex:
+        frames: Кадры
+        height: Высота
+        width: Ширина
+        idle: Ожидание
+        idle_up: Ожидание Вверх
+        idle_leftup: Ожидание Влево Вверх
+        idle_left: Ожидание Влево
+        idle_leftdown: Ожидание Влево Вниз
+        idle_down: Ожидание Вниз
+        idle_rightdown: Ожидание Вправо Вниз
+        idle_right: Ожидание Вправо
+        idle_rightup: Ожидание Вправо Вверх
+        walk: Движение
+        walk_up: Движение Вверх
+        walk_leftup: Движение Влево Вверх
+        walk_left: Движение Влево
+        walk_leftdown: Движение Влево Вниз
+        walk_down: Движение Вниз
+        walk_rightdown: Движение Вправо Вниз
+        walk_right: Движение Вправо
+        walk_rightup: Движение Вправо Вверх
+        destroy: Разружение
+        destroy_up: Разружение Вверх
+        destroy_leftup: Разружение Влево Вверх
+        destroy_left: Разружение Влево
+        destroy_leftdown: Разружение Влево Вниз
+        destroy_down: Разружение Вниз
+        destroy_rightdown: Разружение Вправо Вниз
+        destroy_right: Разружение Вправо
+        destroy_rightup: Разружение Вправо Вверх
+        attack: Атака
+        attack_up: Атака Вверх
+        attack_leftup: Атака Влево Вверх
+        attack_left: Атака Влево
+        attack_leftdown: Атака Влево Вниз
+        attack_down: Атака Вниз
+        attack_rightdown: Атака Вправо Вниз
+        attack_right: Атака Вправо
+        attack_rightup: Атака Вправо Вверх
