@@ -4,6 +4,7 @@ class User::Profile < ActiveRecord::Base
 	serialize :properties, JSON
 	
 	
-	PROPERTIES=["name","surname","birthday"]
-	SHORT_PROPERTIES=["name","surname"]
+	PROPERTIES=["NAME","SURNAME","BDAY","OTHER","EMAIL","PHONE","CONTRY","CITY","URL","NICK"]
+	SHORT_PROPERTIES=["NAME","SURNAME","NICK"]
+	NECESSARY_PROPERTIES=["NAME","NICK"]
 end

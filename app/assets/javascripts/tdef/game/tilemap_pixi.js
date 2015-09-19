@@ -22,13 +22,13 @@ function Grid(size,opt){
 	this.position.x=0;
 	this.position.y=0;
 	this.dragging = false;
-	this.hitArea= new PIXI.Rectangle(0,-this.size*this.nodesize*0.705,this.size*this.nodesize*1.41,this.size*this.nodesize*1.41)
+	this.hitArea= new PIXI.Rectangle(0,-this.size*this.nodesize*1.41*2,this.size*this.nodesize*1.41,this.size*this.nodesize*1.41*4)//TODO: check maybe too big
 	
 	this.mousedown = this.touchstart = startDragging;
 	this.mouseup = this.mouseupoutside = this.touchend = this.touchendoutside = stopDragging;
 	
 	this.mousemove = this.touchmove = proceedDragging;
-	
+	this.mouseweel=this.weelHandler;
 	
 	this.nodes= new PIXI.DisplayObjectContainer();//PIXI.SpriteBatch()
 	this.nodes.rotation=-Math.PI/4;
@@ -44,17 +44,30 @@ function Grid(size,opt){
 	this.buildable.rotation=-Math.PI/4;
 	this.addChild(this.buildable);
 	
-	this.objs= new PIXI.SpriteBatch();//PIXI.DisplayObjectContainer
-	this.addChild(this.objs);
-	
 	this.objects={};//contains npc,towers,bullets
 
 //	this.transformCorrection()
 	this.players={};
+	this.depth=200000000; //TODO: chenge stupid way
 }
 
 focusTexturePath="/imgtest/build.png";
 buildableTexturePath="/imgtest/tower_mark.png";
+
+Grid.prototype.weelHandler= function (m){
+	var e=m.originalEvent;
+	var that=this.engine;
+	e = e || window.event;
+	var x=e.clientX || e.layerX;
+	var y= e.clientY || e.layerY;
+	if (e.type=="wheel" || e.type=="mousewheel"){
+		// wheelDelta ?? ???? ??????????? ?????? ?????????? ????????
+		var delta = e.deltaY || e.detail || e.wheelDelta;
+		//change zoom
+		this.zoom(1+that.settings.zoomSpeed*(delta<0 ? -1 : 1)*that.settings.weelInverted, x, y)
+		//add another hendlers
+	}
+}
 
 Grid.prototype.resize = function(x,y){
 	this.transformCorrection();
@@ -101,7 +114,7 @@ Grid.prototype.pressAction=function(){
 	}
 }
 
-Grid.prototype.moveAction=function(data){
+Grid.prototype.beforeMoveAction=function(data){
 	var position=data.getLocalPosition(this.stage);
 	var grid=this.screenToGrid(position.x,position.y);
 	if (!this.inArea(grid))
@@ -206,7 +219,7 @@ Grid.prototype.getBuildableTexture = function(path, opt){
 
 Grid.prototype.setBuildableNode = function(id, terrain, opt){
 	opt=opt || {};
-	var node=new PIXI.Sprite(terrain)
+	var node=new PIXI.Sprite(terrain)//TODO: change to ASptrite
 	var pos=this.getPosition(id)
 	
 	node.height=this.nodesize
@@ -223,7 +236,7 @@ Grid.prototype.setBuildableNode = function(id, terrain, opt){
 //set texture for node in map
 Grid.prototype.setNode = function(id, terrain, opt){
 	opt=opt || {};
-	var node=new PIXI.Sprite(terrain)
+	var node=new PIXI.Sprite(terrain) //TODO: change to ASptrite
 	var pos=this.getPosition(id)
 	
 	node.height=this.nodesize
@@ -238,7 +251,7 @@ Grid.prototype.setNode = function(id, terrain, opt){
 
 //set texture for nodes out of map
 Grid.prototype.setOuterNode = function(pos, id, terrain, x, y){
-	var node=new PIXI.Sprite(terrain)
+	var node=new PIXI.Sprite(terrain)//TODO: change to ASptrite
 	
 	node.height=this.nodesize
 	node.width=this.nodesize
@@ -255,7 +268,7 @@ Grid.prototype.getNode = function(id){
 	return this.getChildAt(0).getChildAt(id);
 }
 
-Grid.prototype.setWall = function(wall){
+Grid.prototype.setWall = function(wall,i){
 	var w=new Wall(wall);
 	var wc=new PIXI.DisplayObjectContainer();
 	wc.position=this.position;
@@ -266,14 +279,36 @@ Grid.prototype.setWall = function(wall){
 	
 	wc.addChild(wcc);
 	wc.depth=this.objDepth(w.position.x/this.nodesize+0.5,w.position.y/this.nodesize+0.5)+0.02;
-	var i=0;
-	while (this.objects["wall"+i]) i++; //bad but is
+	if (!i){
+		i=0
+		while (this.objects["wall"+i]) i++; //bad but is
+	}
 	this.objects["wall"+i]=wc;
 	this.engine.stage.addChild(wc);
 }
 
-Grid.prototype.setWallComplete = function(wall){
+Grid.prototype.setObject = function(obj,i){
+	var o=new PIXI.Sprite(obj.tex);//TODO: change to ASptrite
+	var pos={x: parseInt(obj.pos.x)+0.5, y: parseInt(obj.pos.y)+0.5};
+	o.height=this.nodesize*2*1.42;
+	o.width=this.nodesize*1.42;
+	o.position=this.gridToScreen(pos.y,pos.x);
+	o.position.y*=2;
+	o.anchor.x=0.5;
+	o.anchor.y=1;
+	o.id=i;
+	var c=new PIXI.DisplayObjectContainer();
+	c.position=this.position;
+	c.scale=this.scale;
 	
+	c.addChild(o);
+	c.depth=this.objDepth(pos.y, pos.x)+0.03;
+	if (!i){
+		i=0;
+		while (this.objects["obj"+i]) i++; //bad but is
+	}
+	this.objects["obj"+i]=c;
+	this.engine.stage.addChild(c);
 }
 
 //clean objects from stage
@@ -282,6 +317,7 @@ Grid.prototype.clean = function(){
 		this.engine.stage.removeChild(this.objects[i]);
 	}
 	this.engine.stage.removeChild(this);
+	//TODO: add switch to public
 }
 
 

@@ -1,10 +1,10 @@
-﻿/**
- * @license 
- * pixi.js - v2.2.7
+/**
+ * @license
+ * pixi.js - v2.2.9
  * Copyright (c) 2012-2014, Mat Groves
  * http://goodboydigital.com/
  *
- * Compiled: 2015-02-25
+ * Compiled: 2015-04-08
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license.php
@@ -55,7 +55,7 @@ PIXI.CANVAS_RENDERER = 1;
  * @property {String} VERSION
  * @static
  */
-PIXI.VERSION = "v2.2.7";
+PIXI.VERSION = "v2.2.9";
 
 /**
  * Various blend modes supported by pixi. IMPORTANT - The WebGL renderer only supports the NORMAL, ADD, MULTIPLY and SCREEN blend modes.
@@ -209,7 +209,7 @@ PIXI.sayHello = function (type)
     if ( navigator.userAgent.toLowerCase().indexOf('chrome') > -1 )
     {
         var args = [
-            '%c %c %c Pixi.js ' + PIXI.VERSION + ' - ' + type + '  %c ' + ' %c ' + ' http://www.pixijs.com/  %c %c ?%c?%c? ',
+            '%c %c %c Pixi.js ' + PIXI.VERSION + ' - ' + type + '  %c ' + ' %c ' + ' http://www.pixijs.com/  %c %c ♥%c♥%c♥ ',
             'background: #ff66a5',
             'background: #ff66a5',
             'color: #ff66a5; background: #030307;',
@@ -3234,6 +3234,7 @@ PIXI.FilterBlock.prototype.constructor = PIXI.FilterBlock;
  * @param [style.dropShadowColor='#000000'] {String} A fill style to be used on the dropshadow e.g 'red', '#00FF00'
  * @param [style.dropShadowAngle=Math.PI/4] {Number} Set a angle of the drop shadow
  * @param [style.dropShadowDistance=5] {Number} Set a distance of the drop shadow
+ * @param [style.lineJoin='miter'] {String} The lineJoin property sets the type of corner created, it can resolve spiked text issue. Default is 'miter' (creates a sharp corner).
  */
 PIXI.Text = function(text, style)
 {
@@ -3334,6 +3335,8 @@ Object.defineProperty(PIXI.Text.prototype, 'height', {
  * @param [style.dropShadowColor='#000000'] {String} A fill style to be used on the dropshadow e.g 'red', '#00FF00'
  * @param [style.dropShadowAngle=Math.PI/4] {Number} Set a angle of the drop shadow
  * @param [style.dropShadowDistance=5] {Number} Set a distance of the drop shadow
+ * @param [style.lineJoin='miter'] {String} The lineJoin property sets the type of corner created, it can resolve spiked text issue. Default is 'miter' (creates a sharp corner).
+ * @param [style.lineHeight] {number} Line height of the text
  */
 PIXI.Text.prototype.setStyle = function(style)
 {
@@ -3350,6 +3353,8 @@ PIXI.Text.prototype.setStyle = function(style)
     style.dropShadowAngle = style.dropShadowAngle || Math.PI / 6;
     style.dropShadowDistance = style.dropShadowDistance || 4;
     style.dropShadowColor = style.dropShadowColor || 'black';
+    style.lineJoin = style.lineJoin || 'miter';
+    style.lineHeight = style.lineHeight || false;
 
     this.style = style;
     this.dirty = true;
@@ -3405,7 +3410,7 @@ PIXI.Text.prototype.updateText = function()
     this.canvas.width = ( width + this.context.lineWidth ) * this.resolution;
     
     //calculate text height
-    var lineHeight = fontProperties.fontSize + this.style.strokeThickness;
+    var lineHeight = this.style.lineHeight || fontProperties.fontSize + this.style.strokeThickness;
  
     var height = lineHeight * lines.length;
     if(this.style.dropShadow)height += this.style.dropShadowDistance;
@@ -3424,7 +3429,7 @@ PIXI.Text.prototype.updateText = function()
     this.context.strokeStyle = this.style.stroke;
     this.context.lineWidth = this.style.strokeThickness;
     this.context.textBaseline = 'alphabetic';
-    //this.context.lineJoin = 'round';
+    this.context.lineJoin = this.style.lineJoin;
 
     var linePositionX;
     var linePositionY;
@@ -3589,7 +3594,7 @@ PIXI.Text.prototype.determineFontProperties = function(fontStyle)
 
         context.textBaseline = 'alphabetic';
         context.fillStyle = '#000';
-        context.fillText('|Mq', 0, baseline);
+        context.fillText('|MÉq', 0, baseline);
 
         var imagedata = context.getImageData(0, 0, width, height).data;
         var pixels = imagedata.length;
@@ -4002,12 +4007,13 @@ PIXI.InteractionData = function()
  * @method getLocalPosition
  * @param displayObject {DisplayObject} The DisplayObject that you would like the local coords off
  * @param [point] {Point} A Point object in which to store the value, optional (otherwise will create a new point)
+ * param [globalPos] {Point} A Point object containing your custom global coords, optional (otherwise will use the current global coords)
  * @return {Point} A point containing the coordinates of the InteractionData position relative to the DisplayObject
  */
-PIXI.InteractionData.prototype.getLocalPosition = function(displayObject, point)
+PIXI.InteractionData.prototype.getLocalPosition = function(displayObject, point, globalPos)
 {
     var worldTransform = displayObject.worldTransform;
-    var global = this.global;
+    var global = globalPos ? globalPos : this.global;
 
     // do a cheeky transform to get the mouse coords;
     var a00 = worldTransform.a, a01 = worldTransform.c, a02 = worldTransform.tx,
@@ -4727,18 +4733,41 @@ PIXI.InteractionManager.prototype.onTouchMove = function(event)
     var rect = this.interactionDOMElement.getBoundingClientRect();
     var changedTouches = event.changedTouches;
     var touchData;
-    var i = 0;
 
-    for (i = 0; i < changedTouches.length; i++)
+    var cLength = changedTouches.length;
+    var wCalc = (this.target.width / rect.width);
+    var hCalc = (this.target.height / rect.height);
+    var isSupportCocoonJS = navigator.isCocoonJS && !rect.left && !rect.top && !event.target.style.width && !event.target.style.height;
+    var touchEvent;
+
+    for (var c = 0; c < cLength; c++)
     {
-        var touchEvent = changedTouches[i];
+        touchEvent = changedTouches[c];
+        if(!isSupportCocoonJS)
+        {
+            touchEvent.globalX = ( (touchEvent.clientX - rect.left) * wCalc ) / this.resolution;
+            touchEvent.globalY = ( (touchEvent.clientY - rect.top)  * hCalc )  / this.resolution;
+        }
+        else
+        {
+            touchEvent.globalX = touchEvent.clientX;
+            touchEvent.globalY = touchEvent.clientY;
+        }
+    }
+
+    for (var i = 0; i < cLength; i++)
+    {
+        touchEvent = changedTouches[i];
         touchData = this.touches[touchEvent.identifier];
         touchData.originalEvent = event;
 
         // update the touch position
-        touchData.global.x = ( (touchEvent.clientX - rect.left) * (this.target.width / rect.width) ) / this.resolution;
-        touchData.global.y = ( (touchEvent.clientY - rect.top)  * (this.target.height / rect.height) )  / this.resolution;
-        if (navigator.isCocoonJS && !rect.left && !rect.top && !event.target.style.width && !event.target.style.height)
+        if (!isSupportCocoonJS)
+        {
+            touchEvent.globalX = touchData.global.x = ( (touchEvent.clientX - rect.left) * wCalc ) / this.resolution;
+            touchEvent.globalY = touchData.global.y = ( (touchEvent.clientY - rect.top)  * hCalc ) / this.resolution;
+        }
+        else
         {
             //Support for CocoonJS fullscreen scale modes
             touchData.global.x = touchEvent.clientX;
@@ -4778,9 +4807,31 @@ PIXI.InteractionManager.prototype.onTouchStart = function(event)
     }
 
     var changedTouches = event.changedTouches;
-    for (var i=0; i < changedTouches.length; i++)
+
+    var cLength = changedTouches.length;
+    var wCalc = (this.target.width / rect.width);
+    var hCalc = (this.target.height / rect.height);
+    var isSupportCocoonJS = navigator.isCocoonJS && !rect.left && !rect.top && !event.target.style.width && !event.target.style.height;
+    var touchEvent;
+
+    for (var c = 0; c < cLength; c++)
     {
-        var touchEvent = changedTouches[i];
+        touchEvent = changedTouches[c];
+        if(!isSupportCocoonJS)
+        {
+            touchEvent.globalX = ( (touchEvent.clientX - rect.left) * wCalc ) / this.resolution;
+            touchEvent.globalY = ( (touchEvent.clientY - rect.top)  * hCalc )  / this.resolution;
+        }
+        else
+        {
+            touchEvent.globalX = touchEvent.clientX;
+            touchEvent.globalY = touchEvent.clientY;
+        }
+    }
+
+    for (var i=0; i < cLength; i++)
+    {
+        touchEvent = changedTouches[i];
 
         var touchData = this.pool.pop();
         if (!touchData)
@@ -4791,9 +4842,12 @@ PIXI.InteractionManager.prototype.onTouchStart = function(event)
         touchData.originalEvent = event;
 
         this.touches[touchEvent.identifier] = touchData;
-        touchData.global.x = ( (touchEvent.clientX - rect.left) * (this.target.width / rect.width) ) / this.resolution;
-        touchData.global.y = ( (touchEvent.clientY - rect.top)  * (this.target.height / rect.height) ) / this.resolution;
-        if (navigator.isCocoonJS && !rect.left && !rect.top && !event.target.style.width && !event.target.style.height)
+        if (!isSupportCocoonJS)
+        {
+            touchData.global.x = ( (touchEvent.clientX - rect.left) * wCalc ) / this.resolution;
+            touchData.global.y = ( (touchEvent.clientY - rect.top)  * hCalc ) / this.resolution;
+        }
+        else
         {
             //Support for CocoonJS fullscreen scale modes
             touchData.global.x = touchEvent.clientX;
@@ -4842,14 +4896,38 @@ PIXI.InteractionManager.prototype.onTouchEnd = function(event)
     var rect = this.interactionDOMElement.getBoundingClientRect();
     var changedTouches = event.changedTouches;
 
-    for (var i=0; i < changedTouches.length; i++)
+    var cLength = changedTouches.length;
+    var wCalc = (this.target.width / rect.width);
+    var hCalc = (this.target.height / rect.height);
+    var isSupportCocoonJS = navigator.isCocoonJS && !rect.left && !rect.top && !event.target.style.width && !event.target.style.height;
+    var touchEvent;
+
+    for (var c = 0; c < cLength; c++)
     {
-        var touchEvent = changedTouches[i];
+        touchEvent = changedTouches[c];
+        if(!isSupportCocoonJS)
+        {
+            touchEvent.globalX = ( (touchEvent.clientX - rect.left) * wCalc ) / this.resolution;
+            touchEvent.globalY = ( (touchEvent.clientY - rect.top)  * hCalc )  / this.resolution;
+        }
+        else
+        {
+            touchEvent.globalX = touchEvent.clientX;
+            touchEvent.globalY = touchEvent.clientY;
+        }
+    }
+
+    for (var i=0; i < cLength; i++)
+    {
+        touchEvent = changedTouches[i];
         var touchData = this.touches[touchEvent.identifier];
         var up = false;
-        touchData.global.x = ( (touchEvent.clientX - rect.left) * (this.target.width / rect.width) ) / this.resolution;
-        touchData.global.y = ( (touchEvent.clientY - rect.top)  * (this.target.height / rect.height) ) / this.resolution;
-        if (navigator.isCocoonJS && !rect.left && !rect.top && !event.target.style.width && !event.target.style.height)
+        if (!isSupportCocoonJS)
+        {
+            touchData.global.x = ( (touchEvent.clientX - rect.left) * wCalc ) / this.resolution;
+            touchData.global.y = ( (touchEvent.clientY - rect.top)  * hCalc ) / this.resolution;
+        }
+        else
         {
             //Support for CocoonJS fullscreen scale modes
             touchData.global.x = touchEvent.clientX;
@@ -4924,14 +5002,38 @@ PIXI.InteractionManager.prototype.onTouchCancel = function(event)
     var rect = this.interactionDOMElement.getBoundingClientRect();
     var changedTouches = event.changedTouches;
 
-    for (var i=0; i < changedTouches.length; i++)
+    var cLength = changedTouches.length;
+    var wCalc = (this.target.width / rect.width);
+    var hCalc = (this.target.height / rect.height);
+    var isSupportCocoonJS = navigator.isCocoonJS && !rect.left && !rect.top && !event.target.style.width && !event.target.style.height;
+    var touchEvent;
+
+    for (var c = 0; c < cLength; c++)
     {
-        var touchEvent = changedTouches[i];
+        touchEvent = changedTouches[c];
+        if(!isSupportCocoonJS)
+        {
+            touchEvent.globalX = ( (touchEvent.clientX - rect.left) * wCalc ) / this.resolution;
+            touchEvent.globalY = ( (touchEvent.clientY - rect.top)  * hCalc )  / this.resolution;
+        }
+        else
+        {
+            touchEvent.globalX = touchEvent.clientX;
+            touchEvent.globalY = touchEvent.clientY;
+        }
+    }
+
+    for (var i=0; i < cLength; i++)
+    {
+        touchEvent = changedTouches[i];
         var touchData = this.touches[touchEvent.identifier];
         var up = false;
-        touchData.global.x = ( (touchEvent.clientX - rect.left) * (this.target.width / rect.width) ) / this.resolution;
-        touchData.global.y = ( (touchEvent.clientY - rect.top)  * (this.target.height / rect.height) ) / this.resolution;
-        if (navigator.isCocoonJS && !rect.left && !rect.top && !event.target.style.width && !event.target.style.height)
+        if (!isSupportCocoonJS)
+        {
+            touchData.global.x = ( (touchEvent.clientX - rect.left) * wCalc ) / this.resolution;
+            touchData.global.y = ( (touchEvent.clientY - rect.top)  * hCalc ) / this.resolution;
+        }
+        else
         {
             //Support for CocoonJS fullscreen scale modes
             touchData.global.x = touchEvent.clientX;
@@ -5114,7 +5216,7 @@ PIXI.Stage.prototype.getMousePosition = function()
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 
-// requestAnimationFrame polyfill by Erik Mller. fixes from Paul Irish and Tino Zijdel
+// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
 
 // MIT license
 
@@ -11623,7 +11725,7 @@ PIXI.CanvasGraphics.updateGraphicsTint = function(graphics)
 
 /**
  * The Graphics class contains methods used to draw primitive shapes such as lines, circles and rectangles to the display, and color and fill them.
- * 
+ *
  * @class Graphics
  * @extends DisplayObjectContainer
  * @constructor
@@ -11685,7 +11787,7 @@ PIXI.Graphics = function()
      * @default PIXI.blendModes.NORMAL;
      */
     this.blendMode = PIXI.blendModes.NORMAL;
-    
+
     /**
      * Current path
      *
@@ -11694,7 +11796,7 @@ PIXI.Graphics = function()
      * @private
      */
     this.currentPath = null;
-    
+
     /**
      * Array containing some WebGL-related properties used by the WebGL renderer.
      *
@@ -11724,7 +11826,7 @@ PIXI.Graphics = function()
 
     /**
      * Used to detect if the graphics object has changed. If this is set to true then the graphics object will be recalculated.
-     * 
+     *
      * @property dirty
      * @type Boolean
      * @private
@@ -11733,7 +11835,7 @@ PIXI.Graphics = function()
 
     /**
      * Used to detect if the webgl graphics object has changed. If this is set to true then the graphics object will be recalculated.
-     * 
+     *
      * @property webGLDirty
      * @type Boolean
      * @private
@@ -11742,7 +11844,7 @@ PIXI.Graphics = function()
 
     /**
      * Used to detect if the cached sprite object needs to be updated.
-     * 
+     *
      * @property cachedSpriteDirty
      * @type Boolean
      * @private
@@ -11800,7 +11902,7 @@ PIXI.Graphics.prototype.lineStyle = function(lineWidth, color, alpha)
 {
     this.lineWidth = lineWidth || 0;
     this.lineColor = color || 0;
-    this.lineAlpha = (arguments.length < 3) ? 1 : alpha;
+    this.lineAlpha = (alpha === undefined) ? 1 : alpha;
 
     if(this.currentPath)
     {
@@ -11815,7 +11917,7 @@ PIXI.Graphics.prototype.lineStyle = function(lineWidth, color, alpha)
         this.currentPath.lineWidth = this.lineWidth;
         this.currentPath.lineColor = this.lineColor;
         this.currentPath.lineAlpha = this.lineAlpha;
-        
+
     }
 
     return this;
@@ -11880,7 +11982,7 @@ PIXI.Graphics.prototype.quadraticCurveTo = function(cpX, cpY, toX, toY)
     n = 20,
     points = this.currentPath.shape.points;
     if(points.length === 0)this.moveTo(0, 0);
-    
+
 
     var fromX = points[points.length-2];
     var fromY = points[points.length-1];
@@ -11936,7 +12038,7 @@ PIXI.Graphics.prototype.bezierCurveTo = function(cpX, cpY, cpX2, cpY2, toX, toY)
 
     var fromX = points[points.length-2];
     var fromY = points[points.length-1];
-    
+
     var j = 0;
 
     for (var i=1; i<=n; i++)
@@ -11949,11 +12051,11 @@ PIXI.Graphics.prototype.bezierCurveTo = function(cpX, cpY, cpX2, cpY2, toX, toY)
 
         t2 = j * j;
         t3 = t2 * j;
-        
+
         points.push( dt3 * fromX + 3 * dt2 * j * cpX + 3 * dt * t2 * cpX2 + t3 * toX,
                      dt3 * fromY + 3 * dt2 * j * cpY + 3 * dt * t2 * cpY2 + t3 * toY);
     }
-    
+
     this.dirty = true;
 
     return this;
@@ -11961,7 +12063,7 @@ PIXI.Graphics.prototype.bezierCurveTo = function(cpX, cpY, cpX2, cpY2, toX, toY)
 
 /*
  * The arcTo() method creates an arc/curve between two tangents on the canvas.
- * 
+ *
  * "borrowed" from https://code.google.com/p/fxcanvas/ - thanks google!
  *
  * @method arcTo
@@ -12044,30 +12146,12 @@ PIXI.Graphics.prototype.arcTo = function(x1, y1, x2, y2, radius)
  */
 PIXI.Graphics.prototype.arc = function(cx, cy, radius, startAngle, endAngle, anticlockwise)
 {
-    var startX = cx + Math.cos(startAngle) * radius;
-    var startY = cy + Math.sin(startAngle) * radius;
-    var points;
+    anticlockwise = anticlockwise || false;
 
-    if( this.currentPath )
+    if (startAngle === endAngle)
     {
-        points = this.currentPath.shape.points;
-
-        if(points.length === 0)
-        {
-            points.push(startX, startY);
-        }
-        else if( points[points.length-2] !== startX || points[points.length-1] !== startY)
-        {
-            points.push(startX, startY);
-        }
+        return this;
     }
-    else
-    {
-        this.moveTo(startX, startY);
-        points = this.currentPath.shape.points;
-    }
-    
-    if (startAngle === endAngle)return this;
 
     if( !anticlockwise && endAngle <= startAngle )
     {
@@ -12078,17 +12162,35 @@ PIXI.Graphics.prototype.arc = function(cx, cy, radius, startAngle, endAngle, ant
         startAngle += Math.PI * 2;
     }
 
-    var sweep = anticlockwise ? (startAngle - endAngle) *-1 : (endAngle - startAngle);
-    var segs =  ( Math.abs(sweep)/ (Math.PI * 2) ) * 40;
+    var sweep = anticlockwise ? (startAngle - endAngle) * -1 : (endAngle - startAngle);
+    var segs =  ( Math.abs(sweep) / (Math.PI * 2) ) * 40;
 
-    if( sweep === 0 ) return this;
+    if(sweep === 0)
+    {
+        return this;
+    }
+
+    var startX = cx + Math.cos(startAngle) * radius;
+    var startY = cy + Math.sin(startAngle) * radius;
+
+    if (anticlockwise && this.filling)
+    {
+        this.moveTo(cx, cy);
+    }
+    else
+    {
+        this.moveTo(startX, startY);
+    }
+
+    //  currentPath will always exist after calling a moveTo
+    var points = this.currentPath.shape.points;
 
     var theta = sweep/(segs*2);
     var theta2 = theta*2;
 
     var cTheta = Math.cos(theta);
     var sTheta = Math.sin(theta);
-    
+
     var segMinus = segs - 1;
 
     var remainder = ( segMinus % 1 ) / segMinus;
@@ -12097,7 +12199,7 @@ PIXI.Graphics.prototype.arc = function(cx, cy, radius, startAngle, endAngle, ant
     {
         var real =  i + remainder * i;
 
-    
+
         var angle = ((theta) + startAngle + (theta2 * real));
 
         var c = Math.cos(angle);
@@ -12156,7 +12258,7 @@ PIXI.Graphics.prototype.endFill = function()
 
 /**
  * Draws a rectangle.
- * 
+ *
  * @method drawRect
  *
  * @param x {Number} The X coord of the top-left of the rectangle
@@ -12174,7 +12276,7 @@ PIXI.Graphics.prototype.drawRect = function( x, y, width, height )
 
 /**
  * Draws a rounded rectangle.
- * 
+ *
  * @method drawRoundedRect
  *
  * @param x {Number} The X coord of the top-left of the rectangle
@@ -12270,16 +12372,16 @@ PIXI.Graphics.prototype.generateTexture = function(resolution, scaleMode)
     resolution = resolution || 1;
 
     var bounds = this.getBounds();
-   
+
     var canvasBuffer = new PIXI.CanvasBuffer(bounds.width * resolution, bounds.height * resolution);
-    
+
     var texture = PIXI.Texture.fromCanvas(canvasBuffer.canvas, scaleMode);
     texture.baseTexture.resolution = resolution;
 
     canvasBuffer.context.scale(resolution, resolution);
 
     canvasBuffer.context.translate(-bounds.x,-bounds.y);
-    
+
     PIXI.CanvasGraphics.renderGraphics(this, canvasBuffer.context);
 
     return texture;
@@ -12289,7 +12391,7 @@ PIXI.Graphics.prototype.generateTexture = function(resolution, scaleMode)
 * Renders the object using the WebGL renderer
 *
 * @method _renderWebGL
-* @param renderSession {RenderSession} 
+* @param renderSession {RenderSession}
 * @private
 */
 PIXI.Graphics.prototype._renderWebGL = function(renderSession)
@@ -12304,7 +12406,7 @@ PIXI.Graphics.prototype._renderWebGL = function(renderSession)
         {
 
             this._generateCachedSprite();
-   
+
             // we will also need to update the texture on the gpu too!
             this.updateCachedSpriteTexture();
 
@@ -12324,7 +12426,7 @@ PIXI.Graphics.prototype._renderWebGL = function(renderSession)
 
         if(this._mask)renderSession.maskManager.pushMask(this._mask, renderSession);
         if(this._filters)renderSession.filterManager.pushFilter(this._filterBlock);
-      
+
         // check blend mode
         if(this.blendMode !== renderSession.spriteBatch.currentBlendMode)
         {
@@ -12332,16 +12434,16 @@ PIXI.Graphics.prototype._renderWebGL = function(renderSession)
             var blendModeWebGL = PIXI.blendModesWebGL[renderSession.spriteBatch.currentBlendMode];
             renderSession.spriteBatch.gl.blendFunc(blendModeWebGL[0], blendModeWebGL[1]);
         }
-        
+
         // check if the webgl graphic needs to be updated
         if(this.webGLDirty)
         {
             this.dirty = true;
             this.webGLDirty = false;
         }
-        
+
         PIXI.WebGLGraphics.renderGraphics(this, renderSession);
-        
+
         // only render if it has children!
         if(this.children.length)
         {
@@ -12358,7 +12460,7 @@ PIXI.Graphics.prototype._renderWebGL = function(renderSession)
 
         if(this._filters)renderSession.filterManager.popFilter();
         if(this._mask)renderSession.maskManager.popMask(this.mask, renderSession);
-          
+
         renderSession.drawCount++;
 
         renderSession.spriteBatch.start();
@@ -12369,20 +12471,20 @@ PIXI.Graphics.prototype._renderWebGL = function(renderSession)
 * Renders the object using the Canvas renderer
 *
 * @method _renderCanvas
-* @param renderSession {RenderSession} 
+* @param renderSession {RenderSession}
 * @private
 */
 PIXI.Graphics.prototype._renderCanvas = function(renderSession)
 {
     // if the sprite is not visible or the alpha is 0 then no need to render this element
     if(this.visible === false || this.alpha === 0 || this.isMask === true)return;
-    
+
     if(this._cacheAsBitmap)
     {
         if(this.dirty || this.cachedSpriteDirty)
         {
             this._generateCachedSprite();
-   
+
             // we will also need to update the texture
             this.updateCachedSpriteTexture();
 
@@ -12399,7 +12501,7 @@ PIXI.Graphics.prototype._renderCanvas = function(renderSession)
     {
         var context = renderSession.context;
         var transform = this.worldTransform;
-        
+
         if(this.blendMode !== renderSession.currentBlendMode)
         {
             renderSession.currentBlendMode = this.blendMode;
@@ -12535,7 +12637,7 @@ PIXI.Graphics.prototype.updateLocalBounds = function()
             var type = data.type;
             var lineWidth = data.lineWidth;
             shape = data.shape;
-           
+
 
             if(type === PIXI.Graphics.RECT || type === PIXI.Graphics.RREC)
             {
@@ -12580,7 +12682,7 @@ PIXI.Graphics.prototype.updateLocalBounds = function()
             {
                 // POLY
                 points = shape.points;
-                
+
                 for (var j = 0; j < points.length; j+=2)
                 {
 
@@ -12604,7 +12706,7 @@ PIXI.Graphics.prototype.updateLocalBounds = function()
     }
 
     var padding = this.boundsPadding;
-    
+
     this._localBounds.x = minX - padding;
     this._localBounds.width = (maxX - minX) + padding * 2;
 
@@ -12626,7 +12728,7 @@ PIXI.Graphics.prototype._generateCachedSprite = function()
     {
         var canvasBuffer = new PIXI.CanvasBuffer(bounds.width, bounds.height);
         var texture = PIXI.Texture.fromCanvas(canvasBuffer.canvas);
-        
+
         this._cachedSprite = new PIXI.Sprite(texture);
         this._cachedSprite.buffer = canvasBuffer;
 
@@ -12643,8 +12745,8 @@ PIXI.Graphics.prototype._generateCachedSprite = function()
 
    // this._cachedSprite.buffer.context.save();
     this._cachedSprite.buffer.context.translate(-bounds.x,-bounds.y);
-    
-    // make sure we set the alpha of the graphics to 1 for the render.. 
+
+    // make sure we set the alpha of the graphics to 1 for the render..
     this.worldAlpha = 1;
 
     // now render the graphic..
@@ -12708,9 +12810,9 @@ PIXI.Graphics.prototype.drawShape = function(shape)
     this.currentPath = null;
 
     var data = new PIXI.GraphicsData(this.lineWidth, this.lineColor, this.lineAlpha, this.fillColor, this.fillAlpha, this.filling, shape);
-    
+
     this.graphicsData.push(data);
-    
+
     if(data.type === PIXI.Graphics.POLY)
     {
         data.shape.closed = this.filling;
@@ -12724,7 +12826,7 @@ PIXI.Graphics.prototype.drawShape = function(shape)
 
 /**
  * A GraphicsData object.
- * 
+ *
  * @class GraphicsData
  * @constructor
  */
@@ -13885,8 +13987,10 @@ PIXI.TilingSprite.prototype.destroy = function () {
     this.tileScaleOffset = null;
     this.tilePosition = null;
 
-    this.tilingTexture.destroy(true);
-    this.tilingTexture = null;
+    if (this.tilingTexture) {
+        this.tilingTexture.destroy(true);
+        this.tilingTexture = null;
+    }
 };
 
 /******************************************************************************
@@ -14634,12 +14738,9 @@ spine.DrawOrderTimeline.prototype = {
 		var drawOrder = skeleton.drawOrder;
 		var slots = skeleton.slots;
 		var drawOrderToSetupIndex = this.drawOrders[frameIndex];
-		if (!drawOrderToSetupIndex) {
-			for (var i = 0, n = slots.length; i < n; i++)
-				drawOrder[i] = slots[i];
-		} else {
+		if (drawOrderToSetupIndex) {
 			for (var i = 0, n = drawOrderToSetupIndex.length; i < n; i++)
-				drawOrder[i] = skeleton.slots[drawOrderToSetupIndex[i]];
+				drawOrder[i] = drawOrderToSetupIndex[i];
 		}
 
 	}
@@ -14776,7 +14877,7 @@ spine.FlipXTimeline.prototype = {
 			lastTime = -1;
 		var frameIndex = (time >= frames[frames.length - 2] ? frames.length : spine.Animation.binarySearch(frames, time, 2)) - 2;
 		if (frames[frameIndex] < lastTime) return;
-		skeleton.bones[boneIndex].flipX = frames[frameIndex + 1] != 0;
+		skeleton.bones[this.boneIndex].flipX = frames[frameIndex + 1] != 0;
 	}
 };
 
@@ -14804,7 +14905,7 @@ spine.FlipYTimeline.prototype = {
 			lastTime = -1;
 		var frameIndex = (time >= frames[frames.length - 2] ? frames.length : spine.Animation.binarySearch(frames, time, 2)) - 2;
 		if (frames[frameIndex] < lastTime) return;
-		skeleton.bones[boneIndex].flipY = frames[frameIndex + 1] != 0;
+		skeleton.bones[this.boneIndex].flipY = frames[frameIndex + 1] != 0;
 	}
 };
 
@@ -14897,7 +14998,7 @@ spine.Skeleton = function (skeletonData) {
 		var bone = this.bones[skeletonData.bones.indexOf(slotData.boneData)];
 		var slot = new spine.Slot(slotData, bone);
 		this.slots.push(slot);
-		this.drawOrder.push(slot);
+		this.drawOrder.push(i);
 	}
 
 	this.ikConstraints = [];
@@ -14989,11 +15090,10 @@ spine.Skeleton.prototype = {
 	},
 	setSlotsToSetupPose: function () {
 		var slots = this.slots;
-		var drawOrder = this.drawOrder;
 		for (var i = 0, n = slots.length; i < n; i++) {
-			drawOrder[i] = slots[i];
 			slots[i].setToSetupPose(i);
 		}
+		this.resetDrawOrder();
 	},
 	/** @return May return null. */
 	getRootBone: function () {
@@ -15093,6 +15193,10 @@ spine.Skeleton.prototype = {
 	},
 	update: function (delta) {
 		this.time += delta;
+	},
+	resetDrawOrder: function() {
+		for (var i = 0, n = this.drawOrder.length; i < n; i++)
+			this.drawOrder[i] = i;
 	}
 };
 
@@ -15430,6 +15534,7 @@ spine.AnimationState.prototype = {
 		}
 	},
 	apply: function (skeleton) {
+		skeleton.resetDrawOrder();
 		for (var i = 0; i < this.tracks.length; i++) {
 			var current = this.tracks[i];
 			if (!current) continue;
@@ -15932,7 +16037,7 @@ spine.SkeletonJson.prototype = {
 				frameIndex++;
 			}
 			timelines.push(timeline);
-			duration = Math.max(duration, timeline.frames[timeline.frameCount * 3 - 3]);
+			duration = Math.max(duration, timeline.frames[timeline.getFrameCount() * 3 - 3]);
 		}
 
 		var ffd = map["ffd"];
@@ -15993,7 +16098,7 @@ spine.SkeletonJson.prototype = {
 						frameIndex++;
 					}
 					timelines[timelines.length] = timeline;
-					duration = Math.max(duration, timeline.frames[timeline.frameCount - 1]);
+					duration = Math.max(duration, timeline.frames[timeline.getFrameCount() - 1]);
 				}
 			}
 		}
@@ -16604,8 +16709,8 @@ PIXI.Spine = function (url) {
 
     this.slotContainers = [];
 
-    for (var i = 0, n = this.skeleton.drawOrder.length; i < n; i++) {
-        var slot = this.skeleton.drawOrder[i];
+    for (var i = 0, n = this.skeleton.slots.length; i < n; i++) {
+        var slot = this.skeleton.slots[i];
         var attachment = slot.attachment;
         var slotContainer = new PIXI.DisplayObjectContainer();
         this.slotContainers.push(slotContainer);
@@ -16675,8 +16780,11 @@ PIXI.Spine.prototype.update = function(dt)
     this.skeleton.updateWorldTransform();
 
     var drawOrder = this.skeleton.drawOrder;
-    for (var i = 0, n = drawOrder.length; i < n; i++) {
-        var slot = drawOrder[i];
+    var slots = this.skeleton.slots;
+    for (var i = 0, n = drawOrder.length; i < n; i++)
+        this.children[i] = this.slotContainers[drawOrder[i]];
+    for (i = 0, n = slots.length; i < n; i++) {
+        var slot = slots[i];
         var attachment = slot.attachment;
         var slotContainer = this.slotContainers[i];
 
@@ -16799,9 +16907,10 @@ PIXI.Spine.prototype.createSprite = function (slot, attachment) {
     var sprite = new PIXI.Sprite(spriteTexture);
 
     var baseRotation = descriptor.rotate ? Math.PI * 0.5 : 0.0;
-    sprite.scale.set(descriptor.width / descriptor.originalWidth, descriptor.height / descriptor.originalHeight);
+    sprite.scale.set(descriptor.width / descriptor.originalWidth * attachment.scaleX, descriptor.height / descriptor.originalHeight * attachment.scaleY);
     sprite.rotation = baseRotation - (attachment.rotation * spine.degRad);
     sprite.anchor.x = sprite.anchor.y = 0.5;
+    sprite.alpha = attachment.a;
 
     slot.sprites = slot.sprites || {};
     slot.sprites[descriptor.name] = sprite;
@@ -16820,6 +16929,7 @@ PIXI.Spine.prototype.createMesh = function (slot, attachment) {
     strip.vertices = new PIXI.Float32Array(attachment.uvs.length);
     strip.uvs = attachment.uvs;
     strip.indices = attachment.triangles;
+    strip.alpha = attachment.a;
 
     slot.meshes = slot.meshes || {};
     slot.meshes[attachment.name] = strip;
@@ -18270,7 +18380,10 @@ PIXI.JsonLoader.prototype.onJSONLoaded = function () {
     if(this.json.frames && this.json.meta && this.json.meta.image)
     {
         // sprite sheet
-        var textureUrl = this.baseUrl + this.json.meta.image;
+        var textureUrl = this.json.meta.image;
+        if (textureUrl.indexOf('data:') === -1) {
+            textureUrl = this.baseUrl + textureUrl;
+        }
         var image = new PIXI.ImageLoader(textureUrl, this.crossorigin);
         var frameData = this.json.frames;
 

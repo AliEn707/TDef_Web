@@ -37,7 +37,7 @@ sudo chmod 755 /usr/bin/rails_server
 #to /ect/rc.local
 
 cp config/database.yml.example config/database.yml
-scp osuser@master.wsstudio.tk:/home/osuser/TDef_Web/config/initializers/secret_key.rb config/initializers/
+#scp osuser@master.wsstudio.tk:/home/osuser/TDef_Web/config/initializers/secret_key.rb config/initializers/
 
 phoronix-test-suite detailed-system-info
 phoronix-test-suite detailed-system-info > ~/sysinfo.txt

@@ -1,7 +1,7 @@
 class Tdef::Type::NpcsController < ApplicationController
   before_action :set_tdef_type_npc, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!,  except: [:types]
-  before_action :is_admin?
+  before_action :is_admin?,  except: [:types]
 
   # GET /tdef/type/npcs
   # GET /tdef/type/npcs.json
@@ -62,13 +62,18 @@ class Tdef::Type::NpcsController < ApplicationController
   def types
 	data="var npc_types="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
 		out={}
+		images=[]
 		Tdef::Type::Npc.all.each do |t|
 			out[t.id]={"id"=>t.id}.merge(t.params)
 			out[t.id]["textures"]=t.textures.to_hash
+			out[t.id]["textures"].each do |type, tex|
+				images<<tex["src"]
+			end
 		end
-		out.to_json
-	end
-	render :text=> data, layout: false
+		out.to_json#+images.map!{|i| ";var a=new Image;a.src='#{i}'"}.join #preloading images
+	end 
+	expires_in 20.minutes, public: true
+	send_data(data,type: "text/javascript; charset=utf-8", filename: "npc_types.js", disposition:'inline')	
   end
   private
 

@@ -1,7 +1,9 @@
 en:
   user:
     profile:
+      property_not_filled: not set %{property}
       email: Email
-      name: Mame
-      surname: Surname
-      birthday: Birth date
+      NAME: Name
+      SURNAME: Surname
+      BDAY: Birth date
+      NICK: Nickname

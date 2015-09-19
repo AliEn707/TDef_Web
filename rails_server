@@ -19,10 +19,12 @@ export RAILS_PEPPER=""
 export RAILS_SECRET=""
 export RECAPCHA_PUBLIC_KEY=""
 export RECAPCHA_PRIVATE_KEY=""
+export RAILS_LOG_MAIL=""
+export RAILS_MAIL_PASSWORD=""
 
 
 export UPDATE_DB=0 
-export COMPILE_ASSETS=0 
+
 
 CHILD_NODES=""
 
@@ -51,6 +53,18 @@ function rails() {
   elif [ "$1" = "restart" ]; then
      rails stop 
      rails start $2
+  elif [ "$1" = "check" ]; then
+      if [ -f $RAILS_PID ]; then
+        RESULT=$(ps -A|grep $(cat $RAILS_PID)|head -1)
+        if [ -z "$RESULT" ]; then
+	  rm $RAILS_PID
+          rails start
+          echo "restarting"
+          return 1
+        fi
+      fi
+      echo "all Ok"
+      return 0
  elif [ "$1" = "update" ]; then
      rails stop
      bash update.sh
@@ -62,4 +76,4 @@ function rails() {
 
 
 cd $RAILS_S_ROOT_DIR
-rails $1 $2
+rails $@

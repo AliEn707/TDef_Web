@@ -22,25 +22,67 @@ function getConnector() {
 ///public network functions
 
 //connect to public
-//publicConnect("localhost","7001","test","12345678901234567890123456789012")
-function publicConnect(host,port, name, pass) {
-	getConnector().publicConnect(host,port,name,pass);
+//publicConnect("localhost","7001","test","123456")
+function publicConnect(host,port, name, token) {
+	Loading.show("#public_connecting");
+	getConnector().publicConnect(host,port,name,token);
 }
 
+//
+function publicConnectionError(value) {
+	Loading.message="#public_connect_fail";
+	console.log(value);
+}
+//callback on success autorisation
+function publicConnected(){
+	console.log("connected");
+	Loading.message="";
+	getEngine().public.show();
+	getEngine().public.switchTo('events');
+	Loading.hide();
+}
 //callback on public autentification fail
 function publicAuthFail(){
 	console.log("public auth fail");
+	Loading.message="#public_auth_fail";
 	//TODO: add some actions
 }
 
-//get room 
-//publicSend("byte,76,byte,99,int,1")
 function publicSend(str) {
 	getConnector().publicSend(str);
 }
 
+//get room 
+function publicGetRoom(e) {
+	publicSend("byte,76,byte,99,int,"+e.id);
+}
+
+//room start {msg:1,objtype:"Player",id:368322860,room:{$:0,type:1,id:616333680},$:0,time:24688}
+//event {msg:2,objtype:"Event",id:1,map:"pvz11_11",name:"#event",time:25444}
 function proceedPublicMessages(str){
+	var arr=eval(str)
 	console.log(str)
+	var engine=getEngine();
+	for (var i in arr){
+		switch (arr[i].objtype){
+			case 'Event': //we got event message
+				if (arr[i].action=='change') //add event
+					engine.public.eventsAdd(arr[i])
+				else
+					1;
+				break;
+			case 'Player':
+				console.log(arr[i])
+				break;
+			case 'Room':
+				if (arr[i].action=='ready'){
+						mapConnect(arr[i].host,arr[i].port);
+						engine.setMap(engine.public.events.all[arr[i].event_id].event.map);
+						engine.loadMap();
+					}
+				break;
+		}
+	}
 }
 
 ///map network funtions
@@ -76,23 +118,40 @@ function mapMoveHero(node){
 
 //connect to mapserver
 function mapConnect(host,port) {
+	Loading.show("#mapserver_connecting");
+	getEngine().public.hide();
 	getConnector().mapConnect(host,port);
+	//TODO: add animation on screen
 }
 
 //connect to mapserver
 function mapClose(host,port) {
 	getConnector().mapClose();
+	getEngine().public.show();
 }
 
 //callback if cant connect
 function mapConnectionError(val){
 	console.log("can't connect: "+val);
 	//TODO add handler
-//	var engine=getEngine();
-//	engine.map.clean;
+	//TODO: add message
+	mapClosed();
 }
 
-//callback if cant connect
+//callback on connection established
+function mapConnected(){
+	console.log("connected");
+	//TODO: break animation of connection
+	Loading.hide();
+	Loading.message="";
+}
+//callback on map connection close
+function mapClosed(){
+	console.log("closed");
+	getEngine().map.clean();
+	getEngine().public.show();
+}
+
 
 //callback on map auth
 function mapAuthData(value) {
@@ -105,7 +164,7 @@ function mapAuthData(value) {
 	var engine=getEngine();
 	engine.map.players.total=obj.players;
 	engine.map.players.id=obj.id;
-	
+	console.log("player id"+obj.id)
 }
 
 //callback on got objects data
@@ -113,6 +172,8 @@ function proceedMapMessages(str){
 	var arr=eval(str);
 	delete str;
 	var e=getEngine();
+//	try{
+		
 	for(var i in arr){
 		var obj=arr[i];
 		if (obj.objtype){
@@ -136,24 +197,25 @@ function proceedMapMessages(str){
 		}
 		//console.log(str)
 	}
+	
+//	}catch(e){console.log(e)}
 }
 
 //callback on connector initialising
 function connectorReady(){
 	console.log("Connector ready");
 	hideConnector(getConnector());
+	if (afterConnectorReady)
+		afterConnectorReady();
 }
 
 ///functions for adding connectors
 
 //adding Flash connector to page
 function addConnectorSWF(place) {
-	var width=500
 	var obj = document.createElement('object')
 	obj.setAttribute('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000')
 	obj.setAttribute('id', 'connector')
-	obj.setAttribute('width', width)
-	obj.setAttribute('height', '375')
 	obj.setAttribute('codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab')
 	var param = document.createElement('param')
 	param.setAttribute('name', 'movie')
@@ -165,16 +227,16 @@ function addConnectorSWF(place) {
 	obj.appendChild(param)
 	param = document.createElement('param')
 	param.setAttribute('name', 'bgcolor')
-	param.setAttribute('value', '#869ca7')
+	param.setAttribute('value', '#ffffff')
 	obj.appendChild(param)	
 	param = document.createElement('param')
 	param.setAttribute('name', 'allowScriptAccess')
 	param.setAttribute('value', 'sameDomain')
 	obj.appendChild(param)
 	var embed = document.createElement('embed')
-	embed.setAttribute('src', '/javascripts/tdef/game/connector.swf')
+	embed.setAttribute('src', '<%= asset_url('connector.swf') %>')
 	embed.setAttribute('quality', 'high')
-	embed.setAttribute('bgcolor', '#869ca7')
+	embed.setAttribute('bgcolor', '#ffffff')
 	embed.setAttribute('width', '500')
 	embed.setAttribute('height', '375')
 	embed.setAttribute('name', 'connector')
@@ -188,15 +250,17 @@ function addConnectorSWF(place) {
 	
 	obj.style.zIndex=0
 	obj.style.position="absolute"
-	obj.style.left=0//-width
-	obj.style.top="0"
+	obj.style.left="0px"//-width
+	obj.style.top="0px"
 //	obj.setAttribute("hidden","")
 	
 	place=place || document.body
 	place.appendChild(obj)
 	
-	hideConnector=function (obj){
-		obj.parentNode.style.left=-obj.width+"px";
+	hideConnector=function (o){
+		o.width=3;
+		o.height=2;
+		//o.parentNode.style.left=-o.width+"px";
 	}
 }
 

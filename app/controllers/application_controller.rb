@@ -42,9 +42,11 @@ class ApplicationController < ActionController::Base
         def profile_check
 		if (!current_user.nil? && controller_name!="sessions")
 			profile=current_user.profile
-			if (profile.properties=={}) then
-				redirect_to edit_user_profile_path(profile), notice: t(:profile_not_filled)
+			prop=[]
+			User::Profile::NECESSARY_PROPERTIES.each do |k|
+				prop << k if (profile.properties[k].blank?)
 			end 
+			redirect_to edit_user_profile_path(profile), notice: t("user.profile.property_not_filled", property: prop.map!{|m| t("user.profile.#{m}")}.join(" ")) if prop.size!=0
 		end
 	end
 	

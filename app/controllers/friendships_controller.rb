@@ -7,9 +7,9 @@ class FriendshipsController < ApplicationController
 	def create
 		@friendship = current_user.friendships.build(:friend_id => params[:id])
 		if @friendship.save
-			redirect_to :back, notice: "Added friend."
+			redirect_to :back, notice: t(current_user.friends.where(id: params[:id]).first ? "friends.added" : "friends.added_request")
 		else
-			redirect_to :back, error:  "Unable to add friend."
+			redirect_to :back, alert: t("friends.not_added")
 		end
 	end
 
@@ -18,7 +18,7 @@ class FriendshipsController < ApplicationController
 		@friendship.destroy if (@friendship)
 		@friendship = current_user.inverse_friendships.where(user_id: params[:id]).first
 		@friendship.destroy if (@friendship)
-		redirect_to :back, notice: "Removed friendship."
+		redirect_to :back, notice: t("friends.removed")
 	end
 	
 	private

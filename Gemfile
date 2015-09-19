@@ -75,6 +75,11 @@ gem 'simple_form'
 #For MarkDown in posts
 gem 'redcarpet', "3.2.3"
 
+#for html truncate
+gem "nokogiri"
+gem "htmlentities"
+
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
@@ -140,3 +145,5 @@ else
 	gem 'fastimage_resize' , :git => 'https://github.com/AliEn707/fastimage_resize.git'
 end
 
+#creating dump of the base as seed.rb file
+gem 'seed_dump'

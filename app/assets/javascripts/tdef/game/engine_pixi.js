@@ -1,33 +1,35 @@
-﻿var locales={};
-var maps={};
+﻿var maps={};
 
-function TDefEngine(place, opt){
+var offset=22;
+	
+function TDefEngine(place, opt, callback){
 	opt = opt || {};
 	opt.defines=opt.defines || {};
-		
+	
 	place=place || document.body;
 	this.webgl=opt.webgl || true;
 	this.frameTime=opt.frameTime || 1000/30;
 	var width=place.offsetWidth || window.innerWidth;
-	var height=window.innerHeight - 10 - (place.offsetTop || 0);
+	var height=window.innerHeight - offset - (place.offsetTop || 0);
 	this.stage = new PIXI.Stage(0x000000);
 	// create a renderer instance
 	this.renderer = opt.webgl ? new PIXI.autoDetectRenderer(width, height)  : new PIXI.CanvasRenderer(width, height);
 	this.renderer.view.oncontextmenu=function (){return false;}
+	
+	this.textures=opt.textures || {};
 	// add the renderer view element to the DOM
 	place.appendChild(this.renderer.view);
+	//show statistic info
+	showStats(place.getBoundingClientRect());
 	this.place=place;
 	//requestAnimFrame( this.render );
-	this.textures=opt.textures || {};
-	for (var i in this.textures){
-		this.textures[i].texture=new PIXI.BaseTexture.fromImage(this.textures[i].src);
-	}
-	window.engine=this;
+	setEngine(this);
 	window.onresize = this.resize;
 	this.keys=[]
-	this.settings=opt.settings || {
+	this.settings=opt.settings || { //defaults
 			moveSpeed: 4.1, 
 			zoomSpeed: 0.02,
+			scrollSpeed: 16,
 			xInverted:1, 
 			yInverted:-1, 
 			weelInverted: -1,
@@ -45,57 +47,67 @@ function TDefEngine(place, opt){
 			}
 		};
 	this.drawInterval=window.setInterval(this.render,this.frameTime)
+	addWeelHendler(this.renderer.view, weelHandler);
+	
+	//lets load textures
+	var loader={all:0,loaded:0};
+	for (var i in this.textures)
+		loader.all++;
+	for (var i in this.textures){
+		this.textures[i].base=new PIXI.BaseTexture.fromImage(this.textures[i].src);
+		afterBaseTextureLoad(this.textures[i].base, function (){
+			loader.loaded++;
+			if (loader.loaded==loader.all){
+				if (callback)
+					callback();
+			}
+		});
+	}
+	
 }
 
-function getEngine(){
-	return window.engine;
-}
 
 TDefEngine.prototype.render= function (){
+	if (stats)
+		stats.begin();
+	
 	var that=getEngine();
 //	requestAnimFrame( that.render );
 	//that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	that.keysProcessor();
 	that.objectsProcessor();
 	
-	shellSort(that.stage.children, function(a,b){return (a.depth)<(b.depth);})
+	that.stage.children.sort(function(a,b){return (a.depth)<(b.depth);})
 	that.renderer.render(that.stage);
 	//bunny.nextFrame()
+	if (stats)
+		stats.end();
 }
 
 TDefEngine.prototype.resize=function (){
 	var that = getEngine();
 	var place=that.place;
 	var width=place.offsetWidth || window.innerWidth;
-	var height=window.innerHeight - 10 - (place.offsetTop || 0);
+	var height=window.innerHeight - offset - (place.offsetTop || 0);
 	
 	that.renderer.resize(width,height);
-	that.map.resize(width,height);
+	placeStats(that.renderer.view.getBoundingClientRect());
+	if (that.map)
+		that.map.resize(width,height);
+	for (var i in that.stage.children)
+		if (that.stage.children[i].resize)
+			that.stage.children[i].resize(width,height);
 }
 
 TDefEngine.prototype.outerSize= function (size){
 	return Math.floor((1+(size+1)%2+size)/2)*(Math.floor(size/2)+size%2);
 }
 
-TDefEngine.prototype.weelHandler= function (e){
-	var that=getEngine();
-	e = e || window.event;
-	var x=e.clientX || e.layerX;
-	var y= e.clientY || e.layerY;
-	if (e.type=="wheel" || e.type=="mousewheel"){
-		// wheelDelta не дает возможность узнать количество пикселей
-		var delta = e.deltaY || e.detail || e.wheelDelta;
-		//change zoom
-		that.map.zoom(1+that.settings.zoomSpeed*(delta<0 ? -1 : 1)*that.settings.weelInverted, x, y)
-		//add another hendlers
-//		that.map.update()
-	}
-}
 
 TDefEngine.prototype.parseMap = function(map){
 	if (!maps[map]){
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', '/TDef/map/get?name='+map, false);
+		xhr.open('GET', Routes.tdef_map_get_path()+'?name='+map, false);
 		xhr.send();
 		if (xhr.status!=200)
 			console.log(xhr)
@@ -136,8 +148,17 @@ TDefEngine.prototype.parseMap = function(map){
 		data.walls=[];
 		for (;mg[i]!="" && i<mg.length;i++){
 			var t=mg[i].split(" ");
-			
-			data.walls.push({pos: parseInt(t[0]), type: t[1], tex: data.textures[t[2]]});
+			if (t.length==3)
+				data.walls.push({pos: parseInt(t[0]), type: t[1], tex: data.textures[t[2]]});
+			else 
+				break;
+		}
+		i++;
+		//TODO: add map objects
+		data.objects=[]
+		for (;mg[i]!="" && i<mg.length;i++){
+			var t=mg[i].split(" ");
+			data.objects.push({pos: {x: t[0],y: t[1]}, tex: data.textures[t[2]]})
 		}
 		maps[map].data=data;
 	}
@@ -145,9 +166,14 @@ TDefEngine.prototype.parseMap = function(map){
 }
 
 TDefEngine.prototype.setMap= function (m){
-	var opt=this.parseMap(m)
+	this.map_name=m;
+}
+TDefEngine.prototype.loadMap= function (){
+	var opt=this.parseMap(this.map_name)
 	var map=new Grid(opt.size);
 	map.engine=this;
+	if (this.map)
+		this.map.clean();
 	this.map=map;
 	this.stage.addChild(map);
 	
@@ -187,8 +213,11 @@ TDefEngine.prototype.setMap= function (m){
 			k++;
 		}
 	for (var i=0;i<opt.walls.length;i++){
-		map.setWall(opt.walls[i]);
+		map.setWall(opt.walls[i],i);
 //		map.setWall({tex:new PIXI.Texture.fromImage("/textures/wall/1.png"),type:"y"});
+	}
+	for (var i=0 in opt.objects){
+		map.setObject(opt.objects[i],i);
 	}
 	
 	
@@ -196,10 +225,8 @@ TDefEngine.prototype.setMap= function (m){
 	this.map.transformCorrection();
 			
 	//setup handlers
-	addWeelHendler(this.renderer.view,this.weelHandler);
-	window.onkeydown=this.keysHadler
-	window.onkeyup=this.keysHadler
-	
+	window.onkeydown=this.keysHadler;
+	window.onkeyup=this.keysHadler;
 }
 
 TDefEngine.prototype.keysHadler=function(e) {
@@ -241,13 +268,13 @@ TDefEngine.prototype.keysProcessor=function() {
 }
 
 TDefEngine.prototype.objectsProcessor=function() {
-	var objs=this.map.objects;
-	
+	var objs=this.stage.children;
 	for(var i in objs){
 		if (objs[i].proceed)
 			objs[i].proceed();
 	}
 }
+	
 
 TDefEngine.prototype.closeMap=function() {
 	mapClose();
