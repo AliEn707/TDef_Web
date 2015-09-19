@@ -6,5 +6,6 @@ class CreateTdefTypeNpcs < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :tdef_type_npcs, :id, :unique => true
   end
 end

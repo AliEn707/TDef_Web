@@ -12,8 +12,9 @@ class CreateMaps < ActiveRecord::Migration
 	t.integer :last_modified_id
 	t.timestamps
     end
-  add_index :tdef_maps, :name, :unique => true
-  add_index :tdef_maps, :id, :unique => true
-  add_index :tdef_maps, :completed
+    add_index :tdef_maps, :name, :unique => true
+    add_index :tdef_maps, :id, :unique => true
+    add_index :tdef_maps, :updated_at
+    add_index :tdef_maps, :completed
   end
 end

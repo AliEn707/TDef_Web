@@ -6,5 +6,6 @@ class CreateTdefTypeTowers < ActiveRecord::Migration
 
 	t.timestamps
     end
+    add_index :tdef_type_towers, :id, :unique => true
   end
 end
