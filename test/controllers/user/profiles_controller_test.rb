@@ -3,6 +3,7 @@ require 'test_helper'
 class User::ProfilesControllerTest < ActionController::TestCase
   setup do
     @user_profile = user_profiles(:one)
+    sign_in(users(:one))
   end
 
   test "should get index" do

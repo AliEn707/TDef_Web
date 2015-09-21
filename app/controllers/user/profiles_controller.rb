@@ -103,6 +103,10 @@ class User::ProfilesController < ApplicationController
 	end
 	
 	def clean_properties
-		{properties: params[:user_profile][:properties].each{|k,v| params[:user_profile][:properties].delete(k) if (v.blank? || !User::Profile::PROPERTIES.include?(k))}}
+		if (params[:user_profile] && params[:user_profile][:properties])
+			{properties: params[:user_profile][:properties].each{|k,v| params[:user_profile][:properties].delete(k) if (v.blank? || !User::Profile::PROPERTIES.include?(k))}}
+		else
+			{}
+		end
 	end
 end

@@ -2,7 +2,7 @@
 
 one:
   id: 1
-  properties: null
+  properties: '{"ww":33}'
   user_id: 1
 
 two:
