@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class LocalesControllerTest < ActionController::TestCase
+class Tdef::LocalesControllerTest < ActionController::TestCase
   test "should get show_all" do
     get :show_all
     assert_response :success
