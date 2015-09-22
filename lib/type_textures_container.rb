@@ -1,8 +1,8 @@
 class TypeTexturesContainer
 	attr_accessor :ids
-	def initialize
-		@data={}
-		@ids={}
+	def initialize(data=nil,ids=nil)
+		@data=data || {}
+		@ids=ids || {}
 	end
 	
 	def [](a)
@@ -75,6 +75,12 @@ class TypeTexturesContainer
 		self
 	end
 	
+	def to_s
+		"#{self.class}.new(#{@data.inspect},#{@ids.inspect})"
+	end
+	
+	alias inspect to_s
+
 	private
 	
 	def clear(a)
@@ -85,4 +91,6 @@ class TypeTexturesContainer
 	def load(a)
 		@data[a]=Image.where(id:@ids[a]["img"]).first if @ids[a]
 	end
+	
+
 end

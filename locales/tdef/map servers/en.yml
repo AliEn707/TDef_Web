@@ -1,7 +1,7 @@
 en:
   tdef:
     map_servers:
-      host: Host
+      host: Hostname
       ctlport: Control Port
       serv_num: Max servers
       start_port: Start port

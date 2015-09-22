@@ -1,0 +1,7 @@
+﻿ru:
+  tdef:
+    locales:
+      locale: Локаль
+      key: Ключ
+      value: Значение
+      delete_locale: Вы уверены что хотите удалить следующую локаль?

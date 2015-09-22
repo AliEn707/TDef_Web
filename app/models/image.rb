@@ -4,6 +4,8 @@ class Image < ActiveRecord::Base
 	belongs_to :imageable, polymorphic: true, touch: true
 	serialize :data, BinarySerializer
 	
+	after_save :set_cache
+	
 	FORMATS=["png", "jpeg", "gif"]
 	
 	def raw
@@ -48,5 +50,12 @@ class Image < ActiveRecord::Base
 	
 	def type?
 		FORMATS.include?(self.type)
+	end
+	
+	private
+	
+	def set_cache
+		Rails.cache.write("image/#{self.id}", self, expires_in: 6.hours)
+		return true
 	end
 end
