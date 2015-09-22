@@ -1,15 +1,8 @@
 require 'test_helper'
 
 class Post::TranslationsControllerTest < ActionController::TestCase
-  include Devise::TestHelpers
-  include Warden::Test::Helpers                        
-  Warden.test_mode!                                    
-
-  def teardown                                         
-    Warden.test_reset!                                 
-  end
-
   setup do
+    sign_in(users(:admin))
     @post_translation = post_translations(:one)
   end
 
@@ -29,11 +22,11 @@ class Post::TranslationsControllerTest < ActionController::TestCase
       post :create, post_translation: { description: @post_translation.description, lang: @post_translation.lang, post_id: @post_translation.post_id, title: @post_translation.title }
     end
 
-    assert_redirected_to post_translation_path(assigns(:post_translation))
+    assert_redirected_to posts_path
   end
 
   test "should show post_translation" do
-    get :show, id: @post_translation
+    get :show, id: @post_translation, :formats=>[:js]
     assert_response :success
   end
 
@@ -44,7 +37,7 @@ class Post::TranslationsControllerTest < ActionController::TestCase
 
   test "should update post_translation" do
     patch :update, id: @post_translation, post_translation: { description: @post_translation.description, lang: @post_translation.lang, post_id: @post_translation.post_id, title: @post_translation.title }
-    assert_redirected_to post_translation_path(assigns(:post_translation))
+    assert_redirected_to posts_path
   end
 
   test "should destroy post_translation" do
@@ -52,6 +45,6 @@ class Post::TranslationsControllerTest < ActionController::TestCase
       delete :destroy, id: @post_translation
     end
 
-    assert_redirected_to post_translations_path
+    assert_redirected_to posts_path
   end
 end
