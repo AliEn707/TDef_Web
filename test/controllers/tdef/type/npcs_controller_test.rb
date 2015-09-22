@@ -2,8 +2,9 @@ require 'test_helper'
 
 class Tdef::Type::NpcsControllerTest < ActionController::TestCase
   setup do
+     sign_in(users(:admin))
     @tdef_type_npc = tdef_type_npcs(:one)
-  end
+ end
 
   test "should get index" do
     get :index
@@ -21,7 +22,7 @@ class Tdef::Type::NpcsControllerTest < ActionController::TestCase
       post :create, tdef_type_npc: { params: @tdef_type_npc.params }
     end
 
-    assert_redirected_to tdef_type_npc_path(assigns(:tdef_type_npc))
+    assert_redirected_to edit_tdef_type_npc_path(assigns(:tdef_type_npc))
   end
 
   test "should show tdef_type_npc" do

@@ -7,11 +7,22 @@
 one: 
   id: 1
   email: test1@test.test
+  encrypted_password: $2a$10$jLyt9wgRhzhR/lmBgLQVOemwHAgkVNSnv73z2Biy27W7JbUAmddfi
   confirmed_at: 2015-09-21 17:51:19
-# column: value
+  time_zone: UTC
+  admin: t
 
 two:
   id: 2
   email: test2@test.test
+  encrypted_password: $2a$10$jLyt9wgRhzhR/lmBgLQVOemwHAgkVNSnv73z2Biy27W7JbUAmddfi
+  time_zone: UTC
   confirmed_at: 2015-03-21 17:51:19
-#  column: value
+
+admin: 
+  id: 3
+  email: admin@test.test
+  encrypted_password: $2a$10$jLyt9wgRhzhR/lmBgLQVOemwHAgkVNSnv73z2Biy27W7JbUAmddfi
+  time_zone: UTC
+  confirmed_at: 2015-09-21 12:51:19
+  admin: t

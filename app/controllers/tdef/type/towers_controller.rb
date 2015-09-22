@@ -64,7 +64,7 @@ class Tdef::Type::TowersController < ApplicationController
 		out={}
 		images=[]
 		Tdef::Type::Tower.all.each do |t|
-			out[t.id]={"id"=>t.id}.merge(t.params)
+      out[t.id]={"id"=>t.id}.merge(t.params)
 			out[t.id]["textures"]=t.textures.to_hash
 			out[t.id]["textures"].each do |type, tex|
 				images<<tex["src"]

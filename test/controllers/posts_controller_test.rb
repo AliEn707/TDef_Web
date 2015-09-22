@@ -2,6 +2,7 @@ require 'test_helper'
 
 class PostsControllerTest < ActionController::TestCase
   setup do
+     sign_in(users(:admin))
     @post = posts(:one)
   end
 
@@ -36,7 +37,7 @@ class PostsControllerTest < ActionController::TestCase
 
   test "should update post" do
     patch :update, id: @post, post: { description: @post.description, title: @post.title, user_id: @post.user_id }
-    assert_redirected_to post_path(assigns(:post))
+    assert_redirected_to posts_path
   end
 
   test "should destroy post" do

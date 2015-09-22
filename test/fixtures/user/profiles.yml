@@ -2,10 +2,15 @@
 
 one:
   id: 1
-  properties: '{"ww":33}'
+  properties: '{"NAME":"qq","NICK":"test"}'
   user_id: 1
 
 two:
   id: 2
-  properties: null
-  user_id: 1
+  properties: '{"NAME":"qq","NICK":"test"}'
+  user_id: 2
+
+admin:
+  id: 3
+  properties: '{"NAME":"qq","NICK":"test"}'
+  user_id: 3

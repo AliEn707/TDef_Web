@@ -1,8 +1,12 @@
 require 'test_helper'
 
 class Tdef::MapControllerTest < ActionController::TestCase
-  test "should get map_edit" do
-    get :map_edit
+  setup do
+     sign_in(users(:admin))
+  end
+
+  test "should get edit" do
+    get :edit
     assert_response :success
   end
 
