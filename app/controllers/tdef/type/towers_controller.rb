@@ -28,25 +28,21 @@ class Tdef::Type::TowersController < ApplicationController
   def create
 	@tdef_type_tower = Tdef::Type::Tower.new(tdef_type_tower_params)
 	@tdef_type_tower.set_textures(params[:tdef_type_tower]["textures"])
-    respond_to do |format|
-      if @tdef_type_tower.save
-		format.html { redirect_to edit_tdef_type_tower_path(@tdef_type_tower), notice: 'Tower was successfully created.' }
-      else
-        format.html { render action: 'new' }
-      end
-    end
+	if (@tdef_type_tower.save)
+		redirect_to edit_tdef_type_tower_path(@tdef_type_tower), notice: 'Tower was successfully created.'
+	else
+		render action: 'new' 
+	end
   end
 
   # PATCH/PUT /tdef/type/towers/1
   # PATCH/PUT /tdef/type/towers/1.json
   def update
     @tdef_type_tower.set_textures(params[:tdef_type_tower]["textures"])
-    respond_to do |format|
-      if @tdef_type_tower.update(tdef_type_tower_params)
-        format.html { redirect_to @tdef_type_tower, notice: 'Tower was successfully updated.' }
-      else
-        format.html { render action: 'edit' }
-      end
+    if (@tdef_type_tower.update(tdef_type_tower_params))
+      redirect_to @tdef_type_tower, notice: 'Tower was successfully updated.'
+    else
+      render action: 'edit'
     end
   end
 
@@ -54,17 +50,15 @@ class Tdef::Type::TowersController < ApplicationController
   # DELETE /tdef/type/towers/1.json
   def destroy
     @tdef_type_tower.destroy
-    respond_to do |format|
-      format.html { redirect_to tdef_type_towers_url }
-    end
+    redirect_to tdef_type_towers_url
   end
 
   def types
-	data="TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.tower="+Rails.cache.fetch('types/tower',expires_in: 30.minutes) do
+	data="var TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.tower="+Rails.cache.fetch('types/tower',expires_in: 30.minutes) do
 		out={}
 		images=[]
 		Tdef::Type::Tower.all.each do |t|
-			out[t.id]={"id"=>t.id}.merge(t.params)
+      out[t.id]={"id"=>t.id}.merge(t.params)
 			out[t.id]["textures"]=t.textures.to_hash
 			out[t.id]["textures"].each do |type, tex|
 				images<<tex["src"]

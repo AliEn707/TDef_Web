@@ -29,15 +29,12 @@ class User::ProfilesController < ApplicationController
 	# POST /user/profiles
 	# POST /user/profiles.json
 	def create
-	@user_profile = User::Profile.new(user_profile_params)
-
-		respond_to do |format|
-			if @user_profile.save
-				check_image
-				format.html { redirect_to @user_profile, notice: 'Profile was successfully created.' }
-			else
-				format.html { render action: 'new' }
-			end
+		@user_profile = User::Profile.new(user_profile_params)
+		if @user_profile.save
+			check_image
+			redirect_to @user_profile, notice: 'Profile was successfully created.'
+		else
+			render action: 'new'
 		end
 	end
 
@@ -45,13 +42,11 @@ class User::ProfilesController < ApplicationController
 	# PATCH/PUT /user/profiles/1.json
 	def update
 		Image.where(id: params["old_images"]).destroy_all if params["old_images"]
-		respond_to do |format|
-			if @user_profile.update(user_profile_params)
-				check_image
-				format.html { redirect_to @user_profile, notice: 'Profile was successfully updated.' }
-			else
-				format.html { render action: 'edit' }
-			end
+		if @user_profile.update(user_profile_params)
+			check_image
+			redirect_to @user_profile, notice: 'Profile was successfully updated.'
+		else
+			render action: 'edit'
 		end
 	end
 
@@ -59,9 +54,7 @@ class User::ProfilesController < ApplicationController
 	# DELETE /user/profiles/1.json
 	def destroy
 		@user_profile.destroy
-		respond_to do |format|
-			format.html { redirect_to user_profiles_url }
-		end
+		redirect_to user_profiles_url
 	end
 	
 	def find
@@ -103,6 +96,10 @@ class User::ProfilesController < ApplicationController
 	end
 	
 	def clean_properties
-		{properties: params[:user_profile][:properties].each{|k,v| params[:user_profile][:properties].delete(k) if (v.blank? || !User::Profile::PROPERTIES.include?(k))}}
+		if (params[:user_profile] && params[:user_profile][:properties])
+			{properties: params[:user_profile][:properties].each{|k,v| params[:user_profile][:properties].delete(k) if (v.blank? || !User::Profile::PROPERTIES.include?(k))}}
+		else
+			{}
+		end
 	end
 end

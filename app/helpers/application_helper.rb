@@ -34,7 +34,6 @@ module ApplicationHelper
 					{'name'=>(:news),'path'=>posts_path}]
 			if (current_user.admin) then
 				tdef+=[
-					{'name'=>(:map_editor),'path'=>tdef_map_edit_path},
 					{'name'=>(:maps),'path'=>tdef_map_all_path},
 					{'name'=>(:map_servers),'path'=>tdef_mapserver_all_path},
 					{'name'=>(:locales),'path'=>tdef_locales_all_path},

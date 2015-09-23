@@ -1,3 +1,6 @@
 en:
   tech:
     network_info: Network Info
+    hostname: Hostname
+    uptime: Uptime
+    system_info: System Info

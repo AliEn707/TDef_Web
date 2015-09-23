@@ -1,7 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  data: MyText
+  id: 1
+  data: eNrrDPBz5+WS4mJgYOD19HAJAtJMIMzBBiSLtvGqACnG4iB3J4Z152ReAjls\nSd7uLgz/QXDB3uWTgSKcBR6RxQwM3MIgzMgwa44EUJC9xNPXlf0+pyiXHq+t\nl+FBoJC0p4tjCMf15Jq/X3/+t///z8jg7+///Q///6/nYahh5NlhdqHpM1AZ\ng6ern8s6p4QmAPRvLTw=\n
 
 two:
-  data: MyText
+  id: 2
+  data: eNorSS0uAQAEXQHB+

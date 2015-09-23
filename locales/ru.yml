@@ -1,36 +1,31 @@
 ﻿ru:
-  hello: Приветствую вас
-  test: Это пока еще тест, сдесь чтото будет в дальнейшем
-  message_sent: Сообщение отправлено
-  sign_out: Выйти
+  recaptcha_error: Recapcha не совподает. Попробуйте еще раз.
+  menu:
+    tdef: TDef
+    locales: Локали
+    game: Игра
+    map_editor: Редактор карт
+    maps: Карты
+    map_servers: Сервера
+    npc_types: Типы NPC
+    tower_types: Типы башен
+    social: Социальное
+    profile: Профиль
+    search: Искать
+    friends: Друзья
+    messages: Сообщения
+    news: Новости
+    sign_in: Войти
+    sign_up: Регистрация
+    edit_registration: Редактировать данные
+    sign_out: Выйти
+    en: En
+    ru: Ru
+  news: Новости
+  hello: Здравствуйте
+  test: Пока еще это тест
   sign_in: Войти
   sign_up: Регистрация
-  maps: Карты
-  edit: Изменить
-  remember_me: Запомнить меня
-  email: Email
-  password: Пароль
-  forgot_your_password: Забыли пароль?
-  not_receive_confirmation_instructions: Не пришли инструкции для подтвержения?
-  not_receive_unlock_instructions: Не получили инструкции для разблокировки?
-  edit_registration: Редактировать данные
-  content: Контент
-  map_editor: Редактор карт
-  mapEditor_init: Инициализировать редактор
-  servers: Сервера
-  locales: Локализации
-  locale: Локализация
-  delete_locale: Вы хотите удалить локаль?
-  locale_not_found: Локаль не найдена
-  locale_deleted: Локаль удалена
-  key: Ключ
-  value: Значение
-  preview: Превью
-  name: Имя
-  ready: Готово
-  writen: Сохранено
-  host: Имя машины
-  ctlport: Порт управления
-  serv_num: Количество серверов
-  start_port: Начальный порт
-  
+  add: Добавить
+  ok: Ok
+  apply_changes: Применить изменения

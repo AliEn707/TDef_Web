@@ -49,7 +49,8 @@ gem 'jbuilder', '~> 1.2'
 #gem 'opal-rails'
 
 #fast json serializer
-gem 'oj' , "2.12.1", :platforms => :mri
+gem 'oj', "2.12.14"
+gem 'oj_mimic_json', "1.0.1"
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -145,3 +146,5 @@ else
 	gem 'fastimage_resize' , :git => 'https://github.com/AliEn707/fastimage_resize.git'
 end
 
+#creating dump of the base as seed.rb file
+gem 'seed_dump'
