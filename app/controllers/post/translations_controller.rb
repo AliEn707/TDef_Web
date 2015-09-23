@@ -60,7 +60,7 @@ class Post::TranslationsController < ApplicationController
   # DELETE /post/translations/1.json
   def destroy
 	@post_translation.destroy
-	redirect_to post_translations_url
+	redirect_to posts_url
   end
   
 	def post
