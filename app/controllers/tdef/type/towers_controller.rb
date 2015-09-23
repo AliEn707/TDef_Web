@@ -6,7 +6,7 @@ class Tdef::Type::TowersController < ApplicationController
   # GET /tdef/type/towers
   # GET /tdef/type/towers.json
   def index
-    @tdef_type_towers = Tdef::Type::Tower.all
+    @tdef_type_towers = Tdef::Type::Tower.order(:id)
   end
 
   # GET /tdef/type/towers/1

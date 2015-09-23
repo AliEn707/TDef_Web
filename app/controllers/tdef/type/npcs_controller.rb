@@ -6,7 +6,7 @@ class Tdef::Type::NpcsController < ApplicationController
   # GET /tdef/type/npcs
   # GET /tdef/type/npcs.json
   def index
-    @tdef_type_npcs = Tdef::Type::Npc.all
+    @tdef_type_npcs = Tdef::Type::Npc.order(:id)
   end
 
   # GET /tdef/type/npcs/1
