@@ -6,14 +6,8 @@ class Post::TranslationsControllerTest < ActionController::TestCase
     @post_translation = post_translations(:one)
   end
 
-  test "should get index" do
-    get :index
-    assert_response :success
-    assert_not_nil assigns(:post_translations)
-  end
-
   test "should get new" do
-    get :new
+    get :new, post_id: 1
     assert_response :success
   end
 
@@ -26,7 +20,7 @@ class Post::TranslationsControllerTest < ActionController::TestCase
   end
 
   test "should show post_translation" do
-    get :show, id: @post_translation, :formats=>[:js]
+    get :show, id: @post_translation, :format=>:js
     assert_response :success
   end
 

@@ -47,4 +47,11 @@ class Tdef::Type::NpcsControllerTest < ActionController::TestCase
 
     assert_redirected_to tdef_type_npcs_path
   end
+  
+  test "should get types as valid js" do
+    get :types
+    assert_response :success
+    assert_not_nil response.body
+    assert_not_nil ExecJS.compile(response.body)
+  end
 end

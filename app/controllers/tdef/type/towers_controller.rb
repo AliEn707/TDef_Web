@@ -54,7 +54,7 @@ class Tdef::Type::TowersController < ApplicationController
   end
 
   def types
-	data="TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.tower="+Rails.cache.fetch('types/tower',expires_in: 30.minutes) do
+	data="var TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.tower="+Rails.cache.fetch('types/tower',expires_in: 30.minutes) do
 		out={}
 		images=[]
 		Tdef::Type::Tower.all.each do |t|
