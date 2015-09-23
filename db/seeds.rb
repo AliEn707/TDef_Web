@@ -40,6 +40,7 @@ end
 $available_locales.each do |l|
 	locale=Tdef::Locale.create(name:l) if ((locale=Tdef::Locale.where(name:l).first).nil?)
 	{
+		"#will_be_soon" => "Not implemented yet...",
 		"#loading" => "Loading...",
 		"#events_menu_button" => "events",
 		"#public_auth_fail" => "Authentication error.",

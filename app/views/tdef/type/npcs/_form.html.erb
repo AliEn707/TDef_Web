@@ -8,10 +8,12 @@
 					<%= @f.fields_for :params do |params_form|%>
 						<%params_not=npc_type_params.keys-@tdef_type_npc.params.keys%>
 						<% ((@tdef_type_npc.params.keys-params_not)+params_not).each do |k|%>
-							<div class="<%= grid_class(@tdef_type_npc.id) %>">
-								<%=params_form.label k, t("tdef.types."+k)%>
-								<%=params_form.send(npc_type_params[k], k, value: @tdef_type_npc.params[k], form:  @f.options[:html][:id], checked: @tdef_type_npc.params[k].to_i==1)%>
-							</div>
+              <%if (npc_type_params[k])%>
+                <div class="<%= grid_class(@tdef_type_npc.id) %>">
+                  <%=params_form.label k, t("tdef.types."+k)%>
+                  <%=params_form.send(npc_type_params[k][:type], k, {value: @tdef_type_npc.params[k], form:  @f.options[:html][:id], checked: @tdef_type_npc.params[k].to_i==1}.merge(npc_type_params[k][:value]||{}))%>
+                </div>
+              <%end%>
 						<%end%>
 					<%end%>
 				</div>

@@ -119,7 +119,7 @@ function ButtonContainer(opt){
 	if (opt.outerAction)
 		this.outerAction=opt.outerAction;
 	
-	this.depth=0;//allways on screen
+	this.depth=-1;//allways on screen
 	if (this.unfocused)
 		this.innerArea=opt.innerArea || {x:0,y:0,width:this.unfocused.getAttr("width"),height:this.unfocused.getAttr("height")};
 	this.fitParent=opt.fitParent;
