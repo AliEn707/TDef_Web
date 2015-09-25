@@ -9,5 +9,8 @@ class CreateForumThreads < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :forum_threads, :id
+    add_index :forum_threads, :user_id
+    add_index :forum_threads, :forum_id
   end
 end

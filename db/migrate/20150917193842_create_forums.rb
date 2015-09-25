@@ -9,6 +9,6 @@ class CreateForums < ActiveRecord::Migration
       t.timestamps
     end
     add_index :forums, :id, :unique => true
-    add_index :forums, :user_id, :unique => true
+    add_index :forums, :user_id
   end
 end
