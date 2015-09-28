@@ -54,11 +54,11 @@ class Tdef::Type::TowersController < ApplicationController
   end
 
   def types
-	data="var tower_types="+Rails.cache.fetch('types/tower',expires_in: 30.minutes) do
+	data="var TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.tower="+Rails.cache.fetch('types/tower',expires_in: 30.minutes) do
 		out={}
 		images=[]
 		Tdef::Type::Tower.all.each do |t|
-			out[t.id]={"id"=>t.id}.merge(t.params)
+      out[t.id]={"id"=>t.id}.merge(t.params)
 			out[t.id]["textures"]=t.textures.to_hash
 			out[t.id]["textures"].each do |type, tex|
 				images<<tex["src"]
@@ -78,6 +78,6 @@ class Tdef::Type::TowersController < ApplicationController
     
    # Never trust parameters from the scary internet, only allow the white list through.
     def tdef_type_tower_params
-      params.require(:tdef_type_tower).permit(:params=>params[:tdef_type_tower][:params].try(:keys))
+      params.require(:tdef_type_tower).permit(:params=>Tdef::Type::Tower::PARAMS.keys)
     end
 end

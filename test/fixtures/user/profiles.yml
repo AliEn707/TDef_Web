@@ -1,9 +1,16 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  properties: MyText
+  id: 1
+  properties: '{"NAME":"qq","NICK":"test"}'
   user_id: 1
 
 two:
-  properties: MyText
-  user_id: 1
+  id: 2
+  properties: '{"NAME":"qq","NICK":"test"}'
+  user_id: 2
+
+admin:
+  id: 3
+  properties: '{"NAME":"qq","NICK":"test"}'
+  user_id: 3

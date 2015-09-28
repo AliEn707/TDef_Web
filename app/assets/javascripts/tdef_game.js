@@ -12,6 +12,7 @@
 //
 //= require ./tdef/game/pixi.dev.js
 
+//= require ./tdef/game/stats_pixi.js
 //= require ./tdef/game/common_pixi.js
 //= require ./tdef/game/engine_pixi.js
 //= require ./tdef/game/aobject_pixi.js
@@ -20,7 +21,7 @@
 //= require ./tdef/game/buttons_pixi.js
 //= require ./tdef/game/wall_pixi.js
 //= require ./tdef/game/tilemap_pixi.js
-//= require ./tdef/game/player_pixi.js
+//= require ./tdef/game/player_map_pixi.js
 //= require ./tdef/game/npc_pixi.js
 //= require ./tdef/game/bullet_pixi.js
 //= require ./tdef/game/tower_pixi.js

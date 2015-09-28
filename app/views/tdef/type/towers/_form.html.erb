@@ -6,12 +6,14 @@
 			<td>
 				<div class="uk-grid">
 					<%= @f.fields_for :params do |params_form|%>
-						<%params_not=tower_type_params-@tdef_type_tower.params.keys%>
+						<%params_not=tower_type_params.keys-@tdef_type_tower.params.keys%>
 						<% ((@tdef_type_tower.params.keys-params_not)+params_not).each do |k|%>
-							<div class="<%= grid_class(@tdef_type_tower.id) %>">
-								<%=params_form.label k, t("types."+k)%>
-								<%=params_form.text_field k, value: @tdef_type_tower.params[k], form:  @f.options[:html][:id]%>
-							</div>
+               <% if (tower_type_params[k]) %>
+                <div class="<%= grid_class(@tdef_type_tower.id) %>">
+                  <%=params_form.label k, t("types."+k)%>
+                  <%=params_form.send(tower_type_params[k], k, value: @tdef_type_tower.params[k], form:  @f.options[:html][:id], checked: @tdef_type_tower.params[k].to_i==1)%>
+                </div>
+						  <%end%>
 						<%end%>
 					<%end%>
 				</div>
@@ -22,7 +24,7 @@
 					<div id="image_size"></div>
 					<%= render "image_load"%>
 				</td>
-				<td width="30%">
+				<td width="50%">
 					<ul class="nav nav-pills">
 						<%tower_type_textures.each_with_index do |t,i|%>
 							<li <%="class=active" if i==0 %> id="li_<%=i%>">

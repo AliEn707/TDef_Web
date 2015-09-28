@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
 			prop=[]
 			User::Profile::NECESSARY_PROPERTIES.each do |k|
 				prop << k if (profile.properties[k].blank?)
-			end 
+			end if (profile && profile.properties)
 			redirect_to edit_user_profile_path(profile), notice: t("user.profile.property_not_filled", property: prop.map!{|m| t("user.profile.#{m}")}.join(" ")) if prop.size!=0
 		end
 	end

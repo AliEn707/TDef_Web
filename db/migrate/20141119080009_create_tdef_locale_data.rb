@@ -1,4 +1,4 @@
-class CreateLocaleData < ActiveRecord::Migration
+class CreateTdefLocaleData < ActiveRecord::Migration
   def change
     create_table :tdef_locale_data do |t|
       t.string :key

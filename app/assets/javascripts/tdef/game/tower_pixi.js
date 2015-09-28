@@ -24,7 +24,7 @@ function Tower(opt){
 	this.grid.x=this.grid.x/this.map.nodesize+0.5;
 	this.grid.y=this.grid.y/this.map.nodesize+0.5;
 //	this.position=this.map.gridToScreen(this.grid.x,this.grid.y);
-	var textures=tower_types[this.type].textures;
+	var textures=this.getType().textures;
 	this.sprites={};
 	var s=this.map.nodesize*1.4*(opt.scale || 1);
 	for (var i in textures){
@@ -47,9 +47,12 @@ Tower.prototype= new PIXI.DisplayObjectContainer();
 Tower.prototype.constructor= Tower;
 
 
+Tower.prototype.getType= function (){
+	return ((this.type>0) ? TDef.types.tower[this.type] : this.engine.map.players[this.owner].type.base);
+}
 Tower.prototype.setHealth= function (health){
 	this.health=health;
-	var type_health=this.type>0 ? tower_types[this.type].health : this.engine.map.players[this.owner].type.base.health;
+	var type_health=this.getType().health;
 	var obj=this.health/type_health;
 	if (obj>1)
 		obj=1;

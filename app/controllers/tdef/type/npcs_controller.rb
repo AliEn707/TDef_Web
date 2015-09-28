@@ -54,7 +54,7 @@ class Tdef::Type::NpcsController < ApplicationController
   end
 
   def types
-	data="var npc_types="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
+	data="var TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.npc="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
 		out={}
 		images=[]
 		Tdef::Type::Npc.all.each do |t|
@@ -78,6 +78,6 @@ class Tdef::Type::NpcsController < ApplicationController
     
    # Never trust parameters from the scary internet, only allow the white list through.
     def tdef_type_npc_params
-      params.require(:tdef_type_npc).permit(:params=>params[:tdef_type_npc][:params].try(:keys))
+      params.require(:tdef_type_npc).permit(:params=>Tdef::Type::Npc::PARAMS.keys)
     end
 end

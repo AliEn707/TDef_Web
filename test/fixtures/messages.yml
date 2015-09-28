@@ -3,9 +3,9 @@
 one:
   user_id: 1
   msg_dest_id: 1
-  msg_dest_type: MyString
+  msg_dest_type: User
 
 two:
   user_id: 1
   msg_dest_id: 1
-  msg_dest_type: MyString
+  msg_dest_type: User
