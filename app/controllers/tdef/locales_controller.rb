@@ -16,7 +16,7 @@ class Tdef::LocalesController < ApplicationController
 						key=request.POST['key'][i_i]
 						value=request.POST['value'][i_i]
 						if  (key!="" && name!="" && value!="")
-							locale=Tdef::LocaleData.where(key: key, locale_id: h_h[name].id).first
+							locale=Tdef::Locale::Data.where(key: key, locale_id: h_h[name].id).first
 							if !locale.nil? then
 								locale.value=value;
 								locale.user_id=current_user.id;

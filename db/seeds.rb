@@ -49,7 +49,7 @@ $available_locales.each do |l|
 		"#public_connect_fail" => "Can't connect to public server."
 	}.each do |k,v|
 		 if (locale.locale_datas.where(key: k).first.nil?)	then
-			locale.locale_datas<<Tdef::LocaleData.create(key: k,value: v,user_id: 2)
+			locale.locale_datas<<Tdef::Locale::Data.create(key: k,value: v,user_id: 2)
 			p "Tdef::Locale #{l} added #{k}"
 		end
 	end
