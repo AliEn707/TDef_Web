@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 	has_many :income_messages, :as =>:msg_dest, :class_name => "Message", :dependent => :destroy
 	#another way, not very good
 #	has_many :income_messages, :through => :messages, :source =>:msg_dest, :source_type => 'Message', :dependent => :destroy
-	has_many :locale_datas
+	has_many :locale_datas, class_name: "Tdef::Locale::Data"
 	has_many :maps, class_name: "Tdef::Map"
 	has_many :modified_maps, class_name: "Tdef::Map" , foreign_key: :last_modified_id
 	#friends

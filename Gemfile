@@ -122,6 +122,10 @@ end
 #for use C code in ruby
 gem 'RubyInline'	
 
+#for resising images
+#ubuntu sudo apt-get install libgd2-noxpm-dev
+#win https://yadi.sk/d/6vQXSedajK4oa
+gem 'fastimage_resize' , :git => 'https://github.com/AliEn707/fastimage_resize.git'
 	
 if RUBY_PLATFORM=~ /mingw/ 
 	#only win
@@ -139,11 +143,7 @@ else
 		gem 'rainbows-rails'
 	else
 		gem 'puma'
-	end
-	
-	#for resising images
-	#sudo apt-get install libgd2-noxpm-dev
-	gem 'fastimage_resize' , :git => 'https://github.com/AliEn707/fastimage_resize.git'
+	end	
 end
 
 #creating dump of the base as seed.rb file
