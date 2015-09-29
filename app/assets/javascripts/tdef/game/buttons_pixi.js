@@ -390,14 +390,18 @@ ButtonContainer.prototype.hidePart=function (from,per){
 //keypad container with rows and cols of buttons
 /*
 {
-	rows: int
-	columns: int
-	buttonSize: {x: int, y: int}
-	buttonDist: {x: int, y: int}
+opt  rows: int - not used in circle
+opt  columns: int - for circle number of items
+  buttonSize: {x: int, y: int}
+  buttonDist: {x: int, y: int} - for circle x is radius
+opt circle:{
+    center: int - center of circle, 0 in the top, go like a clock
+    centered: boolean - set buttons over the entire circumference, or relative to the point
+  }
 opt	scrolling:{
-		type: "vertical" || "horisontal" (may be n first chars) [vertical]
-		area: {x: int, y: int, width: int, height: int}
-	}
+    type: "vertical" || "horisontal" (may be n first chars) [vertical]
+    area: {x: int, y: int, width: int, height: int}
+  }
 }
 */
 ButtonContainer.prototype.keyPadInit=function (obj){
@@ -407,8 +411,14 @@ ButtonContainer.prototype.keyPadInit=function (obj){
 	this.rows=obj.rows || 1;
 	this.columns=obj.columns || 1;
 	this.buttonSize=obj.buttonSize || {x: this.unfocused.getAttr("width")/this.columns,y: this.unfocused.getAttr("height")/this.rows};
-	this.buttonDist=obj.buttonDist || {x: 0, y: 0};
-	this.keyPadScrollerInit(obj.scrolling);
+  this.buttonDist=obj.buttonDist || {x: 0, y: 0};
+  this.circle=obj.circle;
+  if (this.circle){
+    this.circle.center=this.circle.center || 0; //bottom point
+  }else{
+    //scroller init if not circle
+    this.keyPadScrollerInit(obj.scrolling);
+  }
 }
 /*
 	rows
@@ -418,54 +428,69 @@ cols	123
 ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
 	var button = this.addButton(opt);
 	if (this.keypad){
-		pos=pos || this.keypad.length;
-		this.keypad[pos]=button;
-		if (pos> this.rows*this.columns)
-			console.log("Button position "+pos+" out of keypad");
-		button.position= this.keyPadButtonPosition(pos);
-		button.fitParent=true;
-		//some kind of hack
-		button.width=button.$width=this.buttonSize.x; 
-		button.height=button.$height=this.buttonSize.y;
-		button.actions=button.actions || [];
-		if (button.actions.indexOf("drag")>-1)
-			delete button.actions[button.actions.indexOf("drag")];
-		if (this.scrolling){
-			button.actions.push("drag");
-			button.interactive=true;
-			button.mask=this.scrolling.mask;
-			button.hitArea={x:0,y:0,width:this.buttonSize.x,height:this.buttonSize.y};
-			button.mousemove = button.touchmove = function (data){
-				this.parent.dragging=this.dragging
-				this.parent.mousemove(data);
-				this.parent.dragging=false;
-			};
-			var that=this;
-			button.mouseweel = this.scrollingWeel;
-			button.mousedown = button.touchstart = startDragging;
-			button.mouseup = button.mouseupoutside = button.touchend = button.touchendoutside = stopDragging;
-			button.beforePressAction=function(data){ this.parent.mousedown(data) }
-			//set area of all buttons
-			if (this.scrolling.area.width<button.position.x){
-				this.scrolling.area.width=button.position.x;
-				if (this.hitArea)
-					this.hitArea.width+=this.buttonSize.x+this.buttonDist.x;
-			}
-			if (this.scrolling.area.height<button.position.y){
-				this.scrolling.area.height=button.position.y;
-				if (this.hitArea)
-					this.hitArea.height+=this.buttonSize.y+this.buttonDist.y;
-			}
-		}
+    pos=pos || this.keypad.length;
+    button.fitParent=true;
+    //some kind of hack
+    button.width=button.$width=this.buttonSize.x; 
+    button.height=button.$height=this.buttonSize.y;
+    button.actions=button.actions || [];
+    if (button.actions.indexOf("drag")>-1)
+      delete button.actions[button.actions.indexOf("drag")];
+    this.keypad[pos]=button;
+    if (pos> this.rows*this.columns)
+      console.log("Button position "+pos+" out of keypad");
+    if (this.circle){
+      //update all buttons
+      for (var i in this.keypad)
+        this.keypad[i].position=this.keyPadButtonPosition(i);
+    }else{
+      button.position= this.keyPadButtonPosition(pos);
+      if (this.scrolling){
+        button.actions.push("drag");
+        button.interactive=true;
+        button.mask=this.scrolling.mask;
+        button.hitArea={x:0,y:0,width:this.buttonSize.x,height:this.buttonSize.y};
+        button.mousemove = button.touchmove = function (data){
+          this.parent.dragging=this.dragging
+          this.parent.mousemove(data);
+          this.parent.dragging=false;
+        };
+        var that=this;
+        button.mouseweel = this.scrollingWeel;
+        button.mousedown = button.touchstart = startDragging;
+        button.mouseup = button.mouseupoutside = button.touchend = button.touchendoutside = stopDragging;
+        button.beforePressAction=function(data){ this.parent.mousedown(data) }
+        //set area of all buttons
+        if (this.scrolling.area.width<button.position.x){
+          this.scrolling.area.width=button.position.x;
+          if (this.hitArea)
+            this.hitArea.width+=this.buttonSize.x+this.buttonDist.x;
+        }
+        if (this.scrolling.area.height<button.position.y){
+          this.scrolling.area.height=button.position.y;
+          if (this.hitArea)
+            this.hitArea.height+=this.buttonSize.y+this.buttonDist.y;
+        }
+      }
+    }
 	}
 	return button;
 }
 
 ButtonContainer.prototype.keyPadButtonPosition=function (pos){
-	return {
-		y: (this.innerArea.y || 0)+this.buttonDist.y+parseInt(pos/this.columns)*(this.buttonSize.y+this.buttonDist.y),
-		x: (this.innerArea.x || 0)+this.buttonDist.x+parseInt(pos%this.columns)*(this.buttonSize.x+this.buttonDist.x) 
-	};
+  if (this.circle){
+    //get angle of button on circle
+    var angle=this.circle.center-Math.PI/2+(this.circle.centered ? (pos-(this.keypad.length-1)/2)*Math.PI*2/this.columns : pos*Math.PI*2/this.keypad.length);
+    return {
+      x: Math.cos(angle)*this.buttonDist.x-this.buttonSize.x/2,
+      y: Math.sin(angle)*this.buttonDist.x-this.buttonSize.y/2
+    };
+  }else{
+    return {
+      y: (this.innerArea.y || 0)+this.buttonDist.y+parseInt(pos/this.columns)*(this.buttonSize.y+this.buttonDist.y),
+      x: (this.innerArea.x || 0)+this.buttonDist.x+parseInt(pos%this.columns)*(this.buttonSize.x+this.buttonDist.x) 
+    };
+  }
 }
 
 ButtonContainer.prototype.keyPadGetButton=function (pos){

@@ -369,6 +369,9 @@ Grid.prototype.clean = function(){
 	for(var i in this.objects){
 		this.engine.stage.removeChild(this.objects[i]);
 	}
+	this.engine.stage.removeChild(this.objects["npc_set"]);
+	this.engine.stage.removeChild(this.objects["tower_set"]);
+	this.engine.stage.removeChild(this.window);
 	this.engine.stage.removeChild(this.window);
 	this.engine.stage.removeChild(this);
 	//TODO: add switch to public
