@@ -23,6 +23,7 @@ var getEngine=function (){
 }
 
 var getFPSms=function (){
+//  console.log("fps "+statsFps())
 	return statsFps()/1000;//1/getEngine().frameTime; 
 }
 
