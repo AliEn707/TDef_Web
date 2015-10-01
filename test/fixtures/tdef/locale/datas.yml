@@ -1,9 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+en:
   key: MyString
   value: MyString
+  locale_id: 1
+  user_id: 1
 
-two:
+ru:
   key: MyString
   value: MyString
+  locale_id: 2
+  user_id: 1

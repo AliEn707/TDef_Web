@@ -10,4 +10,10 @@ class Tdef::LocalesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get get" do
+    get :get
+    assert_response :success
+    assert_not_nil ExecJS.compile(response.body)
+  end
+
 end
