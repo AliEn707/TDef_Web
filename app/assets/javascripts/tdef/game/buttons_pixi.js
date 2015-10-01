@@ -45,8 +45,10 @@ opt		y: string - 'fixed' or 'float'
 	} 
 }
 opt	pressAction: func
-opt	overAction: func
-opt	outerAction: func
+opt	beforeMouseOver: func
+opt	afterMouseOver: func
+opt	beforeMouseOut: func
+opt	afterMouseOut: func
 opt	args: obj - some arguments that can be used in functions
 }
 */
@@ -139,28 +141,50 @@ ButtonContainer.prototype= new PIXI.DisplayObjectContainer();
 ButtonContainer.prototype.constructor=ButtonContainer;
 
 ButtonContainer.prototype.mouseover=function(){
+	if (this.beforeMouseOver)
+		this.beforeMouseOver();
 	if (this.focused){
 		this.focused.alpha=1;
 		this.unfocused.alpha=0.01;
 	}
-	if (this.overAction)
-		this.overAction();
+	if (this.afterMouseOver)
+		this.afterMouseOver();
 }
 	
 ButtonContainer.prototype.mouseout=function(){
+	if (this.beforeMouseOut)
+		this.beforeMouseOut();
 	if (this.focused){
 		this.unfocused.alpha=1;
 		this.focused.alpha=0.01;
 	}
-	if (this.outerAction)
-		this.outerAction();
+	if (this.afterMouseOut)
+		this.afterMouseOut();
 }
-
-
-ButtonContainer.prototype.addButton=function (opt){
+/*
+{
+  opt the same as on button
+  add:{
+    hideable: boolean
+    show_by_default: boolean
+  }
+}
+*/
+ButtonContainer.prototype.addButton=function (opt, add){
+  add=add || {};
 	var button=new ButtonContainer(opt);
 	this.buttons.push(button);
 	this.addChild(button);
+  if (add.hideable){
+    this.interactive=true;
+    button.visible=false;
+    if (add.show_by_default)
+      button.visible=true;
+    console.log(add)
+    this.beforeMouseOver= this.beforeMouseOut= function (){
+      button.visible= (button.visible==false);
+    }
+  }
 	return button;
 }
 
