@@ -30,10 +30,11 @@ class Image < ActiveRecord::Base
 	
 	def resize!(x, y=0, opt={})
 		self.data=self.raw_resized(x,y,opt)
+    self
 	end
 	
 	def convert_to(type)
-		self.resize(0,0,{out_type: type.to_sym})
+		self.resize!(0,0,{out_type: type.to_sym})
 	end
 	
 	def convert_to_png!
