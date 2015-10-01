@@ -283,10 +283,17 @@ TDefEngine.prototype.closeMap=function() {
 
 TDefEngine.prototype.setWindowHandlers=function() {
 	function onBlur() {
-		console.log("hiden")
+//		console.log("hiden")
+    stats.freeze=stats.fps;
 	};
 	function onFocus(){
-		console.log("showen")
+//		console.log("showen")
+    var v=stats.freeze
+    stats.freeze=false;
+    //hack for freezing timer on hided tab
+    stats.end();
+    stats.begin();
+    stats.fps=v;
 	};
 
 	if (/*@cc_on!@*/false) { // check for Internet Explorer
