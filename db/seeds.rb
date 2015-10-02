@@ -48,15 +48,7 @@ $available_locales.inject([]) do |o, l| #returns array of Tdef::Locales
   end
   o<< loc
 end.each do |locale|
- {
-		"#will_be_soon" => "Not implemented yet...",
-		"#loading" => "Loading...",
-		"#events_menu_button" => "events",
-		"#public_auth_fail" => "Authentication error.",
-		"#mapserver_connecting" => "Connecting to map server...",
-		"#public_connecting" => "Connecting to public server...",
-		"#public_connect_fail" => "Can't connect to public server."
-	}.merge(keys).each do |k,v| #add required datas
+  JSON.load(File.open("db/locales.json","rt"){|f| f.read}).merge(keys).each do |k,v| #add required datas
     if (locale.locale_datas.where(key: k).first.nil?)	then
 			locale.locale_datas<<Tdef::Locale::Data.create(key: k,value: v,user_id: 2)
 			p "Tdef::Locale #{locale.name} added #{k}"
