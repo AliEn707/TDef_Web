@@ -37,33 +37,6 @@ if (Tdef::MapServer.all.size==0) then
 	p "Tdef::MapServer seeded"
 end
 
-# Lets set missed locales
-keys={}
-$available_locales.inject([]) do |o, l| #returns array of Tdef::Locales
-  loc = (Tdef::Locale.where(name:l).first || Tdef::Locale.create(name:l))
-  keys= if (l=='en') #get all different keys, en in priority 
-    keys.merge(loc.locale_datas.inject({}){|h,d| h.merge(d.key=>d.value)})
-  else
-    loc.locale_datas.inject({}){|h,d| h.merge(d.key=>d.value)}.merge(keys)
-  end
-  o<< loc
-end.each do |locale|
- {
-		"#will_be_soon" => "Not implemented yet...",
-		"#loading" => "Loading...",
-		"#events_menu_button" => "events",
-		"#public_auth_fail" => "Authentication error.",
-		"#mapserver_connecting" => "Connecting to map server...",
-		"#public_connecting" => "Connecting to public server...",
-		"#public_connect_fail" => "Can't connect to public server."
-	}.merge(keys).each do |k,v| #add required datas
-    if (locale.locale_datas.where(key: k).first.nil?)	then
-			locale.locale_datas<<Tdef::Locale::Data.create(key: k,value: v,user_id: 2)
-			p "Tdef::Locale #{locale.name} added #{k}"
-		end
-	end
-end
-
 if (Friendship.all.size==0) then
 	Friendship.create(user_id: 1,friend_id: 2)
 	Friendship.create(user_id: 1,friend_id: 3)
@@ -137,7 +110,32 @@ if (Tdef::Type::Npc.all.size==0) then
 	p "Tdef::Type:Npc seeded"
 end
 	
+###############################now important part
 
+# Lets set missed locales
+keys={}
+$available_locales.inject([]) do |o, l| #returns array of Tdef::Locales
+  loc = (Tdef::Locale.where(name:l).first || Tdef::Locale.create(name:l))
+  keys= if (l=='en') #get all different keys, en in priority 
+    keys.merge(loc.locale_datas.inject({}){|h,d| h.merge(d.key=>d.value)})
+  else
+    loc.locale_datas.inject({}){|h,d| h.merge(d.key=>d.value)}.merge(keys)
+  end
+  o<< loc
+end.each do |locale|
+  JSON.load(File.open("db/locales.json","rt"){|f| f.read}).merge(keys).each do |k,v| #add required datas
+    if (locale.locale_datas.where(key: k).first.nil?)	then
+			locale.locale_datas<<Tdef::Locale::Data.create(key: k,value: v,user_id: 2)
+			p "Tdef::Locale #{locale.name} added #{k}"
+		end
+	end
+end
+
+#set missed players
+User.all.each do |p|
+	p.player=Tdef::Player.create(user: p)	if (p.player.nil?) # set Tdef::Player
+	p.player.auth=Tdef::Player.create(player: p.player) if (p.player.auth.nil?) #set Tdef::Player::Auth
+end
 	
 	
 puts "Seed completed"

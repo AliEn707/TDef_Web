@@ -68,14 +68,17 @@ Npc.prototype.setHealth= function (health){
 	this.health_sprite.tint=healthColor(obj);
 }
 
-Npc.prototype.getAngle= function (v){
-	var length=Math.sqrt(v.x*v.x+v.y*v.y);
+Npc.prototype.getAngle= function (v, length){
+	length=length || Math.sqrt(v.x*v.x+v.y*v.y);
 	var angle=length!=0 ? Math.acos((v.y)/(length)) : 0;
 	return angle*( v.x<0 ? -1 : 1);//cos is on half of circle
 }
 
 Npc.prototype.setSpriteByVector= function (v){
-	var ang=this.getAngle(v);
+  var length=Math.sqrt(v.x*v.x+v.y*v.y);
+  if (length<0.03)
+    return;
+	var ang=this.getAngle(v, length);
 	var p8=Math.PI/8;
 	//need to correct
 	if (ang>7*p8 || ang<=-7*p8){

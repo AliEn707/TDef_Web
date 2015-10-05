@@ -482,6 +482,12 @@ function test(engine){
 	engine.stage.addChild(container);
 
   /*
+	var container=new ButtonContainer({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:100,y:100}});
+  container.disable=true;
+	engine.stage.addChild(container);
+
+
+  /*
 	engine.public.show();
 	engine.public.switchTo("events");
 	engine.public.eventsAdd({id:1,name:"#test1"})

@@ -4,8 +4,10 @@ class Tdef::GameController < ApplicationController
 	end
   
 	def access
-		token=rand(2147483647*2)-2147483647#rand in max int
-		send_data "function access(){return {token:#{token},name:'#{current_user.email}'};}" , filename:"access.js"
+		auth=current_user.player.auth
+		auth.token=rand(2147483647)#rand in max int
+		auth.save
+		send_data "function access(){return {token:#{auth.token},name:'#{current_user.email}'};}" , filename:"access.js", disposition:'inline'
 	end
 	
 	def init
