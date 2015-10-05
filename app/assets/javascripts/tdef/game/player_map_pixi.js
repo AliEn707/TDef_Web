@@ -45,7 +45,7 @@ function MapPlayer(opt){
 	this.hero=opt.hero;
 	this.targeting=opt.targeting;
 	
-		var engine=getEngine();
+	var engine=getEngine();
 	
 	//TODO:remove	
 	var t=[new PIXI.Texture.fromImage("/imgtest/red.jpeg")]
@@ -68,7 +68,7 @@ function MapPlayer(opt){
 		});
 		buttons.keyPadInit({rows: 9, columns: 1, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.npc)
-			if (parseInt(i) || parseInt(i)==0){
+			if ((parseInt(i) || parseInt(i)==0) && TDef.types.tower[parseInt(i)]){
 				this.set.npc[i].button=buttons.keyPadAddButton({sprite:{textures: t,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnNpc(this.args);}});
 			}
 		this.set.npc.buttons=buttons;
@@ -91,7 +91,7 @@ function MapPlayer(opt){
 		});
 		buttons.keyPadInit({rows: 9, columns: 1, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.tower)
-			if (parseInt(i) || parseInt(i)==0){
+			if ((parseInt(i) || parseInt(i)==0) && TDef.types.npc[parseInt(i)]){
 				this.set.tower[i].button=buttons.keyPadAddButton({sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}});
 			}
 		this.set.tower.buttons=buttons;

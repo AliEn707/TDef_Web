@@ -116,10 +116,11 @@ function ButtonContainer(opt){
 			this.pressAction=opt.pressAction;
 		}
 	}
-	if (opt.overAction)
-		this.overAction=opt.overAction;
-	if (opt.outerAction)
-		this.outerAction=opt.outerAction;
+	//set actions
+	this.beforeMouseOver=opt.beforeMouseOver;
+	this.afterMouseOver=opt.afterMouseOver;
+	this.beforeMouseOut=opt.beforeMouseOut;
+	this.afterMouseOut=opt.afterMouseOut;
 	
 	this.depth=-1;//allways on screen
 	if (this.unfocused)
@@ -141,6 +142,8 @@ ButtonContainer.prototype= new PIXI.DisplayObjectContainer();
 ButtonContainer.prototype.constructor=ButtonContainer;
 
 ButtonContainer.prototype.mouseover=function(){
+	if (this.disable)
+		return;
 	if (this.beforeMouseOver)
 		this.beforeMouseOver();
 	if (this.focused){
@@ -152,6 +155,8 @@ ButtonContainer.prototype.mouseover=function(){
 }
 	
 ButtonContainer.prototype.mouseout=function(){
+	if (this.disable)
+		return;
 	if (this.beforeMouseOut)
 		this.beforeMouseOut();
 	if (this.focused){
@@ -182,7 +187,8 @@ ButtonContainer.prototype.addButton=function (opt, add){
       button.visible=true;
     console.log(add)
     this.beforeMouseOver= this.beforeMouseOut= function (){
-      button.visible= (button.visible==false);
+			if (!this.disable)
+				button.visible= (button.visible==false);
     }
   }
 	return button;
@@ -361,8 +367,31 @@ Object.defineProperty(ButtonContainer.prototype, 'realHeight', {
     }
 });
 
+Object.defineProperty(ButtonContainer.prototype, 'disable', {
+	get: function() {
+		return this._$disable && this._$disable.visible;
+	},
+	set: function(value) {
+		var that=this;
+		if (!that._$disable){
+			that._$disable=new PIXI.Graphics();
+			that.addChild(that._$disable);
+			(that.resize=function (){
+				that._$disable.clear();
+				that._$disable.beginFill(0x000000, 0.63);
+				that._$disable.drawRect(0, 0, that.width, that.height);
+				that._$disable.endFill();
+			})();
+		}
+		if (value!=this.disable){
+				this._$disable.visible=true;
+		}
+	}
+});
 
 //hide part of button, outside from params
+//from - position on pixels
+//per size in percents
 ButtonContainer.prototype.hidePart=function (from,per){
 	if (!this.mask){
 		this.mask=new PIXI.Graphics();

@@ -109,7 +109,7 @@ function stopDragging(data) {
 			screenPressPoint.y = data.getLocalPosition(stage).y;
 			if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
 					Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
-				if (this.pressAction) //may be need smth to do
+				if (this.pressAction || !this.disable) //may be need smth to do
 					this.pressAction();
 			}
 		}
