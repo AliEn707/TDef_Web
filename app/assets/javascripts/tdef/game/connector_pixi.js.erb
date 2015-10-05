@@ -6,7 +6,7 @@ var hideConnector; //function in future
 var latency;
 
 function isReady() {
-        return jsReady;
+  return jsReady;
 }
 
 //get connector object to call functions
@@ -208,6 +208,7 @@ function proceedMapMessages(str){
 function connectorReady(){
 	console.log("Connector ready");
 	hideConnector(getConnector());
+  Loading.message="";
 	if (afterConnectorReady)
 		afterConnectorReady();
 }
@@ -260,10 +261,17 @@ function addConnectorSWF(place) {
 	place=place || document.body
 	place.appendChild(obj)
 	
+  var timout=window.setTimeout(
+    function () {
+      Loading.message="#check_flash";
+    },
+    2000
+  );
 	hideConnector=function (o){
+    window.clearTimeout(timout);
 		o.width=3;
 		o.height=2;
 		//o.parentNode.style.left=-o.width+"px";
-	}
+	};
 }
 

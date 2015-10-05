@@ -3,7 +3,7 @@
 one:
   id: 1
   title: MyString
-  description: MyText
+  description: '<div><p></p><br> <br /> <table><tr><td></td><td></td></tr></table></div>'
   user_id: 1
 
 two:

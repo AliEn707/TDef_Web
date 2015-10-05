@@ -70,7 +70,7 @@ function rails() {
      bash update.sh
      child_nodes update
   else
-     bundle exec rails $@
+     bundle exec $@
   fi;
 }
 

@@ -49,8 +49,8 @@ gem 'jbuilder', '~> 1.2'
 #gem 'opal-rails'
 
 #fast json serializer
-gem 'oj', "2.12.14"
-gem 'oj_mimic_json', "1.0.1"
+gem 'oj', "2.12.14", platforms: :mri
+gem 'oj_mimic_json', "1.0.1", platforms: :mri
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

@@ -21,8 +21,10 @@ class User < ActiveRecord::Base
 	has_many :news, class_name: "Post"
 	
 	has_one :profile
+	has_one :player, class_name: "Tdef::Player"
 	
 	after_create :add_profile
+	after_create :add_player
 	def friends
 #		User.where(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
 		friends_in.where(id: friendships.select(:friend_id))
@@ -41,6 +43,10 @@ class User < ActiveRecord::Base
 	
 	def add_profile
 		self.profile=User::Profile.create(user: self)
+	end
+	
+	def add_player
+		self.profile=Tdef::Player.create(user: self)
 	end
 =begin	
 	 def self.serialize_from_session(key, salt)

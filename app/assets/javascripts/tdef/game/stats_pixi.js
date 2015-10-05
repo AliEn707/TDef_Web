@@ -67,11 +67,13 @@ Stats.prototype.update = function (){
 
 Stats.prototype.end = function (){
 	var time=this.now();
-	this.ms = time - this.time;
-	this.frames++;
-	if ( time > this.prev + 1000 ) {
-		this.fps =( this.frames * 1000 ) / ( time - this.prev);
-		this.prev = time;
-		this.frames = 0;
-	}
+  if (!this.freeze){
+    this.ms = time - this.time;
+    this.frames++;
+    if ( time > this.prev + 1000 ) {
+      this.fps =( this.frames * 1000 ) / ( time - this.prev);
+      this.prev = time;
+      this.frames = 0;
+    }
+  }
 }
