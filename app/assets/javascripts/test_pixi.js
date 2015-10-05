@@ -464,9 +464,30 @@ function test(engine){
 	button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 	var a=button.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
 
-	/**/
-	
-	/*
+  
+  /*
+	var container=new ButtonContainer({position:{x:100,y:100}});
+  container.keyPadInit({columns: 8, buttonSize: {x:40,y:40}, buttonDist: {x:60},circle:{centered: false}});
+	container.keyPadAddButton({sprite:{textures:t2,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+	container.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+	container.keyPadAddButton({sprite:{textures:t3,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+	container.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+//	container.keyPadAddButton({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:40,y:40},actions:["press","drag"],pressAction:function(){alert("pressed")}});
+  container.addButton({sprite: {textures: t4,opt: {width:3,height:3}},position:{x:0,y:0}});
+	engine.stage.addChild(container);
+  
+  /*
+	var container=new ButtonContainer({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:100,y:100}});
+  container.addButton({sprite: {textures: t4,opt: {width:300,height:300}},position:{x:50,y:50}},{hideable: true});
+	engine.stage.addChild(container);
+
+  /*
+	var container=new ButtonContainer({sprite:{textures:t1,opt:{width:200,height:200}},position:{x:100,y:100}});
+  container.disable=true;
+	engine.stage.addChild(container);
+
+
+  /*
 	engine.public.show();
 	engine.public.switchTo("events");
 	engine.public.eventsAdd({id:1,name:"#test1"})

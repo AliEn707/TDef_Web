@@ -50,6 +50,7 @@ Tower.prototype.constructor= Tower;
 Tower.prototype.getType= function (){
 	return ((this.type>0) ? TDef.types.tower[this.type] : this.engine.map.players[this.owner].type.base);
 }
+
 Tower.prototype.setHealth= function (health){
 	this.health=health;
 	var type_health=this.getType().health;
@@ -59,6 +60,7 @@ Tower.prototype.setHealth= function (health){
 	this.health_sprite.texture.setFrame({x:0,y:0,width:this.engine.textures.health.base.width*obj,height:this.engine.textures.health.base.height});
 	this.health_sprite.tint=healthColor(obj);
 }
+
 Tower.prototype.update= function (obj){
 	if (obj.health!=undefined)
 		this.setHealth(obj.health);

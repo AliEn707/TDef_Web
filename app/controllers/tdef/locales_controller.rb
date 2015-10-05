@@ -16,7 +16,7 @@ class Tdef::LocalesController < ApplicationController
 						key=request.POST['key'][i_i]
 						value=request.POST['value'][i_i]
 						if  (key!="" && name!="" && value!="")
-							locale=Tdef::LocaleData.where(key: key, locale_id: h_h[name].id).first
+							locale=Tdef::Locale::Data.where(key: key, locale_id: h_h[name].id).first
 							if !locale.nil? then
 								locale.value=value;
 								locale.user_id=current_user.id;
@@ -32,7 +32,7 @@ class Tdef::LocalesController < ApplicationController
 	end
 	
 	def get
-		data=Rails.cache.fetch("tdef_locale/#{@locale}",expires_in: 6.hours){"var locales=#{Tdef::Locale.where(name:@locale).first.locale_datas.inject({}){|o,c| o.merge({c.key=>c.value})}.to_json};"}
+    data=Rails.cache.fetch("tdef_locale/#{@locale}",expires_in: 6.hours){"var locales=#{Tdef::Locale.where(name:@locale).first.locale_datas.inject({}){|o,c| o.merge({c.key=>c.value})}.to_json};"}
 		send_data(data, type: "text/javascript; charset=utf-8", filename: "locale_#{@locale}.js", disposition:'inline')	
 	end
 end

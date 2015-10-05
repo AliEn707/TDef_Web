@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 	has_many :income_messages, :as =>:msg_dest, :class_name => "Message", :dependent => :destroy
 	#another way, not very good
 #	has_many :income_messages, :through => :messages, :source =>:msg_dest, :source_type => 'Message', :dependent => :destroy
-	has_many :locale_datas
+	has_many :locale_datas, class_name: "Tdef::Locale::Data"
 	has_many :maps, class_name: "Tdef::Map"
 	has_many :modified_maps, class_name: "Tdef::Map" , foreign_key: :last_modified_id
 	#friends
@@ -22,10 +22,11 @@ class User < ActiveRecord::Base
 	
 	has_one :profile
 	has_one :role
+	has_one :player, class_name: "Tdef::Player"
 	
+	after_create :add_role	
 	after_create :add_profile
-	after_create :add_role
-	
+	after_create :add_player
 	def friends
 #		User.where(id: friendships.select(:friend_id)).where(id: inverse_friendships.select(:user_id))
 		friends_in.where(id: friendships.select(:friend_id))
@@ -56,4 +57,17 @@ class User < ActiveRecord::Base
 	def add_role
 		self.role=User::Role.create(user: self)
 	end
+
+
+	def add_player
+		self.profile=Tdef::Player.create(user: self)
+	end
+=begin	
+	def self.serialize_from_session(key, salt)
+		single_key = key.is_a?(Array) ? key.first : key
+		User.where(:id => single_key).entries.first
+		p 
+
+	end
+=end
 end

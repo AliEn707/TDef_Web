@@ -23,6 +23,7 @@ var getEngine=function (){
 }
 
 var getFPSms=function (){
+//  console.log("fps "+statsFps())
 	return statsFps()/1000;//1/getEngine().frameTime; 
 }
 
@@ -98,6 +99,8 @@ function startDragging(data) {
 }
 
 function stopDragging(data) {
+	if (this.beforePressStop)
+		this.beforePressStop(data);
 		if (this.actions.indexOf("press")>-1){
 			if (!this.screenPressPoint)
 				this.screenPressPoint={};
@@ -108,12 +111,14 @@ function stopDragging(data) {
 			screenPressPoint.y = data.getLocalPosition(stage).y;
 			if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
 					Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
-				if (this.pressAction) //may be need smth to do
+				if (this.pressAction && !this.disable) //may be need smth to do
 					this.pressAction();
 			}
 		}
 		this.dragging = false;
 		dragObj=false;
+	if (this.afterPressStop)
+		this.afterPressStop(data);
 }
 
 

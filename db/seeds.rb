@@ -75,23 +75,6 @@ if (Tdef::MapServer.all.size==0) then
 	p "Tdef::MapServer seeded"
 end
 
-$available_locales.each do |l|
-	locale=Tdef::Locale.create(name:l) if ((locale=Tdef::Locale.where(name:l).first).nil?)
-	{
-		"#loading" => "Loading...",
-		"#events_menu_button" => "events",
-		"#public_auth_fail" => "Authentication error.",
-		"#mapserver_connecting" => "Connecting to map server...",
-		"#public_connecting" => "Connecting to public server...",
-		"#public_connect_fail" => "Can't connect to public server."
-	}.each do |k,v|
-		 if (locale.locale_datas.where(key: k).first.nil?)	then
-			locale.locale_datas<<Tdef::LocaleData.create(key: k,value: v,user_id: 2)
-			p "Tdef::Locale #{l} added #{k}"
-		end
-	end
-end
-
 if (Friendship.all.size==0) then
 	Friendship.create(user_id: 1,friend_id: 2)
 	Friendship.create(user_id: 1,friend_id: 3)
@@ -165,7 +148,10 @@ if (Tdef::Type::Npc.all.size==0) then
 	p "Tdef::Type:Npc seeded"
 end
 	
+###############################now important part
 
-	
+#check file in seeds folder
+Dir.entries("db/seeds").each{|f| load "db/seeds/#{f}" if (f[".rb"])}
+
 	
 puts "Seed completed"

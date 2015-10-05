@@ -18,7 +18,7 @@ function Bullet(opt){
 	this.id=opt.id || 0
 	this.type=opt.type || 1;
 	var textures=this.getType().textures;
-	this.sprites={};
+ this.sprites={};
 	for (var i in textures){
 		if (!textures[i]["texture"])
 			textures[i]["texture"]=getTextureFrames(textures[i]);
@@ -55,7 +55,7 @@ Bullet.prototype.constructor= Bullet;
 
 
 Bullet.prototype.getType= function (){
-	return bullet_types[this.type];
+	return TDef.types.bullet[this.type];
 }
 
 Bullet.prototype.getLength= function (source,position){

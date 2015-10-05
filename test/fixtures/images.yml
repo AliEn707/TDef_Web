@@ -1,7 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+<% require 'binary_serializer' %>
+png:
+  id: 1
+  data: <%= BinarySerializer.dump(File.open(Rails.root.join('test', 'images', 'tree.png'),"rb"){|f| f.read}).inspect %>
 
-one:
-  data: MyText
-
-two:
-  data: MyText
+jpeg:
+  id: 2
+  data: <%= BinarySerializer.dump(File.open(Rails.root.join('test', 'images', 'tree.jpeg'),"rb"){|f| f.read}).inspect %>

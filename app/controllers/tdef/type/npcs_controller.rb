@@ -6,7 +6,7 @@ class Tdef::Type::NpcsController < ApplicationController
   # GET /tdef/type/npcs
   # GET /tdef/type/npcs.json
   def index
-    @tdef_type_npcs = Tdef::Type::Npc.all
+    @tdef_type_npcs = Tdef::Type::Npc.order(:id)
   end
 
   # GET /tdef/type/npcs/1
@@ -54,7 +54,7 @@ class Tdef::Type::NpcsController < ApplicationController
   end
 
   def types
-	data="TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.npc="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
+	data="var TDef=TDef||{};TDef.types=TDef.types||{};TDef.types.npc="+Rails.cache.fetch('types/npc',expires_in: 30.minutes) do
 		out={}
 		images=[]
 		Tdef::Type::Npc.all.each do |t|

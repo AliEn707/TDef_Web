@@ -8,10 +8,12 @@
 					<%= @f.fields_for :params do |params_form|%>
 						<%params_not=tower_type_params.keys-@tdef_type_tower.params.keys%>
 						<% ((@tdef_type_tower.params.keys-params_not)+params_not).each do |k|%>
-							<div class="<%= grid_class(@tdef_type_tower.id) %>">
-								<%=params_form.label k, t("types."+k)%>
-								<%=params_form.send(tower_type_params[k], k, value: @tdef_type_tower.params[k], form:  @f.options[:html][:id], checked: @tdef_type_tower.params[k].to_i==1)%>
-							</div>
+               <% if (tower_type_params[k]) %>
+                <div class="<%= grid_class(@tdef_type_tower.id) %>">
+                  <%=params_form.label k, t("types."+k)%>
+                  <%=params_form.send(tower_type_params[k], k, value: @tdef_type_tower.params[k], form:  @f.options[:html][:id], checked: @tdef_type_tower.params[k].to_i==1)%>
+                </div>
+						  <%end%>
 						<%end%>
 					<%end%>
 				</div>
