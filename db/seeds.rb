@@ -112,30 +112,8 @@ end
 	
 ###############################now important part
 
-# Lets set missed locales
-keys={}
-$available_locales.inject([]) do |o, l| #returns array of Tdef::Locales
-  loc = (Tdef::Locale.where(name:l).first || Tdef::Locale.create(name:l))
-  keys= if (l=='en') #get all different keys, en in priority 
-    keys.merge(loc.locale_datas.inject({}){|h,d| h.merge(d.key=>d.value)})
-  else
-    loc.locale_datas.inject({}){|h,d| h.merge(d.key=>d.value)}.merge(keys)
-  end
-  o<< loc
-end.each do |locale|
-  JSON.load(File.open("db/locales.json","rt"){|f| f.read}).merge(keys).each do |k,v| #add required datas
-    if (locale.locale_datas.where(key: k).first.nil?)	then
-			locale.locale_datas<<Tdef::Locale::Data.create(key: k,value: v,user_id: 2)
-			p "Tdef::Locale #{locale.name} added #{k}"
-		end
-	end
-end
+#check file in seeds folder
+Dir.entries("db/seeds").each{|f| load "db/seeds/#{f}" if (f[".rb"])}
 
-#set missed players
-User.all.each do |p|
-	p.player=Tdef::Player.create(user: p)	if (p.player.nil?) # set Tdef::Player
-	p.player.auth=Tdef::Player.create(player: p.player) if (p.player.auth.nil?) #set Tdef::Player::Auth
-end
-	
 	
 puts "Seed completed"
