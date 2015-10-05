@@ -52,7 +52,7 @@ function MapPlayer(opt){
 	var tw=[new PIXI.Texture.fromImage("/imgtest/green.jpg")]
 	
 	if (engine.map.players.id==this.id){
-		var buttonSize={x:50,y:50}
+		var buttonSize={x:50, y:50}
 		var cont=getTextureFrames(engine.textures.npc_set_background);
 		var size={width:buttonSize.x+2*5, height:buttonSize.y*9+10*5}
 		var buttons=new ButtonContainer({
@@ -68,7 +68,7 @@ function MapPlayer(opt){
 		});
 		buttons.keyPadInit({rows: 9, columns: 1, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.npc)
-			if ((parseInt(i) || parseInt(i)==0) && TDef.types.tower[parseInt(i)]){
+			if ((parseInt(i) || parseInt(i)==0) && TDef.types.npc[this.set.npc[i].id]){
 				this.set.npc[i].button=buttons.keyPadAddButton({sprite:{textures: t,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnNpc(this.args);}});
 			}
 		this.set.npc.buttons=buttons;
@@ -89,13 +89,20 @@ function MapPlayer(opt){
 			},
 			actions:["drag"]
 		});
+		var menu=new ButtonContainer({position:{x:100,y:100}}); //menu on press buildable node
 		buttons.keyPadInit({rows: 9, columns: 1, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
+		menu.keyPadInit({columns: 9, buttonSize: {x:55,y:55}, buttonDist:{x:50}, circle:{centered: false}});
 		for(var i in this.set.tower)
-			if ((parseInt(i) || parseInt(i)==0) && TDef.types.npc[parseInt(i)]){
-				this.set.tower[i].button=buttons.keyPadAddButton({sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}});
+			if ((parseInt(i) || parseInt(i)==0) && TDef.types.tower[this.set.tower[i].id]){
+				this.set.tower[i].button=buttons.keyPadAddButton({sprite: {textures: tw, opt: {}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}});//TODO: try to remove
+				this.set.tower[i].menu=menu.keyPadAddButton({sprite: {textures: tw, opt: {}}, actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnTower(this.args,menu.id); engine.map.outBuildable(engine.map);}});
 			}
 		this.set.tower.buttons=buttons;
+		this.set.tower.menu=menu;
+		menu.visible=false;
 		engine.map.objects["tower_set"]=buttons;
+		engine.map.objects["tower_menu"]=menu;
+		engine.stage.addChild(menu);
 		engine.stage.addChild(buttons);
 	}
 	

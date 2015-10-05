@@ -270,18 +270,36 @@ Grid.prototype.setFocus = function(){
 }
 
 
+Grid.prototype.overBuildable = function(){
+	var menu=this.map.objects["tower_menu"];
+	if (!menu)
+		return;
+	menu.id=this.id;
+	menu.position=this.map.gridToScreen(this.position.x/this.map.nodesize+0.5, this.position.y/this.map.nodesize+0.5);
+	menu.visible=true;
+}
+
+Grid.prototype.outBuildable = function(map){
+	map= map || this.map;
+	var menu=map.objects["tower_menu"];
+	if (!menu)
+		return;
+	menu.visible=false;
+}
+
 Grid.prototype.setBuildableNode = function(id, textures, opt){
 	opt=opt || {};
 	opt.height= this.nodesize;
 	opt.width= this.nodesize;
-	opt.anchor={x:0,y:1};
-	var node=new ASprite(textures, opt);
-	var pos=this.getPosition(id)
+	opt.anchor={x:0, y:1};
+	var node=new ButtonContainer({sprite: new ASprite(textures, opt), actions: ['press'], pressAction: this.overBuildable});
+	node.map=this;
+	var pos=this.getPosition(id);
 	
-	node.position.x=pos.x
-	node.position.y=pos.y
+	node.position.x=pos.x;
+	node.position.y=pos.y;
 	node.rotation=Math.PI/2;
-	node.id=id
+	node.id=id;
 	
 	this.buildable.addChild(node);
 }
@@ -312,7 +330,7 @@ Grid.prototype.setOuterNode = function(pos, id, terrain, x, y){
 	node.position.y=y*this.nodesize
 	node.rotation=Math.PI/2;
 	node.anchor.y=1;
-	node.id=id
+	node.id=id;
 	
 	this.nodesOut[pos].addChildAt(node, id);
 }
@@ -333,7 +351,7 @@ Grid.prototype.setWall = function(wall,i){
 	wc.addChild(wcc);
 	wc.depth=this.objDepth(w.position.x/this.nodesize+0.5,w.position.y/this.nodesize+0.5)+0.02;
 	if (!i){
-		i=0
+		i=0;
 		while (this.objects["wall"+i]) i++; //bad but is
 	}
 	this.objects["wall"+i]=wc;
