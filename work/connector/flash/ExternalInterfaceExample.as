@@ -78,7 +78,7 @@ package {
 	
         private function setupCallBacks():void {
 		output.appendText("Adding callback...\n");
-		ExternalInterface.addCallback("sendToActionScript", receivedFromJavaScript);
+		ExternalInterface.addCallback("sendToConnector", receivedFromJavaScript);
                 ExternalInterface.addCallback("mapConnect", connectMap);
                 ExternalInterface.addCallback("mapClose", closeMap);
                 ExternalInterface.addCallback("mapSend", sendMap);
@@ -529,7 +529,7 @@ package {
 		}
 	}
 	
-	private function closeMap(host:String, port:String):void {
+	private function closeMap():void {
 		mapSock.close();
 		var event:Event;
 		mapConnectCloseHandler(event);
