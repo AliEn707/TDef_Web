@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>LiveConnect - Java-Javascript communnication demo</title>
+    </head>
+    <body>
+        <center>
+            <applet id="testApplet"
+                code="TestApplet.class"
+                width="200" height="80"
+                    >
+            </applet>
+        </center>
+    </body>
+    <script type="text/javascript">
+        var coop = "Ooops!";
+        this[1] = "Slot 1";
+ 
+        function foo() {
+            return "This is from foo()";
+        }
+ 
+        function bar(firstName, lastName) {
+            return "Greeting " + firstName + " " + lastName + "!";
+        }
+    </script>
+</html>
