@@ -4,14 +4,32 @@
     </head>
     <body>
         <center>
-            <applet id="testApplet"
-                code="TestApplet.class"
-                width="200" height="80"
+ <!--      
+            <object id="connector"
+              classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
+              codebase="http://www.oracle.com/technetwork/java/javase/downloads">
+              <param name="code" value="connector.class">
+                <comment>
+                  <embed code="connector.class" 
+                    type="application/x-java-applet;version=1.6"
+                    pluginspage="http://www.oracle.com/technetwork/java/javase/downloads"
+                    name="connector"
                     >
-            </applet>
+                    <noembed>
+                      No Java Support.
+                    </noembed>
+                  </embed>
+                </comment>
+              </object>
+-->              
         </center>
     </body>
     <script type="text/javascript">
+//        var attributes = { //id:"connector",
+//          code:'connector',  width:200, height:200} ;
+//        var parameters = {}//{ jnlp_href: 'connector.jnlp'} ;
+//        deployJava.runApplet(attributes, parameters, '1.6');
+        
         var coop = "Ooops!";
         this[1] = "Slot 1";
  
@@ -22,5 +40,57 @@
         function bar(firstName, lastName) {
             return "Greeting " + firstName + " " + lastName + "!";
         }
+        
+        function javaTest(){
+          alert(getConnector().test())
+        }
+        function logJS(v,b){
+          console.log(v,b)
+        }
+        
+        function getConnector() {
+          movieName="connector";
+          if (navigator.appName.indexOf("Microsoft") != -1) {
+            return window[movieName];
+          } else {
+            return document[movieName];
+          }
+        }
+        
+        function createConnector(place){
+          var obj;
+          if (/*@cc_on!@*/false) {
+            document.write('<OBJECT ','id="connector"',
+                   'classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93">',
+                   '<PARAM name="code" value="connector.class">',
+                   '</OBJECT>');
+          }else{
+            obj = document.createElement('embed')
+            obj.setAttribute('code', 'connector.class')
+            obj.setAttribute('id', 'connector')
+            obj.setAttribute('src', '<%= asset_url("connector.swf") %>')
+            obj.setAttribute('width', '500')
+            obj.setAttribute('height', '375')
+            obj.setAttribute('name', 'connector')
+            obj.setAttribute('align', 'middle')
+            obj.setAttribute('type', 'application/x-java-applet;version=1.6')
+            obj.setAttribute('pluginspage', 'http://www.oracle.com/technetwork/java/javase/downloads')
+           
+            place=place || document.body
+            place.appendChild(obj)
+          }
+          
+//          obj.style.zIndex=0
+  //        obj.style.position="absolute"
+    //      obj.style.left="0px"//-width
+      //    obj.style.top="0px"
+        //	obj.setAttribute("hidden","")
+          
+          
+        }
+        createConnector()
     </script>
+    
+    <button onclick=javaTest()>test </button>
 </html>
+         
