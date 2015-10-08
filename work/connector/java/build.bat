@@ -4,6 +4,6 @@
 @set PATH=%root%\devel\jdk1.8.0_60\bin;%folder%\..\..\..\..\..\devel\jdk1.8.0_60\bin;%PATH%
 @set CLASSPATH=classpath1;classpath2
 
-javac connector.java -d ../
+javac connector.java -d ./
 @rem ../../../app/assets/other/
 pause
