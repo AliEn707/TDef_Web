@@ -50,18 +50,31 @@ function Grid(size,opt){
 //	this.transformCorrection()
 	this.players={};
 	this.depth=200000000; //TODO: change stupid way
-	//set borders
-	this.window=new ButtonContainer({
+	
+	this.setBorders();
+	this.setNpcTowerSets();
+}
+
+Grid.prototype.resize = function(width, height){
+	this.transformCorrection();
+	this.bordersCorrection(width, height);
+	for (var i in this.children)
+		if (this.children[i].resize)
+			this.children[i].resize(width,height)
+}
+
+Grid.prototype.setBorders= function (){
+	this.borders=new ButtonContainer({position:{x:0,y:0}});
+	this.borders.left=this.borders.addButton({
 		sprite:{
 			textures: getTextureFrames(this.engine.textures.black),
 			opt:{
 				width: this.border.left+0.01,
-				height: this.engine.renderer.view.height
+				height: this.engine.renderer.view.height-this.border.bottom
 			}
-		},
-		float:{y:"fixed"}
+		}
 	});//left
-	this.window.addButton({
+	this.borders.top=this.borders.addButton({
 		sprite:{
 			textures: getTextureFrames(this.engine.textures.black),
 			opt:{
@@ -72,25 +85,22 @@ function Grid(size,opt){
 		position: {
 			x: this.border.left,
 			y: 0
-		},
-		float:{x:"fixed"}
+		}
 	});//top
-	this.window.addButton({
+	this.borders.bottom=this.borders.addButton({
 		sprite:{
 			textures: getTextureFrames(this.engine.textures.black),
 			opt:{
-				width: this.engine.renderer.view.width-this.border.left,
+				width: this.engine.renderer.view.width,
 				height: this.border.bottom+0.01
 			}
 		},
 		position: {
-			x: this.border.left,
-			y: this.engine.renderer.view.height-this.border.bottom,
-			float:{y:"fixed"}
-		},
-		float:{x:"fixed"}
+			x: 0,
+			y: this.engine.renderer.view.height-this.border.bottom
+		}
 	});//bottom
-	this.window.addButton({
+	this.borders.right=this.borders.addButton({
 		sprite:{
 			textures: getTextureFrames(this.engine.textures.black),
 			opt:{
@@ -100,18 +110,29 @@ function Grid(size,opt){
 		},
 		position: {
 			x: this.engine.renderer.view.width-this.border.right,
-			y: this.border.top,
-			float:{x:"fixed"}
-		},
-		float:{y:"fixed"}
+			y: this.border.top
+		}
 	});//right
-	this.window.depth=-0.1;
-	this.engine.stage.addChild(this.window);
+	this.borders.depth=-0.1; //allways on screen
+	this.engine.stage.addChild(this.borders);
 }
 
-focusTexturePath="/imgtest/build.png";
-buildableTexturePath="/imgtest/tower_mark.png";
+Grid.prototype.bordersCorrection= function (w,h){
+	//set sizes
+	this.borders.left.height=h-this.borders.bottom.height;
+	this.borders.bottom.width=w;
+	this.borders.right.height=h-this.borders.bottom.height-this.borders.top.height;
+	this.borders.top.width=w-this.borders.right.width;
+	//set positions
+	this.borders.bottom.position.y=this.borders.left.height;
+	this.borders.right.position.y=this.borders.top.height;
+	this.borders.right.position.x=w-this.borders.right.width;
+	this.borders.top.position.x=this.borders.left.width;
+}
 
+Grid.prototype.setNpcTowerSets= function (){
+	console.log(this.borders.bottom.width,this.borders.bottom.height)
+}
 
 Grid.prototype.weelHandler= function (m){
 	var e=m.originalEvent;
@@ -126,13 +147,6 @@ Grid.prototype.weelHandler= function (m){
 		this.zoom(1+that.settings.zoomSpeed*(delta<0 ? -1 : 1)*that.settings.weelInverted, x, y)
 		//add another hendlers
 	}
-}
-
-Grid.prototype.resize = function(width, height){
-	this.transformCorrection();
-	for (var i in this.children)
-		if (this.children[i].resize)
-			this.children[i].resize(width,height)
 }
 
 Grid.prototype.translate = function(x,y){
@@ -387,10 +401,7 @@ Grid.prototype.clean = function(){
 	for(var i in this.objects){
 		this.engine.stage.removeChild(this.objects[i]);
 	}
-	this.engine.stage.removeChild(this.objects["npc_set"]);
-	this.engine.stage.removeChild(this.objects["tower_set"]);
-	this.engine.stage.removeChild(this.window);
-	this.engine.stage.removeChild(this.window);
+	this.engine.stage.removeChild(this.borders);
 	this.engine.stage.removeChild(this);
 	//TODO: add switch to public
 }
