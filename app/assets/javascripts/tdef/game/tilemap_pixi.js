@@ -118,6 +118,7 @@ Grid.prototype.setBorders= function (){
 }
 
 Grid.prototype.bordersCorrection= function (w,h){
+	this.setsCorrection(w, h);
 	//set sizes
 	this.borders.bottom.height=this.border.bottom;
 	
@@ -143,9 +144,8 @@ Grid.prototype.setSets= function (width, height){
 	var prog=0.2; //size of progress bars 
 	
 	var c=1+prog;//
-	var h=(this.borders.bottom.width+(36*c-20)*offset)/(18*c+1);
+	var h=(width+(36*c-20)*offset)/(18*c+1);
 	this.border.bottom=h;
-		console.log(this.borders.bottom.width,(9*c*(h-2*offset)+10*offset)*2+h)
 	var size=h-offset*2;
 	var psize=size*prog;
 	var cont=getTextureFrames(this.engine.textures.npc_set_background);
@@ -168,7 +168,7 @@ Grid.prototype.setSets= function (width, height){
 	
 	for(var i=0;i<9;i++){
 		var b=buttons.addButton({sprite:{textures: t,opt:{width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}, actions:["press"], args: {button: i}, pressAction: func});
-		b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
+		b.progress=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
 		b.blur=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt:{width: size, height: size}}, position:{x: 0,y: 0}});
 		b.blur.alpha=0.8;
 		b.disabled=true;
@@ -198,7 +198,7 @@ Grid.prototype.setSets= function (width, height){
 	
 	for(var i=0;i<9;i++){
 		var b=buttons.addButton({sprite: {textures: tw, opt: {width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}});//TODO: try to remove
-		b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
+		b.progress=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
 		b.blur=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt:{width: size, height: size}}, position:{x: 0,y: 0}});
 		b.blur.alpha=0.8;
 		var m=menu.keyPadAddButton({sprite: {textures: tw, opt: {}}, actions:["press"], args: parseInt(i), pressAction: func});
@@ -226,13 +226,54 @@ Grid.prototype.setSets= function (width, height){
 		actions:["press"],
 		pressAction: function(){console.log("Pressed")}//TODO: add normal action
 	});
+	this.set.targeting=buttons;
 	this.borders.bottom.addChild(buttons);
 	
 	this.bordersCorrection(width, height);
 }
 
-Grid.prototype.setsCorrection= function (w,h){
-	//TODO: add correction
+Grid.prototype.setsCorrection= function (width, height){
+	var offset=5; //need to be calculated
+	var prog=0.2; //size of progress bars 
+	
+	var c=1+prog;//
+	var h=(width+(36*c-20)*offset)/(18*c+1);
+	this.border.bottom=h;
+	var size=h-offset*2;
+	var psize=size*prog;
+	
+	this.set.npc.width=(width-h)/2;
+	this.set.npc.height=h;
+	for (var i in this.set.npc.buttons){
+		var button=this.set.npc.buttons[i];
+		button.position.x=offset+parseInt(i)*(size+psize+offset);
+		button.blur.width=size;
+		button.blur.height=size*button.blur.height/button.width;
+		button.width=size;
+		button.height=size;
+		button.progress.width=psize;
+		button.progress.height=size;
+		button.progress.position.x=size;
+		//add progress status size
+	}
+	this.set.tower.width=(width-h)/2;
+	this.set.tower.height=h;
+	this.set.tower.position.x=(width-h)/2+h;
+	for (var i in this.set.tower.buttons){
+		var button=this.set.tower.buttons[i];
+		button.position.x=offset+parseInt(i)*(size+psize+offset);
+		button.blur.width=size;
+		button.blur.height=size*button.blur.height/button.width;
+		button.width=size;
+		button.height=size;
+		button.progress.width=psize;
+		button.progress.height=size;
+		button.progress.position.x=size;
+		//add progress status size
+	}
+	this.set.targeting.position.x=(width-h)/2;
+	this.set.targeting.width=h;
+	this.set.targeting.height=h;
 }
 
 Grid.prototype.weelHandler= function (m){
