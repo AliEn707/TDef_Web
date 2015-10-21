@@ -161,7 +161,11 @@ Grid.prototype.setSets= function (width, height){
 			y: 0,
 		}
 	});
-	function func(){if (!this.disabled) mapSpawnNpc(this.args.button);}
+	function func(){
+		if (!this.disabled) 
+			mapSpawnNpc(this.args.button);
+	}
+	
 	for(var i=0;i<9;i++){
 		var b=buttons.addButton({sprite:{textures: t,opt:{width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}, actions:["press"], args: {button: i}, pressAction: func});
 		b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
@@ -187,7 +191,11 @@ Grid.prototype.setSets= function (width, height){
 	});
 	var menu=new ButtonContainer({position:{x:100,y:100}}); //menu on press buildable node
 	menu.keyPadInit({columns: 10, buttonSize: buttonSize, buttonDist:{x:buttonSize.x*1.55}, circle:{centered: false}});
-	function func(){if (!this.disabled) mapSpawnTower(this.args,menu.id); engine.map.outBuildable(engine.map);};
+	function func(){
+		if (!this.disabled) 
+			mapSpawnTower(this.args,menu.id); 
+	}
+	
 	for(var i=0;i<9;i++){
 		var b=buttons.addButton({sprite: {textures: tw, opt: {width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}});//TODO: try to remove
 		b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
@@ -199,6 +207,7 @@ Grid.prototype.setSets= function (width, height){
 		m.disabled=true;
 	}
 	
+	this.engine.beforeClickGlobalAdd(function(){engine.map.outBuildable(engine.map);});
 	menu.visible=false;
 	this.set.tower=buttons;
   this.borders.bottom.addChild(buttons);
@@ -386,7 +395,7 @@ Grid.prototype.overBuildable = function(){
 }
 
 Grid.prototype.outBuildable = function(map){
-	map= map || this.map;
+	map= map || getEngine().map;
 	var menu=map.objects["tower_building_menu"];
 	if (!menu)
 		return;

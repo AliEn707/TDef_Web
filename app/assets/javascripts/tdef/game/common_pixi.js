@@ -56,6 +56,7 @@ function incredibleHack(){
 
 function startDragging(data) {
 	var f=false;
+	getEngine().beforeClickGlobal();
 	//hack for dragging objects with dragging parents
 	if (!dragObj || dragObj==this.parent){
 		dragObj=this;
@@ -157,6 +158,8 @@ function findCurObject(obj, pos){
 
 function weelHandler(data){
 	var pos={x: data.layerX || data.clientX, y: data.layerY || data.clientY};
+	getEngine().beforeClickGlobal();
+	
 	lastObj=false;
 	findCurObject(getEngine().stage, pos);
 	if (lastObj)
