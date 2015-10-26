@@ -43,20 +43,8 @@ function clone(obj){
 		return JSON.parse(JSON.stringify(obj))
 }
 
-function healthColor(p){
-	var a={
-		red: parseInt(255*(1-p)),
-		green: parseInt(255*p),
-		blue:0
-	}
-	for (var i in a)
-		if((a[i]=a[i].toString(16)).length<2){
-			a[i]='0'+a[i];
-		}
-	return parseInt(a.red+a.green+a.blue,16);
-}
 
-//objects gragging hack
+//objects dragging hack
 var dragObj;
 function incredibleHack(){
 	if (this.children)
@@ -68,6 +56,7 @@ function incredibleHack(){
 
 function startDragging(data) {
 	var f=false;
+	getEngine().beforeClickGlobal();
 	//hack for dragging objects with dragging parents
 	if (!dragObj || dragObj==this.parent){
 		dragObj=this;
@@ -99,6 +88,8 @@ function startDragging(data) {
 }
 
 function stopDragging(data) {
+	if (this.beforePressStop)
+		this.beforePressStop(data);
 		if (this.actions.indexOf("press")>-1){
 			if (!this.screenPressPoint)
 				this.screenPressPoint={};
@@ -109,12 +100,14 @@ function stopDragging(data) {
 			screenPressPoint.y = data.getLocalPosition(stage).y;
 			if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
 					Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
-				if (this.pressAction) //may be need smth to do
+				if (this.pressAction && !this.disable) //may be need smth to do
 					this.pressAction();
 			}
 		}
 		this.dragging = false;
 		dragObj=false;
+	if (this.afterPressStop)
+		this.afterPressStop(data);
 }
 
 
@@ -165,6 +158,8 @@ function findCurObject(obj, pos){
 
 function weelHandler(data){
 	var pos={x: data.layerX || data.clientX, y: data.layerY || data.clientY};
+	getEngine().beforeClickGlobal();
+	
 	lastObj=false;
 	findCurObject(getEngine().stage, pos);
 	if (lastObj)
@@ -186,6 +181,44 @@ function getTextureFrames(opt){
 		}
 	}
 	return opt.textures;
+}
+
+/*
+	obj - object that contains width, and height
+	opt:{
+*		width: int
+*		height: int
+	} - will be procced only first argument
+*/
+function getProportionalSize(obj, opt){
+	if (!opt.width && !opt.height)
+		return;
+	var texture = obj;//TODO: add sprite, asprite, button
+	var matching = {width: 'height',height: 'width'};
+	for (var i in opt)
+		if (matching[opt[i]])
+			return texture[matching[opt[i]]];
+}
+
+//from:int, to:int, p:float(0,1)
+function getGradientColor(from, to, p){
+	function R(argb){return ((argb>>16)&0xFF);}
+	function G(argb){return ((argb>>8)&0xFF);}
+	function B(argb){return ((argb)&0xFF);}
+	var a={
+		red: parseInt(R(from)-(R(from)-R(to))*p),
+		green: parseInt(G(from)-(G(from)-G(to))*p),
+		blue: parseInt(B(from)-(B(from)-B(to))*p)
+	}
+	for (var i in a)
+		if((a[i]=a[i].toString(16)).length<2){
+			a[i]='0'+a[i];
+		}
+	return parseInt(a.red+a.green+a.blue,16);
+}
+
+function healthColor(p){
+	return getGradientColor(0xff0000, 0x00ff00, p);
 }
 
 function fitDimensions(from, to){ //from -screen to - wallpaper

@@ -22,13 +22,9 @@
 
 
 
-
-var submissionSetted=false;
 function setSubmission(){
-	if (!submissionSetted){
-		submissionSetted=true;
+	if (!window.onbeforeunload)
 		window.onbeforeunload=function (){return " "};
-	}
 }
 
 function removeSubmission(){

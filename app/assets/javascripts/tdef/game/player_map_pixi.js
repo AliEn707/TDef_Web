@@ -45,60 +45,25 @@ function MapPlayer(opt){
 	this.hero=opt.hero;
 	this.targeting=opt.targeting;
 	
-		var engine=getEngine();
+	var engine=getEngine();
 	
 	//TODO:remove	
 	var t=[new PIXI.Texture.fromImage("/imgtest/red.jpeg")]
 	var tw=[new PIXI.Texture.fromImage("/imgtest/green.jpg")]
 	
 	if (engine.map.players.id==this.id){
-		var buttonSize={x:50,y:50}
-		var cont=getTextureFrames(engine.textures.npc_set_background);
-		var size={width:buttonSize.x+2*5, height:buttonSize.y*9+10*5}
-		var buttons=new ButtonContainer({
-			sprite:{
-				textures:cont,
-				opt:size
-			},
-			position:{
-				x:0,
-				y:engine.renderer.height/2-(buttonSize.y*9+10*5)/2,
-			},
-			actions:["drag"]
-		});
-		buttons.keyPadInit({rows: 9, columns: 1, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.npc)
-			if (parseInt(i) || parseInt(i)==0){
-				this.set.npc[i].button=buttons.keyPadAddButton({sprite:{textures: t,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){mapSpawnNpc(this.args);}});
+			if ((parseInt(i) || parseInt(i)==0) && TDef.types.npc[this.set.npc[i].id]){
+				engine.map.set.npc.buttons[i].blur.height=0.1;
+				engine.map.set.npc.buttons[i].disabled=false;
 			}
-		this.set.npc.buttons=buttons;
-		engine.map.objects["npc_set"]=buttons;
-		engine.stage.addChild(buttons);
-		
-		cont=getTextureFrames(engine.textures.tower_set_background);
-		buttonSize={x:50,y:50}
-		size={width:buttonSize.x+2*5,height:buttonSize.y*9+10*5}
-		buttons=new ButtonContainer({
-			sprite:{
-				textures:cont,
-				opt:size
-			},
-			position:{
-				x:100,
-				y:200
-			},
-			actions:["drag"]
-		});
-		buttons.keyPadInit({rows: 9, columns: 1, buttonSize: buttonSize, buttonDist:{x:5,y:5}});
 		for(var i in this.set.tower)
-			if (parseInt(i) || parseInt(i)==0){
-				this.set.tower[i].button=buttons.keyPadAddButton({sprite:{textures: tw,opt:{}},actions:["press"], args: parseInt(i), pressAction:function(){var z=this.args;engine.map.setAction(function (id){var t=z;mapSpawnTower(t,id);})}});
+			if ((parseInt(i) || parseInt(i)==0) && TDef.types.tower[this.set.tower[i].id]){
+				engine.map.set.tower.buttons[i].blur.height=0.1;
+				engine.map.objects.tower_building_menu.buttons[i].blur.height=0.1;
+				engine.map.objects.tower_building_menu.buttons[i].disabled=false;
 			}
-		this.set.tower.buttons=buttons;
-		engine.map.objects["tower_set"]=buttons;
-		engine.stage.addChild(buttons);
 	}
-	
 }
 
 MapPlayer.prototype.constructor= MapPlayer;
