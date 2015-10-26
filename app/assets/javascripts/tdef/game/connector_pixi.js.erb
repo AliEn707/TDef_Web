@@ -22,10 +22,10 @@ function getConnector() {
 ///public network functions
 
 //connect to public
-//publicConnect("localhost","7001","test","123456")
-function publicConnect(host,port, name, token) {
+//publicConnect("localhost","7001")
+function publicConnect(host, port) {
 	Loading.show("#public_connecting");
-	getConnector().publicConnect(host,port,name,token);
+	getConnector().publicConnect(host, port, access().name, access().token);
 }
 
 //

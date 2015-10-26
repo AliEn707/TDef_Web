@@ -1,6 +1,6 @@
 try{
 	function afterConnectorReady(){
-		publicConnect("<%=request.host%>",7001,"<%=current_user.email%>","<%=rand(2147483647)%>");
+		publicConnect("<%=request.host%>",7001);
 	}	
 	afterWindowLoad(function init(){
 		var engine = new TDefEngine(
