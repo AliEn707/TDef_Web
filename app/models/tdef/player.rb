@@ -1,6 +1,7 @@
 class Tdef::Player < ActiveRecord::Base
-	has_one :auth
 	belongs_to :user
+	has_one :auth
+	has_many :logs
 	
 	after_create :add_auth
 	
