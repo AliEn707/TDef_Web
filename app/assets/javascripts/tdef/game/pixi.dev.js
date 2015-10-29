@@ -17129,7 +17129,7 @@ PIXI.BaseTexture.prototype.destroy = function()
 PIXI.BaseTexture.prototype.updateSourceImage = function(newSrc)
 {
     this.hasLoaded = false;
-    this.source.src = null;
+//    this.source.src = null;
     this.source.src = newSrc;
 };
 
