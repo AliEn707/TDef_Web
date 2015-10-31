@@ -1,9 +1,16 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  properties: MyText
+  properties: 
   token: 
+  player_id: 1
 
 two:
-  properties: MyText
+  properties: 
   token: 
+  player_id: 2
+
+admin:
+  properties: 
+  token: 
+  player_id: 3
