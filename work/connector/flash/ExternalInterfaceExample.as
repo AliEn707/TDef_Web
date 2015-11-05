@@ -679,6 +679,7 @@ package {
 				private const PLAYER_HERO_COUNTER:int= BIT_6;
 				private const PLAYER_TARGET:int= BIT_7;
 				private const PLAYER_FAIL:int= BIT_8;
+				private const PLAYER_SETS:int= BIT_9;
 				
 				private var mapDataSeq:Array = new Array();
 				private var mapObj:String="";
@@ -921,22 +922,6 @@ package {
 							mapDataSeq.push("id","int");
 							if ((bitMask&PLAYER_CREATE)!=0){ 
 								mapDataSeq.push("pid","int");
-								mapDataSeq.push("tower_set","{");
-								for(i=0;i<NPC_SET_SIZE;i++){
-									mapDataSeq.push(""+i,"{");
-									mapDataSeq.push("id","int");
-									mapDataSeq.push("size","int");
-									mapDataSeq.push("$","}");
-								}
-								mapDataSeq.push("$","}");//TODO : add normal parser
-								mapDataSeq.push("npc_set","{");//fix
-								for(i=0;i<TOWER_SET_SIZE;i++){
-									mapDataSeq.push(""+i,"{");
-									mapDataSeq.push("id","int");
-									mapDataSeq.push("size","int");
-									mapDataSeq.push("$","}");
-								}
-								mapDataSeq.push("$","}");
 								mapDataSeq.push("group","int");
 								mapDataSeq.push("_hero_counter","int");
 								
@@ -946,6 +931,25 @@ package {
 								mapDataSeq.push("hero_type","{");//fix
 								mapDataSeq.push("health","int");//fix
 								mapDataSeq.push("shield","int");//fix
+								mapDataSeq.push("$","}");
+							}
+							if ((bitMask&PLAYER_SETS)!=0){
+								mapDataSeq.push("tower_set","{");
+									for(i=0;i<NPC_SET_SIZE;i++){
+										mapDataSeq.push(""+i,"{");
+										mapDataSeq.push("id","int");
+										mapDataSeq.push("size","int");
+										mapDataSeq.push("$","}");
+									}
+								mapDataSeq.push("$","}");//TODO : add normal parser
+								
+								mapDataSeq.push("npc_set","{");//fix
+									for(i=0;i<TOWER_SET_SIZE;i++){
+										mapDataSeq.push(""+i,"{");
+										mapDataSeq.push("id","int");
+										mapDataSeq.push("size","int");
+										mapDataSeq.push("$","}");
+									}
 								mapDataSeq.push("$","}");
 							}
 							if ((bitMask&PLAYER_HERO)!=0){ 
