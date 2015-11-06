@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
 		redirect_to "/404.html" if current_user.nil? || !current_user.admin
 	end
 	
-        def profile_check
+	def profile_check
 		if (!current_user.nil? && controller_name!="sessions")
 			profile=current_user.profile
 			prop=[]

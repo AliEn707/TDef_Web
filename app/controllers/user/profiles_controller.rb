@@ -42,9 +42,11 @@ class User::ProfilesController < ApplicationController
 	# PATCH/PUT /user/profiles/1.json
 	def update
 		Image.where(id: params["old_images"]).destroy_all if params["old_images"]
-		if @user_profile.update(user_profile_params)
+		if (!@user_profile.uniq?)
+			render action: 'edit', notice: t("user.profile.property_already_exists", property: t("user.profile.#{"NICK"}"))
+		elsif (@user_profile.update(user_profile_params))
 			check_image
-			redirect_to @user_profile, notice: 'Profile was successfully updated.'
+			redirect_to @user_profile, notice: t("user.profile.updated")
 		else
 			render action: 'edit'
 		end
