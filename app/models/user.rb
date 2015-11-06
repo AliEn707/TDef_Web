@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
 	end
 	
 	def add_player
-		self.profile=Tdef::Player.create(user: self)
+		self.player=Tdef::Player.create(user: self)
 	end
 =begin	
 	 def self.serialize_from_session(key, salt)

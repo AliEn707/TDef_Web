@@ -78,6 +78,7 @@ Npc.prototype.setSpriteByVector= function (v){
   var length=Math.sqrt(v.x*v.x+v.y*v.y);
   if (length<0.03)
     return;
+	
 	var ang=this.getAngle(v, length);
 	var p8=Math.PI/8;
 	//need to correct
@@ -205,12 +206,17 @@ Npc.prototype.setSpriteAdd= function (name){
 }
 
 Npc.prototype.setSprite= function (name){
-	this.removeChild(this.sprites[this.sprite]);
-	this.sprite=name;
-	//TODO: check, maybe not need
-	if (!this.sprites[this.sprite].loop)
-		this.sprites[this.sprite].chooseFrame(0);
-	this.addChildAt(this.sprites[this.sprite],0);
+	var sprite=this.sprite.split("_");
+	if (sprite[0]!=name){
+		this.removeChild(this.sprites[this.sprite]);
+		this.sprite=name;
+		if (sprite[1])
+			this.sprite+='_'+sprite[1];
+		//TODO: check, maybe not need
+		if (!this.sprites[this.sprite].loop)
+			this.sprites[this.sprite].chooseFrame(0);
+		this.addChildAt(this.sprites[this.sprite],0);
+	}
 }
 
 Npc.prototype.setWalk= function (){
