@@ -44,11 +44,17 @@ opt		x: string - 'fixed' or 'float'
 opt		y: string - 'fixed' or 'float'
 	} 
 }
-opt	pressAction: func
-opt	beforeMouseOver: func
-opt	afterMouseOver: func
-opt	beforeMouseOut: func
-opt	afterMouseOut: func
+opt	pressActions: [func]
+opt	beforePressActions: [func]
+opt	afterPressActions: [func]
+opt	beforePressStopActions: [func]
+opt	afterPressStopActions: [func]
+opt	beforeMoveActions: [func]
+opt	afterMoveActions: [func]
+opt	beforeMouseOverActions: [func]
+opt	afterMouseOverActions: [func]
+opt	beforeMouseOutActions: [func]
+opt	afterMouseOutActions: [func]
 opt	args: obj - some arguments that can be used in functions
 }
 */
@@ -113,15 +119,14 @@ function ButtonContainer(opt){
 		if (this.actions.indexOf("drag")>-1)
 			this.mousemove = this.touchmove = proceedDragging;
 		if (this.actions.indexOf("press")>-1){
-			this.pressAction=opt.pressAction;
+			this.pressActions=opt.pressActions || [];
 		}
 	}
 	//set actions
-	this.beforeMouseOver=opt.beforeMouseOver;
-	this.afterMouseOver=opt.afterMouseOver;
-	this.beforeMouseOut=opt.beforeMouseOut;
-	this.afterMouseOut=opt.afterMouseOut;
-	
+	actions=['beforePressActions', 'afterPressActions',	'beforePressStopActions',	'afterPressStopActions',	'beforeMoveActions',	'afterMoveActions',	'beforeMouseOverActions',	'afterMouseOverActions',	'beforeMouseOutActions',	'afterMouseOutActions'];
+	for (var i in actions)
+		this[actions[i]]=opt[actions[i]] || [];
+
 	this.depth=-1;//allways on screen
 	if (this.unfocused)
 		this.innerArea=opt.innerArea || {x:0,y:0,width:this.unfocused.getAttr("width"),height:this.unfocused.getAttr("height")};
@@ -144,27 +149,29 @@ ButtonContainer.prototype.constructor=ButtonContainer;
 ButtonContainer.prototype.mouseover=function(){
 	if (this.disable)
 		return;
-	if (this.beforeMouseOver)
-		this.beforeMouseOver();
+	if (this.beforeMouseOverActions)
+		for (var i in this.beforeMouseOverActions)
+			this.beforeMouseOveractions[i].call(this);
 	if (this.focused){
 		this.focused.alpha=1;
 		this.unfocused.alpha=0.01;
 	}
-	if (this.afterMouseOver)
-		this.afterMouseOver();
+	if (this.afterMouseOverActions)
+		for (var i in this.afterMouseOverActions)
+			this.afterMouseOverActions[i].call(this);
 }
 	
 ButtonContainer.prototype.mouseout=function(){
 	if (this.disable)
 		return;
-	if (this.beforeMouseOut)
-		this.beforeMouseOut();
+	for (var i in this.beforeMouseOutActions)
+		this.beforeMouseOutActions[i].call();
 	if (this.focused){
 		this.unfocused.alpha=1;
 		this.focused.alpha=0.01;
 	}
-	if (this.afterMouseOut)
-		this.afterMouseOut();
+	for (var i in this.afterMouseOutActions)
+		this.afterMouseOutActions[i].call();
 }
 /*
 {
@@ -512,7 +519,7 @@ ButtonContainer.prototype.keyPadAddButton=function (opt,pos){
         button.mouseweel = this.scrollingWeel;
         button.mousedown = button.touchstart = startDragging;
         button.mouseup = button.mouseupoutside = button.touchend = button.touchendoutside = stopDragging;
-        button.beforePressAction=function(data){ this.parent.mousedown(data) }
+        button.beforePressActions.push(function(data){ this.parent.mousedown(data) })
         //set area of all buttons
         if (this.scrolling.area.width<button.position.x){
           this.scrolling.area.width=button.position.x;
@@ -606,7 +613,7 @@ ButtonContainer.prototype.keyPadScrollerInit=function (scroll){
 	else
 		this.scrolling.dir="y";
 
-	this.afterMoveAction=this.scrollingAction;
+	this.afterMoveActions.push(this.scrollingAction);
 	this.mouseweel = this.scrollingWeel;
 	if (this.parent){
 		this.parent.scroller={};

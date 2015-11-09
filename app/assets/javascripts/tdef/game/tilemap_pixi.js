@@ -31,6 +31,13 @@ function Grid(size,opt){
 	this.mousemove = this.touchmove = proceedDragging;
 	this.mouseweel=this.weelHandler;
 	
+	actions=['pressActions', 'beforePressActions', 'afterPressActions',	'beforePressStopActions',	'afterPressStopActions',	'beforeMoveActions',	'afterMoveActions',	'beforeMouseOverActions',	'afterMouseOverActions',	'beforeMouseOutActions',	'afterMouseOutActions'];
+	for (var i in actions)
+		this[actions[i]]=opt[actions[i]] || [];
+	
+	this.beforeMoveActions.push(this.beforeMoveAction);
+	this.pressActions.push(this.pressAction);
+	
 	this.nodes= new PIXI.DisplayObjectContainer();//PIXI.SpriteBatch()
 	this.nodes.rotation=-Math.PI/4;
 	this.addChild(this.nodes);
@@ -167,7 +174,7 @@ Grid.prototype.setSets= function (width, height){
 	}
 	
 	for(var i=0;i<9;i++){
-		var b=buttons.addButton({sprite:{textures: t,opt:{width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}, actions:["press"], args: {button: i}, pressAction: func});
+		var b=buttons.addButton({sprite:{textures: t,opt:{width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}, actions:["press"], args: {button: i}, pressActions: [func]});
 		b.progress=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
 		b.blur=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt:{width: size, height: size}}, position:{x: 0,y: 0}});
 		b.blur.alpha=0.8;
@@ -201,7 +208,7 @@ Grid.prototype.setSets= function (width, height){
 		b.progress=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
 		b.blur=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt:{width: size, height: size}}, position:{x: 0,y: 0}});
 		b.blur.alpha=0.8;
-		var m=menu.keyPadAddButton({sprite: {textures: tw, opt: {}}, actions:["press"], args: parseInt(i), pressAction: func});
+		var m=menu.keyPadAddButton({sprite: {textures: tw, opt: {}}, actions:["press"], args: parseInt(i), pressActions: [func]});
 		m.blur=m.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt: {width: buttonSize.x, height: buttonSize.y}}, position:{x: 0,y: 0}});
 		m.blur.alpha=0.8;
 		m.disabled=true;
@@ -224,7 +231,7 @@ Grid.prototype.setSets= function (width, height){
 			y: 0
 		},
 		actions:["press"],
-		pressAction: function(){console.log("Pressed")}//TODO: add normal action
+		pressActions: [function(){console.log("Pressed")}]//TODO: add normal action
 	});
 	this.set.targeting=buttons;
 	this.borders.bottom.addChild(buttons);
@@ -448,7 +455,7 @@ Grid.prototype.setBuildableNode = function(id, textures, opt){
 	opt.height= this.nodesize;
 	opt.width= this.nodesize;
 	opt.anchor={x:0, y:1};
-	var node=new ButtonContainer({sprite: new ASprite(textures, opt), actions: ['press'], pressAction: this.overBuildable});
+	var node=new ButtonContainer({sprite: new ASprite(textures, opt), actions: ['press'], pressActions: [this.overBuildable]});
 	node.map=this;
 	var pos=this.getPosition(id);
 	

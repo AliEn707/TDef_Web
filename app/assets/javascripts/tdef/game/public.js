@@ -139,11 +139,11 @@ Public.prototype.menuInit= function (opt) {
 						style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}
 					},
 					actions: ['press'],
-					pressAction: (function(p,o){
+					pressActions: [(function(p,o){
 						return function(){
 							p.switchTo(o); //TODO: add other actions
 						};
-					})(place,obj)//odd
+					})(place,obj)]//odd
 				}); 
 			}
 		}).call(that)
@@ -338,7 +338,7 @@ Public.prototype.eventsAdd= function (event) {
 				style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}
 			},
 			actions: ['press'],
-			pressAction: this.eventsButtonAction
+			pressActions: [this.eventsButtonAction]
 		}); 
 	} else {
 		this.events.all[event.id].text.setText(text);
