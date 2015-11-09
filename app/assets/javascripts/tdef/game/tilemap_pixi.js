@@ -10,7 +10,7 @@ function Grid(size,opt){
 	this.actions=["drag","press"];
 	this.engine=getEngine();
 	
-	this.border=opt.border || {top: 0, bottom: 90, left: 90, right: 0};	
+	this.border=opt.border || {top: 40, bottom: 90, left: 90, right: 0};	
 	
 	this.width=this.engine.renderer.view.width
 	this.height=this.engine.renderer.view.height

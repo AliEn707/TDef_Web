@@ -77,8 +77,9 @@ Public.prototype.menuInit= function (opt) {
 	var engine=this.engine || getEngine();
 	var container=new ButtonContainer({position:{x:opt.position.x,y:opt.position.y}});
 	this.menu={};
+	container.depth=-1;
 	this.menu.container=container;
-	this.addChild(container);
+	this.engine.stage.addChild(container);
 	var that=this;
 //TODO: change to message area, add message list, and processor
 	textures=getTextureFrames(engine.textures['menu_message_backgound']);
@@ -97,7 +98,7 @@ Public.prototype.menuInit= function (opt) {
 				},
 				float: {x:'fixed'}
 			});
-
+ 
 		//butttons	
 			this.menu.buttons = container.addButton({
 				position:{
