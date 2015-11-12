@@ -665,11 +665,11 @@ ButtonContainer.prototype.scrollingPosition=function (pos){
 	this.scrolling.position.y=pos.y;			
 }
 
-//aftermove for crolling container
+//aftermove for crolling container, fix not moving direction
 ButtonContainer.prototype.scrollingAction=function (data){
 	this.position[this.scrolling.dir]=this.scrolling.position[this.scrolling.dir];
+	this.scrollingCorrection();
 	this.scrollingPosition(this.position);
-	this.scrollingCorrection()
 }
 
 ButtonContainer.prototype.scrollingCorrection=function (data){
@@ -677,12 +677,17 @@ ButtonContainer.prototype.scrollingCorrection=function (data){
 	var size=this.scrolling.dir == 'x' ? 'height' : 'width';
 	var that=this.parent;
 	var shift;
-	//bottom check
-	if ((shift=(this.position[dir]+(this.scrolling.area[dir]-that.scroller.area[dir])-that.scroller.area[size]))>0)
-		this.position[dir]-=shift;//TODO: add kinetics restore
-	//top check
-	if ((shift=(that.scroller.area[dir]-(this.position[dir]+(this.scrolling.area[size]))))>0)
-		this.position[dir]+=shift;
+	if (this.scrolling.area[size]+this.buttonSize[dir]<that.scroller.area[size]){
+		this.position[dir]=that.scroller.area[dir];//cancel moving
+	}else{
+		//bottom check
+		if ((shift=(this.position[dir]+this.scrolling.area[size]+this.buttonSize[dir]+this.buttonDist[dir]-(that.scroller.area[dir]+that.scroller.area[size])))<0)
+			this.position[dir]-=shift;//TODO: add kinetics restore
+		console.log(shift);
+		//top check
+		if ((shift=(this.position[dir]-that.scroller.area[dir]))>0)
+			this.position[dir]-=shift;
+	}
 }
 
 //action for button from crolling container
