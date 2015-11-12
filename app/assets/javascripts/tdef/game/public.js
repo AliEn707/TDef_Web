@@ -178,21 +178,6 @@ Public.prototype.eventsInit= function (opt) {
 	this.events.container.visible=false;
 	this.addChild(container);
 	
-	textures=getTextureFrames(engine.textures.events_list_u);
-	afterTextureLoad(textures[0], function (){
-		var scale=opt.border.height/textures[0].height;
-		container.addButton({
-			sprite: new ATilingSprite(textures, {
-				width: opt.width-opt.border.width*2, 
-				height: opt.border.height, 
-				scale:{x: scale,y: scale}
-			}),
-			position:{
-				x:opt.border.width,
-				y:0
-			}
-		});
-	});
 	textures=getTextureFrames(engine.textures.events_list_d);
 	afterTextureLoad(textures[0], function (){
 		var scale=opt.border.height/textures[0].height;
@@ -209,6 +194,23 @@ Public.prototype.eventsInit= function (opt) {
 			}
 		});
 	});
+		
+	textures=getTextureFrames(engine.textures.events_list_u);
+	afterTextureLoad(textures[0], function (){
+		var scale=opt.border.height/textures[0].height;
+		container.addButton({
+			sprite: new ATilingSprite(textures, {
+				width: opt.width-opt.border.width*2, 
+				height: opt.border.height, 
+				scale:{x: scale,y: scale}
+			}),
+			position:{
+				x:opt.border.width,
+				y:0
+			}
+		});
+	});
+	
 	textures=getTextureFrames(engine.textures.events_list_l);
 	afterTextureLoad(textures[0], function (){
 		var scale=opt.border.width/textures[0].width;
@@ -225,6 +227,7 @@ Public.prototype.eventsInit= function (opt) {
 			float: {y:'fixed'}
 		});
 	});
+	
 	textures=getTextureFrames(engine.textures.events_list_r);
 	afterTextureLoad(textures[0], function (){
 		var scale=opt.border.width/textures[0].width;
