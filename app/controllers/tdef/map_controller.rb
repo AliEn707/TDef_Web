@@ -63,6 +63,7 @@ class Tdef::MapController < ApplicationController
 			map=Tdef::Map.where(name: params["name"]).first
 			data["mp"]=map.data
 			data["mg"]=map.grafics
+			data["preview"]=map.icon
 			data.to_json
 		end
 		send_data(out,type: "application/json; charset=utf-8", filename: "#{params["name"]}.json", disposition:'inline')	
