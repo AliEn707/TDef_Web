@@ -42,7 +42,7 @@
         }
         
         function javaTest(){
-          alert(getConnector().test())
+        alert(getConnector().test())
         }
         function logJS(v,b){
           console.log(v,b)
@@ -59,7 +59,7 @@
         
         function createConnector(place){
           var obj;
-          if (/*@cc_on!@*/false) {
+          if (/*@cc_on!@*/ false) {
             document.write('<OBJECT ','id="connector"',
                    'classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93">',
                    '<PARAM name="code" value="connector.class">',
@@ -68,7 +68,6 @@
             obj = document.createElement('embed')
             obj.setAttribute('code', 'connector.class')
             obj.setAttribute('id', 'connector')
-            obj.setAttribute('src', '<%= asset_url("connector.swf") %>')
             obj.setAttribute('width', '500')
             obj.setAttribute('height', '375')
             obj.setAttribute('name', 'connector')
@@ -79,6 +78,56 @@
             place=place || document.body
             place.appendChild(obj)
           }
+	}
+	
+function createConnector(place) {
+	var path='./java';
+	var file='connector.jar';
+	//some IE hack
+	function createIeObject(path, file){
+		var div = document.createElement("div");
+		div.innerHTML = "<object classid='clsid:8AD9C840-044E-11D1-B3E9-00805F499D93'>"+
+					"<PARAM name='code' value='connector.class' >"+
+					"<PARAM name='codebase' value='"+path+"' >"+
+					"<PARAM name='archive' value='"+file+"' >"+
+					"</object>";
+		console.log(div.innerHTML);
+		return div.firstChild;
+	}
+	var isMSIE = /*@cc_on!@*/false;
+	var obj = (isMSIE) ? createIeObject(path, file) : document.createElement("object");
+	if (!isMSIE) {
+		obj.setAttribute("type", "application/x-java-applet");
+//		obj.setAttribute("data", path);
+		param = document.createElement('param')
+		param.setAttribute('name', 'code')
+		param.setAttribute('value', 'connector.class')
+		obj.appendChild(param)
+		param = document.createElement('param')
+		param.setAttribute('name', 'codebase')
+		param.setAttribute('value', path)
+		obj.appendChild(param)
+		param = document.createElement('param')
+		param.setAttribute('name', 'archive')
+		param.setAttribute('value', file)
+		obj.appendChild(param)	
+	}
+	//Add attributes to <object>
+	obj.setAttribute("id", "connector");
+	obj.setAttribute("width", "550");
+	obj.setAttribute("height", "400");
+	param = document.createElement('param')
+	param.setAttribute('name', 'scriptable')
+	param.setAttribute('value', 'true')
+	obj.appendChild(param)
+	param = document.createElement('param')
+	param.setAttribute('name', 'mayscript')
+	param.setAttribute('value', 'true')
+	obj.appendChild(param)
+	
+	place=place || document.body
+	place.appendChild(obj)
+}
           
 //          obj.style.zIndex=0
   //        obj.style.position="absolute"
@@ -86,8 +135,7 @@
       //    obj.style.top="0px"
         //	obj.setAttribute("hidden","")
           
-          
-        }
+	
         createConnector()
     </script>
     
