@@ -105,7 +105,7 @@ package {
 	
         private function logJS(value:String):void {
 					if (isReady) {
-						ExternalInterface.call("sendToJavaScript", value);
+						ExternalInterface.call("sendToJavaScript", "Flash: "+value);
 					}
 				}
 	

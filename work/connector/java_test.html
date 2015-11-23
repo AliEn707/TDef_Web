@@ -42,10 +42,10 @@
         }
         
         function javaTest(){
-        alert(getConnector().test())
+          getConnector().sendToConnector("test")
         }
-        function logJS(v,b){
-          console.log(v,b)
+        function sendToJavaScript(v){
+          console.log(v)
         }
         
         function getConnector() {
@@ -55,6 +55,10 @@
           } else {
             return document[movieName];
           }
+        }
+        
+        function connectorReady(){
+          console.log("java ready")
         }
 	
         function createConnector(place) {
