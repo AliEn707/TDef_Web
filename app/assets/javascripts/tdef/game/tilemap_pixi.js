@@ -168,13 +168,14 @@ Grid.prototype.setSets= function (width, height){
 			y: 0,
 		}
 	});
-	function func(){
-		if (!this.disabled) 
+	function spawnNpc(){
+		if (!this.disabled){ 
 			mapSpawnNpc(this.args.button);
+		}
 	}
 	
 	for(var i=0;i<9;i++){
-		var b=buttons.addButton({sprite:{textures: t,opt:{width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}, actions:["press"], args: {button: i}, pressActions: [func]});
+		var b=buttons.addButton({sprite:{textures: t,opt:{width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}, actions:["press"], args: {button: i}, pressActions: [spawnNpc]});
 		b.progress=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
 		b.blur=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt:{width: size, height: size}}, position:{x: 0,y: 0}});
 		b.blur.alpha=0.8;
@@ -198,7 +199,7 @@ Grid.prototype.setSets= function (width, height){
 	});
 	var menu=new ButtonContainer({position:{x:100,y:100}}); //menu on press buildable node
 	menu.keyPadInit({columns: 10, buttonSize: buttonSize, buttonDist:{x:buttonSize.x*1.55}, circle:{centered: false}});
-	function func(){
+	function spawnTower(){
 		if (!this.disabled) 
 			mapSpawnTower(this.args,menu.id); 
 	}
@@ -208,7 +209,7 @@ Grid.prototype.setSets= function (width, height){
 		b.progress=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
 		b.blur=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt:{width: size, height: size}}, position:{x: 0,y: 0}});
 		b.blur.alpha=0.8;
-		var m=menu.keyPadAddButton({sprite: {textures: tw, opt: {}}, actions:["press"], args: parseInt(i), pressActions: [func]});
+		var m=menu.keyPadAddButton({sprite: {textures: tw, opt: {}}, actions:["press"], args: parseInt(i), pressActions: [spawnTower]});
 		m.blur=m.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt: {width: buttonSize.x, height: buttonSize.y}}, position:{x: 0,y: 0}});
 		m.blur.alpha=0.8;
 		m.disabled=true;
