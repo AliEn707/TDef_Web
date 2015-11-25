@@ -3,6 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.applet.Applet;
 import netscape.javascript.*;
+import java.util.concurrent.TimeUnit;
  
 import java.net.*;
 import java.io.*;
@@ -14,6 +15,7 @@ import java.io.*;
     ExternalInterface.call("smth", new Object[] {"1",2});
     ExternalInterface.call("smth", "1", 2);
 */
+
 
 public class connector extends Applet {
     //bit constants
@@ -58,6 +60,23 @@ public class connector extends Applet {
     //similar to ActionScript
     private JSObject ExternalInterface;
     
+    class PublicThread implements Runnable{ //must work all app live time
+        public void run(){
+            logJS("Public Thread started");
+        }
+    }
+    //  PublicThread ends
+
+    class MapThread implements Runnable{
+        public void run(){
+            logJS("Map Thread started");
+            
+            //close map on exit
+            mapClose();
+        }
+    }
+    //  MapThread ends
+    
     private void logJS(Object arg){
       ExternalInterface.call("sendToJavaScript", "Java: "+arg);
     }
@@ -67,10 +86,17 @@ public class connector extends Applet {
         ExternalInterface = JSObject.getWindow(this);
         // invoke JavaScript function
         
-        if ((Boolean)ExternalInterface.call("isReady")){
-          ExternalInterface.call("connectorReady");
-          isReady = true;
+        while (!(Boolean)ExternalInterface.call("isReady")){
+          try {
+            TimeUnit.MILLISECONDS.sleep(300);
+          } catch (InterruptedException e) {
+            //Handle exception
+          }
         }
+   
+        ExternalInterface.call("connectorReady");
+        isReady = true;
+    
       } catch (JSException jse) {
         jse.printStackTrace();
         isReady = false;
@@ -83,7 +109,11 @@ public class connector extends Applet {
     
     public void mapConnect(String host, String sport){
       int port = Integer.parseInt(sport);
-      logJS(port);
+      
+      //start thread
+      Thread thread = new Thread(new MapThread());
+      thread.setDaemon(true);
+      thread.start();
     }
     
     public void mapClose(){
@@ -93,6 +123,11 @@ public class connector extends Applet {
     public void publicConnect(String host, String sport, String user, String stoken){
       int port = Integer.parseInt(sport);
       int token = Integer.parseInt(stoken);
+      
+      //start thread
+      Thread thread = new Thread(new PublicThread());
+      thread.setDaemon(true);
+      thread.start();
     } 
     
     private void socketSend(Socket sock, String value){

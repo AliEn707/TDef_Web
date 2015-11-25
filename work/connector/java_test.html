@@ -60,6 +60,10 @@
         function connectorReady(){
           console.log("java ready")
         }
+        var jsReady=true;
+        function isReady(){
+          return jsReady;
+        }
 	
         function createConnector(place) {
           var path='./java';

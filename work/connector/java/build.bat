@@ -5,7 +5,7 @@
 @set CLASSPATH=classpath1;classpath2
 
 javac connector.java -d ./
-jar -cf connector.jar connector.class
-del connector.class
+jar -cf connector.jar *.class
+del *.class
 @rem ../../../app/assets/other/
 pause
