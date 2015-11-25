@@ -13,8 +13,21 @@ module ApplicationHelper
 		locale
 	end
 	
+	#function that can help set admin other code
+	#used for_admin {}.else {} or  for_admin do end.else do end
 	def for_admin
+		#show admin condition
 		yield if (!current_user.nil? && current_user.admin)
+		Class.new(Object) do
+			attr_accessor :current_user
+			def initialize(current_user)
+				@current_user=current_user
+			end
+			def else
+				#show else condition
+				yield if !(!current_user.nil? && current_user.admin)
+			end
+		end.new(current_user)
 	end
 	
 	def menu 
