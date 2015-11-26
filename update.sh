@@ -14,9 +14,9 @@ if [ $UPDATE_DB -eq 1 ]; then
 	bundle exec rake db:migrate db:seed
 fi
 
-
-bundle exec rake tmp:cache:clear
-bundle exec rake assets:precompile assets:clean
-
+if ! [ $NOT_COMPILE_ASSETS -eq 1 ]; then
+	bundle exec rake tmp:cache:clear
+	bundle exec rake assets:precompile assets:clean
+fi
 #add check for error and stop server if 
 rails_server start

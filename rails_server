@@ -24,7 +24,7 @@ export RAILS_MAIL_PASSWORD=""
 
 
 export UPDATE_DB=0 
-
+export NOT_COMPILE_ASSETS=1
 
 CHILD_NODES=""
 
@@ -32,6 +32,13 @@ function child_nodes(){
 	for i in $CHILD_NODES; do
 		ssh osuser@$i rails_server $1
 	done
+}
+
+function cp_assets(){
+        for i in $CHILD_NODES; do
+                ssh osuser@$i rm -rf TDef_Web/public/assets
+                scp -r public/assets osuser@$i:~/TDef_Web/public
+        done
 }
 
 function rails() {
@@ -48,11 +55,13 @@ function rails() {
         echo "It seems there is no server running"
 #        return 1
      fi
-     child_nodes stop
      return 0
   elif [ "$1" = "restart" ]; then
      rails stop 
      rails start $2
+  elif [ "$1" = "assets" ]; then
+     bundle exec rake assets:precompile assets:clean
+     cp_assets
   elif [ "$1" = "check" ]; then
       if [ -f $RAILS_PID ]; then
         RESULT=$(ps -A|grep $(cat $RAILS_PID)|head -1)
@@ -68,6 +77,8 @@ function rails() {
  elif [ "$1" = "update" ]; then
      rails stop
      bash update.sh
+     child_nodes stop
+	 cp_assets
      child_nodes update
   else
      bundle exec $@
