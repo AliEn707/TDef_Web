@@ -1,7 +1,7 @@
-import java.net.*;
+﻿import java.net.*;
 import java.io.*;
 
-public class Client {
+public class Client { 
     public static void main(String[] ar) {
         int serverPort = 6666; // здесь обязательно нужно указать порт к которому привязывается сервер.
         String address = "127.0.0.1"; // это IP-адрес компьютера, где исполняется наша серверная программа. 

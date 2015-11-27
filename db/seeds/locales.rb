@@ -12,13 +12,14 @@ end.each do |locale|
   {
 		"#will_be_soon" => "Not implemented yet...",
 		"#loading" => "Loading...",
-		"#events_menu_button" => "events",
+		"#events_menu_button" => "Events",
 		"#public_auth_fail" => "Authentication error.",
 		"#mapserver_connecting" => "Connecting to map server...",
 		"#public_connecting" => "Connecting to public server...",
 		"#public_connect_fail" => "Can't connect to public server.",
-		"#wait_connector" => "Connector loading",
-		"#check_flash" => "Check Adobe Flash Plugin on your browser"
+		"#wait_connector" => "Connector loading...",
+		"#check_flash" => "Check Adobe Flash Plugin on your browser.",
+		"#connector_not_available" => "Can't init connector, see help for details."
 	}.merge(keys).each do |k,v| #add required datas
     if (locale.locale_datas.where(key: k).first.nil?)	then
 			locale.locale_datas<<Tdef::Locale::Data.create(key: k,value: v,user_id: 2)

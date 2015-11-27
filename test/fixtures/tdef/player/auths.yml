@@ -1,9 +1,19 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
+  player_id: 1
   properties: MyText
   token: 
 
 two:
+  id: 2
+  player_id: 2
+  properties: MyText
+  token: 
+  
+admin:
+  id: 3
+  player_id: 3
   properties: MyText
   token: 

@@ -1,3 +1,11 @@
+
+<% for_admin do %> //add: || debug
+	var a;
+	console.log("Java available: "+ ((a=PluginDetect.isMinVersion("java")) > -1 ? "YES" : "NO")+" ("+a+")");
+	console.log("SilverLight available: "+ ((a=PluginDetect.isMinVersion("silverlight")) > -1 ? "YES" : "NO")+" ("+a+")");
+	console.log("Flash available: "+ ((a=PluginDetect.isMinVersion("flash")) > -1 ? "YES" : "NO")+" ("+a+")");
+<% end %>
+
 try{
 	function afterConnectorReady(){
 		publicConnect("<%=request.host%>",7001);
@@ -143,10 +151,10 @@ try{
 					if (test)
 						test(engine);
 					//show statistic info
-          Loading.message="#wait_connector";
+					Loading.message="#wait_connector";
 					if (<%= "true" %>)
 						statsShow(engine);
-					addConnectorSWF();
+					addConnector();
 					jsReady = true;
 				});
 			}
