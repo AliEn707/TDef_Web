@@ -72,7 +72,7 @@ function proceedPublicMessages(str){
 				if (arr[i].action=='change') //add event
 					engine.public.eventsAdd(arr[i])
 				else
-					1;
+					engine.public.eventsRemove(arr[i]); //remove event
 				break;
 			case 'Player':
 				console.log(arr[i])
@@ -130,7 +130,6 @@ function mapConnect(host,port) {
 //connect to mapserver
 function mapClose(host,port) {
 	getConnector().mapClose();
-	getEngine().public.show();
 }
 
 //callback if cant connect
@@ -148,11 +147,18 @@ function mapConnected(){
 	Loading.hide();
 	Loading.message="";
 }
+
 //callback on map connection close
 function mapClosed(){
 	console.log("closed");
+	Loading.show(""); 
 	getEngine().map.clean();
-	getEngine().public.show();
+	//player ingame set when mapserver ask info about player
+	setTimeout(function(){
+		if (true/* player not in mapserver*/) //uncomment after adding normal checking player status ingame/ not ingame
+			Loading.hide();
+	}, 1000); 
+	getEngine().public.show(); 
 }
 
 

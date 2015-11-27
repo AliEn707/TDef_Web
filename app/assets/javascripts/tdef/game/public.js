@@ -345,7 +345,9 @@ Public.prototype.eventsAdd= function (event) {
 			pressActions: [this.eventsButtonAction]
 		}); 
 	} else {
-		this.events.all[event.id].text.setText(text);
+		console.log("event "+event.id+" already exists");
+		this.events.all[event.id].text.setText(event.name);
+		//update other properties
 	}
 	this.events.all[event.id].event=event;
 	//TODO: add actions
@@ -360,7 +362,7 @@ Public.prototype.eventsRemove= function (event) {
 Public.prototype.eventsButtonAction= function (event) {
 //	console.log(this.event);
 	getEngine().public.eventChoose(this);
-	publicGetRoom(this.event); //TODO: check
+	publicGetRoom(this.event); //TODO: change to normal action
 }
 
 //event info screen

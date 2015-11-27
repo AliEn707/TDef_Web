@@ -197,18 +197,13 @@ package {
 ///--------------------------------------------------------------------------------------------------------
 	
 				//bitmasks
-				private var BM_EVENT_MAP_NAME:int= BIT_1;
-				
 				private var BM_PLAYER_ROOM:int= BIT_3; 
 				//out message types
-				private var MESSAGE_PLAYER_CHANGE:int= 1;
-				private var MESSAGE_EVENT_CHANGE:int= 2;
-				private var MESSAGE_GAME_START:int= 3;
+				private const MESSAGE_PLAYER_CHANGE:int= 1;
+				private const MESSAGE_GAME_START:int= 2;
+				private const MESSAGE_EVENT_CHANGE:int= 3;
+				private const MESSAGE_EVENT_DROP:int= 4;
 				//
-				private var MESSAGE_CREATED:int= 2;
-				private var MESSAGE_CHANGED:int= 2;
-				private var MESSAGE_DELETED:int= 2;
-				
 				private var publicAuthorised:Boolean=false;
 				private var publicMsg:int;
 				private var publicDataSeq:Array = new Array();
@@ -487,13 +482,17 @@ package {
 					switch (publicMsg){
 						case MESSAGE_EVENT_CHANGE:
 							publicOutObj+=",objtype:\"Event\",action:\"change\"";
-							publicOutObj+=",id:"+bitMask;
+							publicOutObj+=",id:"+bitMask; //bitmask is id of event
 			//				publicDataSeq.push("id","int");
 			//				publicDataSeq.push("rooms","int");
 			//				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
 							publicDataSeq.push("map","string");
 							publicDataSeq.push("name","string");
 			//				}
+							return;
+						case MESSAGE_EVENT_DROP:
+							publicOutObj+=",objtype:\"Event\",action:\"drop\"";
+							publicOutObj+=",id:"+bitMask; //bitmask is id of event
 							return;
 						case MESSAGE_PLAYER_CHANGE:
 			//				logJS("MESSAGE_PLAYER_CHANGE");
