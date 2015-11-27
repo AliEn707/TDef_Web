@@ -62,8 +62,9 @@ function startDragging(data) {
 		dragObj=this;
 		f=true;
 	}
-	if (this.beforePressAction)
-		this.beforePressAction(data);
+	if (this.beforePressActions)
+		for (var i in this.beforePressActions)
+			this.beforePressActions[i].call(this,data);
 	if (this.actions.indexOf("drag")>-1 ){
 		if (!this.mousePressPoint)
 			this.mousePressPoint={};
@@ -83,37 +84,42 @@ function startDragging(data) {
 	this.screenPressPoint.y = data.getLocalPosition(stage).y;
 	if (f)
 		incredibleHack.call(this.stage);
-	if (this.afterPressAction)
-		this.afterPressAction(data);
+	if (this.afterPressActions)
+		for (var i in this.afterPressActions)
+			this.afterPressActions[i].call(this,data);
 }
 
 function stopDragging(data) {
-	if (this.beforePressStop)
-		this.beforePressStop(data);
-		if (this.actions.indexOf("press")>-1){
-			if (!this.screenPressPoint)
-				this.screenPressPoint={};
-			var screenPressPoint={};
-			var engine=getEngine();
-			var stage=this.stage || engine.stage;
-			screenPressPoint.x = data.getLocalPosition(stage).x;
-			screenPressPoint.y = data.getLocalPosition(stage).y;
-			if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
-					Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
-				if (this.pressAction && !this.disable) //may be need smth to do
-					this.pressAction();
-			}
+	if (this.beforePressStopActions)
+		for (var i in this.beforePressStopActions)
+			this.beforePressStopActions[i].call(this,data);
+	if (this.actions.indexOf("press")>-1){
+		if (!this.screenPressPoint)
+			this.screenPressPoint={};
+		var screenPressPoint={};
+		var engine=getEngine();
+		var stage=this.stage || engine.stage;
+		screenPressPoint.x = data.getLocalPosition(stage).x;
+		screenPressPoint.y = data.getLocalPosition(stage).y;
+		if (Math.abs(this.screenPressPoint.x-screenPressPoint.x)<engine.settings.clickAreaSize && 
+				Math.abs(this.screenPressPoint.y-screenPressPoint.y)<engine.settings.clickAreaSize){
+			if (this.pressActions && !this.disable) //may be need smth to do
+				for (var i in this.pressActions)
+					this.pressActions[i].call(this);
 		}
-		this.dragging = false;
-		dragObj=false;
-	if (this.afterPressStop)
-		this.afterPressStop(data);
+	}
+	this.dragging = false;
+	dragObj=false;
+	if (this.afterPressStopActions)
+		for (var i in this.afterPressStopActions)
+			this.afterPressStopActions[i].call(this,data);
 }
 
 
 function proceedDragging(data){
-	if (this.beforeMoveAction)
-		this.beforeMoveAction(data);
+	if (this.beforeMoveActions)
+		for (var i in this.beforeMoveActions)
+			this.beforeMoveActions[i].call(this,data);
 	if(this.dragging){
 		var position = data.getLocalPosition(this.parent);
 		this.position.x = position.x - this.mousePressPoint.x;
@@ -121,8 +127,9 @@ function proceedDragging(data){
 		if (this.transformCorrection)
 			this.transformCorrection();
 	}
-	if (this.afterMoveAction)
-		this.afterMoveAction(data);
+	if (this.afterMoveActions)
+		for (var i in this.afterMoveActions)
+			this.afterMoveActions[i].call(this,data);
 
 }
 

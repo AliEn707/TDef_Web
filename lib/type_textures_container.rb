@@ -91,6 +91,16 @@ class TypeTexturesContainer
 	def load(a)
 		@data[a]=Image.where(id:@ids[a]["img"]).first if @ids[a]
 	end
-	
+end
 
+class TypeTexturesSerializer
+	#need to get TypeTexturesContainer
+	def self.load(value)
+		TypeTexturesContainer.from_json(value)
+	end
+	
+	#value is TypeTexturesContainer
+	def self.dump(value)
+		value.to_json
+	end
 end

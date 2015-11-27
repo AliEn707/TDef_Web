@@ -105,7 +105,7 @@ package {
 	
         private function logJS(value:String):void {
 					if (isReady) {
-						ExternalInterface.call("sendToJavaScript", value);
+						ExternalInterface.call("sendToJavaScript", "Flash: "+value);
 					}
 				}
 	
@@ -197,18 +197,13 @@ package {
 ///--------------------------------------------------------------------------------------------------------
 	
 				//bitmasks
-				private var BM_EVENT_MAP_NAME:int= BIT_1;
-				
 				private var BM_PLAYER_ROOM:int= BIT_3; 
 				//out message types
-				private var MESSAGE_PLAYER_CHANGE:int= 1;
-				private var MESSAGE_EVENT_CHANGE:int= 2;
-				private var MESSAGE_GAME_START:int= 3;
+				private const MESSAGE_PLAYER_CHANGE:int= 1;
+				private const MESSAGE_GAME_START:int= 2;
+				private const MESSAGE_EVENT_CHANGE:int= 3;
+				private const MESSAGE_EVENT_DROP:int= 4;
 				//
-				private var MESSAGE_CREATED:int= 2;
-				private var MESSAGE_CHANGED:int= 2;
-				private var MESSAGE_DELETED:int= 2;
-				
 				private var publicAuthorised:Boolean=false;
 				private var publicMsg:int;
 				private var publicDataSeq:Array = new Array();
@@ -487,13 +482,17 @@ package {
 					switch (publicMsg){
 						case MESSAGE_EVENT_CHANGE:
 							publicOutObj+=",objtype:\"Event\",action:\"change\"";
-							publicOutObj+=",id:"+bitMask;
+							publicOutObj+=",id:"+bitMask; //bitmask is id of event
 			//				publicDataSeq.push("id","int");
 			//				publicDataSeq.push("rooms","int");
 			//				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
 							publicDataSeq.push("map","string");
 							publicDataSeq.push("name","string");
 			//				}
+							return;
+						case MESSAGE_EVENT_DROP:
+							publicOutObj+=",objtype:\"Event\",action:\"drop\"";
+							publicOutObj+=",id:"+bitMask; //bitmask is id of event
 							return;
 						case MESSAGE_PLAYER_CHANGE:
 			//				logJS("MESSAGE_PLAYER_CHANGE");
@@ -679,6 +678,7 @@ package {
 				private const PLAYER_HERO_COUNTER:int= BIT_6;
 				private const PLAYER_TARGET:int= BIT_7;
 				private const PLAYER_FAIL:int= BIT_8;
+				private const PLAYER_SETS:int= BIT_9;
 				
 				private var mapDataSeq:Array = new Array();
 				private var mapObj:String="";
@@ -921,22 +921,6 @@ package {
 							mapDataSeq.push("id","int");
 							if ((bitMask&PLAYER_CREATE)!=0){ 
 								mapDataSeq.push("pid","int");
-								mapDataSeq.push("tower_set","{");
-								for(i=0;i<NPC_SET_SIZE;i++){
-									mapDataSeq.push(""+i,"{");
-									mapDataSeq.push("id","int");
-									mapDataSeq.push("size","int");
-									mapDataSeq.push("$","}");
-								}
-								mapDataSeq.push("$","}");//TODO : add normal parser
-								mapDataSeq.push("npc_set","{");//fix
-								for(i=0;i<TOWER_SET_SIZE;i++){
-									mapDataSeq.push(""+i,"{");
-									mapDataSeq.push("id","int");
-									mapDataSeq.push("size","int");
-									mapDataSeq.push("$","}");
-								}
-								mapDataSeq.push("$","}");
 								mapDataSeq.push("group","int");
 								mapDataSeq.push("_hero_counter","int");
 								
@@ -946,6 +930,25 @@ package {
 								mapDataSeq.push("hero_type","{");//fix
 								mapDataSeq.push("health","int");//fix
 								mapDataSeq.push("shield","int");//fix
+								mapDataSeq.push("$","}");
+							}
+							if ((bitMask&PLAYER_SETS)!=0){
+								mapDataSeq.push("tower_set","{");
+									for(i=0;i<NPC_SET_SIZE;i++){
+										mapDataSeq.push(""+i,"{");
+										mapDataSeq.push("id","int");
+										mapDataSeq.push("size","int");
+										mapDataSeq.push("$","}");
+									}
+								mapDataSeq.push("$","}");//TODO : add normal parser
+								
+								mapDataSeq.push("npc_set","{");//fix
+									for(i=0;i<TOWER_SET_SIZE;i++){
+										mapDataSeq.push(""+i,"{");
+										mapDataSeq.push("id","int");
+										mapDataSeq.push("size","int");
+										mapDataSeq.push("$","}");
+									}
 								mapDataSeq.push("$","}");
 							}
 							if ((bitMask&PLAYER_HERO)!=0){ 

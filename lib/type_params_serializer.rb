@@ -19,15 +19,3 @@ class TypeParamsSerializer
 	end
 end
 
-
-class TypeTexturesSerializer
-	#need to get Hash
-	def self.load(value)
-		TypeTexturesContainer.from_json(value)
-	end
-	
-	#value is Hash
-	def self.dump(value)
-		value.to_json
-	end
-end

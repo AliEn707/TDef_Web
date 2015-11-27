@@ -117,7 +117,7 @@ TDefEngine.prototype.parseMap = function(map){
 	if (!maps[map].data){
 		var mp=maps[map].mp.split("\r\n");
 		var mg=maps[map].mg.split("\r\n");
-		var data={};
+		var data={preview: maps[map].preview};
 		//mp
 		data.size=parseInt(mp[0]);
 		data.walkable=mp[1];
@@ -168,10 +168,12 @@ TDefEngine.prototype.parseMap = function(map){
 TDefEngine.prototype.setMap= function (m){
 	this.map_name=m;
 }
+
 TDefEngine.prototype.loadMap= function (){
 	var opt=this.parseMap(this.map_name)
 	var map=new Grid(opt.size);
 	map.engine=this;
+	map.preview=opt.preview;
 	if (this.map)
 		this.map.clean();
 	this.map=map;

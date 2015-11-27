@@ -13,7 +13,6 @@ some temp data
 		hero_type:{$:0,health:400,shield:200},$:0,
 		hero:4,
 		hero_counter:1,
-		health:2000,
 		money:1000,
 		target:0,
 		time:21494},])
@@ -76,6 +75,10 @@ MapPlayer.prototype.update= function (opt){
 		this.hero=opt.hero;
 	this.hero_counter=opt.hero_counter;
 	this.targeting=opt.targeting;
+	if (opt.money)
+		console.log("money "+ opt.money);
+	if (opt.target)
+		console.log("targeting "+ opt.money);
 }
 
 MapPlayer.prototype.proceed= function (){

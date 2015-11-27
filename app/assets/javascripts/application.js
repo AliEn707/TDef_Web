@@ -18,6 +18,7 @@
 //= require twitter/bootstrap
 //= require bootstrap
 //= require js-routes
+//= require PluginDetect
 //= require_tree ./application
 
 
