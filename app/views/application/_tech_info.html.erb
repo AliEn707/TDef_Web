@@ -7,9 +7,8 @@
 		<div class="uk-offcanvas-bar uk-offcanvas-bar-tech">
 			<div style="color: #cd9b1d;">
 				<b>
-					<%=t("tech.hostname")%>:
+					<%=t("tech.hostname")%>:<br>
 				</b>
-				<br>
 				<%=hostname%><br>
 				<b>
 					<%=t("tech.uptime")%>:<br>
@@ -23,6 +22,10 @@
 					<%=t("tech.network_info")%>:<br>
 				</b>
 				<%= ifconfig%>
+				<b>
+					<%=t("tech.radis_statistics")%>:<br>
+				</b>
+				<%= redis_statistics%>
 				<br>
 			</div>
 	<!--
