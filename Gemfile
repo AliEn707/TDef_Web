@@ -119,6 +119,11 @@ if (!ENV['REDIS_HOST'].nil? || !ENV['REDIS_PORT'].nil?)
 	gem 'redis-rails'
 end
 
+if (!ENV['REDIS_STATISTICS_HOST'].nil? || !ENV['REDIS_STATISTICS_PORT'].nil?)
+	#redis included only if used
+	gem 'redis'
+end
+
 #for use C code in ruby
 gem 'RubyInline'	
 

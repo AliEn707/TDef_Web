@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 	before_action :set_locale
 	before_action :set_timezone
 	before_action :profile_check
+	before_action :redis_statistics, if: proc { !!$redis_statistics }
 	
 	def ping
 		render text: '"OK"', layout: false
@@ -54,4 +55,9 @@ class ApplicationController < ActionController::Base
 		Time.zone = current_user.time_zone if !current_user.nil?
 	end
 	
+	def redis_statistics
+		Thread.new do
+			$redis_statistics.hincrby "redis_statistics/requests", `hostname`, 1 
+		end
+	end
 end
