@@ -35,9 +35,9 @@ class User::ProfilesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should update user_profile" do
+  test "should not update user_profile" do
     patch :update, id: @user_profile, user_profile: { properties: @user_profile.properties, user_id: @user_profile.user_id }
-    assert_redirected_to user_profile_path(assigns(:user_profile))
+    assert_response :success
   end
 
   test "should destroy user_profile" do

@@ -86,7 +86,7 @@ gem "htmlentities"
 
 gem 'rack-mini-profiler', group: :development
 
-gem "twitter-bootstrap-rails"
+gem "twitter-bootstrap-rails", "2.2.8"
 
 gem "devise", "3.2.4"
 gem "recaptcha", require: "recaptcha/rails"
@@ -117,6 +117,11 @@ gem 'rqrcode', "0.4.2"
 if (!ENV['REDIS_HOST'].nil? || !ENV['REDIS_PORT'].nil?)
 	#redis included only if used
 	gem 'redis-rails'
+end
+
+if (!ENV['REDIS_STATISTICS_HOST'].nil? || !ENV['REDIS_STATISTICS_PORT'].nil?)
+	#redis included only if used
+	gem 'redis'
 end
 
 #for use C code in ruby

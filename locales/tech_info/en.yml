@@ -4,3 +4,6 @@ en:
     hostname: Hostname
     uptime: Uptime
     system_info: System Info
+    radis_statistics: Request statistics
+    radis_statistics_from: from
+    radis_statistics_not_active: not activated

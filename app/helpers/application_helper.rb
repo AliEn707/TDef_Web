@@ -13,8 +13,21 @@ module ApplicationHelper
 		locale
 	end
 	
+	#function that can help set admin other code
+	#used for_admin {}.else {} or  for_admin do end.else do end
 	def for_admin
+		#show admin condition
 		yield if (!current_user.nil? && current_user.admin)
+		Class.new(Object) do
+			attr_accessor :current_user
+			def initialize(current_user)
+				@current_user=current_user
+			end
+			def else
+				#show else condition
+				yield if !(!current_user.nil? && current_user.admin)
+			end
+		end.new(current_user)
 	end
 	
 	def menu 
@@ -86,19 +99,31 @@ module ApplicationHelper
 	end
 #system info helpers	
 	def system_info
-		Rails.cache.fetch("system-info_#{$hostname}",expires_in: 15.days) {"#{`phoronix-test-suite system-info`.gsub(/(?<word>\w+):\n/,'</ul><li>\k<word>:<ul><li>').gsub(/(?<bold>[- \w]+:)/,'<b>\k<bold></b>').sub(/([\n].*)*mation/,"<ul style='margin-top:0;margin-bottom:0;'>").sub("</ul>","").gsub(",","</li><li>")}</li></ul></ul>".html_safe rescue "failed to get system info"}
+		Rails.cache.fetch("system-info_#{$hostname}", expires_in: 15.days) {"#{`phoronix-test-suite system-info`.gsub(/(?<word>\w+):\n/,'</ul><li>\k<word>:<ul><li>').gsub(/(?<bold>[- \w]+:)/,'<b>\k<bold></b>').sub(/([\n].*)*mation/,"<ul style='margin-top:0;margin-bottom:0;'>").sub("</ul>","").gsub(",","</li><li>")}</li></ul></ul>" rescue "<p>failed to get system info</p>"}.html_safe
 	end
 	
 	def uptime
-		Rails.cache.fetch("uptime_#{$hostname}",expires_in: 1.minutes) {"<span style='margin-left: 15px;'>#{`uptime` rescue "failed to get load average"}</span>".html_safe}
+		Rails.cache.fetch("uptime_#{$hostname}", expires_in: 1.minutes) {"<span style='margin-left: 15px;'>#{`uptime` rescue "<p>failed to get load average</p>"}</span>"}.html_safe
 	end
 	
 	def hostname
-		Rails.cache.fetch("hostname_#{$hostname}") {"<span style='margin-left: 15px;'>#{`hostname` rescue "failed to get hostname"}</span>".html_safe}
+		Rails.cache.fetch("hostname_#{$hostname}") {"<span style='margin-left: 15px;'>#{`hostname` rescue "<p>failed to get hostname</p>"}</span>"}.html_safe
 	end
 	
 	def ifconfig
 		style='margin-top:0;margin-bottom:0;'
-		Rails.cache.fetch("ifconfig_#{$hostname}",expires_in: 5.minutes) {"<ul style=#{style}>#{`ifconfig`.split("\n\n").map!{|m| "#{m.gsub(/(?<w1>\w+) (?<w2>([abpR].|en|MU|BR))/,'\k<w1>_\k<w2>').gsub(/ (?<b>[MGKTP]?B)\)/,'\k<b>)').sub("HWaddr " ,"HWaddr:").sub(" TX_by","\nTX_by").gsub(": ",":").sub(" Link","\nLink").split("\n").map!{|l| "#{l.split(" ").map!{|w|  "<li>#{w.sub(":",": ").sub(/\A(?<bold>[- \w]+:?)/,'<b>\k<bold></b>')}</li>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>" if (m["inet addr"] && !m["lo"])}.compact.join }</ul>".html_safe rescue "failed to get network info"} #"<span style='margin-left: 15px;'>"
+		Rails.cache.fetch("ifconfig_#{$hostname}", expires_in: 5.minutes) {"<ul style=#{style}>#{`ifconfig`.split("\n\n").map!{|m| "#{m.gsub(/(?<w1>\w+) (?<w2>([abpR].|en|MU|BR))/,'\k<w1>_\k<w2>').gsub(/ (?<b>[MGKTP]?B)\)/,'\k<b>)').sub("HWaddr " ,"HWaddr:").sub(" TX_by","\nTX_by").gsub(": ",":").sub(" Link","\nLink").split("\n").map!{|l| "#{l.split(" ").map!{|w|  "<li>#{w.sub(":",": ").sub(/\A(?<bold>[- \w]+:?)/,'<b>\k<bold></b>')}</li>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>" if (m["inet addr"] && !m["lo"])}.compact.join }</ul>" rescue "<p>failed to get network info</p>"}.html_safe #"<span style='margin-left: 15px;'>"
+	end
+	
+	def redis_statistics
+		if ($redis_statistics)
+			Rails.cache.fetch("redis_statistics", expires_in: 1.minutes) do
+				"<ul style='margin-top:0;margin-bottom:0;'><li>"+$redis_statistics.hgetall("redis_statistics/requests").map do |k,v|
+					"#{k}: #{v} (#{t("tech.radis_statistics_from")} #{Time.at($redis_statistics.hget("redis_statistics/time", k).to_i)})"
+				end.join("</li><li>")+"</li></ul>"
+			end
+		else
+			t("tech.radis_statistics_not_active")
+		end.html_safe
 	end
 end
