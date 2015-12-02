@@ -116,12 +116,14 @@ module ApplicationHelper
 	end
 	
 	def redis_statistics
-		if ($redis_statistics)
-			Rails.cache.fetch("redis_statistics", expires_in: 1.minutes) do
-				"<ul style='margin-top:0;margin-bottom:0;'><li>"+$redis_statistics.hgetall("redis_statistics/requests").map do |k,v|
-					"#{k}: #{v} (#{t("tech.radis_statistics_from")} #{Time.at($redis_statistics.hget("redis_statistics/time", k).to_i)})"
-				end.join("</li><li>")+"</li></ul>"
-			end
+		if ($redis_statistics) then
+			"<ul style='margin-top:0;margin-bottom:0;'><li>"+Rails.cache.fetch("redis_statistics", expires_in: 1.minutes) do
+				Hash[
+					$redis_statistics.hgetall("redis_statistics/requests").map do |k,v|
+						["#{k}: #{v}",Time.at($redis_statistics.hget("redis_statistics/time", k).to_i)]
+					end
+				].map{|k,v| "#{k} (#{t("tech.radis_statistics_from")} #{v})"}
+			end.join("</li><li>")+"</li></ul>"
 		else
 			t("tech.radis_statistics_not_active")
 		end.html_safe
