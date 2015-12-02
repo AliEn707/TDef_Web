@@ -86,7 +86,7 @@ gem "htmlentities"
 
 gem 'rack-mini-profiler', group: :development
 
-gem "twitter-bootstrap-rails"
+gem "twitter-bootstrap-rails", "2.2.8"
 
 gem "devise", "3.2.4"
 gem "recaptcha", require: "recaptcha/rails"
