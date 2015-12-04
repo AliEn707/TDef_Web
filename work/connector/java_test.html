@@ -72,7 +72,7 @@
           function createIeObject(path, file){
             var div = document.createElement("div");
             div.innerHTML = "<object classid='clsid:8AD9C840-044E-11D1-B3E9-00805F499D93'>"+
-                  "<PARAM name='code' value='connector.class' >"+
+                  "<PARAM name='code' value='Connector.class' >"+
                   "<PARAM name='codebase' value='"+path+"' >"+
                   "<PARAM name='archive' value='"+file+"' >"+
                   "</object>";
@@ -86,7 +86,7 @@
         //		obj.setAttribute("data", path);
             param = document.createElement('param');
             param.setAttribute('name', 'code');
-            param.setAttribute('value', 'connector.class');
+            param.setAttribute('value', 'Connector.class');
             obj.appendChild(param);
             param = document.createElement('param');
             param.setAttribute('name', 'codebase');

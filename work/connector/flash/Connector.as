@@ -1,6 +1,6 @@
 //on server manager need to add listener on port 843, for sending private pollicy file
 package {
-		import flash.system.Security
+		import flash.system.Security;
 		import flash.display.Sprite;
 		import flash.events.*;
 		import flash.external.ExternalInterface;
@@ -13,7 +13,7 @@ package {
 		import flash.net.Socket;
 		import flash.errors.*;
 
-    public class ExternalInterfaceExample extends Sprite {
+    public class Connector extends Sprite {
 			private var input:TextField;
 			private var output:TextField;
 			private var sendBtn:Sprite;
@@ -25,7 +25,7 @@ package {
 			private var publicTimer:Timer = new Timer(190, 0);//40, 0);
 			private var date:Date = new Date();
 	
-			public function ExternalInterfaceExample() {
+			public function Connector() {
 				Security.allowDomain("*");
 				Security.allowInsecureDomain("*");
 				input = new TextField();
@@ -54,7 +54,8 @@ package {
 				output.border = true;
 				output.text = "Initializing...\n";
 				addChild(output);
-			
+                
+                
 				if (ExternalInterface.available) {
 					try {
 						if (checkJavaScriptReady()) {
@@ -87,7 +88,7 @@ package {
 // 				ExternalInterface.addCallback("startMap", startMap);
 					isReady = true;
 					ExternalInterface.call("connectorReady");
-					//add javascript info about init flash
+					//add javascript info about init flash                
 				}
 
         private function timerHandler(event:TimerEvent):void {
@@ -102,7 +103,8 @@ package {
         private function receivedFromJavaScript(value:String):void {
 					output.appendText("JavaScript says: " + value + "\n");
         }
-	
+        
+        //logging
         private function logJS(value:String):void {
 					if (isReady) {
 						ExternalInterface.call("sendToJavaScript", "Flash: "+value);

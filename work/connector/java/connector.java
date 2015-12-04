@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
  
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 /*
   // get value of a named member from Javascript
@@ -17,7 +18,7 @@ import java.io.*;
 */
 
 
-public class connector extends Applet {
+public class Connector extends Applet {
     //bit constants
     private final int BIT_1 = 1;
     private final int BIT_2 = 2;
@@ -60,7 +61,27 @@ public class connector extends Applet {
     //similar to ActionScript
     private JSObject ExternalInterface;
     
+    //Sockets
+    private Socket mapSock;
+    private Socket publicSock;
+    
     class PublicThread implements Runnable{ //must work all app live time
+        //bitmasks
+        private final int BM_PLAYER_ROOM= BIT_3; 
+        //out message types
+        private final int MESSAGE_PLAYER_CHANGE= 1;
+        private final int MESSAGE_GAME_START= 2;
+        private final int MESSAGE_EVENT_CHANGE= 3;
+        private final int MESSAGE_EVENT_DROP= 4;
+        //
+        private Boolean authorised=false;
+        private int currMsg;
+        private String obj = "({";
+				
+        private String user;
+        private int token;
+        private int user_id=0;
+				
         public void run(){
             logJS("Public Thread started");
         }
@@ -68,6 +89,51 @@ public class connector extends Applet {
     //  PublicThread ends
 
     class MapThread implements Runnable{
+        private final int NPC_SET_SIZE=9;
+        private final int TOWER_SET_SIZE=9;
+
+        //msg to client
+        private final int MSG_TEST= 0;
+        private final int MSG_NPC= 1;
+        private final int MSG_TOWER= 2;
+        private final int MSG_BULLET= 3;
+        private final int MSG_PLAYER= 4;
+        private final int MSG_INFO= 5;
+        //additional messages to client
+        private final int MSG_INFO_WAITING_TIME= 1;
+        //npc messages
+        private final int NPC_HEALTH= BIT_1;
+        private final int NPC_POSITION= BIT_2;
+        private final int NPC_CREATE= BIT_3;
+        private final int NPC_LEVEL= BIT_4;
+        private final int NPC_SHIELD= BIT_5;
+        private final int NPC_STATUS= BIT_6;
+        //tower messages
+        private final int TOWER_HEALTH= BIT_1;
+        private final int TOWER_TARGET= BIT_2;
+        private final int TOWER_CREATE= BIT_3;
+        private final int TOWER_LEVEL= BIT_4;
+        private final int TOWER_SHIELD= BIT_5;
+        //bullet messages
+        private final int BULLET_POSITION= BIT_1;
+        private final int BULLET_DETONATE= BIT_2;
+        private final int BULLET_CREATE= BIT_3;
+        //player final intants
+        private final int PLAYER_BASE= BIT_1;
+        private final int PLAYER_MONEY= BIT_2;
+        private final int PLAYER_CREATE= BIT_3;
+        private final int PLAYER_LEVEL= BIT_4;
+        private final int PLAYER_HERO= BIT_5;
+        private final int PLAYER_HERO_COUNTER= BIT_6;
+        private final int PLAYER_TARGET= BIT_7;
+        private final int PLAYER_FAIL= BIT_8;
+        private final int PLAYER_SETS= BIT_9;
+        
+        private Boolean authorised=false;
+        private int currMsg=0;
+        private String obj="";
+        private int msgTime=0;
+        
         public void run(){
             logJS("Map Thread started");
             
@@ -130,15 +196,43 @@ public class connector extends Applet {
       thread.start();
     } 
     
-    private void socketSend(Socket sock, String value){
-      //TODO: fill body
+    public void socketSend(Socket sock, String value){
+      //TODO: change logJS to socket send
+      ArrayDeque<String> arr=new ArrayDeque<String>();
+      Collections.addAll(arr, value.split(","));
+      while(arr.size()>1){
+        switch (arr.pollFirst()){
+            case "byte":
+            case "char":
+                logJS(Byte.parseByte(arr.pollFirst()));
+                break;
+            case "short":
+                logJS(Short.parseShort(arr.pollFirst()));
+                break;
+            case "int":
+                logJS(Integer.parseInt(arr.pollFirst()));
+                break;
+            case "uint":
+                logJS(Integer.parseUnsignedInt(arr.pollFirst()));
+                break;
+            case "float":
+                logJS(Float.parseFloat(arr.pollFirst()));
+                break;
+            case "double":
+                logJS(Double.parseDouble(arr.pollFirst()));
+                break;
+            case "string":
+                logJS(arr.pollFirst());
+                break;
+        }
+      } 
     }
     
     public void mapSend(String value){
-      //socketSend(mapSocket, value);
+      socketSend(mapSock, value);
     }
     
     public void publicSend(String value){
-      //socketSend(publicSocket, value);
+      socketSend(publicSock, value);
     }
 }
