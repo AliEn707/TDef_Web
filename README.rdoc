@@ -1,3 +1,2 @@
 == README
 You can check it on http://wsstudio.tk
-also we have jabber on jabber.wsstudio.tk:5222
