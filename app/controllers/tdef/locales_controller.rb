@@ -2,7 +2,7 @@ class Tdef::LocalesController < ApplicationController
 	before_action :authenticate_user!
 	before_action :is_admin?, except: [:get]
 	def show_all
-	  @locales=Tdef::Locale.order(:created_at)
+	  @locales=Tdef::Locale.where(name: $available_locales).order(:created_at)
 	end
 	def edit
 		@a=request.POST
