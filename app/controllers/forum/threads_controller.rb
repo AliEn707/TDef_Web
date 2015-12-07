@@ -14,6 +14,7 @@ class Forum::ThreadsController < ApplicationController
 
   # GET /forum/threads/new
   def new
+	@forum_id=params["forum_id"]
     @forum_thread = Forum::Thread.new
   end
 
@@ -24,11 +25,11 @@ class Forum::ThreadsController < ApplicationController
   # POST /forum/threads
   # POST /forum/threads.json
   def create
-    @forum_thread = Forum::Thread.new(forum_thread_params)
+    @forum_thread = Forum::Thread.new(forum_thread_params.merge(user: current_user))
 
     respond_to do |format|
       if @forum_thread.save
-        format.html { redirect_to @forum_thread, notice: 'Thread was successfully created.' }
+        format.html { redirect_to @forum_thread, notice: t("forum.threads.created") }
         format.json { render action: 'show', status: :created, location: @forum_thread }
       else
         format.html { render action: 'new' }
@@ -42,7 +43,7 @@ class Forum::ThreadsController < ApplicationController
   def update
     respond_to do |format|
       if @forum_thread.update(forum_thread_params)
-        format.html { redirect_to @forum_thread, notice: 'Thread was successfully updated.' }
+        format.html { redirect_to @forum_thread, notice: t("forum.threads.created") }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }

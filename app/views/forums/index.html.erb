@@ -1,33 +1,41 @@
-<h1>Listing forums</h1>
+<h1><%= t("forum") %>
+	<%for_admin do%>
+		<%= link_to t("forums.add"), new_forum_path %>
+	<%end%>
+</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>User</th>
-      <th>Closed</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
+<% @forums.each do |forum| %>
+	<table class="table table-bordered table-striped post">
+		<thead>
+			<tr>
+				<th>
+					<div class="pull-left" style="height:20px;">
+						<h3>
+							<%= link_to forum.name, forum%>
+						</h3>
+					</div>
+					<div class="pull-right">
+						<% for_admin do%>
+							<%= link_to 'Show', forum %>
+							<%= link_to 'Edit', edit_forum_path(forum) %>
+							<%= link_to 'Destroy', forum, method: :delete, data: { confirm: 'Are you sure?' } %>
+						<% end %>
+					</div>
+				</th>
+			<tr>
+		<thead>
+		<tbody>
+			<tr>
+				<td>
+					<div>
+						<%= forum.description %>
+					</div>
+					<div class="pull-right">
+						<%= t("last_update")%> <% t("at") %> <%=forum.updated_at%>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>	
+<% end %>
 
-  <tbody>
-    <% @forums.each do |forum| %>
-      <tr>
-        <td><%= forum.name %></td>
-        <td><%= forum.description %></td>
-        <td><%= forum.user_id %></td>
-        <td><%= forum.closed %></td>
-        <td><%= link_to 'Show', forum %></td>
-        <td><%= link_to 'Edit', edit_forum_path(forum) %></td>
-        <td><%= link_to 'Destroy', forum, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Forum', new_forum_path %>

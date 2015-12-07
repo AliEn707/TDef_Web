@@ -4,8 +4,9 @@ class CreateForums < ActiveRecord::Migration
       t.string :name
       t.text :description
       t.integer :user_id
-      t.boolean :closed
-
+      t.boolean :closed, default: false
+	  t.string :locale
+	  
       t.timestamps
     end
     add_index :forums, :id, :unique => true

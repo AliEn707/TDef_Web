@@ -4,12 +4,12 @@ class CreateForumThreads < ActiveRecord::Migration
       t.string :name
       t.text :description
       t.integer :user_id
-      t.boolean :closed
+      t.boolean :closed, default: false
       t.integer :forum_id
 
       t.timestamps
     end
-    add_index :forum_threads, :id
+    add_index :forum_threads, :id, :unique => true
     add_index :forum_threads, :user_id
     add_index :forum_threads, :forum_id
   end

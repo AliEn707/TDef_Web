@@ -3,22 +3,52 @@
 <p>
   <strong>Name:</strong>
   <%= @forum.name %>
-</p>
-
-<p>
+  <br>
   <strong>Description:</strong>
-  <%= @forum.description %>
-</p>
+	<%= @forum.description %>
+	<%= link_to 'Edit', edit_forum_path(@forum) %> |
+	<%= link_to 'Back', forums_path %>
 
-<p>
-  <strong>User:</strong>
-  <%= @forum.user_id %>
 </p>
-
-<p>
-  <strong>Closed:</strong>
-  <%= @forum.closed %>
-</p>
-
-<%= link_to 'Edit', edit_forum_path(@forum) %> |
-<%= link_to 'Back', forums_path %>
+<h2><%= t("threads") %>
+	<%= link_to t("forums.threads.add"), new_forum_thread_path(forum_id: @forum.id) %>
+</h2>
+<% @forum.threads.each do |thread| %>
+	<table class="table table-bordered table-striped post">
+		<thead>
+			<tr>
+				<th>
+					<div class="pull-left" style="height:20px;">
+						<h3>
+							<%= link_to thread.name, thread%>
+						</h3>
+					</div>
+					<div class="pull-right">
+						<%= link_to 'Show', thread %>
+						<%= link_to 'Edit', edit_forum_thread_path(thread) %>
+						<%= link_to 'Destroy', thread, method: :delete, data: { confirm: 'Are you sure?' } %>
+					</div>
+				</th>
+			<tr>
+		<thead>
+		<tbody>
+			<tr>
+				<td>
+					<div>
+						<%= thread.description %>
+					</div>
+					<div class="pull-right">
+						<%= t("last_update")%> <% t("at") %> <%=thread.updated_at%>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>	
+<% end %>
+<%  %>
+<h2><%= t("topics") %>
+	<%= link_to t("forums.topics.add"), new_forum_topic_path(data: Base64.encode64("{\"id\":\"#{@forum.id}\",\"type\":\"#{@forum.class}\"}")) %>
+</h2>
+<% @forum.threads.each do |topic| %>
+	<%= topic.inspect %>
+<%  end %>

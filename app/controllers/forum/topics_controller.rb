@@ -14,6 +14,7 @@ class Forum::TopicsController < ApplicationController
 
   # GET /forum/topics/new
   def new
+	@data=JSON.parse(p Base64.decode64(params['data']))
     @forum_topic = Forum::Topic.new
   end
 
@@ -24,11 +25,11 @@ class Forum::TopicsController < ApplicationController
   # POST /forum/topics
   # POST /forum/topics.json
   def create
-    @forum_topic = Forum::Topic.new(forum_topic_params)
+    @forum_topic = Forum::Topic.new(forum_topic_params.merge(user: current_user))
 
     respond_to do |format|
       if @forum_topic.save
-        format.html { redirect_to @forum_topic, notice: 'Topic was successfully created.' }
+        format.html { redirect_to @forum_topic, notice: t("forum.topics.created") }
         format.json { render action: 'show', status: :created, location: @forum_topic }
       else
         format.html { render action: 'new' }
@@ -42,7 +43,7 @@ class Forum::TopicsController < ApplicationController
   def update
     respond_to do |format|
       if @forum_topic.update(forum_topic_params)
-        format.html { redirect_to @forum_topic, notice: 'Topic was successfully updated.' }
+        format.html { redirect_to @forum_topic, notice: t("forum.topics.updated") }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }

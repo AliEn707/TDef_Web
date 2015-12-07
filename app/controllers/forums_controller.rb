@@ -24,7 +24,7 @@ class ForumsController < ApplicationController
   # POST /forums
   # POST /forums.json
   def create
-    @forum = Forum.new(forum_params)
+    @forum = Forum.new(forum_params.merge(user: current_user))
     if @forum.save
       redirect_to @forum, notice: t("forums.created")
     else

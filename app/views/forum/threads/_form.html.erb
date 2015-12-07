@@ -4,9 +4,7 @@
   <div class="form-inputs">
     <%= f.input :name %>
     <%= f.input :description %>
-    <%= f.input :user_id %>
-    <%= f.input :closed %>
-    <%= f.input :forum_id %>
+    <%= f.hidden_field :forum_id, value: @forum_id %>
   </div>
 
   <div class="form-actions">

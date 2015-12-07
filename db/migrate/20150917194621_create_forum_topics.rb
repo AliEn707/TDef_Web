@@ -10,7 +10,7 @@ class CreateForumTopics < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :forum_topics, :id
+    add_index :forum_topics, :id, :unique => true
     add_index :forum_topics, :user_id
     add_index :forum_topics, [:topicable_id, :topicable_type]
   end

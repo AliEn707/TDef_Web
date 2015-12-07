@@ -3,27 +3,16 @@
 <p>
   <strong>Name:</strong>
   <%= @forum_thread.name %>
-</p>
 
-<p>
   <strong>Description:</strong>
   <%= @forum_thread.description %>
+  <%= link_to 'Back', @forum_thread.forum %>
+  <%= link_to 'Edit', edit_forum_thread_path(@forum_thread) %>
 </p>
 
-<p>
-  <strong>User:</strong>
-  <%= @forum_thread.user_id %>
-</p>
-
-<p>
-  <strong>Closed:</strong>
-  <%= @forum_thread.closed %>
-</p>
-
-<p>
-  <strong>Forum:</strong>
-  <%= @forum_thread.forum_id %>
-</p>
-
-<%= link_to 'Edit', edit_forum_thread_path(@forum_thread) %> |
-<%= link_to 'Back', forum_threads_path %>
+<h2><%= t("topics") %>
+	<%= link_to t("forums.topics.add"), new_forum_topic_path(data: Base64.encode64("{\"id\":\"#{@forum_thread.id}\",\"type\":\"#{@forum_thread.class}\"}")) %>
+</h2>
+<% @forum_thread.topics.each do |topic| %>
+	<%= topic.inspect %>
+<%  end %>

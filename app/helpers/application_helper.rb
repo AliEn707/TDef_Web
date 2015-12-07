@@ -33,18 +33,24 @@ module ApplicationHelper
 	def menu 
 		a=[]
 		if (!current_user.nil?) then
-			a<<[{'name'=>current_user.email.to_s,'right'=>true, 'noprefix'=> true},
-					{'name'=>(:edit_registration),'path' => edit_user_registration_path},
-					{'name'=>(:sign_out),'path'=>destroy_user_session_path,:method => :delete}]
-			tdef=[{'name'=>(:tdef)},
-					{'name'=>(:game),'path'=>tdef_game_path},
-				]
-			social=[{'name'=>(:social)},
-					{'name'=>(:profile),'path'=>user_profile_path(current_user.profile)},
-					{'name'=>(:search),'path'=>search_path},
-					{'name'=>(:friends),'path'=>friends_path},
-					{'name'=>(:messages),'path'=>messages_path},
-					{'name'=>(:news),'path'=>posts_path}]
+			a<<[
+				{'name'=>current_user.email.to_s,'right'=>true, 'noprefix'=> true},
+				{'name'=>(:edit_registration),'path' => edit_user_registration_path},
+				{'name'=>(:sign_out),'path'=>destroy_user_session_path,:method => :delete}
+			]
+			tdef=[
+				{'name'=>(:tdef)},
+				{'name'=>(:game),'path'=>tdef_game_path},
+			]
+			social=[
+				{'name'=>(:social)},
+				{'name'=>(:profile), 'path'=>user_profile_path(current_user.profile)},
+				{'name'=>(:search), 'path'=>search_path},
+				{'name'=>(:friends), 'path'=>friends_path},
+				{'name'=>(:messages), 'path'=>messages_path},
+				{'name'=>(:news), 'path'=>posts_path},
+				{'name'=>(:forum), 'path'=>forums_path}
+			]
 			if (current_user.admin) then
 				tdef+=[
 					{'name'=>(:maps),'path'=>tdef_map_all_path},

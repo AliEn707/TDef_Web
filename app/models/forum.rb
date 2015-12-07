@@ -1,5 +1,5 @@
 class Forum < ActiveRecord::Base
-  def self.table_name_prefix
-    'forum_'
-  end
+	belongs_to :user, touch: true
+	has_many :threads, :dependent => :destroy
+	has_many :topics, as: :topicable, :dependent => :destroy
 end
