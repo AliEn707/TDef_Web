@@ -34,6 +34,7 @@ class PostsController < ApplicationController
 		if @post.save then
 			set_images
 			Image.where(imageable_id: nil, imageable_type: @post.class.name).where(Image.arel_table[:created_at].lt(Time.now-60.minutes)).destroy_all
+			@post.add_translations
 			redirect_to posts_path, notice: t("posts.created")
 		else
 			render action: 'new', alert: t("posts.not_created")

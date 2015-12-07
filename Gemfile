@@ -70,6 +70,9 @@ end
 #	gem 'capistrano-rvm'
 #end
 
+#yandex translator client api
+gem 'yandex-translator'
+
 #creating simple forms
 gem 'simple_form'
 

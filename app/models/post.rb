@@ -22,5 +22,17 @@ class Post < ActiveRecord::Base
 	def creation_date
 		created_at
 	end
+	
+	def add_translations
+		($available_locales-[lang]-self.translations.select(:lang).map{|t| t.lang}).each do |l|
+			self.translations<<Post::Translation.create(
+				title: $translator.translate(title, to: l),
+				description: $translator.translate(description, to: l)+'<br /><a href="http://translate.yandex.ru">«Переведено сервисом «Яндекс.Переводчик»</a>',
+				user: user,
+				lang: l,
+				post: self
+			)
+		end
+	end
 end
 
