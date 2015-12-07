@@ -1,8 +1,11 @@
 en:
   user:
     profile:
+      updated: Updated successfuly.
       property_not_filled: not set %{property}
+      property_already_exists: not set %{property}
       email: Email
+      EMAIL: Email
       NAME: Name
       SURNAME: Surname
       BDAY: Birth date

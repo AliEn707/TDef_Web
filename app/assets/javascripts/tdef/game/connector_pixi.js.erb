@@ -22,10 +22,10 @@ function getConnector() {
 ///public network functions
 
 //connect to public
-//publicConnect("localhost","7001","test","123456")
-function publicConnect(host,port, name, token) {
+//publicConnect("localhost","7001")
+function publicConnect(host, port) {
 	Loading.show("#public_connecting");
-	getConnector().publicConnect(host,port,name,token);
+	getConnector().publicConnect(host, port, access().name, access().token);
 }
 
 //
@@ -72,7 +72,7 @@ function proceedPublicMessages(str){
 				if (arr[i].action=='change') //add event
 					engine.public.eventsAdd(arr[i])
 				else
-					1;
+					engine.public.eventsRemove(arr[i]); //remove event
 				break;
 			case 'Player':
 				console.log(arr[i])
@@ -130,7 +130,6 @@ function mapConnect(host,port) {
 //connect to mapserver
 function mapClose(host,port) {
 	getConnector().mapClose();
-	getEngine().public.show();
 }
 
 //callback if cant connect
@@ -148,11 +147,18 @@ function mapConnected(){
 	Loading.hide();
 	Loading.message="";
 }
+
 //callback on map connection close
 function mapClosed(){
 	console.log("closed");
+	Loading.show(""); 
 	getEngine().map.clean();
-	getEngine().public.show();
+	//player ingame set when mapserver ask info about player
+	setTimeout(function(){
+		if (true/* player not in mapserver*/) //uncomment after adding normal checking player status ingame/ not ingame
+			Loading.hide();
+	}, 1000); 
+	getEngine().public.show(); 
 }
 
 
@@ -214,43 +220,43 @@ function connectorReady(){
 }
 
 ///functions for adding connectors
+function addConnector(place){
+	var connectors=["Flash"]; //TODO: in future must be ["Java", "SilverLight" ,"Flash"]
+	for (var i in connectors)
+		if (PluginDetect.isMinVersion(connectors[i]) > -1){
+			window["addConnector"+connectors[i]](place, function () {
+				Loading.message="#check_"+connectors[i].toLowerCase();
+			});
+			return;
+		}
+	
+	Loading.message="#connector_not_available";
+} 
+
 
 //adding Flash connector to page
-function addConnectorSWF(place) {
-	var obj = document.createElement('object')
-	obj.setAttribute('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000')
-	obj.setAttribute('id', 'connector')
-	obj.setAttribute('codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab')
-	var param = document.createElement('param')
-	param.setAttribute('name', 'movie')
-	param.setAttribute('value', 'connector')
-	obj.appendChild(param)
-	param = document.createElement('param')
-	param.setAttribute('name', 'quality')
-	param.setAttribute('value', 'high')
-	obj.appendChild(param)
-	param = document.createElement('param')
-	param.setAttribute('name', 'bgcolor')
-	param.setAttribute('value', '#ffffff')
-	obj.appendChild(param)	
+function addConnectorFlash(place, callback){
+	var path='<%= asset_url("connector.swf") %>';
+	//some IE hack
+	function createIeObject(url){
+		var div = document.createElement("div");
+		div.innerHTML = "<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000'><param name='movie' value='" +url + "'></object>";
+		return div.firstChild;
+	}
+	var isMSIE = /*@cc_on!@*/false;
+	var obj = (isMSIE) ? createIeObject(path) : document.createElement("object");
+	if (!isMSIE) {
+		obj.setAttribute("type", "application/x-shockwave-flash");
+		obj.setAttribute("data", path);
+	}
+	//Add attributes to <object>
+	obj.setAttribute("id", "connector");
+	obj.setAttribute("width", "550");
+	obj.setAttribute("height", "400");
 	param = document.createElement('param')
 	param.setAttribute('name', 'allowScriptAccess')
 	param.setAttribute('value', 'sameDomain')
 	obj.appendChild(param)
-	var embed = document.createElement('embed')
-	embed.setAttribute('src', '<%= asset_url('connector.swf') %>')
-	embed.setAttribute('quality', 'high')
-	embed.setAttribute('bgcolor', '#ffffff')
-	embed.setAttribute('width', '500')
-	embed.setAttribute('height', '375')
-	embed.setAttribute('name', 'connector')
-	embed.setAttribute('align', 'middle')
-	embed.setAttribute('play', 'true')
-	embed.setAttribute('loop', 'false')
-	embed.setAttribute('quality', 'high')
-	embed.setAttribute('type', 'application/x-shockwave-flash')
-	embed.setAttribute('pluginspage', 'http://www.macromedia.com/go/getflashplayer')
-	obj.appendChild(embed)
 	
 	obj.style.zIndex=0
 	obj.style.position="absolute"
@@ -260,15 +266,14 @@ function addConnectorSWF(place) {
 	
 	place=place || document.body
 	place.appendChild(obj)
-	
-  var timout=window.setTimeout(
-    function () {
-      Loading.message="#check_flash";
-    },
+
+  var timeout=window.setTimeout(
+    callback,
     2000
   );
+
 	hideConnector=function (o){
-    window.clearTimeout(timout);
+		window.clearTimeout(timeout);
 		o.width=3;
 		o.height=2;
 		//o.parentNode.style.left=-o.width+"px";

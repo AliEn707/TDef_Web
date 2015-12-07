@@ -77,8 +77,9 @@ Public.prototype.menuInit= function (opt) {
 	var engine=this.engine || getEngine();
 	var container=new ButtonContainer({position:{x:opt.position.x,y:opt.position.y}});
 	this.menu={};
+	container.depth=-1;
 	this.menu.container=container;
-	this.addChild(container);
+	this.engine.stage.addChild(container);
 	var that=this;
 //TODO: change to message area, add message list, and processor
 	textures=getTextureFrames(engine.textures['menu_message_backgound']);
@@ -97,7 +98,7 @@ Public.prototype.menuInit= function (opt) {
 				},
 				float: {x:'fixed'}
 			});
-
+ 
 		//butttons	
 			this.menu.buttons = container.addButton({
 				position:{
@@ -139,11 +140,11 @@ Public.prototype.menuInit= function (opt) {
 						style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}
 					},
 					actions: ['press'],
-					pressAction: (function(p,o){
+					pressActions: [(function(p,o){
 						return function(){
 							p.switchTo(o); //TODO: add other actions
 						};
-					})(place,obj)//odd
+					})(place,obj)]//odd
 				}); 
 			}
 		}).call(that)
@@ -177,21 +178,6 @@ Public.prototype.eventsInit= function (opt) {
 	this.events.container.visible=false;
 	this.addChild(container);
 	
-	textures=getTextureFrames(engine.textures.events_list_u);
-	afterTextureLoad(textures[0], function (){
-		var scale=opt.border.height/textures[0].height;
-		container.addButton({
-			sprite: new ATilingSprite(textures, {
-				width: opt.width-opt.border.width*2, 
-				height: opt.border.height, 
-				scale:{x: scale,y: scale}
-			}),
-			position:{
-				x:opt.border.width,
-				y:0
-			}
-		});
-	});
 	textures=getTextureFrames(engine.textures.events_list_d);
 	afterTextureLoad(textures[0], function (){
 		var scale=opt.border.height/textures[0].height;
@@ -208,6 +194,23 @@ Public.prototype.eventsInit= function (opt) {
 			}
 		});
 	});
+		
+	textures=getTextureFrames(engine.textures.events_list_u);
+	afterTextureLoad(textures[0], function (){
+		var scale=opt.border.height/textures[0].height;
+		container.addButton({
+			sprite: new ATilingSprite(textures, {
+				width: opt.width-opt.border.width*2, 
+				height: opt.border.height, 
+				scale:{x: scale,y: scale}
+			}),
+			position:{
+				x:opt.border.width,
+				y:0
+			}
+		});
+	});
+	
 	textures=getTextureFrames(engine.textures.events_list_l);
 	afterTextureLoad(textures[0], function (){
 		var scale=opt.border.width/textures[0].width;
@@ -224,6 +227,7 @@ Public.prototype.eventsInit= function (opt) {
 			float: {y:'fixed'}
 		});
 	});
+	
 	textures=getTextureFrames(engine.textures.events_list_r);
 	afterTextureLoad(textures[0], function (){
 		var scale=opt.border.width/textures[0].width;
@@ -338,10 +342,12 @@ Public.prototype.eventsAdd= function (event) {
 				style: {font: 'bold 16px Arial', fill: "#ffffff", stroke: "#000000",strokeThickness:2}
 			},
 			actions: ['press'],
-			pressAction: this.eventsButtonAction
+			pressActions: [this.eventsButtonAction]
 		}); 
 	} else {
-		this.events.all[event.id].text.setText(text);
+		console.log("event "+event.id+" already exists");
+		this.events.all[event.id].text.setText(event.name);
+		//update other properties
 	}
 	this.events.all[event.id].event=event;
 	//TODO: add actions
@@ -356,7 +362,7 @@ Public.prototype.eventsRemove= function (event) {
 Public.prototype.eventsButtonAction= function (event) {
 //	console.log(this.event);
 	getEngine().public.eventChoose(this);
-	publicGetRoom(this.event); //TODO: check
+	publicGetRoom(this.event); //TODO: change to normal action
 }
 
 //event info screen

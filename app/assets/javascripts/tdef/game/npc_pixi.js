@@ -78,6 +78,7 @@ Npc.prototype.setSpriteByVector= function (v){
   var length=Math.sqrt(v.x*v.x+v.y*v.y);
   if (length<0.03)
     return;
+	
 	var ang=this.getAngle(v, length);
 	var p8=Math.PI/8;
 	//need to correct
@@ -174,7 +175,11 @@ Npc.prototype.proceed= function (){
 	this.grid.y+=this.direction.y//*this.getType().move_speed*6/100;
 	
 	//proseed sprite
+	if (!this.sprites[this.sprite]) //show if error
+		console.log(this.sprite)
+	
 	this.sprites[this.sprite].upFrame();
+	//TODO: add else
 	this.scale.x=this.map.scale.x;
 	this.scale.y=this.map.scale.x;
 	
@@ -204,13 +209,20 @@ Npc.prototype.setSpriteAdd= function (name){
 			this.setSprite(sprite[0]+"_"+name);
 }
 
-Npc.prototype.setSprite= function (name){
-	this.removeChild(this.sprites[this.sprite]);
-	this.sprite=name;
-	//TODO: check, maybe not need
-	if (!this.sprites[this.sprite].loop)
-		this.sprites[this.sprite].chooseFrame(0);
-	this.addChildAt(this.sprites[this.sprite],0);
+Npc.prototype.setSprite= function (name){ //name - full name, or first part
+	var sprite=this.sprite.split("_");
+	if (this.sprite!=name){
+		this.removeChild(this.sprites[this.sprite]);
+		name=name.split("_");
+		this.sprite=name[0];
+		this.sprite+='_'+(name[1] || sprite[1]);
+		if (!this.sprites[this.sprite])
+			this.sprite=this.sprite.split("_")[0];
+		//TODO: check, maybe not need
+		if (!this.sprites[this.sprite].loop)
+			this.sprites[this.sprite].chooseFrame(0);
+		this.addChildAt(this.sprites[this.sprite],0);
+	}
 }
 
 Npc.prototype.setWalk= function (){

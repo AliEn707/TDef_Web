@@ -117,7 +117,7 @@ TDefEngine.prototype.parseMap = function(map){
 	if (!maps[map].data){
 		var mp=maps[map].mp.split("\r\n");
 		var mg=maps[map].mg.split("\r\n");
-		var data={};
+		var data={preview: maps[map].preview};
 		//mp
 		data.size=parseInt(mp[0]);
 		data.walkable=mp[1];
@@ -168,10 +168,12 @@ TDefEngine.prototype.parseMap = function(map){
 TDefEngine.prototype.setMap= function (m){
 	this.map_name=m;
 }
+
 TDefEngine.prototype.loadMap= function (){
 	var opt=this.parseMap(this.map_name)
 	var map=new Grid(opt.size);
 	map.engine=this;
+	map.preview=opt.preview;
 	if (this.map)
 		this.map.clean();
 	this.map=map;
@@ -245,26 +247,31 @@ TDefEngine.prototype.keysHadler=function(e) {
 }
 
 TDefEngine.prototype.keysProcessor=function() {
-	var 	mapUpdated=false
 //	console.log(this.keys)
-	if (this.keys[this.settings.defines.keys.mapMoveUp]){
-		this.map.translate(0,-this.settings.moveSpeed*this.settings.yInverted)
+	var actions={
+		mapMoveLeft: function (){this.map.translate(this.settings.moveSpeed*this.settings.xInverted,0);}, 
+		mapMoveRight: function (){this.map.translate(-this.settings.moveSpeed*this.settings.xInverted,0);},
+		mapMoveUp: function (){this.map.translate(0,-this.settings.moveSpeed*this.settings.yInverted);},
+		mapMoveDown: function (){this.map.translate(0,+this.settings.moveSpeed*this.settings.yInverted);}, 
+		mapZoomUp: function (){this.map.zoom(1+this.settings.zoomSpeed);},
+		mapZoomDown: function (){this.map.zoom(1-this.settings.zoomSpeed);}
 	}
-	if (this.keys[this.settings.defines.keys.mapMoveDown]){
-		this.map.translate(0,+this.settings.moveSpeed*this.settings.yInverted)
-	}
-	if (this.keys[this.settings.defines.keys.mapMoveLeft]){ 
-		this.map.translate(this.settings.moveSpeed*this.settings.xInverted,0)
-	}
-	if (this.keys[this.settings.defines.keys.mapMoveRight]){ 
-		this.map.translate(-this.settings.moveSpeed*this.settings.xInverted,0)
-	}	
-	if (this.keys[this.settings.defines.keys.mapZoomUp]){ 
-		this.map.zoom(1+this.settings.zoomSpeed)
-	}	
-	if (this.keys[this.settings.defines.keys.mapZoomDown]){ 
-		this.map.zoom(1-this.settings.zoomSpeed)
-	}	
+	for (var i in actions)
+		if (this.keys[this.settings.defines.keys[i]]){
+			this.beforeClickGlobal();
+			actions[i].call(this);
+		}
+}
+
+// global actions like cancel tower building menu
+var beforeClickGlobal=[];
+TDefEngine.prototype.beforeClickGlobal=function() {
+	for (var i in beforeClickGlobal)
+		beforeClickGlobal[i]();
+}
+
+TDefEngine.prototype.beforeClickGlobalAdd=function(a) {
+	beforeClickGlobal.push(a);
 }
 
 TDefEngine.prototype.objectsProcessor=function() {

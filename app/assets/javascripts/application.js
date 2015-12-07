@@ -18,17 +18,14 @@
 //= require twitter/bootstrap
 //= require bootstrap
 //= require js-routes
+//= require PluginDetect
 //= require_tree ./application
 
 
 
-
-var submissionSetted=false;
 function setSubmission(){
-	if (!submissionSetted){
-		submissionSetted=true;
+	if (!window.onbeforeunload)
 		window.onbeforeunload=function (){return " "};
-	}
 }
 
 function removeSubmission(){

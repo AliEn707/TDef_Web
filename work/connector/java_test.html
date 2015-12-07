@@ -1,0 +1,129 @@
+<html>
+    <head>
+        <title>LiveConnect - Java-Javascript communnication demo</title>
+    </head>
+    <body>
+        <center>
+ <!--      
+            <object id="connector"
+              classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
+              codebase="http://www.oracle.com/technetwork/java/javase/downloads">
+              <param name="code" value="connector.class">
+                <comment>
+                  <embed code="connector.class" 
+                    type="application/x-java-applet;version=1.6"
+                    pluginspage="http://www.oracle.com/technetwork/java/javase/downloads"
+                    name="connector"
+                    >
+                    <noembed>
+                      No Java Support.
+                    </noembed>
+                  </embed>
+                </comment>
+              </object>
+-->              
+        </center>
+    </body>
+    <script type="text/javascript">
+//        var attributes = { //id:"connector",
+//          code:'connector',  width:200, height:200} ;
+//        var parameters = {}//{ jnlp_href: 'connector.jnlp'} ;
+//        deployJava.runApplet(attributes, parameters, '1.6');
+        
+        var coop = "Ooops!";
+        this[1] = "Slot 1";
+ 
+        function foo() {
+            return "This is from foo()";
+        }
+ 
+        function bar(firstName, lastName) {
+            return "Greeting " + firstName + " " + lastName + "!";
+        }
+        
+        function javaTest(){
+          getConnector().sendToConnector("test")
+        }
+        function sendToJavaScript(v){
+          console.log(v)
+        }
+        
+        function getConnector() {
+          movieName="connector";
+          if (navigator.appName.indexOf("Microsoft") != -1) {
+            return window[movieName];
+          } else {
+            return document[movieName];
+          }
+        }
+        
+        function connectorReady(){
+          console.log("java ready")
+        }
+        var jsReady=true;
+        function isReady(){
+          return jsReady;
+        }
+	
+        function createConnector(place) {
+          var path='./java';
+          var file='connector.jar';
+          //some IE hack
+          function createIeObject(path, file){
+            var div = document.createElement("div");
+            div.innerHTML = "<object classid='clsid:8AD9C840-044E-11D1-B3E9-00805F499D93'>"+
+                  "<PARAM name='code' value='connector.class' >"+
+                  "<PARAM name='codebase' value='"+path+"' >"+
+                  "<PARAM name='archive' value='"+file+"' >"+
+                  "</object>";
+            console.log(div.innerHTML);
+            return div.firstChild;
+          }
+          var isMSIE = /*@cc_on!@*/false;
+          var obj = (isMSIE) ? createIeObject(path, file) : document.createElement("object");
+          if (!isMSIE) {
+            obj.setAttribute("type", "application/x-java-applet");
+        //		obj.setAttribute("data", path);
+            param = document.createElement('param');
+            param.setAttribute('name', 'code');
+            param.setAttribute('value', 'connector.class');
+            obj.appendChild(param);
+            param = document.createElement('param');
+            param.setAttribute('name', 'codebase');
+            param.setAttribute('value', path);
+            obj.appendChild(param);
+            param = document.createElement('param');
+            param.setAttribute('name', 'archive');
+            param.setAttribute('value', file);
+            obj.appendChild(param);
+          }
+          //Add attributes to <object>
+          obj.setAttribute("id", "connector");
+          obj.setAttribute("width", "550");
+          obj.setAttribute("height", "400");
+          param = document.createElement('param');
+          param.setAttribute('name', 'scriptable');
+          param.setAttribute('value', 'true');
+          obj.appendChild(param);
+          param = document.createElement('param');
+          param.setAttribute('name', 'mayscript');
+          param.setAttribute('value', 'true');
+          obj.appendChild(param);
+          
+          place=place || document.body;
+          place.appendChild(obj);
+        }
+          
+//          obj.style.zIndex=0
+  //        obj.style.position="absolute"
+    //      obj.style.left="0px"//-width
+      //    obj.style.top="0px"
+        //	obj.setAttribute("hidden","")
+          
+	
+        createConnector();
+    </script>
+    
+    <button onclick=javaTest()>test </button>
+</html>
+         

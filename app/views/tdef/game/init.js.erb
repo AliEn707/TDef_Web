@@ -1,6 +1,14 @@
+
+<% for_admin do %> //add: || debug
+	var a;
+	console.log("Java available: "+ ((a=PluginDetect.isMinVersion("java")) > -1 ? "YES" : "NO")+" ("+a+")");
+	console.log("SilverLight available: "+ ((a=PluginDetect.isMinVersion("silverlight")) > -1 ? "YES" : "NO")+" ("+a+")");
+	console.log("Flash available: "+ ((a=PluginDetect.isMinVersion("flash")) > -1 ? "YES" : "NO")+" ("+a+")");
+<% end %>
+
 try{
 	function afterConnectorReady(){
-		publicConnect("<%=request.host%>",7001,"<%=current_user.email%>","<%=rand(2147483647)%>");
+		publicConnect("<%=request.host%>",7001);
 	}	
 	afterWindowLoad(function init(){
 		var engine = new TDefEngine(
@@ -18,8 +26,38 @@ try{
 						frames: 1
 					},
 					health: {
-						src:"<%= asset_url('health.png') %>"
+						src:"<%= asset_url('health.png') %>",
+						width:512,
+						height:32,
+						frames: 1
 					}, 
+					progress_vertical: {
+						src:"<%= asset_url('progress_vertical.png') %>",
+						width:32,
+						height:512,
+						frames: 1
+					}, 
+					progress_horisontal: {
+						src:"<%= asset_url('progress_horisontal.png') %>",
+						width:512,
+						height:32,
+						frames: 1
+					}, 
+					aprogress_vertical: {
+						src:"<%= asset_url('progress_vertical_animated.png') %>",
+						width:32,
+						height:512,
+						frames: 1
+					}, 
+					aprogress_horisontal: {
+						src:"<%= asset_url('aprogress_horisontal_animated.png') %>",
+						width:512,
+						height:32,
+						frames: 1
+					}, 
+					remove_tower:{
+						src:"/imgtest/remove_tower.png"
+					},
 					tower_set_background:{
 						src:"/imgtest/build.png"
 					},
@@ -105,6 +143,7 @@ try{
 				}
 			}, 
 			function(){
+				setSubmission();
 				var engine=getEngine();
 				Loading.init({engine: engine}, function (){
 					Loading.show();
@@ -112,10 +151,11 @@ try{
 					if (test)
 						test(engine);
 					//show statistic info
-          Loading.message="#wait_connector";
+					Loading.message="#wait_connector";
 					if (<%= "true" %>)
 						statsShow(engine);
-					addConnectorSWF();
+					addConnector();
+					jsReady = true;
 				});
 			}
 		);

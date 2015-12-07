@@ -366,6 +366,12 @@ TDef.types.bullet={
 				height: 256,
 				width:64,
 			},
+			detonate:{
+				src: "/imgtest/bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
 		},
 	},
 	5:{
@@ -373,6 +379,12 @@ TDef.types.bullet={
 		speed: 0,
 		textures:{
 			idle:{
+				src: "/imgtest/bullet.png",
+				frames: 1,
+				height: 256,
+				width:64,
+			},
+			detonate:{
 				src: "/imgtest/bullet.png",
 				frames: 1,
 				height: 256,

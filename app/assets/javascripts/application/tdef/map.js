@@ -1097,8 +1097,8 @@ function mapEditor_completeAndSave() {
 function mapEditor_canvasToImg() {
 	var width = document.getElementById('map').width 
 	var height = document.getElementById('map').height
-	document.getElementById('map').width = 256
-	document.getElementById('map').height = 128
+	document.getElementById('map').width = 512
+	document.getElementById('map').height = 256
 	var prevScale = scale, prevx = translatex, prevy = translatey
 	scale = 256/(1.41*size*nodeSize)*0.95
 	translatex = nodeSize*0.25*1.41*scale

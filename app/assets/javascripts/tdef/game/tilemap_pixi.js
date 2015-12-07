@@ -10,7 +10,7 @@ function Grid(size,opt){
 	this.actions=["drag","press"];
 	this.engine=getEngine();
 	
-	this.border=opt.border || {top: 0, bottom: 90, left: 90, right: 0};	
+	this.border=opt.border || {top: 40, bottom: 90, left: 90, right: 0};	
 	
 	this.width=this.engine.renderer.view.width
 	this.height=this.engine.renderer.view.height
@@ -31,6 +31,13 @@ function Grid(size,opt){
 	this.mousemove = this.touchmove = proceedDragging;
 	this.mouseweel=this.weelHandler;
 	
+	actions=['pressActions', 'beforePressActions', 'afterPressActions',	'beforePressStopActions',	'afterPressStopActions',	'beforeMoveActions',	'afterMoveActions',	'beforeMouseOverActions',	'afterMouseOverActions',	'beforeMouseOutActions',	'afterMouseOutActions'];
+	for (var i in actions)
+		this[actions[i]]=opt[actions[i]] || [];
+	
+	this.beforeMoveActions.push(this.beforeMoveAction);
+	this.pressActions.push(this.pressAction);
+	
 	this.nodes= new PIXI.DisplayObjectContainer();//PIXI.SpriteBatch()
 	this.nodes.rotation=-Math.PI/4;
 	this.addChild(this.nodes);
@@ -50,18 +57,31 @@ function Grid(size,opt){
 //	this.transformCorrection()
 	this.players={};
 	this.depth=200000000; //TODO: change stupid way
-	//set borders
-	this.window=new ButtonContainer({
+	
+	this.setBorders();
+	this.setSets(this.engine.renderer.view.width, this.engine.renderer.view.height);
+}
+
+Grid.prototype.resize = function(width, height){
+	this.transformCorrection();
+	this.bordersCorrection(width, height);
+	for (var i in this.children)
+		if (this.children[i].resize)
+			this.children[i].resize(width,height)
+}
+
+Grid.prototype.setBorders= function (){
+	this.borders=new ButtonContainer({position:{x:0,y:0}});
+	this.borders.left=this.borders.addButton({
 		sprite:{
 			textures: getTextureFrames(this.engine.textures.black),
 			opt:{
 				width: this.border.left+0.01,
-				height: this.engine.renderer.view.height
+				height: this.engine.renderer.view.height-this.border.bottom
 			}
-		},
-		float:{y:"fixed"}
+		}
 	});//left
-	this.window.addButton({
+	this.borders.top=this.borders.addButton({
 		sprite:{
 			textures: getTextureFrames(this.engine.textures.black),
 			opt:{
@@ -72,25 +92,22 @@ function Grid(size,opt){
 		position: {
 			x: this.border.left,
 			y: 0
-		},
-		float:{x:"fixed"}
+		}
 	});//top
-	this.window.addButton({
+	this.borders.bottom=this.borders.addButton({
 		sprite:{
 			textures: getTextureFrames(this.engine.textures.black),
 			opt:{
-				width: this.engine.renderer.view.width-this.border.left,
+				width: this.engine.renderer.view.width,
 				height: this.border.bottom+0.01
 			}
 		},
 		position: {
-			x: this.border.left,
-			y: this.engine.renderer.view.height-this.border.bottom,
-			float:{y:"fixed"}
-		},
-		float:{x:"fixed"}
+			x: 0,
+			y: this.engine.renderer.view.height-this.border.bottom
+		}
 	});//bottom
-	this.window.addButton({
+	this.borders.right=this.borders.addButton({
 		sprite:{
 			textures: getTextureFrames(this.engine.textures.black),
 			opt:{
@@ -100,18 +117,172 @@ function Grid(size,opt){
 		},
 		position: {
 			x: this.engine.renderer.view.width-this.border.right,
-			y: this.border.top,
-			float:{x:"fixed"}
-		},
-		float:{y:"fixed"}
+			y: this.border.top
+		}
 	});//right
-	this.window.depth=-0.1;
-	this.engine.stage.addChild(this.window);
+	this.borders.depth=-0.1; //allways on screen
+	this.engine.stage.addChild(this.borders);
 }
 
-focusTexturePath="/imgtest/build.png";
-buildableTexturePath="/imgtest/tower_mark.png";
+Grid.prototype.bordersCorrection= function (w,h){
+	this.setsCorrection(w, h);
+	//set sizes
+	this.borders.bottom.height=this.border.bottom;
+	
+	this.borders.left.height=h-this.borders.bottom.height;
+	this.borders.bottom.width=w;
+	this.borders.right.height=h-this.borders.bottom.height-this.borders.top.height;
+	this.borders.top.width=w-this.borders.right.width;
+	//set positions
+	this.borders.bottom.position.y=this.borders.left.height;
+	this.borders.right.position.y=this.borders.top.height;
+	this.borders.right.position.x=w-this.borders.right.width;
+	this.borders.top.position.x=this.borders.left.width;
+}
 
+Grid.prototype.setSets= function (width, height){
+	var engine=this.engine;
+	this.set={};
+	//TODO:remove	
+	var t=[new PIXI.Texture.fromImage("/imgtest/red.jpeg")]
+	var tw=[new PIXI.Texture.fromImage("/imgtest/green.jpg")]
+	
+	var offset=5; //need to be calculated
+	var prog=0.2; //size of progress bars 
+	
+	var c=1+prog;//
+	var h=(width+(36*c-20)*offset)/(18*c+1);
+	this.border.bottom=h;
+	var size=h-offset*2;
+	var psize=size*prog;
+	var cont=getTextureFrames(this.engine.textures.npc_set_background);
+//	var size={width:(size+psize)*9+10*offset, height:(size)+2*offset}
+		
+	var buttons=new ButtonContainer({
+		sprite:{
+			textures: cont,
+			opt: {width:(width-h)/2, height:h}
+		},
+		position:{
+			x: 0,
+			y: 0,
+		}
+	});
+	function spawnNpc(){
+		if (!this.disabled){ 
+			mapSpawnNpc(this.args.button);
+		}
+	}
+	
+	for(var i=0;i<9;i++){
+		var b=buttons.addButton({sprite:{textures: t,opt:{width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}, actions:["press"], args: {button: i}, pressActions: [spawnNpc]});
+		b.progress=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
+		b.blur=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt:{width: size, height: size}}, position:{x: 0,y: 0}});
+		b.blur.alpha=0.8;
+		b.disabled=true;
+	}
+	this.set.npc=buttons;
+//	this.objects["npc_set"]=buttons;
+	this.borders.bottom.addChild(buttons);
+	
+	cont=getTextureFrames(this.engine.textures.tower_set_background);
+	var buttonSize={x:45,y:45}//TODO: add dependense of screen size
+	buttons=new ButtonContainer({
+		sprite:{
+			textures: cont,
+			opt: {width:(width-h)/2, height:h}
+		},
+		position:{
+			x: (width-h)/2+h,
+			y: 0
+		}
+	});
+	var menu=new ButtonContainer({position:{x:100,y:100}}); //menu on press buildable node
+	menu.keyPadInit({columns: 10, buttonSize: buttonSize, buttonDist:{x:buttonSize.x*1.55}, circle:{centered: false}});
+	function spawnTower(){
+		if (!this.disabled) 
+			mapSpawnTower(this.args,menu.id); 
+	}
+	
+	for(var i=0;i<9;i++){
+		var b=buttons.addButton({sprite: {textures: tw, opt: {width: size, height: size}}, position:{x: offset+i*(size+psize+offset),y: offset}});//TODO: try to remove
+		b.progress=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.progress_vertical),opt:{width: psize, height: size}}, position:{x: size,y: 0}});
+		b.blur=b.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt:{width: size, height: size}}, position:{x: 0,y: 0}});
+		b.blur.alpha=0.8;
+		var m=menu.keyPadAddButton({sprite: {textures: tw, opt: {}}, actions:["press"], args: parseInt(i), pressActions: [spawnTower]});
+		m.blur=m.addButton({sprite:{textures: getTextureFrames(this.engine.textures.black),opt: {width: buttonSize.x, height: buttonSize.y}}, position:{x: 0,y: 0}});
+		m.blur.alpha=0.8;
+		m.disabled=true;
+	}
+	
+	this.engine.beforeClickGlobalAdd(function(){engine.map.outBuildable(engine.map);});
+	menu.visible=false;
+	this.set.tower=buttons;
+  this.borders.bottom.addChild(buttons);
+	this.objects["tower_building_menu"]=menu;
+	this.engine.stage.addChild(menu);
+	//set targeting
+	buttons=new ButtonContainer({
+		sprite:{
+			textures: cont,
+			opt: {width:h, height:h}
+		},
+		position:{
+			x: (width-h)/2,
+			y: 0
+		},
+		actions:["press"],
+		pressActions: [function(){console.log("Pressed")}]//TODO: add normal action
+	});
+	this.set.targeting=buttons;
+	this.borders.bottom.addChild(buttons);
+	
+	this.bordersCorrection(width, height);
+}
+
+Grid.prototype.setsCorrection= function (width, height){
+	var offset=5; //need to be calculated
+	var prog=0.2; //size of progress bars 
+	
+	var c=1+prog;//
+	var h=(width+(36*c-20)*offset)/(18*c+1);
+	this.border.bottom=h;
+	var size=h-offset*2;
+	var psize=size*prog;
+	
+	this.set.npc.width=(width-h)/2;
+	this.set.npc.height=h;
+	for (var i in this.set.npc.buttons){
+		var button=this.set.npc.buttons[i];
+		button.position.x=offset+parseInt(i)*(size+psize+offset);
+		button.blur.width=size;
+		button.blur.height=size*button.blur.height/button.width;
+		button.width=size;
+		button.height=size;
+		button.progress.width=psize;
+		button.progress.height=size;
+		button.progress.position.x=size;
+		//add progress status size
+	}
+	this.set.tower.width=(width-h)/2;
+	this.set.tower.height=h;
+	this.set.tower.position.x=(width-h)/2+h;
+	for (var i in this.set.tower.buttons){
+		var button=this.set.tower.buttons[i];
+		button.position.x=offset+parseInt(i)*(size+psize+offset);
+		button.blur.width=size;
+		button.blur.height=size*button.blur.height/button.width;
+		button.width=size;
+		button.height=size;
+		button.progress.width=psize;
+		button.progress.height=size;
+		button.progress.position.x=size;
+		//add progress status size
+	}
+	this.set.targeting.position.x=(width-h)/2;
+	this.set.targeting.width=h;
+	this.set.targeting.height=h;
+}
 
 Grid.prototype.weelHandler= function (m){
 	var e=m.originalEvent;
@@ -120,19 +291,12 @@ Grid.prototype.weelHandler= function (m){
 	var x=e.clientX || e.layerX;
 	var y= e.clientY || e.layerY;
 	if (e.type=="wheel" || e.type=="mousewheel"){
-		// wheelDelta ?? ???? ??????????? ?????? ?????????? ????????
+		// wheelDelta 
 		var delta = e.deltaY || e.detail || e.wheelDelta;
 		//change zoom
 		this.zoom(1+that.settings.zoomSpeed*(delta<0 ? -1 : 1)*that.settings.weelInverted, x, y)
 		//add another hendlers
 	}
-}
-
-Grid.prototype.resize = function(width, height){
-	this.transformCorrection();
-	for (var i in this.children)
-		if (this.children[i].resize)
-			this.children[i].resize(width,height)
 }
 
 Grid.prototype.translate = function(x,y){
@@ -271,7 +435,7 @@ Grid.prototype.setFocus = function(){
 
 
 Grid.prototype.overBuildable = function(){
-	var menu=this.map.objects["tower_menu"];
+	var menu=this.map.objects["tower_building_menu"];
 	if (!menu)
 		return;
 	menu.id=this.id;
@@ -280,8 +444,8 @@ Grid.prototype.overBuildable = function(){
 }
 
 Grid.prototype.outBuildable = function(map){
-	map= map || this.map;
-	var menu=map.objects["tower_menu"];
+	map= map || getEngine().map;
+	var menu=map.objects["tower_building_menu"];
 	if (!menu)
 		return;
 	menu.visible=false;
@@ -292,7 +456,7 @@ Grid.prototype.setBuildableNode = function(id, textures, opt){
 	opt.height= this.nodesize;
 	opt.width= this.nodesize;
 	opt.anchor={x:0, y:1};
-	var node=new ButtonContainer({sprite: new ASprite(textures, opt), actions: ['press'], pressAction: this.overBuildable});
+	var node=new ButtonContainer({sprite: new ASprite(textures, opt), actions: ['press'], pressActions: [this.overBuildable]});
 	node.map=this;
 	var pos=this.getPosition(id);
 	
@@ -387,10 +551,7 @@ Grid.prototype.clean = function(){
 	for(var i in this.objects){
 		this.engine.stage.removeChild(this.objects[i]);
 	}
-	this.engine.stage.removeChild(this.objects["npc_set"]);
-	this.engine.stage.removeChild(this.objects["tower_set"]);
-	this.engine.stage.removeChild(this.window);
-	this.engine.stage.removeChild(this.window);
+	this.engine.stage.removeChild(this.borders);
 	this.engine.stage.removeChild(this);
 	//TODO: add switch to public
 }
