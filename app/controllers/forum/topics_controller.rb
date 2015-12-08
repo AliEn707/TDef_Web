@@ -1,10 +1,10 @@
 class Forum::TopicsController < ApplicationController
-  before_action :set_forum_topic, only: [:show, :edit, :update, :destroy]
+  before_action :set_forum_topic, only: [:show, :edit, :update, :destroy, :message]
 
   # GET /forum/topics
   # GET /forum/topics.json
   def index
-    @forum_topics = Forum::Topic.all
+    @forum_topics = Forum::Topic.order(created_at: :asc)
   end
 
   # GET /forum/topics/1
@@ -62,6 +62,10 @@ class Forum::TopicsController < ApplicationController
     end
   end
 
+	def message
+		Message.create(data: params["message"]["data"], msg_dest: @forum_topic, user: current_user)
+		redirect_to :back
+	end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_forum_topic

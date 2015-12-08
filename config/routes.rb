@@ -1,13 +1,10 @@
 TDefWeb::Application.routes.draw do
-  namespace :forum do
-    resources :topics
-  end
-
-  namespace :forum do
-    resources :threads
-  end
-
-  resources :forums
+	namespace :forum do
+		resources :threads
+		resources :topics
+	end
+	post "forum/topic/:id/message" => 'forum/topics#message', as: "forum_topic_message"
+	resources :forums
 
 	namespace :user do
 		resources :profiles

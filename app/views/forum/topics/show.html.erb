@@ -30,5 +30,15 @@
   <%= @forum_topic.topicable_type %>
 </p>
 
-<%= link_to 'Edit', edit_forum_topic_path(@forum_topic) %> |
-<%= link_to 'Back', forum_topics_path %>
+<%= link_to 'Edit', edit_forum_topic_path(@forum_topic) %> 
+<%= link_to 'Back', @forum_topic.topicable %>
+
+<br>
+<% @forum_topic.messages.order(created_at: :asc).each do |m|%>
+	<%= m.inspect %><br>
+<% end %>
+
+<%= form_for :forum_topics, url: forum_topic_message_path(@forum_topic), method: :post do |f|%>
+	<%= text_area :message,  "data" %> <br>
+	<%= f.submit %>
+<% end %>

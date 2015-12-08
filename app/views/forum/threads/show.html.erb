@@ -14,5 +14,5 @@
 	<%= link_to t("forums.topics.add"), new_forum_topic_path(data: Base64.encode64("{\"id\":\"#{@forum_thread.id}\",\"type\":\"#{@forum_thread.class}\"}")) %>
 </h2>
 <% @forum_thread.topics.each do |topic| %>
-	<%= topic.inspect %>
-<%  end %>
+	<%= @topic=topic; render "topic" %>
+<% end %>

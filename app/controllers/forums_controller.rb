@@ -4,7 +4,7 @@ class ForumsController < ApplicationController
   # GET /forums
   # GET /forums.json
   def index
-    @forums = Forum.all
+    @forums = Forum.order(created_at: :asc)
   end
 
   # GET /forums/1

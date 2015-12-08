@@ -1,0 +1,48 @@
+<table class="table table-bordered table-striped post">
+	<thead>
+		<tr>
+			<th>
+				<div class="pull-left" style="height:20px;">
+					<h3>
+						<%= link_to @topic.name, @topic%>
+					</h3>
+				</div>
+			</th>
+			<th width="15%">
+				
+			</th>
+			<th width="30%">
+				<div class="pull-right">
+					<%= link_to 'Show', @topic %>
+					<%= link_to 'Edit', edit_forum_topic_path(@topic) %>
+					<%= link_to 'Destroy', @topic, method: :delete, data: { confirm: 'Are you sure?' } %>
+				</div>
+			</th>
+		<tr>
+	<thead>
+	<tbody>
+		<tr>
+			<td>
+				<div>
+					<%= @topic.description %>
+				</div>
+			</td>
+			<td>
+				<p>
+					<%= t("forums.messages") %>: <%= @topic.messages.size%>
+				</p>				
+			</td>
+			<td>
+				<div>
+					<% if (last_message=@topic.messages.last) %> 
+						<%= last_message.data %> <%= t("from") %> 
+						<%= last_message.user.name %> <%= t("on") %> 
+						<%=last_message.updated_at%>
+					<%else%>
+						<%=t("forum.no_messages")%>
+					<% end %>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>	

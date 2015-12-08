@@ -4,7 +4,7 @@ class Forum::ThreadsController < ApplicationController
   # GET /forum/threads
   # GET /forum/threads.json
   def index
-    @forum_threads = Forum::Thread.all
+    @forum_threads = Forum::Thread.order(created_at: :asc)
   end
 
   # GET /forum/threads/1

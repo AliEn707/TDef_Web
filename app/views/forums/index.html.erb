@@ -4,38 +4,59 @@
 	<%end%>
 </h1>
 
-<% @forums.each do |forum| %>
-	<table class="table table-bordered table-striped post">
-		<thead>
-			<tr>
-				<th>
-					<div class="pull-left" style="height:20px;">
-						<h3>
-							<%= link_to forum.name, forum%>
-						</h3>
-					</div>
-					<div class="pull-right">
-						<% for_admin do%>
-							<%= link_to 'Show', forum %>
-							<%= link_to 'Edit', edit_forum_path(forum) %>
-							<%= link_to 'Destroy', forum, method: :delete, data: { confirm: 'Are you sure?' } %>
-						<% end %>
-					</div>
-				</th>
-			<tr>
-		<thead>
-		<tbody>
+<table class="table table-bordered table-striped post">
+	<thead>
+		<tr>
+			<th>
+				<div class="pull-left" >
+					
+				</div>
+			</th>
+			<th width="15%">
+				
+			</th>
+			<th width="30%">
+				<%= t("Last message") %>
+			</th>
+		<tr>
+	<thead>
+	<tbody>
+		<% @forums.each do |forum| %>
 			<tr>
 				<td>
+					<p style="font-size:162%">
+						<%= link_to forum.name, forum%>
+					<p>
 					<div>
 						<%= forum.description %>
 					</div>
-					<div class="pull-right">
-						<%= t("last_update")%> <% t("at") %> <%=forum.updated_at%>
+					<% for_admin do%>
+						<%= link_to 'Show', forum %>
+						<%= link_to 'Edit', edit_forum_path(forum) %>
+						<%= link_to 'Destroy', forum, method: :delete, data: { confirm: 'Are you sure?' } %>
+					<% end %>
+				</td>
+				<td>
+					<p>
+						<%= t("forums.threads") %>: <%= forum.threads.size%>
+					</p>
+					<p>
+						<%= t("forums.messages") %>: <%= forum.messages.size%>
+					</p>
+				</td>
+				<td>
+					<div>
+						<% if (last_message=forum.messages.last) %> 
+							<%= last_message.data %> <%= t("from") %> 
+							<%= last_message.user.name %> <%= t("on") %> 
+							<%=last_message.updated_at%>
+						<%else%>
+							<%=t("forum.no_messages")%>
+						<% end %>
 					</div>
 				</td>
 			</tr>
-		</tbody>
-	</table>	
-<% end %>
+		<% end %>
+	</tbody>
+</table>	
 
