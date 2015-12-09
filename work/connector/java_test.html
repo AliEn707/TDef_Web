@@ -125,5 +125,11 @@
     </script>
     
     <button onclick=javaTest()>test </button>
+    <form name="form1" onsubmit="return false;">
+        <input type="text" name="host" value="172.16.1.40" />
+        <input type="text" name="port" value="34140" />
+        <input type="text" name="map" value="pvz11_11" />
+        <input type="button" value="mapConnect" onclick="getConnector().mapConnect(this.form.host.value,this.form.port.value);" />
+    </form>
 </html>
          

@@ -18,9 +18,11 @@ package {
 			private var output:TextField;
 			private var sendBtn:Sprite;
 			private var isReady:Boolean=false;
-
+            //sockets
 			private var mapSock:Socket = new Socket();
 			private var publicSock:Socket = new Socket();
+			//TODO: add hosts and ports for future reconnects
+			
 			private var dataTimer:Timer = new Timer(160, 0);//40, 0);
 			private var publicTimer:Timer = new Timer(190, 0);//40, 0);
 			private var date:Date = new Date();

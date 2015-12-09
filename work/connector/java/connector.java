@@ -65,6 +65,12 @@ public class Connector extends Applet {
     private Socket mapSock;
     private Socket publicSock;
     
+    private String publicHost;
+    private int publicPort;
+    
+    private String mapHost;
+    private int mapPort;
+    
     class PublicThread implements Runnable{ //must work all app live time
         //bitmasks
         private final int BM_PLAYER_ROOM= BIT_3; 
@@ -79,11 +85,17 @@ public class Connector extends Applet {
         private String obj = "({";
 				
         private String user;
-        private int token;
         private int user_id=0;
 				
+		public PublicThread setU(String u){
+            user=u;
+            return this;
+        }
+        
         public void run(){
             logJS("Public Thread started");
+            //some work
+            logJS("Public Thread exited");
         }
     }
     //  PublicThread ends
@@ -139,6 +151,7 @@ public class Connector extends Applet {
             
             //close map on exit
             mapClose();
+            logJS("Map Thread exited");
         }
     }
     //  MapThread ends
@@ -191,7 +204,7 @@ public class Connector extends Applet {
       int token = Integer.parseInt(stoken);
       
       //start thread
-      Thread thread = new Thread(new PublicThread());
+      Thread thread = new Thread(new PublicThread().setU(user));
       thread.setDaemon(true);
       thread.start();
     } 
