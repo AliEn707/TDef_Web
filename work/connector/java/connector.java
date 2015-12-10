@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.security.*;
+
 
 /*
   // get value of a named member from Javascript
@@ -61,6 +63,9 @@ public class Connector extends Applet {
     //similar to ActionScript
     private JSObject ExternalInterface;
     
+    public Boolean mapAuthorised=false;
+    public Boolean publicAuthorised=false;
+        
     //Sockets
     private Socket mapSock;
     private Socket publicSock;
@@ -80,20 +85,30 @@ public class Connector extends Applet {
         private final int MESSAGE_EVENT_CHANGE= 3;
         private final int MESSAGE_EVENT_DROP= 4;
         //
-        private Boolean authorised=false;
         private int currMsg;
         private String obj = "({";
 				
         private String user;
+        private int token;
         private int user_id=0;
+        private LittleEndianDataInputStream sin;
+        private LittleEndianOutputStream sout;
 				
-		public PublicThread setU(String u){
+		public PublicThread setArg(String u, int t){
             user=u;
+            token=t;
             return this;
         }
         
         public void run(){
             logJS("Public Thread started");
+            try{
+                publicSock=connectToServer(publicHost, publicPort);
+                sin = new LittleEndianDataInputStream(publicSock.getInputStream());
+                sout = new LittleEndianOutputStream(publicSock.getOutputStream());
+            } catch (Exception e){
+                logJS(""+e);
+            }
             //some work
             logJS("Public Thread exited");
         }
@@ -141,14 +156,37 @@ public class Connector extends Applet {
         private final int PLAYER_FAIL= BIT_8;
         private final int PLAYER_SETS= BIT_9;
         
-        private Boolean authorised=false;
+        private LittleEndianDataInputStream sin;
+        private LittleEndianOutputStream sout;
+        
         private int currMsg=0;
         private String obj="";
         private int msgTime=0;
         
         public void run(){
             logJS("Map Thread started");
-            
+            try {
+                mapSock=connectToServer(mapHost, mapPort);
+                sin = new LittleEndianDataInputStream(mapSock.getInputStream());
+                sout = new LittleEndianOutputStream(mapSock.getOutputStream());
+                
+                sout.writeBytes("JavaApplet^_^");
+                obj="({id:"+sin.readInt();
+                obj+=",players:"+sin.readInt();
+                sout.writeInt(0);
+                sout.flush();
+                long latency=System.currentTimeMillis();
+                int l=sin.readInt();
+                latency=System.currentTimeMillis()-latency;
+                obj+=",latency:"+latency;
+                mapAuthorised=true;
+                ExternalInterface.call("mapConnected");
+                ExternalInterface.call("mapAuthData", obj+"})");
+                obj="([";
+                
+            } catch (Exception e){
+                logJS(""+e);
+            }
             //close map on exit
             mapClose();
             logJS("Map Thread exited");
@@ -157,11 +195,24 @@ public class Connector extends Applet {
     //  MapThread ends
     
     private void logJS(Object arg){
-      ExternalInterface.call("sendToJavaScript", "Java: "+arg);
+		ExternalInterface.call("sendToJavaScript", "Java: "+arg);
+    }
+    
+    private Socket connectToServer(String host, int port) throws Exception{
+        return (Socket)AccessController.doPrivileged(
+          new PrivilegedExceptionAction<Socket>() {
+            public Socket run() throws Exception {
+                //InetAddress ipAddress = InetAddress.getByName(host);
+                Socket socket = new Socket(host, port);
+                return socket;
+            }
+          }
+        );
     }
     
     public void start() {
       try {
+        // System.setSecurityManager(new SecurityManager());
         ExternalInterface = JSObject.getWindow(this);
         // invoke JavaScript function
         
@@ -172,80 +223,99 @@ public class Connector extends Applet {
             //Handle exception
           }
         }
-   
         ExternalInterface.call("connectorReady");
         isReady = true;
     
-      } catch (JSException jse) {
-        jse.printStackTrace();
-        isReady = false;
-      }
+		} catch (JSException jse) {
+			jse.printStackTrace();
+			isReady = false;
+		}
     }
     
     public void sendToConnector(String s){
-      logJS(s);
+		logJS(s);
     }
     
     public void mapConnect(String host, String sport){
-      int port = Integer.parseInt(sport);
-      
-      //start thread
-      Thread thread = new Thread(new MapThread());
-      thread.setDaemon(true);
-      thread.start();
-    }
-    
-    public void mapClose(){
-      //TODO: fill body
+		mapPort = Integer.parseInt(sport);
+		mapHost=host;
+		try {
+			//start thread
+			Thread thread = new Thread(new MapThread());
+			thread.setDaemon(true);
+			thread.start();
+		} catch (Exception e) {
+			logJS(""+e);
+		}
     }
     
     public void publicConnect(String host, String sport, String user, String stoken){
-      int port = Integer.parseInt(sport);
-      int token = Integer.parseInt(stoken);
-      
-      //start thread
-      Thread thread = new Thread(new PublicThread().setU(user));
-      thread.setDaemon(true);
-      thread.start();
+		publicPort = Integer.parseInt(sport);
+		publicHost = host;
+		int token = Integer.parseInt(stoken);
+		try {
+			//start thread
+			Thread thread = new Thread(new PublicThread().setArg(user, token));
+			thread.setDaemon(true);
+			thread.start();
+		} catch (Exception e) {
+			logJS(""+e);
+		}
     } 
     
     public void socketSend(Socket sock, String value){
-      //TODO: change logJS to socket send
-      ArrayDeque<String> arr=new ArrayDeque<String>();
-      Collections.addAll(arr, value.split(","));
-      while(arr.size()>1){
-        switch (arr.pollFirst()){
-            case "byte":
-            case "char":
-                logJS(Byte.parseByte(arr.pollFirst()));
-                break;
-            case "short":
-                logJS(Short.parseShort(arr.pollFirst()));
-                break;
-            case "int":
-                logJS(Integer.parseInt(arr.pollFirst()));
-                break;
-            case "uint":
-                logJS(Integer.parseUnsignedInt(arr.pollFirst()));
-                break;
-            case "float":
-                logJS(Float.parseFloat(arr.pollFirst()));
-                break;
-            case "double":
-                logJS(Double.parseDouble(arr.pollFirst()));
-                break;
-            case "string":
-                logJS(arr.pollFirst());
-                break;
-        }
-      } 
+		ArrayDeque<String> arr=new ArrayDeque<String>();
+		Collections.addAll(arr, value.split(","));
+		try{
+			LittleEndianOutputStream sout=new LittleEndianOutputStream(sock.getOutputStream());
+			while(arr.size()>1){
+				switch (arr.pollFirst()){
+					case "byte":
+					case "char":
+						sout.writeByte(Byte.parseByte(arr.pollFirst()));
+						break;
+					case "short":
+						sout.writeShort(Short.parseShort(arr.pollFirst()));
+						break;
+					case "int":
+						sout.writeInt(Integer.parseInt(arr.pollFirst()));
+						break;
+					case "uint":
+						sout.writeInt(Integer.parseUnsignedInt(arr.pollFirst()));
+						break;
+					case "float":
+						sout.writeFloat(Float.parseFloat(arr.pollFirst()));
+						break;
+					case "double":
+						sout.writeDouble(Double.parseDouble(arr.pollFirst()));
+						break;
+					case "string":
+						sout.writeUTF(arr.pollFirst());
+						break;
+				}
+			}
+		} catch (Exception e) {
+            logJS(""+e);
+            //mapClose(); //check need
+       } 
     }
     
+    public void mapClose(){
+        try{
+            mapSock.close();
+		} catch (Exception e) {
+            logJS(""+e);
+		} 
+		ExternalInterface.call("mapClosed");
+    }
+
     public void mapSend(String value){
-      socketSend(mapSock, value);
+		if (mapAuthorised){
+			socketSend(mapSock, value);
+		}
     }
     
     public void publicSend(String value){
-      socketSend(publicSock, value);
+		socketSend(publicSock, value);
     }
 }

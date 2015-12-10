@@ -64,7 +64,19 @@
         function isReady(){
           return jsReady;
         }
-	
+        
+        function mapConnected(){
+            console.log("connected");
+        }
+        
+         function mapClosed(){
+            console.log("mapClosed");
+        }
+        
+        function mapAuthData(obj){
+            console.log(obj);
+        }
+        
         function createConnector(place) {
           var path='./java';
           var file='connector.jar';

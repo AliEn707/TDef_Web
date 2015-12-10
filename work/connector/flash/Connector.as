@@ -538,18 +538,6 @@ package {
 					mapConnectCloseHandler(event);
 				}
 				
-				private function mapConnected():void {
-					if (isReady) {
-						ExternalInterface.call("mapConnected");
-					}
-				}
-	
-				private function mapClosed():void {
-					if (isReady) {
-						ExternalInterface.call("mapClosed");
-					}
-				}
-	
 				private function connectMap(host:String, port:String):int {
 								logJS("Try to connect\n");
 					output.appendText(host+" "+port+"\n");
@@ -631,7 +619,7 @@ package {
 				private function mapConnectCloseHandler(event:Event):void {
 					logJS("closed" + event+"\n");
 					mapAuthorised=false;
-					mapClosed();
+					ExternalInterface.call("mapClosed");
 					dataTimer.removeEventListener(TimerEvent.TIMER, mapTimeDataHandler);
 					dataTimer.stop();
 				}
@@ -832,7 +820,7 @@ package {
 								logJS("latency "+latency);
 								mapObj+=",latency:"+latency;
 								mapAuthorised=true;
-								mapConnected();
+								ExternalInterface.call("mapConnected");
 								//send to Javascript
 								ExternalInterface.call("mapAuthData", mapObj+"})");
 								currMsg=0;
