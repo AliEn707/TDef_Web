@@ -2716,13 +2716,12 @@ PIXI.Sprite.prototype._renderCanvas = function(renderSession)
                 //  TODO clean up caching - how to clean up the caches?
                 this.tintedTexture = PIXI.CanvasTinter.getTintedTexture(this, this.tint);
             }
-
             renderSession.context.drawImage(
                                 this.tintedTexture,
                                 0,
                                 0,
-                                this.texture.crop.width,
-                                this.texture.crop.height,
+                                this.texture.crop.width < this.tintedTexture.width ? this.texture.crop.width : this.tintedTexture.width, //AliEn707's
+                                this.texture.crop.height < this.tintedTexture.height ? this.texture.crop.height : this.tintedTexture.height, //AliEn707's
                                 dx / resolution,
                                 dy / resolution,
                                 this.texture.crop.width / resolution,
