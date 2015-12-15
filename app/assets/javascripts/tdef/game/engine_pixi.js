@@ -218,7 +218,7 @@ TDefEngine.prototype.loadMap= function (){
 		map.setWall(opt.walls[i],i);
 //		map.setWall({tex:new PIXI.Texture.fromImage("/textures/wall/1.png"),type:"y"});
 	}
-	for (var i=0 in opt.objects){
+	for (var i in opt.objects){
 		map.setObject(opt.objects[i],i);
 	}
 	

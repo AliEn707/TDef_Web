@@ -49,7 +49,7 @@ class Tdef::MapController < ApplicationController
 	
 	def show_all
 #		params[:id]
-		@maps=Tdef::Map.all
+		@maps=Tdef::Map.select(:id, :name,  :description, :completed, :user_id, :last_modified_id, :created_at, :updated_at)
 	end
 	
 	def delete
