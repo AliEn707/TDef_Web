@@ -23,8 +23,8 @@ package {
 		private var publicSock:Socket = new Socket();
 		//TODO: add hosts and ports for future reconnects
 		
-		private var dataTimer:Timer = new Timer(125, 0);//40, 0);
-		private var publicTimer:Timer = new Timer(250, 0);//40, 0);
+		private var dataTimer:Timer = new Timer(50, 0);//40, 0);
+		private var publicTimer:Timer = new Timer(100, 0);//40, 0);
 		private var date:Date = new Date();
 
 		public function Connector() {
@@ -707,7 +707,7 @@ package {
 						case undefined: //lets see for next message
 							if (mapObj.length()>2){//send object to javasctript
                                 var time:int=flash.utils.getTimer();
-                                mapObj.add(",time:"+time+"},");
+                                mapObj.add("},");
                                 if (time-msgTime>100){
 									mapObj.add("])");	
 									proceedMapMessagesJS(mapObj.build());
