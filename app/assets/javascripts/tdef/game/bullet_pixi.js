@@ -82,9 +82,9 @@ Bullet.prototype.update= function (obj){
 	var dirx=(obj.grid.x-this.grid.x);//(obj.grid.x-this.grid.x);
 	var diry=(obj.grid.y-this.grid.y);//(obj.grid.y-this.grid.y);
 	var l=Math.sqrt(dirx*dirx+diry*diry);
-	var timestep=statsMs()/2.5;
+	var timestep=1;
 	if (this.time!=0){
-		timestep+=((obj.time-this.time)*getFPSms());
+		timestep+=((obj.time-this.time+statsMs())*getFPSms());
 	
 		if (!this.average_time)
 			this.average_time=timestep;
