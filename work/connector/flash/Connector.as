@@ -19,12 +19,13 @@ package {
 		private var sendBtn:Sprite;
 		private var isReady:Boolean=false;
 		//sockets
-		private var mapSock:Socket = new Socket();
-		private var publicSock:Socket = new Socket();
+		public var mapSock:Socket = new Socket();
+		public var publicSock:Socket = new Socket();
 		//TODO: add hosts and ports for future reconnects
+		public var mapWorker:MapWorker;
 		
-		private var dataTimer:Timer = new Timer(50, 0);//40, 0);
-		private var publicTimer:Timer = new Timer(100, 0);//40, 0);
+		private var dataTimer:Timer = new Timer(100, 0);//40, 0);
+		private var publicTimer:Timer = new Timer(250, 0);//40, 0);
 		private var date:Date = new Date();
 
 		public function Connector() {
@@ -56,8 +57,7 @@ package {
 			output.border = true;
 			output.text = "Initializing...\n";
 			addChild(output);
-			
-			
+						
 			if (ExternalInterface.available) {
 				try {
 					if (checkJavaScriptReady()) {
@@ -107,7 +107,7 @@ package {
         }
         
         //logging
-        private function logJS(value:String):void {
+        public function logJS(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("sendToJavaScript", "Flash: "+value);
 			}
@@ -401,7 +401,7 @@ package {
 							if (publicOutObj.length()>2){//send object to javasctript
                                 var time:int=flash.utils.getTimer();
                                 publicOutObj.add(",time:"+time+"},");
-                                if (time-publicMsgTime>70){
+                                if (time-publicMsgTime>120){
 									publicOutObj.add("])");
 									proceedPublicMessagesJS(publicOutObj.build());
 									publicOutObj.clear("([");
@@ -526,9 +526,11 @@ package {
 		}
 ///------------------------------------------------------------------------------------------------------	
 	///map
-		private var mapAuthorised:Boolean=false;
+		public var mapAuthorised:Boolean=false;
+		public var mapHost:String;
+		public var mapPort:int;
 
-		private function mapConnectError(value:String):void {
+		public function mapConnectError(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("mapConnectionError", value);
 			}
@@ -541,7 +543,9 @@ package {
 		}
 		
 		private function connectMap(host:String, port:String):int {
-						logJS("Try to connect\n");
+			logJS("Try to connect\n");
+//			mapWorker=new MapWorker(this, host, int(port));
+
 			output.appendText(host+" "+port+"\n");
 			
 			mapSock= new Socket();
@@ -610,18 +614,22 @@ package {
 			mapSock.writeUTFBytes("FlashHello^_^");
 			mapSock.flush();
 			//add data listener
-			mapSock.addEventListener(ProgressEvent.SOCKET_DATA, mapDataHandler); 
+//			mapSock.addEventListener(ProgressEvent.SOCKET_DATA, mapDataHandler); 
 			//check messages by timer, if no additional data
 			
 			dataTimer.addEventListener(TimerEvent.TIMER, mapTimeDataHandler);
 			dataTimer.start();
 			currMsg=0;
 		}
-
+		
+		public function mapClosed():void{
+			ExternalInterface.call("mapClosed");
+		}
+		
 		private function mapConnectCloseHandler(event:Event):void {
 			logJS("closed" + event+"\n");
 			mapAuthorised=false;
-			ExternalInterface.call("mapClosed");
+			mapClosed();
 			dataTimer.removeEventListener(TimerEvent.TIMER, mapTimeDataHandler);
 			dataTimer.stop();
 		}
@@ -687,7 +695,7 @@ package {
 
 		// push - add to end
 		// shift - get first
-		private function proceedMapMessagesJS(value:String):void {
+		public function proceedMapMessagesJS(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("proceedMapMessages", value);
 			}
@@ -707,7 +715,7 @@ package {
 						case undefined: //lets see for next message
 							if (mapObj.length()>2){//send object to javasctript
                                 var time:int=flash.utils.getTimer();
-                                mapObj.add("},");
+                                mapObj.add("},"); //",time:"+time+
                                 if (time-msgTime>100){
 									mapObj.add("])");	
 									proceedMapMessagesJS(mapObj.build());
@@ -786,7 +794,14 @@ package {
 
 		//auth params
 		private var latency:int;
-
+		
+		public function mapAuthData(s:String):void{
+			ExternalInterface.call("mapAuthData", s);
+		}
+		
+		public function mapConnected():void{
+			ExternalInterface.call("mapConnected");
+		}
 		private function mapAuth():void {
 			var id:int;
 			var loop:Boolean=true;
@@ -823,10 +838,10 @@ package {
 						logJS("latency "+latency);
 						mapObj.add(",latency:"+latency);
 						mapAuthorised=true;
-						ExternalInterface.call("mapConnected");
+						mapConnected();
 						//send to Javascript
 						mapObj.add("})");
-						ExternalInterface.call("mapAuthData", mapObj.build());
+						mapAuthData(mapObj.build());
 						currMsg=0;
 						mapObj.clear("([");
 					}
