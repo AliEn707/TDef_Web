@@ -132,7 +132,7 @@ Npc.prototype.update= function (obj){
 	var dirx=(obj.grid.x-this.grid.x);//(obj.grid.x-this.grid.x);
 	var diry=(obj.grid.y-this.grid.y);//(obj.grid.y-this.grid.y);
 	var l=Math.sqrt(dirx*dirx+diry*diry);
-	var timestep=1//latency;
+	var timestep=statsMs()/2.5//latency;
 	if (this.time!=0){
 		timestep+=((obj.time-this.time)*getFPSms());
 	
