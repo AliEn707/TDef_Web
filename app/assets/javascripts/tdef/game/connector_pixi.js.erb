@@ -179,12 +179,14 @@ function mapAuthData(value) {
 //callback on got objects data
 function proceedMapMessages(str){
 	var arr=eval(str);
-	delete str;
+//	delete str;
+	var time=Date.now();
 	var e=getEngine();
 //	try{
 		
 	for(var i in arr){
 		var obj=arr[i];
+		obj.time=time;
 		if (obj.objtype){
 			if (obj.objtype=="Player"){
 				//player

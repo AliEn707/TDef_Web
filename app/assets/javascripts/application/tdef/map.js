@@ -1095,14 +1095,16 @@ function mapEditor_completeAndSave() {
 }
 
 function mapEditor_canvasToImg() {
+	var w=512
+	var h=256
 	var width = document.getElementById('map').width 
 	var height = document.getElementById('map').height
 	document.getElementById('map').width = 512
 	document.getElementById('map').height = 256
 	var prevScale = scale, prevx = translatex, prevy = translatey
-	scale = 256/(1.41*size*nodeSize)*0.95
+	scale = w/(1.41*size*nodeSize)*0.95
 	translatex = nodeSize*0.25*1.41*scale
-	translatey = 64
+	translatey = h/2
 	var prevEditor = editor
 	mapEditor_selectEditor("textureEdit")
 	var prevChecked = document.getElementById('opacity').checked

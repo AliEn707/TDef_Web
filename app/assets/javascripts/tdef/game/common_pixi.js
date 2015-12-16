@@ -17,6 +17,9 @@ function placeStats(place){
 }
 */
 
+if (!Date.now) {
+    Date.now = function() { return new Date().getTime(); }
+}
 
 var getEngine=function (){
 	return;

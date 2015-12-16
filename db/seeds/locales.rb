@@ -22,7 +22,7 @@ end.each do |locale|
 		"#connector_not_available" => "Can't init connector, see help for details."
 	}.merge(keys).each do |k,v| #add required datas
     if (locale.locale_datas.where(key: k).first.nil?)	then
-			locale.locale_datas<<Tdef::Locale::Data.create(key: k,value: v,user_id: 2)
+			locale.locale_datas<<Tdef::Locale::Data.create(key: k,value: $translator.translate(v, to: locale.name), user_id: 2)
 			p "Tdef::Locale #{locale.name} added #{k}"
 		end
 	end
