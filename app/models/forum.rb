@@ -6,7 +6,7 @@ class Forum < ActiveRecord::Base
 	def messages
 		o=Message.where(id:0) #start empty query
 		topics.each{ |t| p o=o.union(t.messages)}
-		threads.each{|tr| tr.topics.each{ |t| p o=o.union(t.messages)}}
+		threads.joins(:topics).each{ |t| p o=o.union(t.messages)}
 		o.order(created_at: :asc)
 	end
 end
