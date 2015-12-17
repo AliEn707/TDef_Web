@@ -4,9 +4,7 @@ class Forum < ActiveRecord::Base
 	has_many :topics, as: :topicable, :dependent => :destroy
 	
 	def messages
-		o=Message.where(id:0) #start empty query
-		topics.each{ |t| p o=o.union(t.messages)}
-		threads.joins(:topics).each{ |t| p o=o.union(t.messages)}
+		o=Message.where(msg_dest_id: topics.select(:id), msg_dest_type: "Forum::Topic").union(Message.where(msg_dest_id: threads.joins(:topics).select("forum_topics.id"), msg_dest_type: "Forum::Topic")) #start empty query
 		o.order(created_at: :asc)
 	end
 end
