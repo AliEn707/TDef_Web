@@ -13,7 +13,7 @@ package {
 		private var connector:Connector;
 		//sockets
 		//TODO: add hosts and ports for future reconnects
-		private var timer:Timer = new Timer(50, 0);//40, 0);
+		private var timer:Timer = new Timer(100, 0);//40, 0);
 		private var date:Date = new Date();
 	
 		private var user:String;
@@ -23,7 +23,8 @@ package {
 			connector=c;
 			user=u;
 			token=t;
-//			connect(connector.mapHost, connector.mapPort);
+			logJS("mapWorker started");
+			connect(connector.mapHost, connector.mapPort);
 		}
 		
 		private function logJS(s:String):void{
@@ -78,7 +79,7 @@ package {
 			connectCloseHandler(event);
 		}
 		
-		private function connect(host:String, port:String):int {
+		private function connect(host:String, port:int):int {
 			logJS("Try to connect\n");			
 			connector.mapSock= new Socket();
 			connector.mapSock.endian = Endian.LITTLE_ENDIAN;
@@ -91,7 +92,7 @@ package {
 			currMsg=0;
 			
 			try {
-				connector.mapSock.connect(host, int(port));
+				connector.mapSock.connect(host, port);
 	//			mapSock.connect("smtp.yandex.ru", 25);
 			}
 			catch (error:Error) {
@@ -214,12 +215,6 @@ package {
 		private var obj:OutObject=new OutObject("");
 		private var currMsg:int=0;
 		
-		// push - add to end
-		// shift - get first
-		private function proceedMessagesJS(value:String):void {
-			connector.proceedMapMessagesJS(value);
-		}
-
 		private var msgTime:int=0;
 		
 		private function getMessage():void {
@@ -235,9 +230,9 @@ package {
 							if (obj.length()>2){//send object to javasctript
                                 var time:int=flash.utils.getTimer();
                                 obj.add("},");
-                                if (time-msgTime>100){
+                                if (time-msgTime>105){
 									obj.add("])");	
-									proceedMessagesJS(obj.build());
+									connector.proceedMapMessagesJS(obj.build());
 									obj.clear("([");
 									msgTime=time;
 								}
@@ -249,7 +244,6 @@ package {
 							break;
 						
 						case "bitmask": //need to get bitmask
-							
 							var bitMask:int;
 							bitMask=connector.mapSock.readInt();
 							dataSeq.shift();
@@ -378,8 +372,8 @@ package {
 					}
 					if ((bitMask&NPC_POSITION)!=0){ 
 						dataSeq.push("grid","{");
-						dataSeq.push("x","float");
-						dataSeq.push("y","float");
+							dataSeq.push("x","float");
+							dataSeq.push("y","float");
 						dataSeq.push("$","}");
 					}
 					if ((bitMask&NPC_LEVEL)!=0){ //npc level
@@ -422,8 +416,8 @@ package {
 					dataSeq.push("id","int");
 					if ((bitMask&BULLET_POSITION)!=0){
 						dataSeq.push("grid","{");
-						dataSeq.push("x","float");
-						dataSeq.push("y","float");
+							dataSeq.push("x","float");
+							dataSeq.push("y","float");
 						dataSeq.push("$","}");
 					}
 					if ((bitMask&BULLET_CREATE)!=0){ 
@@ -431,8 +425,8 @@ package {
 						dataSeq.push("type","int");
 						dataSeq.push("owner","int");
 						dataSeq.push("source","{");
-						dataSeq.push("x","float"); //source x
-						dataSeq.push("y","float"); //source y
+							dataSeq.push("x","float"); //source x
+							dataSeq.push("y","float"); //source y
 						dataSeq.push("$","}");
 					}
 					if ((bitMask&BULLET_DETONATE)!=0){ 
@@ -448,19 +442,19 @@ package {
 						dataSeq.push("_hero_counter","int");
 						
 						dataSeq.push("base_type","{");//fix
-						dataSeq.push("health","int");//fix
+							dataSeq.push("health","int");//fix
 						dataSeq.push("$","}");
 						dataSeq.push("hero_type","{");//fix
-						dataSeq.push("health","int");//fix
-						dataSeq.push("shield","int");//fix
+							dataSeq.push("health","int");//fix
+							dataSeq.push("shield","int");//fix
 						dataSeq.push("$","}");
 					}
 					if ((bitMask&PLAYER_SETS)!=0){
 						dataSeq.push("tower_set","{");
 							for(i=0;i<NPC_SET_SIZE;i++){
 								dataSeq.push(""+i,"{");
-								dataSeq.push("id","int");
-								dataSeq.push("size","int");
+									dataSeq.push("id","int");
+									dataSeq.push("size","int");
 								dataSeq.push("$","}");
 							}
 						dataSeq.push("$","}");//TODO : add normal parser
@@ -468,8 +462,8 @@ package {
 						dataSeq.push("npc_set","{");//fix
 							for(i=0;i<TOWER_SET_SIZE;i++){
 								dataSeq.push(""+i,"{");
-								dataSeq.push("id","int");
-								dataSeq.push("size","int");
+									dataSeq.push("id","int");
+									dataSeq.push("size","int");
 								dataSeq.push("$","}");
 							}
 						dataSeq.push("$","}");

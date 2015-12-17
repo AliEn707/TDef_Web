@@ -18,15 +18,20 @@ package {
 		private var output:TextField;
 		private var sendBtn:Sprite;
 		private var isReady:Boolean=false;
-		//sockets
-		public var mapSock:Socket = new Socket();
-		public var publicSock:Socket = new Socket();
-		//TODO: add hosts and ports for future reconnects
-		public var mapWorker:MapWorker;
-		
-		private var dataTimer:Timer = new Timer(100, 0);//40, 0);
-		private var publicTimer:Timer = new Timer(250, 0);//40, 0);
 		private var date:Date = new Date();
+		//public
+		public var publicAuthorised:Boolean=false;
+		public var publicSock:Socket = new Socket();
+		public var publicWorker:PublicWorker;
+		private var publicTimer:Timer = new Timer(250, 0);//40, 0);
+		//map
+		public var mapSock:Socket = new Socket();
+		public var mapWorker:MapWorker;
+
+		public var mapAuthorised:Boolean=false;
+		public var mapHost:String;
+		public var mapPort:int;
+		
 
 		public function Connector() {
 			Security.allowDomain("*");
@@ -77,6 +82,7 @@ package {
 			} else {
 				output.appendText("External interface is not available for this container.");
 			}
+			
 		}
 	
         private function setupCallBacks():void {
@@ -208,12 +214,11 @@ package {
 		private const MESSAGE_EVENT_CHANGE:int= 3;
 		private const MESSAGE_EVENT_DROP:int= 4;
 		//
-		private var publicAuthorised:Boolean=false;
 		private var publicMsg:int;
 		private var publicDataSeq:Array = new Array();
 		private var publicOutObj:OutObject = new OutObject("({");
 		
-		private function publicConnectError(value:String):void {
+		public function publicConnectError(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("publicConnectionError", value);
 			}
@@ -229,7 +234,7 @@ package {
 			return 0;
 		}
 
-		private function publicConnected(s:String):void {
+		public function publicConnected(s:String):void {
 			if (isReady) {
 				ExternalInterface.call("publicConnected",s);
 			}
@@ -323,7 +328,7 @@ package {
 			}
 		}
 
-		private function publicAuthFail():void {
+		public function publicAuthFail():void {
 			ExternalInterface.call("publicAuthFail");
 		}
 
@@ -381,7 +386,7 @@ package {
 			}
 		}
 	
-		private function proceedPublicMessagesJS(value:String):void {
+		public function proceedPublicMessagesJS(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("proceedPublicMessages", value);
 			}
@@ -526,10 +531,6 @@ package {
 		}
 ///------------------------------------------------------------------------------------------------------	
 	///map
-		public var mapAuthorised:Boolean=false;
-		public var mapHost:String;
-		public var mapPort:int;
-
 		public function mapConnectError(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("mapConnectionError", value);
@@ -537,154 +538,21 @@ package {
 		}
 
 		private function closeMap():void {
-			mapSock.close();
-			var event:Event;
-			mapConnectCloseHandler(event);
+			mapWorker.close();
 		}
 		
 		private function connectMap(host:String, port:String):int {
 			logJS("Try to connect\n");
-//			mapWorker=new MapWorker(this, host, int(port));
-
-			output.appendText(host+" "+port+"\n");
-			
-			mapSock= new Socket();
-			mapSock.endian = Endian.LITTLE_ENDIAN;
-			mapSock.addEventListener(Event.CONNECT, mapConnectHandler); 
-			mapSock.addEventListener(Event.CLOSE, mapConnectCloseHandler); 
-			mapSock.addEventListener(ErrorEvent.ERROR, mapConnectErrorHandler); 
-			mapSock.addEventListener(IOErrorEvent.IO_ERROR, mapConnectIoErrorHandler); 
-			mapSock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, mapConnectSecurityErrorHandler);
-			
-			currMsg=0;
-			
-			try {
-				mapSock.connect(host, int(port));
-	//			mapSock.connect("smtp.yandex.ru", 25);
-			}
-			catch (error:Error) {
-				logJS("An Error occurred: " + error.message + "\n");
-			}
-			catch (error:SecurityError) {
-				logJS("An SecurityError occurred: " + error.message + "\n");
-			}
-			catch (error:IOError) {
-				logJS("An IO Error occurred: " + error.message + "\n");
-			}
+			mapHost=host;
+			mapPort=int(port);
+			mapWorker=new MapWorker(this, host, int(port));
 			return 0;
         }
 	
-		private function mapConnectErrorHandler(event:ErrorEvent):void {
-			logJS("got Error" + event);
-			mapConnectError("Error");
-		}
-		
-		private function mapConnectIoErrorHandler(event:IOErrorEvent):void {
-			logJS("got IOError"+event);
-			mapConnectError("IOError");
-		}
-		
-		private function mapConnectSecurityErrorHandler(event:SecurityErrorEvent):void {
-			logJS("got SecurityError"+event);
-			mapConnectError("SecurityError");
-		}
-
-		//time event wrapper for data handler
-		private function mapTimeDataHandler(event:TimerEvent):void {
-	//		logJS("got timer data" + event+"  bytes"+mapSock.bytesAvailable);
-			if (mapSock.bytesAvailable>0){
-				var pevent:ProgressEvent;
-				mapDataHandler(pevent);
-			}
-		}
-		//when socket has data
-		private function mapDataHandler(event:ProgressEvent):void {
-	//		logJS("got data" + event+"\n");
-			if (mapAuthorised){
-				mapGetMessage();
-	//			logJS("got data " + mapSock.readUTFBytes(mapSock.bytesAvailable));
-			}else{
-				mapAuth();
-			}
-		}
-
-		private function mapConnectHandler(event:Event):void {
-			logJS("connected " + event+"\n");
-			//send hello
-			mapSock.writeUTFBytes("FlashHello^_^");
-			mapSock.flush();
-			//add data listener
-//			mapSock.addEventListener(ProgressEvent.SOCKET_DATA, mapDataHandler); 
-			//check messages by timer, if no additional data
-			
-			dataTimer.addEventListener(TimerEvent.TIMER, mapTimeDataHandler);
-			dataTimer.start();
-			currMsg=0;
-		}
-		
 		public function mapClosed():void{
+			mapWorker=null;
 			ExternalInterface.call("mapClosed");
 		}
-		
-		private function mapConnectCloseHandler(event:Event):void {
-			logJS("closed" + event+"\n");
-			mapAuthorised=false;
-			mapClosed();
-			dataTimer.removeEventListener(TimerEvent.TIMER, mapTimeDataHandler);
-			dataTimer.stop();
-		}
-
-		private const NPC_SET_SIZE:int=9;
-		private const TOWER_SET_SIZE:int=9;
-
-		//messaging with map server
-		//msg to server
-		private const MSG_SPAWN_TOWER:int= 1;
-		private const MSG_SPAWN_NPC:int= 2;
-		private const MSG_DROP_TOWER:int= 3;
-		private const MSG_MOVE_HERO:int= 4;
-		private const MSG_SET_TARGET:int= 5;
-		
-		//msg to client
-		private const MSG_TEST:int= 0;
-		private const MSG_NPC:int= 1;
-		private const MSG_TOWER:int= 2;
-		private const MSG_BULLET:int= 3;
-		private const MSG_PLAYER:int= 4;
-		private const MSG_INFO:int= 5;
-		//additional messages to client
-		private const MSG_INFO_WAITING_TIME:int= 1;
-		//npc messages
-		private const NPC_HEALTH:int= BIT_1;
-		private const NPC_POSITION:int= BIT_2;
-		private const NPC_CREATE:int= BIT_3;
-		private const NPC_LEVEL:int= BIT_4;
-		private const NPC_SHIELD:int= BIT_5;
-		private const NPC_STATUS:int= BIT_6;
-		//tower messages
-		private const TOWER_HEALTH:int= BIT_1;
-		private const TOWER_TARGET:int= BIT_2;
-		private const TOWER_CREATE:int= BIT_3;
-		private const TOWER_LEVEL:int= BIT_4;
-		private const TOWER_SHIELD:int= BIT_5;
-		//bullet messages
-		private const BULLET_POSITION:int= BIT_1;
-		private const BULLET_DETONATE:int= BIT_2;
-		private const BULLET_CREATE:int= BIT_3;
-		//player constants
-		private const PLAYER_BASE:int= BIT_1;
-		private const PLAYER_MONEY:int= BIT_2;
-		private const PLAYER_CREATE:int= BIT_3;
-		private const PLAYER_LEVEL:int= BIT_4;
-		private const PLAYER_HERO:int= BIT_5;
-		private const PLAYER_HERO_COUNTER:int= BIT_6;
-		private const PLAYER_TARGET:int= BIT_7;
-		private const PLAYER_FAIL:int= BIT_8;
-		private const PLAYER_SETS:int= BIT_9;
-		
-		private var mapDataSeq:Array = new Array();
-		private var mapObj:OutObject=new OutObject("");
-		private var currMsg:int=0;
 		
 		private function sendMap(value:String):int {
 			if (mapAuthorised){
@@ -700,100 +568,6 @@ package {
 				ExternalInterface.call("proceedMapMessages", value);
 			}
 		}
-
-		private var msgTime:int=0;
-		
-		private function mapGetMessage():void {
-			var data:Number;
-			var str:String;
-	//		mapDataSeq.push("push","float",5)//add to end
-			//see first
-			do {
-	//			logJS(mapDataSeq+" || "+mapDataSeq[0]);
-				try{
-					switch (mapDataSeq[0]){
-						case undefined: //lets see for next message
-							if (mapObj.length()>2){//send object to javasctript
-                                var time:int=flash.utils.getTimer();
-                                mapObj.add("},"); //",time:"+time+
-                                if (time-msgTime>100){
-									mapObj.add("])");	
-									proceedMapMessagesJS(mapObj.build());
-									mapObj.clear("([");
-									msgTime=time;
-								}
-							}
-							currMsg=mapSock.readByte();
-							mapDataSeq.push("bitmask");
-							mapObj.add("{msg:"+currMsg);
-						
-							break;
-						
-						case "bitmask": //need to get bitmask
-							
-							var bitMask:int;
-							bitMask=mapSock.readInt();
-							mapDataSeq.shift();
-							mapGetParamsByBitMask(bitMask);
-							
-							break;
-							
-						default:
-							switch (mapDataSeq[1]){
-								case "{":
-									str="{$:0";
-									break;
-								case "}":
-									mapObj.add("}");
-								case "none":
-								case "nil":
-								case "null":
-									str="0";
-									break;
-								case "int":
-									data=mapSock.readInt();
-									str=data+""
-									break;						
-								case "short":
-									data=mapSock.readShort();
-									str=data+""
-									break;						
-								case "byte":
-								case "char":
-									data=mapSock.readByte();
-									str=data+""
-									break;						
-								case "float":
-									data=mapSock.readFloat();
-									str=data+""
-									break;
-								case "double":
-									data=mapSock.readDouble();
-									str=data+""
-									break;
-//									case "string": //we have third argument string size
-//									str=mapSock.readUTFBytes(mapDataSeq[2]);
-//									mapDataSeq.splice(2,1);
-//									break;
-							}
-							mapObj.add(","+mapDataSeq[0]+":"+str);
-							mapDataSeq.shift();
-							mapDataSeq.shift();
-//								mapDataSeq.splice(0,2);
-							
-							break;
-							
-					}
-				}
-				catch (error:Error){
-					return;
-				}
-	//			logJS("step");
-			} while(mapSock.bytesAvailable>0);
-		}
-
-		//auth params
-		private var latency:int;
 		
 		public function mapAuthData(s:String):void{
 			ExternalInterface.call("mapAuthData", s);
@@ -801,200 +575,6 @@ package {
 		
 		public function mapConnected():void{
 			ExternalInterface.call("mapConnected");
-		}
-		private function mapAuth():void {
-			var id:int;
-			var loop:Boolean=true;
-			switch (currMsg){
-				case 0:
-					try{
-						id=mapSock.readInt();
-						mapObj.clear("({id:"+id);
-						currMsg++;
-						logJS("got id "+id);
-					}
-					catch(error:Error){
-	//					logJS("id error"+error+"\n");
-					}
-					break;
-				case 1:
-					try{
-						id=mapSock.readInt();
-						mapObj.add(",players:"+id);
-						currMsg++;
-						logJS("got players "+id);
-						mapSock.writeInt(0);
-						mapSock.flush();
-						latency=flash.utils.getTimer();
-					}
-					catch(error:Error){
-	//					logJS("players error"+error+"\n");
-					}
-					break;
-				case 2:
-					try{
-						id=mapSock.readInt();
-						latency=flash.utils.getTimer()-latency;
-						logJS("latency "+latency);
-						mapObj.add(",latency:"+latency);
-						mapAuthorised=true;
-						mapConnected();
-						//send to Javascript
-						mapObj.add("})");
-						mapAuthData(mapObj.build());
-						currMsg=0;
-						mapObj.clear("([");
-					}
-					catch(error:Error){
-	//					logJS("players error"+error+"\n");
-					}
-					break;
-			}
-		}
-
-		private function mapGetParamsByBitMask(bitMask:int):void{
-			var i:int;
-			//here must be list of getting obj params 
-			switch (currMsg){
-				case MSG_NPC:
-					mapObj.add(",objtype:\"Npc\"");
-					mapDataSeq.push("id","int");
-					if ((bitMask&NPC_CREATE)!=0){ //npc create
-						mapObj.add(",create:1");
-						mapDataSeq.push("owner","int");
-						mapDataSeq.push("type","int");
-					}
-					if ((bitMask&NPC_POSITION)!=0){ 
-						mapDataSeq.push("grid","{");
-						mapDataSeq.push("x","float");
-						mapDataSeq.push("y","float");
-						mapDataSeq.push("$","}");
-					}
-					if ((bitMask&NPC_LEVEL)!=0){ //npc level
-						mapDataSeq.push("level","short");
-					}
-					if ((bitMask&NPC_HEALTH)!=0){ //npc health
-						mapDataSeq.push("health","int");
-					}
-					if ((bitMask&NPC_SHIELD)!=0){ //npc health
-						mapDataSeq.push("shield","int");
-					}
-					if ((bitMask&NPC_STATUS)!=0){ 
-						mapDataSeq.push("status","byte");
-					}
-					return;
-				case MSG_TOWER:
-					mapObj.add(",objtype:\"Tower\"");
-					mapDataSeq.push("id","int");
-					if ((bitMask&TOWER_CREATE)!=0){ 
-						mapObj.add(",create:1");
-						mapDataSeq.push("type","int");
-						mapDataSeq.push("owner","int");
-						mapDataSeq.push("position","int");
-					}
-					if ((bitMask&TOWER_TARGET)!=0){ 
-						mapDataSeq.push("target","short");
-					}
-					if ((bitMask&TOWER_LEVEL)!=0){ 
-						mapDataSeq.push("level","short");
-					}
-					if ((bitMask&TOWER_HEALTH)!=0){ 
-						mapDataSeq.push("health","int");
-					}
-					if ((bitMask&TOWER_SHIELD)!=0){ 
-						mapDataSeq.push("shield","int");
-					}
-					return;
-				case MSG_BULLET:
-					mapObj.add(",objtype:\"Bullet\"");
-					mapDataSeq.push("id","int");
-					if ((bitMask&BULLET_POSITION)!=0){
-						mapDataSeq.push("grid","{");
-						mapDataSeq.push("x","float");
-						mapDataSeq.push("y","float");
-						mapDataSeq.push("$","}");
-					}
-					if ((bitMask&BULLET_CREATE)!=0){ 
-						mapObj.add(",create:1");
-						mapDataSeq.push("type","int");
-						mapDataSeq.push("owner","int");
-						mapDataSeq.push("source","{");
-						mapDataSeq.push("x","float"); //source x
-						mapDataSeq.push("y","float"); //source y
-						mapDataSeq.push("$","}");
-					}
-					if ((bitMask&BULLET_DETONATE)!=0){ 
-						mapDataSeq.push("detonate","byte");
-					}
-					return;
-				case MSG_PLAYER:
-					mapObj.add(",objtype:\"Player\"");
-					mapDataSeq.push("id","int");
-					if ((bitMask&PLAYER_CREATE)!=0){ 
-						mapDataSeq.push("pid","int");
-						mapDataSeq.push("group","int");
-						mapDataSeq.push("_hero_counter","int");
-						
-						mapDataSeq.push("base_type","{");//fix
-						mapDataSeq.push("health","int");//fix
-						mapDataSeq.push("$","}");
-						mapDataSeq.push("hero_type","{");//fix
-						mapDataSeq.push("health","int");//fix
-						mapDataSeq.push("shield","int");//fix
-						mapDataSeq.push("$","}");
-					}
-					if ((bitMask&PLAYER_SETS)!=0){
-						mapDataSeq.push("tower_set","{");
-							for(i=0;i<NPC_SET_SIZE;i++){
-								mapDataSeq.push(""+i,"{");
-								mapDataSeq.push("id","int");
-								mapDataSeq.push("size","int");
-								mapDataSeq.push("$","}");
-							}
-						mapDataSeq.push("$","}");//TODO : add normal parser
-						
-						mapDataSeq.push("npc_set","{");//fix
-							for(i=0;i<TOWER_SET_SIZE;i++){
-								mapDataSeq.push(""+i,"{");
-								mapDataSeq.push("id","int");
-								mapDataSeq.push("size","int");
-								mapDataSeq.push("$","}");
-							}
-						mapDataSeq.push("$","}");
-					}
-					if ((bitMask&PLAYER_HERO)!=0){ 
-						mapDataSeq.push("hero","int");
-					}
-					if ((bitMask&PLAYER_HERO_COUNTER)!=0){ 
-						mapDataSeq.push("hero_counter","int");
-					}
-					if ((bitMask&PLAYER_BASE)!=0){ //what is it??
-						mapDataSeq.push("base","int");
-					}
-					if ((bitMask&PLAYER_LEVEL)!=0){ 
-						mapDataSeq.push("level","int");
-					}
-					if ((bitMask&PLAYER_MONEY)!=0){ 
-						mapDataSeq.push("money","int");
-					}
-					if ((bitMask&PLAYER_TARGET)!=0){ 
-						mapDataSeq.push("targeting","short");
-					}
-					if ((bitMask&PLAYER_FAIL)!=0){
-						mapObj.add(",fail:1");
-						mapDataSeq.push("exp","int");
-					}
-					return;
-				case MSG_INFO:
-					if (bitMask==MSG_INFO_WAITING_TIME){
-						mapObj.add(",type:'time'");
-						mapDataSeq.push("data","short");
-					}
-					return;
-				default:
-					logJS("unnown message");
-					break;
-			}
 		}
     }
 }

@@ -137,7 +137,7 @@ function mapConnectionError(val){
 	console.log("can't connect: "+val);
 	//TODO add handler
 	//TODO: add message
-	mapClosed();
+	mapClose();
 }
 
 //callback on connection established
@@ -178,6 +178,7 @@ function mapAuthData(value) {
 
 //callback on got objects data
 function proceedMapMessages(str){
+//	console.log(str);
 	var arr=eval(str);
 //	delete str;
 	var time=Date.now();
@@ -191,7 +192,7 @@ function proceedMapMessages(str){
 			if (obj.objtype=="Player"){
 				//player
 				if (!e.map.players[obj.id])
-					e.map.players[obj.id]=eval("new Map"+obj.objtype+"(obj)");
+					e.map.players[obj.id]=new MapPlayer(obj);
 				if (e.map.players[obj.id])
 					e.map.players[obj.id].update(obj);
 			}else{
