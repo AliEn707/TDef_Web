@@ -218,7 +218,7 @@ Grid.prototype.setSets= function (width, height){
 	this.engine.beforeClickGlobalAdd(function(){engine.map.outBuildable(engine.map);});
 	menu.visible=false;
 	this.set.tower=buttons;
-  this.borders.bottom.addChild(buttons);
+	this.borders.bottom.addChild(buttons);
 	this.objects["tower_building_menu"]=menu;
 	this.engine.stage.addChild(menu);
 	//set targeting

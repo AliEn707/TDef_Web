@@ -19,6 +19,12 @@ package {
 		private var user:String;
 		private var token:int;
 		
+		private var dataSeq:Array = new Array();
+		private var obj:OutObject=new OutObject("");
+		private var currMsg:int=0;
+		
+		private var msgTime:int=0;
+		
 		public function MapWorker(c:Connector, u:String, t:int) {
 			connector=c;
 			user=u;
@@ -211,12 +217,6 @@ package {
 		private const PLAYER_FAIL:int= BIT_8;
 		private const PLAYER_SETS:int= BIT_9;
 		
-		private var dataSeq:Array = new Array();
-		private var obj:OutObject=new OutObject("");
-		private var currMsg:int=0;
-		
-		private var msgTime:int=0;
-		
 		private function getMessage():void {
 			var data:Number;
 			var str:String;
@@ -227,19 +227,12 @@ package {
 				try{
 					switch (dataSeq[0]){
 						case undefined: //lets see for next message
-							if (obj.length()>2){//send object to javasctript
-                                var time:int=flash.utils.getTimer();
-                                obj.add("},");
-                                if (time-msgTime>105){
-									obj.add("])");	
-									connector.proceedMapMessagesJS(obj.build());
-									obj.clear("([");
-									msgTime=time;
-								}
+							if (obj.length()>1){//send object to javasctript
+                                connector.mapObj.add(obj.build()+"},");
 							}
 							currMsg=connector.mapSock.readByte();
 							dataSeq.push("bitmask");
-							obj.add("{msg:"+currMsg);
+							obj.clear("{msg:"+currMsg);
 						
 							break;
 						
@@ -265,24 +258,26 @@ package {
 									break;
 								case "int":
 									data=connector.mapSock.readInt();
-									str=data+""
+									str=data.toString();
 									break;						
 								case "short":
 									data=connector.mapSock.readShort();
-									str=data+""
+									str=data.toString();
 									break;						
 								case "byte":
 								case "char":
 									data=connector.mapSock.readByte();
-									str=data+""
+									str=data.toString();
 									break;						
 								case "float":
 									data=connector.mapSock.readFloat();
-									str=data+""
+									//logJS(data+"")
+									str=data.toFixed(4)
+									//logJS(str)
 									break;
 								case "double":
 									data=connector.mapSock.readDouble();
-									str=data+""
+									str=data.toFixed(6)
 									break;
 //									case "string": //we have third argument string size
 //									str=mapSock.readUTFBytes(mapDataSeq[2]);
@@ -299,10 +294,16 @@ package {
 					}
 				}
 				catch (error:Error){
-					return;
+					break;
 				}
 	//			logJS("step");
 			} while(connector.mapSock.bytesAvailable>0);
+//			if (connector.mapObj.length()>2){
+//				connector.mapObj.add("])");	
+//				connector.proceedMapMessagesJS(connector.mapObj.build());
+//				connector.mapObj.clear("([");
+//				msgTime=flash.utils.getTimer();
+//			}
 		}
 
 		//auth params
@@ -349,7 +350,8 @@ package {
 						obj.add("})");
 						connector.mapAuthData(obj.build());
 						currMsg=0;
-						obj.clear("([");
+						obj.clear("{");
+						connector.mapObj.clear("([");
 					}
 					catch(error:Error){
 	//					logJS("players error"+error+"\n");

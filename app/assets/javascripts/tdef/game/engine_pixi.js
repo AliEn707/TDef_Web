@@ -31,7 +31,7 @@ function TDefEngine(place, opt, callback){
 			xInverted:1, 
 			yInverted:-1, 
 			weelInverted: -1,
-			clickAreaSize:4,
+			clickAreaSize: 5,
 			defines:{
 				keys:{
 					mapMoveLeft:65, /*a*/
@@ -69,9 +69,9 @@ function TDefEngine(place, opt, callback){
 TDefEngine.prototype.render= function (){
 	var that=getEngine();
 	window.setTimeout(that.render,that.frameTime);
+
 	if (stats)
-		stats.begin();
-	
+		stats.begin();	
 	//that.stage.children.sort(function(a,b){if (a.depth && b.depth) return a.depth<b.depth; return 0;})
 	that.keysProcessor();
 	that.objectsProcessor();
@@ -83,6 +83,7 @@ TDefEngine.prototype.render= function (){
 		statsUpdate(that);
 		stats.end();
 	}
+	proceedMapMessages();	
 }
 
 TDefEngine.prototype.resize=function (){
@@ -222,8 +223,6 @@ TDefEngine.prototype.loadMap= function (){
 		map.setObject(opt.objects[i],i);
 	}
 	
-	
-	
 	this.map.transformCorrection();
 			
 	//setup handlers
@@ -291,16 +290,16 @@ TDefEngine.prototype.closeMap=function() {
 TDefEngine.prototype.setWindowHandlers=function() {
 	function onBlur() {
 //		console.log("hiden")
-    stats.freeze=stats.fps;
+		stats.freeze=stats.fps;
 	};
 	function onFocus(){
 //		console.log("showen")
-    var v=stats.freeze
-    stats.freeze=false;
-    //hack for freezing timer on hided tab
-    stats.end();
-    stats.begin();
-    stats.fps=v;
+		var v=stats.freeze
+		stats.freeze=false;
+		//hack for freezing timer on hided tab
+		stats.end();
+		stats.begin();
+		stats.fps=v;
 	};
 
 	if (/*@cc_on!@*/false) { // check for Internet Explorer

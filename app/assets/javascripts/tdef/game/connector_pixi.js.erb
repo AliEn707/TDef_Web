@@ -1,5 +1,6 @@
 ﻿
 var jsReady = false;
+var connector = false; //boolean connector ready
 
 var hideConnector; //function in future
 
@@ -177,7 +178,12 @@ function mapAuthData(value) {
 }
 
 //callback on got objects data
-function proceedMapMessages(str){
+function proceedMapMessages(){
+	if (!connector)
+		return;
+	var str=getConnector().mapGetData();
+	if (!str)
+		return;
 //	console.log(str);
 	var arr=eval(str);
 //	delete str;
@@ -215,6 +221,7 @@ function proceedMapMessages(str){
 
 //callback on connector initialising
 function connectorReady(){
+	connector=true;
 	console.log("Connector ready");
 	hideConnector(getConnector());
   Loading.message="";

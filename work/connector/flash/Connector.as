@@ -27,7 +27,7 @@ package {
 		//map
 		public var mapSock:Socket = new Socket();
 		public var mapWorker:MapWorker;
-
+		public var mapObj:OutObject=new OutObject("");	
 		public var mapAuthorised:Boolean=false;
 		public var mapHost:String;
 		public var mapPort:int;
@@ -91,6 +91,7 @@ package {
 			ExternalInterface.addCallback("mapConnect", connectMap);
 			ExternalInterface.addCallback("mapClose", closeMap);
 			ExternalInterface.addCallback("mapSend", sendMap);
+			ExternalInterface.addCallback("mapGetData", mapGetData);
 			ExternalInterface.addCallback("publicConnect", connectPublic);
 			ExternalInterface.addCallback("publicSend", sendPublic);
 // 				ExternalInterface.addCallback("startMap", startMap);
@@ -531,6 +532,18 @@ package {
 		}
 ///------------------------------------------------------------------------------------------------------	
 	///map
+		
+		public function mapGetData():String {
+			var str:String;
+			if (mapObj.length()>2){
+				str=mapObj.build()+"])";
+				mapObj.clear("([")
+			}else{
+				str="";
+			}
+			return str;
+		}
+		
 		public function mapConnectError(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("mapConnectionError", value);
