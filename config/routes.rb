@@ -1,4 +1,5 @@
 TDefWeb::Application.routes.draw do
+	devise_for :users, controllers: { registrations: 'registrations' }
 	namespace :user do
 		resources :profiles
 	end
@@ -30,7 +31,6 @@ TDefWeb::Application.routes.draw do
 	get "image/:id(.:format)" => 'images#get', as: "get_image"
 	post "image/upload" => 'images#upload', as: "upload_image"
 
-	devise_for :users, controllers: { registrations: 'registrations' }
 
 	get "locale", to: "application#set_locale"
 

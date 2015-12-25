@@ -114,16 +114,4 @@ module ApplicationHelper
 		style='margin-top:0;margin-bottom:0;'
 		Rails.cache.fetch("ifconfig_#{$hostname}", expires_in: 5.minutes) {"<ul style=#{style}>#{`ifconfig`.split("\n\n").map!{|m| "#{m.gsub(/(?<w1>\w+) (?<w2>([abpR].|en|MU|BR))/,'\k<w1>_\k<w2>').gsub(/ (?<b>[MGKTP]?B)\)/,'\k<b>)').sub("HWaddr " ,"HWaddr:").sub(" TX_by","\nTX_by").gsub(": ",":").sub(" Link","\nLink").split("\n").map!{|l| "#{l.split(" ").map!{|w|  "<li>#{w.sub(":",": ").sub(/\A(?<bold>[- \w]+:?)/,'<b>\k<bold></b>')}</li>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>"}.join.sub("</li>","</li><ul style=#{style}>")}</ul>" if (m["inet addr"] && !m["lo"])}.compact.join }</ul>" rescue "<p>failed to get network info</p>"}.html_safe #"<span style='margin-left: 15px;'>"
 	end
-	
-	def redis_statistics
-		if ($redis_statistics)
-			Rails.cache.fetch("redis_statistics", expires_in: 1.minutes) do
-				"<ul style='margin-top:0;margin-bottom:0;'><li>"+$redis_statistics.hgetall("redis_statistics/requests").map do |k,v|
-					"#{k}: #{v} (#{t("tech.radis_statistics_from")} #{Time.at($redis_statistics.hget("redis_statistics/time", k).to_i)})"
-				end.join("</li><li>")+"</li></ul>"
-			end
-		else
-			t("tech.radis_statistics_not_active")
-		end.html_safe
-	end
 end

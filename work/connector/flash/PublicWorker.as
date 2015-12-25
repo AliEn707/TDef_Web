@@ -25,7 +25,7 @@ package {
 			user=u;
 			token=t;
 			logJS("publicWorker started");
-//			connect(connector.publicHost, connector.publicPort);
+			connect(connector.publicHost, connector.publicPort);
 		}
 		
 		private function logJS(s:String):void{
@@ -85,7 +85,7 @@ package {
 			connector.publicConnected(s);
 		}
 
-		public function connect(host:String, port:String, user:String, token:int):int {
+		public function connect(host:String, port:int):int {
 						logJS("Try to connect\n");
 			connector.publicSock= new Socket();
 			connector.publicSock.endian = Endian.LITTLE_ENDIAN;
@@ -133,7 +133,7 @@ package {
 			connector.publicSock.writeUTFBytes("FlashHello^_^");
 			connector.publicSock.flush();
 			//add data listener
-			connector.publicSock.addEventListener(ProgressEvent.SOCKET_DATA, dataHandler); 
+//			connector.publicSock.addEventListener(ProgressEvent.SOCKET_DATA, dataHandler); 
 			//check messages by timer, if no additional data
 			
 			timer.addEventListener(TimerEvent.TIMER, timeDataHandler);

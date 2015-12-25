@@ -41,7 +41,7 @@ gem "js-routes"
 gem "sprockets-rails"
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 1.2'
+#gem 'jbuilder', '~> 1.2'
 
 #for generate js from ruby
 #//= require opal
@@ -119,10 +119,6 @@ if (!ENV['REDIS_HOST'].nil? || !ENV['REDIS_PORT'].nil?)
 	gem 'redis-rails'
 end
 
-if (!ENV['REDIS_STATISTICS_HOST'].nil? || !ENV['REDIS_STATISTICS_PORT'].nil?)
-	#redis included only if used
-	gem 'redis'
-end
 
 #for use C code in ruby
 gem 'RubyInline'	

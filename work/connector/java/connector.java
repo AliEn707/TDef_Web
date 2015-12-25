@@ -300,6 +300,12 @@ public class Connector extends Applet {
        } 
     }
     
+//    public String getMapData(){
+//        synchronized(obj) {
+//            c2++;
+//        }
+//    } 
+    
     public void mapClose(){
         try{
             mapSock.close();

@@ -13,7 +13,7 @@
 <%cache("#{Post.select(:updated_at).order(:updated_at).last.updated_at.to_i}_#{cache_lang}") do %>
 	<% @posts.each do |post_| %>
 		<%cache("#{post_.id}_#{post_.updated_at.to_i}_#{cache_lang}") do%>
-			<%post=post_.translation_by_lang(@locale)%>
+			<%post=post_.translation_by_lang(I18n.locale)%>
 			<table class="table table-bordered table-striped post">
 				<thead>
 					<tr>

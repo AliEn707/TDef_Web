@@ -20,10 +20,12 @@ package {
 		private var isReady:Boolean=false;
 		private var date:Date = new Date();
 		//public
-		public var publicAuthorised:Boolean=false;
 		public var publicSock:Socket = new Socket();
 		public var publicWorker:PublicWorker;
-		private var publicTimer:Timer = new Timer(250, 0);//40, 0);
+		public var publicObj:OutObject=new OutObject("");	
+		public var publicAuthorised:Boolean=false;
+		public var publicHost:String;
+		public var publicPort:int;
 		//map
 		public var mapSock:Socket = new Socket();
 		public var mapWorker:MapWorker;
@@ -206,27 +208,22 @@ package {
 	
 	///public
 ///--------------------------------------------------------------------------------------------------------
-	
-		//bitmasks
-		private var BM_PLAYER_ROOM:int= BIT_3; 
-		//out message types
-		private const MESSAGE_PLAYER_CHANGE:int= 1;
-		private const MESSAGE_GAME_START:int= 2;
-		private const MESSAGE_EVENT_CHANGE:int= 3;
-		private const MESSAGE_EVENT_DROP:int= 4;
-		//
-		private var publicMsg:int;
-		private var publicDataSeq:Array = new Array();
-		private var publicOutObj:OutObject = new OutObject("({");
+		public function publicGetData():String {
+			var str:String;
+			if (publicObj.length()>2){
+				str=publicObj.build()+"])";
+				publicObj.clear("([")
+			}else{
+				str="";
+			}
+			return str;
+		}
 		
 		public function publicConnectError(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("publicConnectionError", value);
 			}
 		}
-		private var user:String;
-		private var token:int;
-		private var user_id:int=0;
 		
 		private function sendPublic(value:String):int {
 			if (publicAuthorised){
@@ -244,290 +241,19 @@ package {
 		private function connectPublic(host:String, port:String, u:String, p:String):int {
 						logJS("Try to connect\n");
 			output.appendText(host+" "+port+"\n");
-			user=u;
-			token=int(p);
-			publicSock= new Socket();
-			publicSock.endian = Endian.LITTLE_ENDIAN;
-			publicSock.addEventListener(Event.CONNECT, publicConnectHandler); 
-			publicSock.addEventListener(Event.CLOSE, publicConnectCloseHandler); 
-			publicSock.addEventListener(ErrorEvent.ERROR, publicConnectErrorHandler); 
-			publicSock.addEventListener(IOErrorEvent.IO_ERROR, publicConnectIoErrorHandler); 
-			publicSock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, publicConnectSecurityErrorHandler);
-			
-			publicMsg=0;
-
-			try {
-				publicSock.connect(host, int(port));
-			}
-			catch (error:Error) {
-				logJS("An Error occurred: " + error.message + "\n");
-			}
-			catch (error:SecurityError) {
-				logJS("An SecurityError occurred: " + error.message + "\n");
-			}
-			catch (error:IOError) {
-				logJS("An IO Error occurred: " + error.message + "\n");
-			}
+			publicHost=host;
+			publicPort=int(port);
+			publicWorker=new PublicWorker(this, u, int(p));
 			return 0;
         }
 	
-		private function publicConnectErrorHandler(event:ErrorEvent):void {
-			logJS("got Error" + event);
-			publicConnectError("Error");
-		}
-
-		private function publicConnectIoErrorHandler(event:IOErrorEvent):void {
-			logJS("got IOError"+event);
-			publicConnectError("IOError");
-		}
-
-		private function publicConnectSecurityErrorHandler(event:SecurityErrorEvent):void {
-			logJS("got SecurityError"+event);
-			publicConnectError("SecurityError");
-		}
-
-		private function publicConnectHandler(event:Event):void {
-			logJS("connected " + event+"\n");
-			//send hello
-			publicSock.writeUTFBytes("FlashHello^_^");
-			publicSock.flush();
-			//add data listener
-			publicSock.addEventListener(ProgressEvent.SOCKET_DATA, publicDataHandler); 
-			//check messages by timer, if no additional data
-			
-			publicTimer.addEventListener(TimerEvent.TIMER, publicTimeDataHandler);
-			publicTimer.start();
-			publicMsg=0;
-		}
-
-		private function publicConnectCloseHandler(event:Event):void {
-			logJS("closed" + event+"\n");
-			publicAuthFail();
-			publicAuthorised=false;
-			publicTimer.removeEventListener(TimerEvent.TIMER, publicTimeDataHandler);
-			publicTimer.stop();
-			publicAuthFail();
-		}
-
-		//time event wrapper for data handler
-		private function publicTimeDataHandler(event:TimerEvent):void {
-//				logJS("got timer data" + event+"\n");
-			if (publicSock.bytesAvailable>0){
-				var pevent:ProgressEvent;
-				publicDataHandler(pevent);
-			}
-		}
-
-		//when socket has data
-		private function publicDataHandler(event:ProgressEvent):void {
-//				logJS("got data" + event+"\n");
-			if (publicAuthorised){
-				publicGetMessage();
-//					logJS("got data " + mapSock.readUTFBytes(mapSock.bytesAvailable));
-			}else{
-				publicAuth();
-			}
-		}
-
 		public function publicAuthFail():void {
 			ExternalInterface.call("publicAuthFail");
 		}
 
-		private function publicAuth():void {
-			var id:int;
-			var timestamp:Number;
-			var loop:Boolean=true;
-			switch (publicMsg){
-				case 0:
-					try{
-						id=publicSock.readInt();
-						publicSock.writeInt(user.length);
-						publicSock.writeUTFBytes(user);
-						publicSock.writeInt(token);
-						publicSock.flush();
-						publicMsg++;
-						logJS("got "+id);
-					}
-					catch(error:Error){
-	//					logJS("id error"+error+"\n");
-					}
-					break;
-				case 1:
-					try{
-						id=publicSock.readInt();
-						publicMsg++;
-						logJS("id: "+id);
-						publicOutObj.add("id: "+id+",");
-						if (id==0){
-							publicSock.close();
-							publicAuthFail();
-							var event:Event;
-							publicConnectCloseHandler(event);//clear handlers
-						}
-					}
-					catch(error:Error){
-	//					logJS("players error"+error+"\n");
-					}
-					break;
-				case 2:
-					try{
-						timestamp=publicSock.readDouble();
-						publicMsg++;
-						logJS("time: "+timestamp);
-						publicOutObj.add("time:"+timestamp+",");
-						publicAuthorised=true;
-						publicOutObj.add("})");
-						publicConnected(publicOutObj.build());
-						publicOutObj.clear("([");
-					}
-					catch(error:Error){
-	//					logJS("players error"+error+"\n");
-					}
-					break;
-			}
-		}
-	
 		public function proceedPublicMessagesJS(value:String):void {
 			if (isReady) {
 				ExternalInterface.call("proceedPublicMessages", value);
-			}
-		}
-
-		private var publicMsgTime:int=0;
-
-		private function publicGetMessage():void {
-			var data:Number;
-			var str:String;
-			do {
-	//			logJS(publicDataSeq+" || "+publicDataSeq[0]);
-				try{
-					switch (publicDataSeq[0]){
-						case undefined: //lets see for next message
-	//						logJS("new message");
-							if (publicOutObj.length()>2){//send object to javasctript
-                                var time:int=flash.utils.getTimer();
-                                publicOutObj.add(",time:"+time+"},");
-                                if (time-publicMsgTime>120){
-									publicOutObj.add("])");
-									proceedPublicMessagesJS(publicOutObj.build());
-									publicOutObj.clear("([");
-									publicMsgTime=time;
-								}
-							}
-							publicMsg=publicSock.readByte();
-							if (publicMsg!=0){
-								publicDataSeq.push("bitmask");
-								publicOutObj.add("{msg:"+publicMsg);
-							}
-							break;
-						
-						case "bitmask": //need to get bitmask
-	//						logJS("get bitmask");
-
-							var bitMask:int;
-							bitMask=publicSock.readInt();
-							publicDataSeq.shift();
-							publicGetParamsByBitMask(bitMask);
-							
-							break;
-							
-						default:
-	//						logJS(publicOutObj);
-	//						logJS("get "+publicDataSeq[1]);
-							switch (publicDataSeq[1]){
-								case "{":
-									str="{$:0";
-									break;
-								case "}":
-									publicOutObj.add("}");
-								case "none":
-								case "nil":
-								case "null":
-									str="0";
-									break;
-								case "int":
-									data=publicSock.readInt();
-									str=data+""
-									break;						
-								case "short":
-									data=publicSock.readShort();
-									str=data+""
-									break;						
-								case "byte":
-								case "char":
-									data=publicSock.readByte();
-									str=data+""
-									break;						
-								case "float":
-									data=publicSock.readFloat();
-									str=data+""
-									break;
-								case "double":
-									data=publicSock.readDouble();
-									str=data+""
-									break;
-								case "string": //we have short: sizeof string than string  in socket
-									str="\""+publicSock.readUTF()+"\"";
-	//								publicDataSeq.splice(2,1);
-	//								break;
-							}
-							publicOutObj.add(","+publicDataSeq[0]+":"+str);
-							publicDataSeq.shift();
-							publicDataSeq.shift();
-	//						publicDataSeq.splice(0,2);
-							
-							break;
-							
-					}
-				}
-				catch (error:Error){
-					logJS(""+error);
-					return;
-				}
-	//			logJS("step");
-			} while(publicSock.bytesAvailable>0);
-		}
-
-		private function publicGetParamsByBitMask(bitMask:int):void{
-			var i:int;
-			//here must be list of getting obj params 
-			switch (publicMsg){
-				case MESSAGE_EVENT_CHANGE:
-					publicOutObj.add(",objtype:\"Event\",action:\"change\"");
-					publicOutObj.add(",id:"+bitMask); //bitmask is id of event
-	//				publicDataSeq.push("id","int");
-	//				publicDataSeq.push("rooms","int");
-	//				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
-					publicDataSeq.push("map","string");
-					publicDataSeq.push("name","string");
-	//				}
-					return;
-				case MESSAGE_EVENT_DROP:
-					publicOutObj.add(",objtype:\"Event\",action:\"drop\"");
-					publicOutObj.add(",id:"+bitMask); //bitmask is id of event
-					return;
-				case MESSAGE_PLAYER_CHANGE:
-	//				logJS("MESSAGE_PLAYER_CHANGE");
-					publicOutObj.add(",objtype:\"Player\"");
-					publicDataSeq.push("id","int");
-					if ((bitMask&BM_PLAYER_ROOM)!=0){
-						logJS("BM_PLAYER_ROOM");
-						publicDataSeq.push("room","{");
-						publicDataSeq.push("type","int");
-						publicDataSeq.push("id","int");
-						publicDataSeq.push("$","}");
-					}
-					return;
-				case MESSAGE_GAME_START:
-					publicOutObj.add(",objtype:\"Room\",action:\"ready\"");
-					publicOutObj.add(",event_id:"+bitMask);
-					publicDataSeq.push("host","string");
-					publicDataSeq.push("port","int");
-	//				if (bitMask)
-					return;
-				default:
-					logJS("unnown public message");
-					break;
 			}
 		}
 ///------------------------------------------------------------------------------------------------------	

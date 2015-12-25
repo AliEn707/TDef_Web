@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
 	before_action :set_locale
 	before_action :set_timezone
 	before_action :profile_check
-	before_action :redis_statistics, if: proc { !!$redis_statistics }
 	
 	def ping
 		render text: '"OK"', layout: false
@@ -16,22 +15,21 @@ class ApplicationController < ActionController::Base
 	end
 	
 	def set_locale
-		@locale=I18n.default_locale
+		I18n.locale=I18n.default_locale
 		if !current_user.nil?
-			@locale=current_user.locale
+			I18n.locale=current_user.locale
 			if !params[:locale].nil?
 				current_user.locale=params[:locale]
 				current_user.save
 				redirect_to :back
 			end
 		else
-			@locale=cookies[:locale] if !cookies[:locale].nil?
+			I18n.locale=cookies[:locale] if !cookies[:locale].nil?
 			if !params[:locale].nil?
 				cookies[:locale]=params[:locale]
 				redirect_to :back
 			end
 		end
-		I18n.locale = @locale
 	end
 	
 	private	
@@ -55,9 +53,4 @@ class ApplicationController < ActionController::Base
 		Time.zone = current_user.time_zone if !current_user.nil?
 	end
 	
-	def redis_statistics
-		Thread.new do
-			$redis_statistics.hincrby "redis_statistics/requests", `hostname`, 1 
-		end
-	end
 end
