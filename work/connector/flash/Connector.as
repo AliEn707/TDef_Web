@@ -90,12 +90,13 @@ package {
         private function setupCallBacks():void {
 			output.appendText("Adding callback...\n");
 			ExternalInterface.addCallback("sendToConnector", receivedFromJavaScript);
-			ExternalInterface.addCallback("mapConnect", connectMap);
-			ExternalInterface.addCallback("mapClose", closeMap);
+			ExternalInterface.addCallback("mapConnect", mapConnect);
+			ExternalInterface.addCallback("mapClose", mapClose);
 			ExternalInterface.addCallback("mapSend", sendMap);
 			ExternalInterface.addCallback("mapGetData", mapGetData);
-			ExternalInterface.addCallback("publicConnect", connectPublic);
+			ExternalInterface.addCallback("publicConnect", publicConnect);
 			ExternalInterface.addCallback("publicSend", sendPublic);
+			ExternalInterface.addCallback("publicGetData", publicGetData);
 // 				ExternalInterface.addCallback("startMap", startMap);
 			isReady = true;
 			ExternalInterface.call("connectorReady");
@@ -209,12 +210,10 @@ package {
 	///public
 ///--------------------------------------------------------------------------------------------------------
 		public function publicGetData():String {
-			var str:String;
+			var str:String="";
 			if (publicObj.length()>2){
 				str=publicObj.build()+"])";
 				publicObj.clear("([")
-			}else{
-				str="";
 			}
 			return str;
 		}
@@ -238,7 +237,7 @@ package {
 			}
 		}
 
-		private function connectPublic(host:String, port:String, u:String, p:String):int {
+		private function publicConnect(host:String, port:String, u:String, p:String):int {
 						logJS("Try to connect\n");
 			output.appendText(host+" "+port+"\n");
 			publicHost=host;
@@ -256,16 +255,13 @@ package {
 				ExternalInterface.call("proceedPublicMessages", value);
 			}
 		}
-///------------------------------------------------------------------------------------------------------	
 	///map
-		
+///------------------------------------------------------------------------------------------------------	
 		public function mapGetData():String {
-			var str:String;
+			var str:String="";
 			if (mapObj.length()>2){
 				str=mapObj.build()+"])";
 				mapObj.clear("([")
-			}else{
-				str="";
 			}
 			return str;
 		}
@@ -276,11 +272,11 @@ package {
 			}
 		}
 
-		private function closeMap():void {
+		private function mapClose():void {
 			mapWorker.close();
 		}
 		
-		private function connectMap(host:String, port:String):int {
+		private function mapConnect(host:String, port:String):int {
 			logJS("Try to connect\n");
 			mapHost=host;
 			mapPort=int(port);

@@ -83,7 +83,8 @@ TDefEngine.prototype.render= function (){
 		statsUpdate(that);
 		stats.end();
 	}
-	proceedMapMessages();	
+	proceedMapMessages();
+	proceedPublicMessages();
 }
 
 TDefEngine.prototype.resize=function (){

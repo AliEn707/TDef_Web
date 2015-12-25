@@ -19,7 +19,11 @@ package {
 		private var user:String;
 		private var token:int;
 		private var user_id:int=0;
-		
+		//
+		private var dataSeq:Array = new Array();
+		private var obj:OutObject = new OutObject("({");
+		private var currMsg:int;
+				
 		public function PublicWorker(c:Connector, u:String, t:int) {
 			connector=c;
 			user=u;
@@ -65,18 +69,6 @@ package {
 		private const BIT_30:int= 536870912;
 		private const BIT_31:int= 1073741824;
 
-//bitmasks
-		private var BM_PLAYER_ROOM:int= BIT_3; 
-		//out message types
-		private const MESSAGE_PLAYER_CHANGE:int= 1;
-		private const MESSAGE_GAME_START:int= 2;
-		private const MESSAGE_EVENT_CHANGE:int= 3;
-		private const MESSAGE_EVENT_DROP:int= 4;
-		//
-		private var currMsg:int;
-		private var dataSeq:Array = new Array();
-		private var outObj:OutObject = new OutObject("({");
-		
 		private function connectError(value:String):void {
 			connector.publicConnectError(value);
 		}
@@ -174,62 +166,14 @@ package {
 			connector.publicAuthFail();
 		}
 
-		private function publicAuth():void {
-			var id:int;
-			var timestamp:Number;
-			var loop:Boolean=true;
-			switch (currMsg){
-				case 0:
-					try{
-						id=connector.publicSock.readInt();
-						connector.publicSock.writeInt(user.length);
-						connector.publicSock.writeUTFBytes(user);
-						connector.publicSock.writeInt(token);
-						connector.publicSock.flush();
-						currMsg++;
-						logJS("got "+id);
-					}
-					catch(error:Error){
-	//					logJS("id error"+error+"\n");
-					}
-					break;
-				case 1:
-					try{
-						id=connector.publicSock.readInt();
-						currMsg++;
-						logJS("id: "+id);
-						outObj.add("id: "+id+",");
-						if (id==0){
-							connector.publicSock.close();
-							authFail();
-							var event:Event;
-							connectCloseHandler(event);//clear handlers
-						}
-					}
-					catch(error:Error){
-	//					logJS("players error"+error+"\n");
-					}
-					break;
-				case 2:
-					try{
-						timestamp=connector.publicSock.readDouble();
-						currMsg++;
-						logJS("time: "+timestamp);
-						outObj.add("time:"+timestamp+",");
-						connector.publicAuthorised=true;
-						outObj.add("})");
-						connected(outObj.build());
-						outObj.clear("([");
-					}
-					catch(error:Error){
-	//					logJS("players error"+error+"\n");
-					}
-					break;
-			}
-		}
-	
-		private var msgTime:int=0;
-
+		//bitmasks
+		private var BM_PLAYER_ROOM:int= BIT_3; 
+		//out message types
+		private const MESSAGE_PLAYER_CHANGE:int= 1;
+		private const MESSAGE_GAME_START:int= 2;
+		private const MESSAGE_EVENT_CHANGE:int= 3;
+		private const MESSAGE_EVENT_DROP:int= 4;
+		
 		private function getMessage():void {
 			var data:Number;
 			var str:String;
@@ -239,20 +183,14 @@ package {
 					switch (dataSeq[0]){
 						case undefined: //lets see for next message
 	//						logJS("new message");
-							if (outObj.length()>2){//send object to javasctript
-                                var time:int=flash.utils.getTimer();
-                                outObj.add(",time:"+time+"},");
-                                if (time-msgTime>120){
-									outObj.add("])");
-									connector.proceedPublicMessagesJS(outObj.build());
-									outObj.clear("([");
-									msgTime=time;
-								}
+							if (obj.length()>1){//send object to javasctript
+                                connector.publicObj.add(obj.build()+"},");
 							}
 							currMsg=connector.publicSock.readByte();
+							obj.clear("");
 							if (currMsg!=0){
 								dataSeq.push("bitmask");
-								outObj.add("{msg:"+currMsg);
+								obj.add("{msg:"+currMsg);
 							}
 							break;
 						
@@ -267,14 +205,14 @@ package {
 							break;
 							
 						default:
-	//						logJS(outObj);
+	//						logJS(obj);
 	//						logJS("get "+dataSeq[1]);
 							switch (dataSeq[1]){
 								case "{":
 									str="{$:0";
 									break;
 								case "}":
-									outObj.add("}");
+									obj.add("}");
 								case "none":
 								case "nil":
 								case "null":
@@ -306,7 +244,7 @@ package {
 	//								dataSeq.splice(2,1);
 	//								break;
 							}
-							outObj.add(","+dataSeq[0]+":"+str);
+							obj.add(","+dataSeq[0]+":"+str);
 							dataSeq.shift();
 							dataSeq.shift();
 	//						dataSeq.splice(0,2);
@@ -316,7 +254,7 @@ package {
 					}
 				}
 				catch (error:Error){
-					logJS(""+error);
+//					logJS(""+error);
 					return;
 				}
 	//			logJS("step");
@@ -328,8 +266,8 @@ package {
 			//here must be list of getting obj params 
 			switch (currMsg){
 				case MESSAGE_EVENT_CHANGE:
-					outObj.add(",objtype:\"Event\",action:\"change\"");
-					outObj.add(",id:"+bitMask); //bitmask is id of event
+					obj.add(",objtype:\"Event\",action:\"change\"");
+					obj.add(",id:"+bitMask); //bitmask is id of event
 	//				dataSeq.push("id","int");
 	//				dataSeq.push("rooms","int");
 	//				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
@@ -338,12 +276,12 @@ package {
 	//				}
 					return;
 				case MESSAGE_EVENT_DROP:
-					outObj.add(",objtype:\"Event\",action:\"drop\"");
-					outObj.add(",id:"+bitMask); //bitmask is id of event
+					obj.add(",objtype:\"Event\",action:\"drop\"");
+					obj.add(",id:"+bitMask); //bitmask is id of event
 					return;
 				case MESSAGE_PLAYER_CHANGE:
 	//				logJS("MESSAGE_PLAYER_CHANGE");
-					outObj.add(",objtype:\"Player\"");
+					obj.add(",objtype:\"Player\"");
 					dataSeq.push("id","int");
 					if ((bitMask&BM_PLAYER_ROOM)!=0){
 						logJS("BM_PLAYER_ROOM");
@@ -354,14 +292,69 @@ package {
 					}
 					return;
 				case MESSAGE_GAME_START:
-					outObj.add(",objtype:\"Room\",action:\"ready\"");
-					outObj.add(",event_id:"+bitMask);
+					obj.add(",objtype:\"Room\",action:\"ready\"");
+					obj.add(",event_id:"+bitMask);
 					dataSeq.push("host","string");
 					dataSeq.push("port","int");
 	//				if (bitMask)
 					return;
 				default:
 					logJS("unnown public message");
+					break;
+			}
+		}
+		
+		private function publicAuth():void {
+			var id:int;
+			var timestamp:Number;
+			var loop:Boolean=true;
+			switch (currMsg){
+				case 0:
+					try{
+						id=connector.publicSock.readInt();
+						connector.publicSock.writeInt(user.length);
+						connector.publicSock.writeUTFBytes(user);
+						connector.publicSock.writeInt(token);
+						connector.publicSock.flush();
+						currMsg++;
+						logJS("got "+id);
+					}
+					catch(error:Error){
+	//					logJS("id error"+error+"\n");
+					}
+					break;
+				case 1:
+					try{
+						id=connector.publicSock.readInt();
+						currMsg++;
+						logJS("id: "+id);
+						obj.add("id: "+id+",");
+						if (id==0){
+							connector.publicSock.close();
+							authFail();
+							var event:Event;
+							connectCloseHandler(event);//clear handlers
+						}
+					}
+					catch(error:Error){
+	//					logJS("players error"+error+"\n");
+					}
+					break;
+				case 2:
+					try{
+						timestamp=connector.publicSock.readDouble();
+						currMsg++;
+						logJS("time: "+timestamp);
+						obj.add("time:"+timestamp+",");
+						connector.publicAuthorised=true;
+						obj.add("})");
+						connected(obj.build());
+						obj.clear("{");
+						connector.publicObj.clear("([");
+					}
+					catch(error:Error){
+	//					logJS("players error"+error+"\n");
+					}
 					break;
 			}
 		}

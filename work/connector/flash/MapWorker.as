@@ -18,12 +18,11 @@ package {
 	
 		private var user:String;
 		private var token:int;
+		private var latency:int;
 		
 		private var dataSeq:Array = new Array();
 		private var obj:OutObject=new OutObject("");
 		private var currMsg:int=0;
-		
-		private var msgTime:int=0;
 		
 		public function MapWorker(c:Connector, u:String, t:int) {
 			connector=c;
@@ -294,6 +293,7 @@ package {
 					}
 				}
 				catch (error:Error){
+					logJS(""+error);
 					break;
 				}
 	//			logJS("step");
@@ -304,60 +304,6 @@ package {
 //				connector.mapObj.clear("([");
 //				msgTime=flash.utils.getTimer();
 //			}
-		}
-
-		//auth params
-		private var latency:int;
-
-		private function auth():void {
-			var id:int;
-			var loop:Boolean=true;
-			switch (currMsg){
-				case 0:
-					try{
-						id=connector.mapSock.readInt();
-						obj.clear("({id:"+id);
-						currMsg++;
-						logJS("got id "+id);
-					}
-					catch(error:Error){
-	//					logJS("id error"+error+"\n");
-					}
-					break;
-				case 1:
-					try{
-						id=connector.mapSock.readInt();
-						obj.add(",players:"+id);
-						currMsg++;
-						logJS("got players "+id);
-						connector.mapSock.writeInt(0);
-						connector.mapSock.flush();
-						latency=flash.utils.getTimer();
-					}
-					catch(error:Error){
-	//					logJS("players error"+error+"\n");
-					}
-					break;
-				case 2:
-					try{
-						id=connector.mapSock.readInt();
-						latency=flash.utils.getTimer()-latency;
-						logJS("latency "+latency);
-						obj.add(",latency:"+latency);
-						connector.mapAuthorised=true;
-						connector.mapConnected();
-						//send to Javascript
-						obj.add("})");
-						connector.mapAuthData(obj.build());
-						currMsg=0;
-						obj.clear("{");
-						connector.mapObj.clear("([");
-					}
-					catch(error:Error){
-	//					logJS("players error"+error+"\n");
-					}
-					break;
-			}
 		}
 
 		private function getParamsByBitMask(bitMask:int):void{
@@ -501,6 +447,58 @@ package {
 					return;
 				default:
 					logJS("unnown message");
+					break;
+			}
+		}
+		
+		//auth params
+		private function auth():void {
+			var id:int;
+			var loop:Boolean=true;
+			switch (currMsg){
+				case 0:
+					try{
+						id=connector.mapSock.readInt();
+						obj.clear("({id:"+id);
+						currMsg++;
+						logJS("got id "+id);
+					}
+					catch(error:Error){
+	//					logJS("id error"+error+"\n");
+					}
+					break;
+				case 1:
+					try{
+						id=connector.mapSock.readInt();
+						obj.add(",players:"+id);
+						currMsg++;
+						logJS("got players "+id);
+						connector.mapSock.writeInt(0);
+						connector.mapSock.flush();
+						latency=flash.utils.getTimer();
+					}
+					catch(error:Error){
+	//					logJS("players error"+error+"\n");
+					}
+					break;
+				case 2:
+					try{
+						id=connector.mapSock.readInt();
+						latency=flash.utils.getTimer()-latency;
+						logJS("latency "+latency);
+						obj.add(",latency:"+latency);
+						connector.mapAuthorised=true;
+						connector.mapConnected();
+						//send to Javascript
+						obj.add("})");
+						connector.mapAuthData(obj.build());
+						currMsg=0;
+						obj.clear("{");
+						connector.mapObj.clear("([");
+					}
+					catch(error:Error){
+	//					logJS("players error"+error+"\n");
+					}
 					break;
 			}
 		}

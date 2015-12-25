@@ -63,15 +63,19 @@ function publicGetRoom(e) {
 
 //room start {msg:1,objtype:"Player",id:368322860,room:{$:0,type:1,id:616333680},$:0,time:24688}
 //event {msg:2,objtype:"Event",id:1,map:"pvz11_11",name:"#event",time:25444}
-function proceedPublicMessages(str){
-	var arr=eval(str)
-	console.log(str)
+function proceedPublicMessages(){
+	if (!connector)
+		return;
+	var str=getConnector().publicGetData();
+	if (!str)
+		return;
+	var arr=eval(str);
 	var engine=getEngine();
 	for (var i in arr){
 		switch (arr[i].objtype){
 			case 'Event': //we got event message
 				if (arr[i].action=='change') //add event
-					engine.public.eventsAdd(arr[i])
+					engine.public.eventsAdd(arr[i]);
 				else
 					engine.public.eventsRemove(arr[i]); //remove event
 				break;

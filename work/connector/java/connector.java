@@ -66,139 +66,26 @@ public class Connector extends Applet {
     public Boolean mapAuthorised=false;
     public Boolean publicAuthorised=false;
         
-    //Sockets
-    private Socket mapSock;
-    private Socket publicSock;
-    
-    private String publicHost;
-    private int publicPort;
-    
-    private String mapHost;
-    private int mapPort;
-    
-    class PublicThread implements Runnable{ //must work all app live time
-        //bitmasks
-        private final int BM_PLAYER_ROOM= BIT_3; 
-        //out message types
-        private final int MESSAGE_PLAYER_CHANGE= 1;
-        private final int MESSAGE_GAME_START= 2;
-        private final int MESSAGE_EVENT_CHANGE= 3;
-        private final int MESSAGE_EVENT_DROP= 4;
-        //
-        private int currMsg;
-        private String obj = "({";
-				
-        private String user;
-        private int token;
-        private int user_id=0;
-        private LittleEndianDataInputStream sin;
-        private LittleEndianOutputStream sout;
-				
-		public PublicThread setArg(String u, int t){
-            user=u;
-            token=t;
-            return this;
-        }
-        
-        public void run(){
-            logJS("Public Thread started");
-            try{
-                publicSock=connectToServer(publicHost, publicPort);
-                sin = new LittleEndianDataInputStream(publicSock.getInputStream());
-                sout = new LittleEndianOutputStream(publicSock.getOutputStream());
-            } catch (Exception e){
-                logJS(""+e);
-            }
-            //some work
-            logJS("Public Thread exited");
-        }
-    }
-    //  PublicThread ends
-
-    class MapThread implements Runnable{
-        private final int NPC_SET_SIZE=9;
-        private final int TOWER_SET_SIZE=9;
-
-        //msg to client
-        private final int MSG_TEST= 0;
-        private final int MSG_NPC= 1;
-        private final int MSG_TOWER= 2;
-        private final int MSG_BULLET= 3;
-        private final int MSG_PLAYER= 4;
-        private final int MSG_INFO= 5;
-        //additional messages to client
-        private final int MSG_INFO_WAITING_TIME= 1;
-        //npc messages
-        private final int NPC_HEALTH= BIT_1;
-        private final int NPC_POSITION= BIT_2;
-        private final int NPC_CREATE= BIT_3;
-        private final int NPC_LEVEL= BIT_4;
-        private final int NPC_SHIELD= BIT_5;
-        private final int NPC_STATUS= BIT_6;
-        //tower messages
-        private final int TOWER_HEALTH= BIT_1;
-        private final int TOWER_TARGET= BIT_2;
-        private final int TOWER_CREATE= BIT_3;
-        private final int TOWER_LEVEL= BIT_4;
-        private final int TOWER_SHIELD= BIT_5;
-        //bullet messages
-        private final int BULLET_POSITION= BIT_1;
-        private final int BULLET_DETONATE= BIT_2;
-        private final int BULLET_CREATE= BIT_3;
-        //player final intants
-        private final int PLAYER_BASE= BIT_1;
-        private final int PLAYER_MONEY= BIT_2;
-        private final int PLAYER_CREATE= BIT_3;
-        private final int PLAYER_LEVEL= BIT_4;
-        private final int PLAYER_HERO= BIT_5;
-        private final int PLAYER_HERO_COUNTER= BIT_6;
-        private final int PLAYER_TARGET= BIT_7;
-        private final int PLAYER_FAIL= BIT_8;
-        private final int PLAYER_SETS= BIT_9;
-        
-        private LittleEndianDataInputStream sin;
-        private LittleEndianOutputStream sout;
-        
-        private int currMsg=0;
-        private String obj="";
-        private int msgTime=0;
-        
-        public void run(){
-            logJS("Map Thread started");
-            try {
-                mapSock=connectToServer(mapHost, mapPort);
-                sin = new LittleEndianDataInputStream(mapSock.getInputStream());
-                sout = new LittleEndianOutputStream(mapSock.getOutputStream());
-                
-                sout.writeBytes("JavaApplet^_^");
-                obj="({id:"+sin.readInt();
-                obj+=",players:"+sin.readInt();
-                sout.writeInt(0);
-                sout.flush();
-                long latency=System.currentTimeMillis();
-                int l=sin.readInt();
-                latency=System.currentTimeMillis()-latency;
-                obj+=",latency:"+latency;
-                mapAuthorised=true;
-                ExternalInterface.call("mapConnected");
-                ExternalInterface.call("mapAuthData", obj+"})");
-                obj="([";
-                
-            } catch (Exception e){
-                logJS(""+e);
-            }
-            //close map on exit
-            mapClose();
-            logJS("Map Thread exited");
-        }
-    }
-    //  MapThread ends
-    
-    private void logJS(Object arg){
+    //public
+    public Socket publicSock;
+    public PublicWorker publicWorker;
+	public OutObject publicObj=new OutObject("");
+	public Boolean publicAutorised=false;
+    public String publicHost;
+    public int publicPort;
+    //map
+    public Socket mapSock;
+    public MapWorker mapWorker;
+	public OutObject mapObj=new OutObject("");
+	public Boolean mapAutorised=false;
+    public String mapHost;
+    public int mapPort;
+       
+    public void logJS(Object arg){
 		ExternalInterface.call("sendToJavaScript", "Java: "+arg);
     }
     
-    private Socket connectToServer(String host, int port) throws Exception{
+    public Socket connectToServer(String host, int port) throws Exception{
         return (Socket)AccessController.doPrivileged(
           new PrivilegedExceptionAction<Socket>() {
             public Socket run() throws Exception {
@@ -230,38 +117,11 @@ public class Connector extends Applet {
 			jse.printStackTrace();
 			isReady = false;
 		}
-    }
+	}
     
     public void sendToConnector(String s){
 		logJS(s);
     }
-    
-    public void mapConnect(String host, String sport){
-		mapPort = Integer.parseInt(sport);
-		mapHost=host;
-		try {
-			//start thread
-			Thread thread = new Thread(new MapThread());
-			thread.setDaemon(true);
-			thread.start();
-		} catch (Exception e) {
-			logJS(""+e);
-		}
-    }
-    
-    public void publicConnect(String host, String sport, String user, String stoken){
-		publicPort = Integer.parseInt(sport);
-		publicHost = host;
-		int token = Integer.parseInt(stoken);
-		try {
-			//start thread
-			Thread thread = new Thread(new PublicThread().setArg(user, token));
-			thread.setDaemon(true);
-			thread.start();
-		} catch (Exception e) {
-			logJS(""+e);
-		}
-    } 
     
     public void socketSend(Socket sock, String value){
 		ArrayDeque<String> arr=new ArrayDeque<String>();
@@ -299,21 +159,75 @@ public class Connector extends Applet {
             //mapClose(); //check need
        } 
     }
+	///public
+//----------------------------------	
+   public String publicGetData(){
+	   String str="";
+        synchronized(publicObj) {
+			if (publicObj.length()>2){
+				str=publicObj.build()+"])";
+				publicObj.clear("([");
+			}
+        }
+		return str;
+    } 
     
-//    public String getMapData(){
-//        synchronized(obj) {
-//            c2++;
-//        }
-//    } 
-    
-    public void mapClose(){
-        try{
-            mapSock.close();
+	public void publicConnect(String host, String sport, String user, String token){
+		publicPort = Integer.parseInt(sport);
+		publicHost = host;
+		try {
+			//start thread
+			publicWorker = new PublicWorker(this, user, Integer.parseInt(token));
 		} catch (Exception e) {
-            logJS(""+e);
-		} 
-		ExternalInterface.call("mapClosed");
+			logJS(""+e);
+		}
+    } 
+    
+    public void publicSend(String value){
+		socketSend(publicSock, value);
+    }	
+	///map
+//----------------------------------	
+   public String mapGetData(){
+	   String str="";
+        synchronized(mapObj) {
+			if (mapObj.length()>2){
+				str=mapObj.build()+"])";
+				mapObj.clear("([");
+			}
+        }
+		return str;
+    } 
+    
+	public void mapConnectError(String value) {
+		if (isReady) {
+			ExternalInterface.call("mapConnectionError", value);
+		}
+	}
+
+	public void mapClose() {
+		try{
+			mapWorker.close();
+		} catch (Exception e) {
+			
+		}
+	}
+
+    public void mapConnect(String host, String sport){
+		mapPort = Integer.parseInt(sport);
+		mapHost = host;
+		try {
+			//start thread
+			mapWorker = new MapWorker(this, host, mapPort);
+		} catch (Exception e) {
+			logJS(""+e);
+		}
     }
+	
+	public void mapClosed(){
+		mapWorker=null;
+		ExternalInterface.call("mapClosed");
+	}
 
     public void mapSend(String value){
 		if (mapAuthorised){
@@ -321,7 +235,13 @@ public class Connector extends Applet {
 		}
     }
     
-    public void publicSend(String value){
-		socketSend(publicSock, value);
-    }
+	public void mapAuthData(String s){
+		if (isReady)
+			ExternalInterface.call("mapAuthData", s);
+	}
+	
+	public void mapConnected(){
+		if (isReady)
+			ExternalInterface.call("mapConnected");
+	}
 }
