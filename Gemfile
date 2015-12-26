@@ -149,3 +149,5 @@ end
 
 #creating dump of the base as seed.rb file
 gem 'seed_dump'
+
+gem 'erubis'
