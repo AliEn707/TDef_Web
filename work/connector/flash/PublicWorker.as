@@ -72,10 +72,6 @@ package {
 		private function connectError(value:String):void {
 			connector.publicConnectError(value);
 		}
-		
-		private function connected(s:String):void {
-			connector.publicConnected(s);
-		}
 
 		public function connect(host:String, port:int):int {
 						logJS("Try to connect\n");
@@ -135,11 +131,10 @@ package {
 
 		private function connectCloseHandler(event:Event):void {
 			logJS("closed" + event+"\n");
-			authFail();
+			connector.publicAuthFail();
 			connector.publicAuthorised=false;
 			timer.removeEventListener(TimerEvent.TIMER, timeDataHandler);
 			timer.stop();
-			authFail();
 		}
 
 		//time event wrapper for data handler
@@ -160,10 +155,6 @@ package {
 			}else{
 				publicAuth();
 			}
-		}
-
-		private function authFail():void {
-			connector.publicAuthFail();
 		}
 
 		//bitmasks
@@ -331,7 +322,7 @@ package {
 						obj.add("id: "+id+",");
 						if (id==0){
 							connector.publicSock.close();
-							authFail();
+							connector.publicAuthFail();
 							var event:Event;
 							connectCloseHandler(event);//clear handlers
 						}
@@ -348,7 +339,7 @@ package {
 						obj.add("time:"+timestamp+",");
 						connector.publicAuthorised=true;
 						obj.add("})");
-						connected(obj.build());
+						connector.publicConnected(obj.build());
 						obj.clear("{");
 						connector.publicObj.clear("([");
 					}

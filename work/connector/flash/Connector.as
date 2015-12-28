@@ -14,9 +14,6 @@ package {
 		import flash.errors.*;
 
     public class Connector extends Sprite {
-		private var input:TextField;
-		private var output:TextField;
-		private var sendBtn:Sprite;
 		private var isReady:Boolean=false;
 		private var date:Date = new Date();
 		//public
@@ -38,64 +35,35 @@ package {
 		public function Connector() {
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
-			input = new TextField();
-			input.type = TextFieldType.INPUT;
-			input.background = true;
-			input.border = true;
-			input.width = 350;
-			input.height = 18;
-			addChild(input);
-
-			sendBtn = new Sprite();
-			sendBtn.mouseEnabled = true;
-			sendBtn.x = input.width + 10;
-			sendBtn.graphics.beginFill(0xCCCCCC);
-			sendBtn.graphics.drawRoundRect(0, 0, 80, 18, 10, 10);
-			sendBtn.graphics.endFill();
-			sendBtn.addEventListener(MouseEvent.CLICK, clickHandler);
-			addChild(sendBtn);
-
-			output = new TextField();
-			output.y = 25;
-			output.width = 450;
-			output.height = 325;
-			output.multiline = true;
-			output.wordWrap = true;
-			output.border = true;
-			output.text = "Initializing...\n";
-			addChild(output);
 						
 			if (ExternalInterface.available) {
 				try {
 					if (checkJavaScriptReady()) {
-						output.appendText("JavaScript is ready.\n");
 						setupCallBacks()
 					} else {
-						output.appendText("JavaScript is not ready, creating timer.\n");
 						var readyTimer:Timer = new Timer(100, 0);
 						readyTimer.addEventListener(TimerEvent.TIMER, timerHandler);
 						readyTimer.start();
 					}
 				} catch (error:SecurityError) {
-					output.appendText("A SecurityError occurred: " + error.message + "\n");
+//					output.appendText("A SecurityError occurred: " + error.message + "\n");
 				} catch (error:Error) {
-					output.appendText("An Error occurred: " + error.message + "\n");
+//					output.appendText("An Error occurred: " + error.message + "\n");
 				}
 			} else {
-				output.appendText("External interface is not available for this container.");
+//				output.appendText("External interface is not available for this container.");
 			}
 			
 		}
 	
         private function setupCallBacks():void {
-			output.appendText("Adding callback...\n");
 			ExternalInterface.addCallback("sendToConnector", receivedFromJavaScript);
 			ExternalInterface.addCallback("mapConnect", mapConnect);
 			ExternalInterface.addCallback("mapClose", mapClose);
-			ExternalInterface.addCallback("mapSend", sendMap);
+			ExternalInterface.addCallback("mapSend", mapSend);
 			ExternalInterface.addCallback("mapGetData", mapGetData);
 			ExternalInterface.addCallback("publicConnect", publicConnect);
-			ExternalInterface.addCallback("publicSend", sendPublic);
+			ExternalInterface.addCallback("publicSend", publicSend);
 			ExternalInterface.addCallback("publicGetData", publicGetData);
 // 				ExternalInterface.addCallback("startMap", startMap);
 			isReady = true;
@@ -104,16 +72,14 @@ package {
 		}  
 		
         private function timerHandler(event:TimerEvent):void {
-			output.appendText("Checking JavaScript status...\n");
 			if (checkJavaScriptReady()) {
 				setupCallBacks();
-				output.appendText("JavaScript is ready.\n");
 				Timer(event.target).stop();
 			}
 		}
 	
         private function receivedFromJavaScript(value:String):void {
-			output.appendText("JavaScript says: " + value + "\n");
+			//output.appendText("JavaScript says: " + value + "\n");
         }
         
         //logging
@@ -127,11 +93,7 @@ package {
 			var R:Boolean = ExternalInterface.call("isReady");
 			return R;
         }
-	
-        private function clickHandler(event:MouseEvent):void {
-			logJS(input.text);
-        }
-	
+
 		///Sockets
 		
 		//bit constants
@@ -218,43 +180,36 @@ package {
 			return str;
 		}
 		
-		public function publicConnectError(value:String):void {
-			if (isReady) {
-				ExternalInterface.call("publicConnectionError", value);
-			}
-		}
-		
-		private function sendPublic(value:String):int {
-			if (publicAuthorised){
-				return sendSocket(publicSock,value);
-			}
-			return 0;
-		}
-
-		public function publicConnected(s:String):void {
-			if (isReady) {
-				ExternalInterface.call("publicConnected",s);
-			}
-		}
-
 		private function publicConnect(host:String, port:String, u:String, p:String):int {
-						logJS("Try to connect\n");
-			output.appendText(host+" "+port+"\n");
 			publicHost=host;
 			publicPort=int(port);
 			publicWorker=new PublicWorker(this, u, int(p));
 			return 0;
         }
 	
+		private function publicSend(value:String):int {
+			if (publicAuthorised){
+				return sendSocket(publicSock,value);
+			}
+			return 0;
+		}
+
+		public function publicConnectError(value:String):void {
+			if (isReady) {
+				ExternalInterface.call("publicConnectionError", value);
+			}
+		}
+		
+		public function publicConnected(s:String):void {
+			if (isReady) {
+				ExternalInterface.call("publicConnected",s);
+			}
+		}
+
 		public function publicAuthFail():void {
 			ExternalInterface.call("publicAuthFail");
 		}
 
-		public function proceedPublicMessagesJS(value:String):void {
-			if (isReady) {
-				ExternalInterface.call("proceedPublicMessages", value);
-			}
-		}
 	///map
 ///------------------------------------------------------------------------------------------------------	
 		public function mapGetData():String {
@@ -266,50 +221,45 @@ package {
 			return str;
 		}
 		
-		public function mapConnectError(value:String):void {
-			if (isReady) {
-				ExternalInterface.call("mapConnectionError", value);
-			}
-		}
-
-		private function mapClose():void {
-			mapWorker.close();
-		}
-		
 		private function mapConnect(host:String, port:String):int {
-			logJS("Try to connect\n");
 			mapHost=host;
 			mapPort=int(port);
 			mapWorker=new MapWorker(this, host, int(port));
 			return 0;
         }
 	
-		public function mapClosed():void{
-			mapWorker=null;
-			ExternalInterface.call("mapClosed");
+		private function mapClose():void {
+			mapWorker.close();
 		}
 		
-		private function sendMap(value:String):int {
+		private function mapSend(value:String):int {
 			if (mapAuthorised){
 				return sendSocket(mapSock,value);
 			}
 			return 0;
 		}
 
-		// push - add to end
-		// shift - get first
-		public function proceedMapMessagesJS(value:String):void {
+		public function mapClosed():void {
+			mapWorker=null;
+			ExternalInterface.call("mapClosed");
+		}
+		
+		public function mapConnectError(value:String):void {
 			if (isReady) {
-				ExternalInterface.call("proceedMapMessages", value);
+				ExternalInterface.call("mapConnectionError", value);
+			}
+		}
+
+		public function mapAuthData(s:String):void {
+			if (isReady) {
+				ExternalInterface.call("mapAuthData", s);
 			}
 		}
 		
-		public function mapAuthData(s:String):void{
-			ExternalInterface.call("mapAuthData", s);
-		}
-		
-		public function mapConnected():void{
-			ExternalInterface.call("mapConnected");
+		public function mapConnected():void {
+			if (isReady) {
+				ExternalInterface.call("mapConnected");
+			}
 		}
     }
 }

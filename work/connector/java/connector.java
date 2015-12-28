@@ -186,9 +186,28 @@ public class Connector extends Applet {
     public void publicSend(String value){
 		socketSend(publicSock, value);
     }	
+
+	public void publicConnectError(String value) {
+		if (isReady) {
+			ExternalInterface.call("publicConnectionError", value);
+		}
+	}
+	
+	public void publicConnected(String value) {
+		if (isReady) {
+			ExternalInterface.call("publicConnected", value);
+		}
+	}
+	
+	public void publicAuthFail() {
+		if (isReady) {
+			ExternalInterface.call("publicAuthFail");
+		}
+	}
+	
 	///map
 //----------------------------------	
-   public String mapGetData(){
+	public String mapGetData(){
 	   String str="";
         synchronized(mapObj) {
 			if (mapObj.length()>2){
@@ -199,20 +218,6 @@ public class Connector extends Applet {
 		return str;
     } 
     
-	public void mapConnectError(String value) {
-		if (isReady) {
-			ExternalInterface.call("mapConnectionError", value);
-		}
-	}
-
-	public void mapClose() {
-		try{
-			mapWorker.close();
-		} catch (Exception e) {
-			
-		}
-	}
-
     public void mapConnect(String host, String sport){
 		mapPort = Integer.parseInt(sport);
 		mapHost = host;
@@ -224,9 +229,12 @@ public class Connector extends Applet {
 		}
     }
 	
-	public void mapClosed(){
-		mapWorker=null;
-		ExternalInterface.call("mapClosed");
+	public void mapClose() {
+		try{
+			mapWorker.close();
+		} catch (Exception e) {
+			logJS(""+e);
+		}
 	}
 
     public void mapSend(String value){
@@ -235,13 +243,26 @@ public class Connector extends Applet {
 		}
     }
     
+	public void mapClosed(){
+		mapWorker=null;
+		ExternalInterface.call("mapClosed");
+	}
+
+	public void mapConnectError(String value) {
+		if (isReady) {
+			ExternalInterface.call("mapConnectionError", value);
+		}
+	}
+
 	public void mapAuthData(String s){
-		if (isReady)
+		if (isReady) {
 			ExternalInterface.call("mapAuthData", s);
+		}
 	}
 	
 	public void mapConnected(){
-		if (isReady)
+		if (isReady) {
 			ExternalInterface.call("mapConnected");
+		}
 	}
 }

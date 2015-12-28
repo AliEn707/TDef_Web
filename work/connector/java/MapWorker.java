@@ -131,6 +131,7 @@ class MapWorker implements Runnable{
 			}
 		} catch (Exception e){
 			logJS(""+e);
+//			connector.mapConnectError(e);
 		}
 		//close map on exit
 		logJS("closed: Connection error");
@@ -274,7 +275,7 @@ class MapWorker implements Runnable{
 			case MSG_INFO:
 				if (bitMask==MSG_INFO_WAITING_TIME){
 					obj.add(",type:'time'");
-					obj.add(",data:"+sin.readShort());
+					obj.add(",data:"+sin.readInt());
 				}
 				return;
 			default:

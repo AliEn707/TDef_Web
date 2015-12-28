@@ -41,7 +41,7 @@ class PublicWorker implements Runnable{ //must work all app live time
 	private final int MESSAGE_EVENT_DROP= 4;
 	//
 	private int currMsg;
-	private String obj = "({";
+	private OutObject obj=new OutObject("");
 	
 	
 	private Connector connector;
@@ -73,11 +73,94 @@ class PublicWorker implements Runnable{ //must work all app live time
 			connector.publicSock=connector.connectToServer(connector.publicHost, connector.publicPort);
 			sin = new LittleEndianDataInputStream(connector.publicSock.getInputStream());
 			sout = new LittleEndianOutputStream(connector.publicSock.getOutputStream());
+			
+			sout.writeBytes("JavaApplet^_^");
+			int id=sin.readInt();
+			sout.writeInt(user.length());
+			sout.writeBytes(user);
+			sout.writeInt(token);
+			logJS("got "+id);
+			id=sin.readInt();
+			obj.add("id: "+id+",");
+			if (id!=0){
+				double timestamp=sin.readDouble();
+				logJS("time: "+timestamp);
+				obj.add("time:"+timestamp+",");
+				connector.publicAuthorised=true;
+				obj.add("})");
+				connector.publicConnected(obj.build());
+				obj.clear("{");
+				connector.publicObj.clear("([");
+				while(true){
+					if (obj.length()>1){
+						synchronized(connector.mapObj) {
+							connector.mapObj.add(obj.build()+"},");
+						}
+					}
+					currMsg=sin.readByte();
+					obj.clear("");
+					if (currMsg!=0){
+						obj.add("{msg:"+currMsg);
+						int bitMask=sin.readInt();
+						getParamsByBitMask(bitMask);
+					}
+				}
+			}else{
+				connector.publicAuthFail();
+			}
+			connector.publicSock.close();
 		} catch (Exception e){
 			logJS(""+e);
 		}
+		connector.publicConnectError("");
 		//some work
 		logJS("Public Thread exited");
+	}
+	
+	public void close(){
+		
+	}
+	
+	private void getParamsByBitMask(int bitMask) throws Exception{
+		int i;
+		switch (currMsg){
+			case MESSAGE_EVENT_CHANGE:
+				obj.add(",objtype:\"Event\",action:\"change\"");
+				obj.add(",id:"+bitMask); //bitmask is id of event
+//				obj.add("id","int");
+//				obj.add("rooms","int");
+//				if ((bitMask&BM_EVENT_MAP_NAME)!=0) {
+				obj.add(",map:\""+sin.readUTF()+"\"");
+				obj.add(",name:\""+sin.readUTF()+"\"");
+//				}
+				return;
+			case MESSAGE_EVENT_DROP:
+				obj.add(",objtype:\"Event\",action:\"drop\"");
+				obj.add(",id:"+bitMask); //bitmask is id of event
+				return;
+			case MESSAGE_PLAYER_CHANGE:
+//				logJS("MESSAGE_PLAYER_CHANGE");
+				obj.add(",objtype:\"Player\"");
+				obj.add(",id:"+sin.readInt());
+				if ((bitMask&BM_PLAYER_ROOM)!=0){
+					logJS("BM_PLAYER_ROOM");
+					obj.add(",room:{");
+					obj.add("type:"+sin.readInt());
+					obj.add(",id:"+sin.readInt());
+					obj.add("}");
+				}
+				return;
+			case MESSAGE_GAME_START:
+				obj.add(",objtype:\"Room\",action:\"ready\"");
+				obj.add(",event_id:"+bitMask);
+				obj.add(",host:\""+sin.readUTF()+"\"");
+				obj.add(",port:"+sin.readInt());
+//				if (bitMask)
+				return;
+			default:
+				logJS("unnown public message");
+				break;
+		}
 	}
 }
 //  PublicWorker ends

@@ -442,7 +442,7 @@ package {
 				case MSG_INFO:
 					if (bitMask==MSG_INFO_WAITING_TIME){
 						obj.add(",type:'time'");
-						dataSeq.push("data","short");
+						dataSeq.push("data","int");
 					}
 					return;
 				default:
