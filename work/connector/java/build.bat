@@ -5,7 +5,8 @@
 @set CLASSPATH=classpath1;classpath2
 
 javac *.java -Xlint:unchecked -d ./
-jar -cf connector.jar *.class
+jar -cfm ../../../app/assets/other/connector.jar manifest.txt *.class
 del *.class
+jarsigner -keystore keystore.jks ../../../app/assets/other/connector.jar "wss"
 @rem ../../../app/assets/other/
 pause

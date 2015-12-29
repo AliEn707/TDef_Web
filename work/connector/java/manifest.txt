@@ -1,0 +1,5 @@
+Permissions: all-permissions
+Codebase: *
+Application-Name: TDef connector
+Application-Library-Allowable-Codebase: *
+Caller-Allowable-Codebase: *

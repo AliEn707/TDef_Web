@@ -281,10 +281,10 @@ function addConnectorFlash(place, callback){
 	place=place || document.body
 	place.appendChild(obj)
 
-  var timeout=window.setTimeout(
-    callback,
-    2000
-  );
+	var timeout=window.setTimeout(
+		callback,
+		2000
+	);
 
 	hideConnector=function (o){
 		window.clearTimeout(timeout);
@@ -294,3 +294,67 @@ function addConnectorFlash(place, callback){
 	};
 }
 
+function addConnectorJava(place, callback) {
+	var path='<%= asset_url("connector.jar").split("connector")[0] %>';
+	var file='connector.jar';
+	//some IE hack
+	function createIeObject(path, file){
+		var div = document.createElement("div");
+		div.innerHTML = "<object classid='clsid:8AD9C840-044E-11D1-B3E9-00805F499D93'>"+
+			  "<PARAM name='code' value='Connector.class' >"+
+			  "<PARAM name='codebase' value='"+path+"' >"+
+			  "<PARAM name='archive' value='"+file+"' >"+
+//			  "<PARAM name='permissions' value='all-permissions' >"+
+			  "</object>";
+		return div.firstChild;
+	}
+	var isMSIE = /*@cc_on!@*/false;
+	var obj = (isMSIE) ? createIeObject(path, file) : document.createElement("object");
+	if (!isMSIE) {
+		obj.setAttribute("type", "application/x-java-applet");
+//		obj.setAttribute("data", path);
+		param = document.createElement('param');
+		param.setAttribute('name', 'code');
+		param.setAttribute('value', 'Connector.class');
+		obj.appendChild(param);
+		param = document.createElement('param');
+		param.setAttribute('name', 'codebase');
+		param.setAttribute('value', path);
+		obj.appendChild(param);
+		param = document.createElement('param');
+		param.setAttribute('name', 'archive');
+		param.setAttribute('value', file);
+		obj.appendChild(param);
+//		param = document.createElement('param');
+//		param.setAttribute('name', 'permissions');
+//		param.setAttribute('value', "all-permissions");
+//		obj.appendChild(param);
+	}
+	//Add attributes to <object>
+	obj.setAttribute("id", "connector");
+	obj.setAttribute("width", "550");
+	obj.setAttribute("height", "400");
+	param = document.createElement('param');
+	param.setAttribute('name', 'scriptable');
+	param.setAttribute('value', 'true');
+	obj.appendChild(param);
+	param = document.createElement('param');
+	param.setAttribute('name', 'mayscript');
+	param.setAttribute('value', 'true');
+	obj.appendChild(param);
+
+	place=place || document.body;
+	place.appendChild(obj);
+	
+	var timeout=window.setTimeout(
+		callback,
+		2000
+	);
+
+	hideConnector=function (o){
+		window.clearTimeout(timeout);
+		o.width=3;
+		o.height=2;
+		//o.parentNode.style.left=-o.width+"px";
+	};
+}
