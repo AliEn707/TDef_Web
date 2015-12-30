@@ -11,7 +11,7 @@ function isReady() {
 }
 
 //get connector object to call functions
-function getConnector() {
+var getConnector=function () {
 	movieName="connector";
 	if (navigator.appName.indexOf("Microsoft") != -1) {
 		return window[movieName];
@@ -26,6 +26,7 @@ function getConnector() {
 //publicConnect("localhost","7001")
 function publicConnect(host, port) {
 	Loading.show("#public_connecting");
+	//console.log(access().token)
 	getConnector().publicConnect(host, port, access().name, access().token);
 }
 
@@ -238,9 +239,19 @@ function addConnector(place){
 	var connectors=["Flash"]; //TODO: in future must be ["Java", "SilverLight" ,"Flash"]
 	for (var i in connectors)
 		if (PluginDetect.isMinVersion(connectors[i]) > -1){
-			window["addConnector"+connectors[i]](place, function () {
-				Loading.message="#check_"+connectors[i].toLowerCase();
-			});
+			var obj=window["addConnector"+connectors[i]](place,
+				function (obj){
+					obj.style.zIndex=0;
+					obj.style.position="absolute";
+					obj.style.left="0px";//-width
+					obj.style.top="0px";
+					//	obj.setAttribute("hidden","");
+				},
+				function () {
+					Loading.message="#check_"+connectors[i].toLowerCase();
+				}
+			);
+			getConnector=function (){return obj;}
 			return;
 		}
 	
@@ -249,7 +260,7 @@ function addConnector(place){
 
 
 //adding Flash connector to page
-function addConnectorFlash(place, callback){
+function addConnectorFlash(place, setStyle, callback){
 	var path='<%= asset_url("connector.swf") %>';
 	//some IE hack
 	function createIeObject(url){
@@ -272,11 +283,7 @@ function addConnectorFlash(place, callback){
 	param.setAttribute('value', 'sameDomain')
 	obj.appendChild(param)
 	
-	obj.style.zIndex=0
-	obj.style.position="absolute"
-	obj.style.left="0px"//-width
-	obj.style.top="0px"
-//	obj.setAttribute("hidden","")
+	setStyle(obj);
 	
 	place=place || document.body
 	place.appendChild(obj)
@@ -292,10 +299,11 @@ function addConnectorFlash(place, callback){
 		o.height=2;
 		//o.parentNode.style.left=-o.width+"px";
 	};
+	return obj;
 }
 
-function addConnectorJava(place, callback) {
-	var path='<%= asset_url("connector.jar").split("connector")[0] %>';
+function addConnectorJava(place, setStyle, callback) {
+	var path='<%= asset_url("connector.jar").split("/connector")[0] %>';
 	var file='connector.jar';
 	//some IE hack
 	function createIeObject(path, file){
@@ -343,6 +351,9 @@ function addConnectorJava(place, callback) {
 	param.setAttribute('value', 'true');
 	obj.appendChild(param);
 
+	setStyle(obj);
+//	obj.setAttribute("hidden","")
+
 	place=place || document.body;
 	place.appendChild(obj);
 	
@@ -357,4 +368,6 @@ function addConnectorJava(place, callback) {
 		o.height=2;
 		//o.parentNode.style.left=-o.width+"px";
 	};
+	
+	return obj;
 }

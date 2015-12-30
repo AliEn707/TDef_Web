@@ -13,7 +13,7 @@ package {
 		private var connector:Connector;
 		//sockets
 		//TODO: add hosts and ports for future reconnects
-		private var timer:Timer = new Timer(100, 0);//40, 0);
+		private var timer:Timer = new Timer(50, 0);//40, 0);
 		private var date:Date = new Date();
 	
 		private var user:String;

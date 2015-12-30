@@ -172,8 +172,8 @@ public class Connector extends Applet {
 		return str;
     } 
     
-	public void publicConnect(String host, String sport, String user, String token){
-		publicPort = Integer.parseInt(sport);
+	public void publicConnect(String host, String port, String user, String token){
+		publicPort = Integer.parseInt(port);
 		publicHost = host;
 		try {
 			//start thread
