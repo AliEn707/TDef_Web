@@ -1,2 +1,0 @@
-== README
-You can check it on http://wsstudio.tk

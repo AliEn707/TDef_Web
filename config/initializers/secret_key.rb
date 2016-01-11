@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-TDefWeb::Application.config.secret_key_base = ENV["RAILS_SECRET"]
+TDefWeb::Application.config.secret_key_base = ENV["RAILS_SECRET"] || "dev"
