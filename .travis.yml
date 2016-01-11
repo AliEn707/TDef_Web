@@ -1,0 +1,10 @@
+language: ruby
+addons:
+  apt:
+    packages:
+      - nodejs
+      - libgd2-xpm-dev
+rvm:
+  - 2.2.2
+  - 1.9.3
+script: rake test
