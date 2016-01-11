@@ -3,6 +3,9 @@ class Tdef::GameController < ApplicationController
 	def game
 	end
   
+	def test
+	end
+  
 	def access
 		auth=current_user.player.auth
 		auth.token=rand(2147483647)#rand in max int

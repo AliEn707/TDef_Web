@@ -86,9 +86,12 @@ var Loading={
 
 Object.defineProperty(Loading, 'message', {
     get: function() {
-	return  this._message.text.text;
+		if (!this._message)
+			return "";
+		return  this._message.text.text;
     },    
     set: function(value) {
-	return  this._message.text.setText(value.translate);
+		if (this._message)
+			return  this._message.text.setText(value.translate);
     }
 });

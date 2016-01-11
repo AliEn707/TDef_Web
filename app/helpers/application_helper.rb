@@ -52,7 +52,7 @@ module ApplicationHelper
 					{'name'=>(:locales),'path'=>tdef_locales_all_path},
 					{'name'=>(:npc_types),'path'=>tdef_type_npcs_path},
 					{'name'=>(:tower_types),'path'=>tdef_type_towers_path},
-					{'name'=>(:flash_test),'path'=>"/ExternalInterfaceExample.html"},
+					{'name'=>(:connector_test),'path'=>tdef_game_test_path},
 					{'name'=>(:audio_test),'path'=>"/audiotest.html"}
 				]
 			end

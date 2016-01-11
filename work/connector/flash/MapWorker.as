@@ -219,6 +219,8 @@ package {
 		private function getMessage():void {
 			var data:Number;
 			var str:String;
+			var s:String;
+			var f:String;
 	//		mapDataSeq.push("push","float",5)//add to end
 			//see first
 			do {
@@ -271,12 +273,16 @@ package {
 								case "float":
 									data=connector.mapSock.readFloat();
 									//logJS(data+"")
-									str=data.toFixed(4)
+									f=data.toFixed(4);
+									s=data.toString();
+									str=s.length>f.length ? f : s;
 									//logJS(str)
 									break;
 								case "double":
 									data=connector.mapSock.readDouble();
-									str=data.toFixed(6)
+									f=data.toFixed(8);
+									s=data.toString();
+									str=s.length>f.length ? f : s;
 									break;
 //									case "string": //we have third argument string size
 //									str=mapSock.readUTFBytes(mapDataSeq[2]);

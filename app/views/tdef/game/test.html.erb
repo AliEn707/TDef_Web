@@ -1,0 +1,65 @@
+<%= javascript_include_tag "tdef_game" %>
+
+<form name="form1" onsubmit="return false;">
+	<select name="select">
+		<% ["Flash"].each do |c| %>
+			<option value="<%= c %>"><%= c %></option>
+		<% end %>
+	</select> 
+	<input type="button" value="create connector" onclick="createConnector()" />
+	<br />
+	<input type="text" name="host" value="<%=request.host%>" />
+	<input type="text" name="port" value="34140" />
+	<input type="text" name="map" value="pvz11_11" />
+	<input type="button" value="mapConnect" onclick="mapConnect(this.form.host.value,this.form.port.value);" />
+	<br />
+	<textarea cols="100" rows="30" name="output" readonly="true">Initializing...</textarea>
+</form>
+ 
+<script language="JavaScript">
+ 
+ function pageInit() {
+//	addConnectorSWF();
+	jsReady = true;
+	document.forms["form1"].output.value += "\n" + "JavaScript is ready.\n";
+}
+
+
+function createConnector() {
+	window["addConnector"+document.forms["form1"].select.value]();
+	pageInit();
+}
+
+function sendToJavaScript(value) {
+	document.forms["form1"].output.value +=  value + "\n";
+}
+
+function sendToActionScript(value) {
+	getConnector().sendToActionScript(value);
+}
+
+function mapConnect(host,port) {
+	getConnector().mapConnect(host,port);
+	setInterval(function() { 
+		var str=getConnector().mapGetData();
+		if (str)
+			sendToJavaScript(str); 
+	}, 10);
+}
+
+function proceedMapMessages(value) {
+//	console.log(value);
+	
+}
+
+function mapConnected(){
+	sendToJavaScript("connected");
+}
+
+function mapClosed(){
+}
+
+function mapAuthData(value) {
+	sendToJavaScript(value);
+}
+ </script>

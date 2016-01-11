@@ -229,7 +229,7 @@ function connectorReady(){
 	connector=true;
 	console.log("Connector ready");
 	hideConnector(getConnector());
-  Loading.message="";
+	Loading.message="";
 	if (afterConnectorReady)
 		afterConnectorReady();
 }
@@ -282,23 +282,25 @@ function addConnectorFlash(place, setStyle, callback){
 	param.setAttribute('name', 'allowScriptAccess')
 	param.setAttribute('value', 'sameDomain')
 	obj.appendChild(param)
-	
-	setStyle(obj);
+	if (setStyle)
+		setStyle(obj);
 	
 	place=place || document.body
 	place.appendChild(obj)
 
-	var timeout=window.setTimeout(
-		callback,
-		2000
-	);
-
-	hideConnector=function (o){
-		window.clearTimeout(timeout);
-		o.width=3;
-		o.height=2;
-		//o.parentNode.style.left=-o.width+"px";
-	};
+	if (callback){
+		var timeout=window.setTimeout(
+			callback,
+			2000
+		);
+	
+		hideConnector=function (o){
+			window.clearTimeout(timeout);
+			o.width=3;
+			o.height=2;
+			//o.parentNode.style.left=-o.width+"px";
+		};
+	}
 	return obj;
 }
 
@@ -350,24 +352,27 @@ function addConnectorJava(place, setStyle, callback) {
 	param.setAttribute('name', 'mayscript');
 	param.setAttribute('value', 'true');
 	obj.appendChild(param);
-
-	setStyle(obj);
+	
+	if (setStyle)
+		setStyle(obj);
 //	obj.setAttribute("hidden","")
 
 	place=place || document.body;
 	place.appendChild(obj);
 	
-	var timeout=window.setTimeout(
-		callback,
-		2000
-	);
+	if (callback){
+		var timeout=window.setTimeout(
+			callback,
+			2000
+		);
 
-	hideConnector=function (o){
-		window.clearTimeout(timeout);
-		o.width=3;
-		o.height=2;
-		//o.parentNode.style.left=-o.width+"px";
-	};
+		hideConnector=function (o){
+			window.clearTimeout(timeout);
+			o.width=3;
+			o.height=2;
+			//o.parentNode.style.left=-o.width+"px";
+		};
+	}
 	
 	return obj;
 }
