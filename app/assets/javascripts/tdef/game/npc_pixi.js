@@ -129,22 +129,23 @@ Npc.prototype.proceedStatus= function (s){
 
 Npc.prototype.update= function (obj){
 //	var time=this.time;
-	var dirx=(obj.grid.x-this.grid.x);//(obj.grid.x-this.grid.x);
-	var diry=(obj.grid.y-this.grid.y);//(obj.grid.y-this.grid.y);
-	var l=Math.sqrt(dirx*dirx+diry*diry);
-	var timestep=1//latency;
-	if (this.time!=0){
-		timestep+=((obj.time-this.time+statsMs())*getFPSms());
-	
-		if (!this.average_time)
-			this.average_time=timestep;
-		this.average_time+=timestep;
-		this.average_time/=2;
+	if (obj.grid){
+		var dirx=(obj.grid.x-this.grid.x);//(obj.grid.x-this.grid.x);
+		var diry=(obj.grid.y-this.grid.y);//(obj.grid.y-this.grid.y);
+		var l=Math.sqrt(dirx*dirx+diry*diry);
+		var timestep=1//latency;
+		if (this.time!=0){
+			timestep+=((obj.time-this.time+statsMs())*getFPSms());
+		
+			if (!this.average_time)
+				this.average_time=timestep;
+			this.average_time+=timestep;
+			this.average_time/=2;
+		}
+		//add time correction
+		this.direction.x=dirx/this.average_time//timestep;
+		this.direction.y=diry/this.average_time//timestep;
 	}
-	//add time correction
-	this.direction.x=dirx/this.average_time//timestep;
-	this.direction.y=diry/this.average_time//timestep;
-	
 	
 	if (obj.health!=undefined){
 		this.setHealth(obj.health);

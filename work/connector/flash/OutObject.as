@@ -12,6 +12,10 @@ package {
             obj+=o;
 		}
 		
+		public function cleanup():String {
+            return obj.replace(/\$\:0,?/g, "");
+		}
+		
 		public function build():String {
             return obj;
 		}

@@ -13,7 +13,7 @@ package {
 		private var connector:Connector;
 		//sockets
 		//TODO: add hosts and ports for future reconnects
-		private var timer:Timer = new Timer(100, 0);//40, 0);
+		private var timer:Timer = new Timer(150, 0);//40, 0);
 		private var date:Date = new Date();
 	
 		private var user:String;
@@ -175,7 +175,7 @@ package {
 						case undefined: //lets see for next message
 	//						logJS("new message");
 							if (obj.length()>1){//send object to javasctript
-                                connector.publicObj.add(obj.build()+"},");
+                                connector.publicObj.add(obj.cleanup()+"},");
 							}
 							currMsg=connector.publicSock.readByte();
 							obj.clear("");

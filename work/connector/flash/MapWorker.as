@@ -13,7 +13,7 @@ package {
 		private var connector:Connector;
 		//sockets
 		//TODO: add hosts and ports for future reconnects
-		private var timer:Timer = new Timer(50, 0);//40, 0);
+		private var timer:Timer = new Timer(70, 0);//40, 0);
 		private var date:Date = new Date();
 	
 		private var user:String;
@@ -229,7 +229,7 @@ package {
 					switch (dataSeq[0]){
 						case undefined: //lets see for next message
 							if (obj.length()>1){//send object to javasctript
-                                connector.mapObj.add(obj.build()+"},");
+                                connector.mapObj.add(obj.cleanup()+"},");
 							}
 							currMsg=connector.mapSock.readByte();
 							dataSeq.push("bitmask");
@@ -391,6 +391,7 @@ package {
 					obj.add(",objtype:\"Player\"");
 					dataSeq.push("id","int");
 					if ((bitMask&PLAYER_CREATE)!=0){ 
+						obj.add(",create:1");
 						dataSeq.push("pid","int");
 						dataSeq.push("group","int");
 						dataSeq.push("_hero_counter","int");
@@ -446,10 +447,11 @@ package {
 					}
 					return;
 				case MSG_INFO:
+					obj.add(",objtype:\"Info\"");
 					if (bitMask==MSG_INFO_WAITING_TIME){
-						obj.add(",type:'time'");
-						dataSeq.push("data","int");
+						obj.add(",type:\"start_timer\"");
 					}
+					dataSeq.push("data","int");
 					return;
 				default:
 					logJS("unnown message");
