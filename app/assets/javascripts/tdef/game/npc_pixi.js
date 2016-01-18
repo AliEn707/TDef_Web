@@ -141,10 +141,13 @@ Npc.prototype.update= function (obj){
 				this.average_time=timestep;
 			this.average_time+=timestep;
 			this.average_time/=2;
+			//add time correction
+			this.direction.x=dirx/this.average_time//timestep;
+			this.direction.y=diry/this.average_time//timestep;
 		}
-		//add time correction
-		this.direction.x=dirx/this.average_time//timestep;
-		this.direction.y=diry/this.average_time//timestep;
+	}else{
+		this.direction.x=0;
+		this.direction.y=0;
 	}
 	
 	if (obj.health!=undefined){
