@@ -73,6 +73,7 @@ function proceedPublicMessages(){
 	var arr=eval(str);
 	var engine=getEngine();
 	for (var i in arr){
+		arr[i].time=current_time;
 		switch (arr[i].objtype){
 			case 'Event': //we got event message
 				if (arr[i].action=='change') //add event
@@ -192,13 +193,12 @@ function proceedMapMessages(){
 //	console.log(str);
 	var arr=eval(str);
 //	delete str;
-	var time=Date.now();
 	var e=getEngine();
 //	try{
 		
 	for(var i in arr){
 		var obj=arr[i];
-		obj.time=time;
+		obj.time=current_time;
 		if (obj.objtype){
 			if (obj.objtype=="Player"){
 				//player

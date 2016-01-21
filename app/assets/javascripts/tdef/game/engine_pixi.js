@@ -67,6 +67,7 @@ function TDefEngine(place, opt, callback){
 
 
 TDefEngine.prototype.render= function (){
+	current_time=Date.now();
 	var that=getEngine();
 	window.setTimeout(that.render,that.frameTime);
 

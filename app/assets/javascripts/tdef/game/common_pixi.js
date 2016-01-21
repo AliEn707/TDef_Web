@@ -21,6 +21,8 @@ if (!Date.now) {
     Date.now = function() { return new Date().getTime(); }
 }
 
+var current_time=Date.now;
+
 var getEngine=function (){
 	return;
 }
@@ -31,7 +33,7 @@ var getFPSms=function (){
 }
 
 var getFrameTime=function (){
-	return 1/getFPSms();
+	return 1000/statsFps();
 }
 
 var setEngine=function (e){
