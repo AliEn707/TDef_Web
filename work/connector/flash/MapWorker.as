@@ -135,6 +135,7 @@ package {
 				mapDataHandler(pevent);
 			}
 		}
+		
 		//when socket has data
 		private function mapDataHandler(event:ProgressEvent):void {
 	//		logJS("got data" + event+"\n");
@@ -145,16 +146,15 @@ package {
 				auth();
 			}
 		}
-
+		
 		private function connectHandler(event:Event):void {
 			logJS("connected " + event+"\n");
 			//send hello
 			connector.mapSock.writeUTFBytes("FlashHello^_^");
 			connector.mapSock.flush();
 			//add data listener
-//			mapSock.addEventListener(ProgressEvent.SOCKET_DATA, mapDataHandler); 
-			//check messages by timer, if no additional data
-			
+			connector.mapSock.addEventListener(ProgressEvent.SOCKET_DATA, mapDataHandler); 
+			//check messages by timer, if no additional data, needed foe auth
 			timer.addEventListener(TimerEvent.TIMER, timeDataHandler);
 			timer.start();
 			currMsg=0;
@@ -503,6 +503,8 @@ package {
 						currMsg=0;
 						obj.clear("{");
 						connector.mapObj.clear("([");
+						timer.removeEventListener(TimerEvent.TIMER, timeDataHandler);//auth ended
+						timer.stop();//we do not need it any more
 					}
 					catch(error:Error){
 	//					logJS("players error"+error+"\n");
