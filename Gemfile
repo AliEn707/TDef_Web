@@ -151,3 +151,7 @@ end
 gem 'seed_dump'
 
 gem 'erubis'
+
+#neiro network
+#https://github.com/tangledpath/ruby-fann
+#gem "ruby-fann"
