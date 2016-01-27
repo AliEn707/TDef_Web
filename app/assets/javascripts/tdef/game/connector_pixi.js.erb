@@ -102,6 +102,7 @@ var MSG_SPAWN_NPC=2;
 var MSG_DROP_TOWER=3;
 var MSG_MOVE_HERO=4;
 var MSG_SET_TARGET=5;
+var MSG_CHAT_S=6;
 //send to mapserver; 
 //str is string of pairs of params type,data,...
 //types: byte char short int uint float string
@@ -109,6 +110,7 @@ var MSG_SET_TARGET=5;
 function mapSend(str) {
 	getConnector().mapSend(str);
 	//for spawn npc must be "byte,"+MSG_SPAWN_NPC+",int,"+num
+	//for chat msg  "byte,"+MSG_CHAT_S+",string,"+msg
 }
 
 //spawn Npc

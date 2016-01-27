@@ -42,6 +42,7 @@ class MapWorker implements Runnable{
 	private final int MSG_BULLET= 3;
 	private final int MSG_PLAYER= 4;
 	private final int MSG_INFO= 5;
+	private final int MSG_CHAT_S=6;
 	//additional messages to client
 	private final int MSG_INFO_WAITING_TIME= 1;
 	//npc messages
@@ -273,10 +274,16 @@ class MapWorker implements Runnable{
 				}
 				return;
 			case MSG_INFO:
+				obj.add(",objtype:\"Info\"");
 				if (bitMask==MSG_INFO_WAITING_TIME){
-					obj.add(",type:'time'");
-					obj.add(",data:"+sin.readInt());
+					obj.add(",type:\"start_timer\"");
 				}
+				obj.add(",data:"+sin.readInt());
+				return;
+			case MSG_CHAT_S:
+				obj.add(",objtype:\"Chat\"");
+				obj.add(",owner:"+bitMask);
+				obj.add(",msg:"+sin.readUTF());
 				return;
 			default:
 				logJS("unnown message");
