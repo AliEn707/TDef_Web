@@ -186,7 +186,7 @@ package {
 		private const MSG_BULLET:int= 3;
 		private const MSG_PLAYER:int= 4;
 		private const MSG_INFO:int= 5;
-		private const MSG_CHAT_S:int= 6;
+		private const MSG_CHAT_C:int= 6;
 		//additional messages to client
 		private const MSG_INFO_WAITING_TIME:int= 1;
 		//npc messages
@@ -285,10 +285,9 @@ package {
 									s=data.toString();
 									str=s.length>f.length ? f : s;
 									break;
-//									case "string": //we have third argument string size
-//									str=mapSock.readUTFBytes(mapDataSeq[2]);
-//									mapDataSeq.splice(2,1);
-//									break;
+								case "string": //we have third argument string size
+									str="\""+connector.publicSock.readUTF()+"\"";
+									break;
 							}
 							obj.add(","+dataSeq[0]+":"+str);
 							dataSeq.shift();
@@ -454,7 +453,7 @@ package {
 					}
 					dataSeq.push("data","int");
 					return;
-				case MSG_CHAT_S:
+				case MSG_CHAT_C:
 					obj.add(",objtype:\"Chat\"");
 					obj.add(",owner:"+bitMask);
 					dataSeq.push("msg","string");

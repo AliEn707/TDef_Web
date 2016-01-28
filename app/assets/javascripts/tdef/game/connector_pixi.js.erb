@@ -208,6 +208,8 @@ function proceedMapMessages(){
 					e.map.players[obj.id]=new MapPlayer(obj);
 				if (e.map.players[obj.id])
 					e.map.players[obj.id].update(obj);
+			}else if (obj.objtype=="Chat"){
+				console.log(obj);
 			}else{
 				if (!e.map.objects[obj.id] && obj.create){
 					e.map.objects[obj.id]=eval("new "+obj.objtype+"(obj)");
@@ -218,7 +220,7 @@ function proceedMapMessages(){
 				}
 			}
 		}else{
-			console.log(obj)
+//			console.log(obj)
 		}
 		//console.log(str)
 	}
